@@ -12,7 +12,9 @@
 #include <fstream>
 #include <string.h>
 using namespace std;
+
 using namespace CImage;
+
 //
 //int main(int argc, char *argv[]){
 //	return 0;
@@ -72,7 +74,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	// create image object
-	CImage<double> *input;
+    ::CImage::CImage<double> *input;
 	switch(lattice) {
 	case 'c':
 		//    	cout << "CC lattice" << endl;

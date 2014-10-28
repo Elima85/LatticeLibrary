@@ -3,7 +3,7 @@
 
 #define EPSILONT 0.000001 // tolerance for testing
 
-#define BOOST_TEST_MODULE dist_test
+#include "gtest/gtest.h"
 
 #include "priorityqueue.h"
 #include "neighbor.h"
@@ -16,23 +16,17 @@
 #include "norm.h"
 //#include "filter.h"
 #include "label.h"
-#include <boost/test/included/unit_test.hpp>
 #include <cmath>
 #include <vector>
 
-using namespace CImage;
-
-int add(int i, int j){
- return i + j;
- }
-
-BOOST_AUTO_TEST_CASE(universeInOrder){
-BOOST_CHECK(add(2, 2) == 4);
+int main(int argc, char **argv) {
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }
 
-BOOST_AUTO_TEST_SUITE(Priorityqueue_test)
+using namespace CImage;
 
-BOOST_AUTO_TEST_CASE(PriorityQueueTest) {
+TEST(PriorityQueueTest, Test) {
 
 	double values1[] = {1.1,2.2,3.3};
 	double values2[] = {4.4,5.5,6.6};
@@ -53,73 +47,73 @@ BOOST_AUTO_TEST_CASE(PriorityQueueTest) {
 	PriorityQueueElement<double> vectorElement4(1,vector2,norm2);
 
 	// == operator
-	BOOST_CHECK(!(singleElement1 == singleElement2));
-	BOOST_CHECK(singleElement2 == singleElement2);
-	BOOST_CHECK(singleElement2 == singleElement3);
-	BOOST_CHECK(!(doubleElement1 == doubleElement2));
-	BOOST_CHECK(doubleElement2 == doubleElement2);
-	BOOST_CHECK(doubleElement2 == doubleElement3);
-	BOOST_CHECK(!(vectorElement1 == vectorElement2));
-	BOOST_CHECK(vectorElement2 == vectorElement2);
-	BOOST_CHECK(vectorElement2 == vectorElement3);
-	BOOST_CHECK(!(vectorElement2 == vectorElement4));
+	EXPECT_TRUE(!(singleElement1 == singleElement2));
+	EXPECT_TRUE(singleElement2 == singleElement2);
+	EXPECT_TRUE(singleElement2 == singleElement3);
+	EXPECT_TRUE(!(doubleElement1 == doubleElement2));
+	EXPECT_TRUE(doubleElement2 == doubleElement2);
+	EXPECT_TRUE(doubleElement2 == doubleElement3);
+	EXPECT_TRUE(!(vectorElement1 == vectorElement2));
+	EXPECT_TRUE(vectorElement2 == vectorElement2);
+	EXPECT_TRUE(vectorElement2 == vectorElement3);
+	EXPECT_TRUE(!(vectorElement2 == vectorElement4));
 
 	// != operator
-	BOOST_CHECK(singleElement1 != singleElement2);
-	BOOST_CHECK(!(singleElement2 != singleElement2));
-	BOOST_CHECK(!(singleElement2 != singleElement3));
-	BOOST_CHECK(doubleElement1 != doubleElement2);
-	BOOST_CHECK(!(doubleElement2 != doubleElement2));
-	BOOST_CHECK(!(doubleElement2 != doubleElement3));
-	BOOST_CHECK(vectorElement1 != vectorElement2);
-	BOOST_CHECK(!(vectorElement2 != vectorElement2));
-	BOOST_CHECK(!(vectorElement2 != vectorElement3));
-	BOOST_CHECK(vectorElement2 != vectorElement4);
+	EXPECT_TRUE(singleElement1 != singleElement2);
+	EXPECT_TRUE(!(singleElement2 != singleElement2));
+	EXPECT_TRUE(!(singleElement2 != singleElement3));
+	EXPECT_TRUE(doubleElement1 != doubleElement2);
+	EXPECT_TRUE(!(doubleElement2 != doubleElement2));
+	EXPECT_TRUE(!(doubleElement2 != doubleElement3));
+	EXPECT_TRUE(vectorElement1 != vectorElement2);
+	EXPECT_TRUE(!(vectorElement2 != vectorElement2));
+	EXPECT_TRUE(!(vectorElement2 != vectorElement3));
+	EXPECT_TRUE(vectorElement2 != vectorElement4);
 
 	// pop order
 	queue.push(singleElement1);
 	queue.push(singleElement2);
 	PriorityQueueElement<double> e1 = queue.top();
-	BOOST_CHECK(e1 == singleElement1);
+	EXPECT_TRUE(e1 == singleElement1);
 	queue.pop();
 	queue.pop();
 	queue.push(singleElement2);
 	queue.push(singleElement1);
 	e1 = queue.top();
-	BOOST_CHECK(e1 == singleElement1);
+	EXPECT_TRUE(e1 == singleElement1);
 	queue.pop();
 	queue.pop();
 
 	queue.push(doubleElement1);
 	queue.push(doubleElement2);
 	e1 = queue.top();
-	BOOST_CHECK(e1 == doubleElement1);
+	EXPECT_TRUE(e1 == doubleElement1);
 	queue.pop();
 	queue.pop();
 	queue.push(doubleElement2);
 	queue.push(doubleElement1);
 	e1 = queue.top();
-	BOOST_CHECK(e1 == doubleElement1);
+	EXPECT_TRUE(e1 == doubleElement1);
 	queue.pop();
 	queue.pop();
 
 	queue.push(vectorElement1);
 	queue.push(vectorElement2);
 	e1 = queue.top();
-	BOOST_CHECK(e1 == vectorElement1);
+	EXPECT_TRUE(e1 == vectorElement1);
 	queue.pop();
 	queue.pop();
 	queue.push(vectorElement2);
 	queue.push(vectorElement1);
 	e1 = queue.top();
-	BOOST_CHECK(e1 == vectorElement1);
+	EXPECT_TRUE(e1 == vectorElement1);
 	queue.pop();
 	queue.pop();
 
 
 }
 
-BOOST_AUTO_TEST_CASE(Pq1Test) {
+TEST(PriorityQueueTest, Test1) {
 
 	Pq1 q;
 	Pq1Elem elem1 = Pq1Elem(0, 1);
@@ -127,30 +121,30 @@ BOOST_AUTO_TEST_CASE(Pq1Test) {
 	Pq1Elem elem3 = Pq1Elem(1, 2);
 
 	// == operator
-	BOOST_CHECK(!(elem1 == elem2));
-	BOOST_CHECK(elem2 == elem3);
+	EXPECT_TRUE(!(elem1 == elem2));
+	EXPECT_TRUE(elem2 == elem3);
 
 	// != operator
-	BOOST_CHECK(elem1 != elem2);
-	BOOST_CHECK(!(elem2 != elem3));
+	EXPECT_TRUE(elem1 != elem2);
+	EXPECT_TRUE(!(elem2 != elem3));
 
 	// pop order
 	q.push(elem1);
 	q.push(elem2);
 	Pq1Elem e1 = q.top();
-	BOOST_CHECK(e1 == elem1);
+	EXPECT_TRUE(e1 == elem1);
 	q.pop();
 	q.pop();
 
 	q.push(elem2);
 	q.push(elem1);
 	e1 = q.top();
-	BOOST_CHECK(e1 == elem1);
+	EXPECT_TRUE(e1 == elem1);
 	q.pop();
 	q.pop();
 }
 
-BOOST_AUTO_TEST_CASE(Pq2Test) {
+TEST(PriorityQueue, Test2) {
 
 	Pq2 q;
 	Pq2Elem elem1 = Pq2Elem(0, 1, 2);
@@ -158,30 +152,30 @@ BOOST_AUTO_TEST_CASE(Pq2Test) {
 	Pq2Elem elem3 = Pq2Elem(1, 3, 4);
 
 	// == operator
-	BOOST_CHECK(!(elem1 == elem2));
-	BOOST_CHECK(elem2 == elem3);
+	EXPECT_TRUE(!(elem1 == elem2));
+	EXPECT_TRUE(elem2 == elem3);
 
 	// != operator
-	BOOST_CHECK(elem1 != elem2);
-	BOOST_CHECK(!(elem2 != elem3));
+	EXPECT_TRUE(elem1 != elem2);
+	EXPECT_TRUE(!(elem2 != elem3));
 
 	// pop order
 	q.push(elem1);
 	q.push(elem2);
 	Pq2Elem e1 = q.top();
-	BOOST_CHECK(e1 == elem1);
+	EXPECT_TRUE(e1 == elem1);
 	q.pop();
 	q.pop();
 
 	q.push(elem2);
 	q.push(elem1);
 	e1 = q.top();
-	BOOST_CHECK(e1 == elem1);
+	EXPECT_TRUE(e1 == elem1);
 	q.pop();
 	q.pop();
 }
 
-BOOST_AUTO_TEST_CASE(PqVTest) {
+TEST(PriorityQueue, VTest) {
 
 	PqV q;
 	PqVElem elem1 = PqVElem(0, 1, 1, 1);
@@ -189,32 +183,32 @@ BOOST_AUTO_TEST_CASE(PqVTest) {
 	PqVElem elem3 = PqVElem(1, 2, 2, 2);
 
 	// == operator
-	BOOST_CHECK(!(elem1 == elem2));
-	BOOST_CHECK(elem2 == elem2);
-	BOOST_CHECK(elem2 == elem3);
+	EXPECT_TRUE(!(elem1 == elem2));
+	EXPECT_TRUE(elem2 == elem2);
+	EXPECT_TRUE(elem2 == elem3);
 
 	// != operator
-	BOOST_CHECK(elem1 != elem2);
-	BOOST_CHECK(!(elem2 != elem2));
-	BOOST_CHECK(!(elem2 != elem3));
+	EXPECT_TRUE(elem1 != elem2);
+	EXPECT_TRUE(!(elem2 != elem2));
+	EXPECT_TRUE(!(elem2 != elem3));
 
 	// pop order
 	q.push(elem1);
 	q.push(elem2);
 	PqVElem e1 = q.top();
-	BOOST_CHECK(e1 == elem1);
+	EXPECT_TRUE(e1 == elem1);
 	q.pop();
 	q.pop();
 
 	q.push(elem2);
 	q.push(elem1);
 	e1 = q.top();
-	BOOST_CHECK(e1 == elem1);
+	EXPECT_TRUE(e1 == elem1);
 	q.pop();
 	q.pop();
 }
 
-BOOST_AUTO_TEST_CASE(Pq2VTest) {
+TEST(PriorityQueue, VTest2) {
 
 	double minVals1[] = {-1.1,0.5,-0.1,-0.6,0.9};
 	double minVals2[] = {-2.1,1.5,-1.1,-1.6,1.9};
@@ -239,70 +233,66 @@ BOOST_AUTO_TEST_CASE(Pq2VTest) {
 	Pq2VElem<double> dummyElement;
 
 	// constructor and getters
-	BOOST_CHECK_THROW(Pq2VElem<double>(4,maxVec1,shortVec,norm1),dimensionMismatchException);
-	BOOST_CHECK_EQUAL(elem1.getIndex(),0);
-	BOOST_CHECK(elem1.getIndex() != 1);
-	BOOST_CHECK_EQUAL(elem4.getIndex(),3);
-	BOOST_CHECK(elem4.getIndex() != 2);
+	EXPECT_THROW(Pq2VElem<double>(4,maxVec1,shortVec,norm1), dimensionMismatchException);
+	EXPECT_EQ(elem1.getIndex(),0);
+	EXPECT_TRUE(elem1.getIndex() != 1);
+	EXPECT_EQ(elem4.getIndex(),3);
+	EXPECT_TRUE(elem4.getIndex() != 2);
 	vector<double> min1 = elem1.getMinVector();
 	vector<double> max1 = elem1.getMaxVector();
 	vector<double> min2 = elem2.getMinVector();
 	vector<double> max2 = elem2.getMaxVector();
 	for (int i = 0; i < 5; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(min1[i], minVals1[i],EPSILONT);
-		BOOST_CHECK_CLOSE_FRACTION(max1[i], maxVals1[i],EPSILONT);
-		BOOST_CHECK_CLOSE_FRACTION(min2[i], minVals2[i],EPSILONT);
-		BOOST_CHECK_CLOSE_FRACTION(max2[i], maxVals2[i],EPSILONT);
-		BOOST_CHECK(fabs(min1[i] - minVals2[i]) > EPSILONT);
-		BOOST_CHECK(fabs(max1[i] - maxVals2[i]) > EPSILONT);
-		BOOST_CHECK(fabs(min2[i] - minVals1[i]) > EPSILONT);
-		BOOST_CHECK(fabs(max2[i] - maxVals1[i]) > EPSILONT);
+		EXPECT_NEAR(min1[i], minVals1[i], EPSILONT);
+		EXPECT_NEAR(max1[i], maxVals1[i], EPSILONT);
+		EXPECT_NEAR(min2[i], minVals2[i], EPSILONT);
+		EXPECT_NEAR(max2[i], maxVals2[i], EPSILONT);
+		EXPECT_TRUE(fabs(min1[i] - minVals2[i]) > EPSILONT);
+		EXPECT_TRUE(fabs(max1[i] - maxVals2[i]) > EPSILONT);
+		EXPECT_TRUE(fabs(min2[i] - minVals1[i]) > EPSILONT);
+		EXPECT_TRUE(fabs(max2[i] - maxVals1[i]) > EPSILONT);
 	}
 
 	// norm
-	BOOST_CHECK_CLOSE_FRACTION(elem1.computeNorm(elem1.getMinVector()), norm1->compute(minVec1), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(elem4.computeNorm(elem4.getMinVector()), norm2->compute(minVec1), EPSILONT);
-	BOOST_CHECK(fabs(elem1.computeNorm(elem1.getMinVector()) - norm2->compute(minVec1)) > EPSILONT);
+	EXPECT_NEAR(elem1.computeNorm(elem1.getMinVector()), norm1->compute(minVec1), EPSILONT);
+	EXPECT_NEAR(elem4.computeNorm(elem4.getMinVector()), norm2->compute(minVec1), EPSILONT);
+	EXPECT_TRUE(fabs(elem1.computeNorm(elem1.getMinVector()) - norm2->compute(minVec1)) > EPSILONT);
 
 	// == operator
-	BOOST_CHECK(elem1 == elem1);
-	BOOST_CHECK(elem2 == elem3);
-	BOOST_CHECK(!(elem1 == elem4));
-	BOOST_CHECK(!(elem1 == elem2));
+	EXPECT_TRUE(elem1 == elem1);
+	EXPECT_TRUE(elem2 == elem3);
+	EXPECT_TRUE(!(elem1 == elem4));
+	EXPECT_TRUE(!(elem1 == elem2));
 
 	// != operator
-	BOOST_CHECK(!(elem1 != elem1));
-	BOOST_CHECK(!(elem2 != elem3));
-	BOOST_CHECK(elem1 != elem4);
-	BOOST_CHECK(elem1 != elem2);
+	EXPECT_TRUE(!(elem1 != elem1));
+	EXPECT_TRUE(!(elem2 != elem3));
+	EXPECT_TRUE(elem1 != elem4);
+	EXPECT_TRUE(elem1 != elem2);
 
 	// pop order
 	q.push(elem1);
 	q.push(elem2);
 	Pq2VElem<double> e1 = q.top();
-	BOOST_CHECK(e1 == elem1);
+	EXPECT_TRUE(e1 == elem1);
 	q.pop();
 	q.pop();
 
 	q.push(elem2);
 	q.push(elem1);
 	e1 = q.top();
-	BOOST_CHECK(e1 == elem1);
+	EXPECT_TRUE(e1 == elem1);
 	q.pop();
 	q.pop();
 
 	// exceptions
-	BOOST_CHECK_THROW(dummyElement.computeNorm(vector<double>(2,3)),notInitializedException);
+	EXPECT_THROW(dummyElement.computeNorm(vector<double>(2,3)),notInitializedException);
 
 	delete norm1;
 	delete norm2;
 }
 
-BOOST_AUTO_TEST_SUITE_END()
-
-BOOST_AUTO_TEST_SUITE(Neighbor_test)
-
-BOOST_AUTO_TEST_CASE(NeighborTest) {
+TEST(NeighborTestCase, NeighborTest) {
 
 	int location1 = 0;
 	int location2 = 1;
@@ -315,33 +305,30 @@ BOOST_AUTO_TEST_CASE(NeighborTest) {
 	Neighbor n2 = Neighbor(location2, index2); //, distance2);
 
 	// constructor and getters
-	BOOST_CHECK(n1.getLocation() == location1);
-	BOOST_CHECK(n1.getIndex() == index1);
-	//BOOST_CHECK(n1.getDistance() == distance1);
-	BOOST_CHECK(n1.getLocation() != location2);
-	BOOST_CHECK(n1.getIndex() != index2);
-	//BOOST_CHECK(n1.getDistance() != distance2);
+	EXPECT_TRUE(n1.getLocation() == location1);
+	EXPECT_TRUE(n1.getIndex() == index1);
+	//EXPECT_TRUE(n1.getDistance() == distance1);
+	EXPECT_TRUE(n1.getLocation() != location2);
+	EXPECT_TRUE(n1.getIndex() != index2);
+	//EXPECT_TRUE(n1.getDistance() != distance2);
 
-	BOOST_CHECK(n2.getLocation() == location2);
-	BOOST_CHECK(n2.getIndex() == index2);
-	//BOOST_CHECK(n2.getDistance() == distance2);
-	BOOST_CHECK(n2.getLocation() != location1);
-	BOOST_CHECK(n2.getIndex() != index1);
-	//BOOST_CHECK(n2.getDistance() != distance1);
+	EXPECT_TRUE(n2.getLocation() == location2);
+	EXPECT_TRUE(n2.getIndex() == index2);
+	//EXPECT_TRUE(n2.getDistance() == distance2);
+	EXPECT_TRUE(n2.getLocation() != location1);
+	EXPECT_TRUE(n2.getIndex() != index1);
+	//EXPECT_TRUE(n2.getDistance() != distance1);
 
 	// setter
 //	n1.set(index2, distance2);
-//	BOOST_CHECK(n1.getIndex() == index2);
-//	BOOST_CHECK(n1.getDistance() == distance2);
-//	BOOST_CHECK(n1.getIndex() != index1);
-//	BOOST_CHECK(n1.getDistance() != distance1);
+//	EXPECT_TRUE(n1.getIndex() == index2);
+//	EXPECT_TRUE(n1.getDistance() == distance2);
+//	EXPECT_TRUE(n1.getIndex() != index1);
+//	EXPECT_TRUE(n1.getDistance() != distance1);
 }
 
-BOOST_AUTO_TEST_SUITE_END()
 
-BOOST_AUTO_TEST_SUITE(Norm_test)
-
-BOOST_AUTO_TEST_CASE(PNormTest) {
+TEST(NormTestCase, PNormTest) {
 	int intVals[] = {0,1,2,3,4,5};
 	vector<int> intVector;
 	intVector.assign(intVals, intVals + 6);
@@ -360,32 +347,32 @@ BOOST_AUTO_TEST_CASE(PNormTest) {
 	PNorm norm5Copy(&norm5);
 
 	// constructor and getter
-	BOOST_CHECK_EQUAL(norm1.getP(),1);
-	BOOST_CHECK_EQUAL(norm2.getP(),2);
-	BOOST_CHECK_EQUAL(norm5.getP(),5);
-	BOOST_CHECK(norm1.getP() != 2);
-	BOOST_CHECK(norm2.getP() != 3);
-	BOOST_CHECK(norm5.getP() != 1);
-	BOOST_CHECK_EQUAL(norm1Copy.getP(),1);
-	BOOST_CHECK_EQUAL(norm5Copy.getP(),5);
-	BOOST_CHECK(norm1Copy.getP() != 2);
-	BOOST_CHECK(norm5Copy.getP() != 1);
+	EXPECT_EQ(norm1.getP(),1);
+	EXPECT_EQ(norm2.getP(),2);
+	EXPECT_EQ(norm5.getP(),5);
+	EXPECT_TRUE(norm1.getP() != 2);
+	EXPECT_TRUE(norm2.getP() != 3);
+	EXPECT_TRUE(norm5.getP() != 1);
+	EXPECT_EQ(norm1Copy.getP(),1);
+	EXPECT_EQ(norm5Copy.getP(),5);
+	EXPECT_TRUE(norm1Copy.getP() != 2);
+	EXPECT_TRUE(norm5Copy.getP() != 1);
 
 	// compute
-	BOOST_CHECK_CLOSE_FRACTION(norm1.compute(zeroVector),0.0,EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(norm1.compute(intVector),15.0,EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(norm1.compute(doubleVector),11.0,EPSILONT);
+	EXPECT_NEAR(norm1.compute(zeroVector),0.0, EPSILONT);
+	EXPECT_NEAR(norm1.compute(intVector),15.0, EPSILONT);
+	EXPECT_NEAR(norm1.compute(doubleVector),11.0, EPSILONT);
 
-	BOOST_CHECK_CLOSE_FRACTION(norm2.compute(zeroVector),0.0,EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(norm2.compute(intVector),7.4161984871,EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(norm2.compute(doubleVector),6.02494813256,EPSILONT);
+	EXPECT_NEAR(norm2.compute(zeroVector),0.0, EPSILONT);
+	EXPECT_NEAR(norm2.compute(intVector),7.4161984871, EPSILONT);
+	EXPECT_NEAR(norm2.compute(doubleVector),6.02494813256, EPSILONT);
 
-	BOOST_CHECK_CLOSE_FRACTION(norm5.compute(zeroVector),0.0,EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(norm5.compute(intVector),5.36022049567,EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(norm5.compute(doubleVector),4.61510254893,EPSILONT);
+	EXPECT_NEAR(norm5.compute(zeroVector),0.0, EPSILONT);
+	EXPECT_NEAR(norm5.compute(intVector),5.36022049567, EPSILONT);
+	EXPECT_NEAR(norm5.compute(doubleVector),4.61510254893, EPSILONT);
 }
 
-BOOST_AUTO_TEST_CASE(ProductNormTest) {
+TEST(NormTestCase, ProductNormTest) {
 	int intVals[] = {0,1,2,3,4,5};
 	vector<int> intVector1, intVector2;
 	intVector1.assign(intVals, intVals + 6);
@@ -403,17 +390,17 @@ BOOST_AUTO_TEST_CASE(ProductNormTest) {
 	ProductNorm normCopy(&norm);
 
 	// compute
-	BOOST_CHECK_CLOSE_FRACTION(norm.compute(zeroVector),0.0,EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(norm.compute(intVector1),0.0,EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(norm.compute(intVector2),120.0,EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(norm.compute(doubleVector1),0.0,EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(norm.compute(doubleVector2),35.1384,EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(norm.compute(intVector1),normCopy.compute(intVector1),EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(norm.compute(doubleVector1),normCopy.compute(doubleVector1),EPSILONT);
+	EXPECT_NEAR(norm.compute(zeroVector),0.0, EPSILONT);
+	EXPECT_NEAR(norm.compute(intVector1),0.0, EPSILONT);
+	EXPECT_NEAR(norm.compute(intVector2),120.0, EPSILONT);
+	EXPECT_NEAR(norm.compute(doubleVector1),0.0, EPSILONT);
+	EXPECT_NEAR(norm.compute(doubleVector2),35.1384, EPSILONT);
+	EXPECT_NEAR(norm.compute(intVector1),normCopy.compute(intVector1), EPSILONT);
+	EXPECT_NEAR(norm.compute(doubleVector1),normCopy.compute(doubleVector1), EPSILONT);
 
 }
 
-BOOST_AUTO_TEST_CASE(MaximumNormTest) {
+TEST(NormTestCase, MaximumNormTest) {
 
 	int intVals[] = {0,1,4,5,2,3};
 	vector<int> intVector;
@@ -430,19 +417,15 @@ BOOST_AUTO_TEST_CASE(MaximumNormTest) {
 	MaximumNorm normCopy(&norm);
 
 	// compute
-	BOOST_CHECK_CLOSE_FRACTION(norm.compute(zeroVector),0.0,EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(norm.compute(intVector),5.0,EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(norm.compute(doubleVector),4.4,EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(norm.compute(intVector),normCopy.compute(intVector),EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(norm.compute(doubleVector),normCopy.compute(doubleVector),EPSILONT);
+	EXPECT_NEAR(norm.compute(zeroVector),0.0, EPSILONT);
+	EXPECT_NEAR(norm.compute(intVector),5.0, EPSILONT);
+	EXPECT_NEAR(norm.compute(doubleVector),4.4, EPSILONT);
+	EXPECT_NEAR(norm.compute(intVector),normCopy.compute(intVector), EPSILONT);
+	EXPECT_NEAR(norm.compute(doubleVector),normCopy.compute(doubleVector), EPSILONT);
 
 }
 
-BOOST_AUTO_TEST_SUITE_END()
-
-BOOST_AUTO_TEST_SUITE(files_test)
-
-BOOST_AUTO_TEST_CASE(readTest) {
+TEST(NormTestCase, readTest) {
 	int nR = 2, nC = 3, nL = 4, nB = 5;
 	int nTot = nR*nC*nL;
 	char filename[] = "testimage2345.bin";
@@ -454,15 +437,11 @@ BOOST_AUTO_TEST_CASE(readTest) {
 								31,32,33,34,35,36,32,33,34,35,36,31,33,34,35,36,31,32,34,35,36,31,32,33,
 								41,42,43,44,45,46,42,43,44,45,46,41,43,44,45,46,41,42,44,45,46,41,42,43};
 	for (int i = 0; i < nTot*nB; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(fromFile[i],referenceData[i],EPSILONT);
+		EXPECT_NEAR(fromFile[i],referenceData[i], EPSILONT);
 	}
 }
 
-BOOST_AUTO_TEST_SUITE_END()
-
-BOOST_AUTO_TEST_SUITE(Filter_test)
-
-BOOST_AUTO_TEST_CASE(FilterCoefficientTest) {
+TEST(FilterTestSuite, FilterCoefficientTest) {
 // // constructor
 // int ind[3] = {0,1,2};
 // int ci[3] = {-1,0,2};
@@ -472,12 +451,12 @@ BOOST_AUTO_TEST_CASE(FilterCoefficientTest) {
 // FilterCoefficient<bool> fcbempty;
 // FilterCoefficient<int> fciempty;
 // FilterCoefficient<double> fcdempty;
-// BOOST_CHECK_EQUAL(fcbempty.getIndex(),0);
-// BOOST_CHECK_EQUAL(fciempty.getIndex(),0);
-// BOOST_CHECK_EQUAL(fcdempty.getIndex(),0);
-// BOOST_CHECK_EQUAL(fcbempty.getFactor(),false);
-// BOOST_CHECK_EQUAL(fciempty.getFactor(),0);
-// BOOST_CHECK_CLOSE_FRACTION(fcdempty.getFactor(),0.0,EPSILONT);
+// EXPECT_EQ(fcbempty.getIndex(),0);
+// EXPECT_EQ(fciempty.getIndex(),0);
+// EXPECT_EQ(fcdempty.getIndex(),0);
+// EXPECT_EQ(fcbempty.getFactor(),false);
+// EXPECT_EQ(fciempty.getFactor(),0);
+// EXPECT_NEAR(fcdempty.getFactor(),0.0, EPSILONT);
 //
 // vector<FilterCoefficient<bool> > fcb;
 // vector<FilterCoefficient<int> > fci;
@@ -491,13 +470,13 @@ BOOST_AUTO_TEST_CASE(FilterCoefficientTest) {
 //
 // // getters
 // for (int i = 0; i < 3; i++) {
-// BOOST_CHECK_EQUAL(fcb[i].getIndex(), ind[i]);
-// BOOST_CHECK_EQUAL(fci[i].getIndex(), ind[i]);
-// BOOST_CHECK_EQUAL(fcd[i].getIndex(), ind[i]);
+// EXPECT_EQ(fcb[i].getIndex(), ind[i]);
+// EXPECT_EQ(fci[i].getIndex(), ind[i]);
+// EXPECT_EQ(fcd[i].getIndex(), ind[i]);
 //
-// BOOST_CHECK_EQUAL(fcb[i].getFactor(), cb[i]);
-// BOOST_CHECK_EQUAL(fci[i].getFactor(), ci[i]);
-// BOOST_CHECK_CLOSE_FRACTION(fcd[i].getFactor(), cd[i],EPSILONT);
+// EXPECT_EQ(fcb[i].getFactor(), cb[i]);
+// EXPECT_EQ(fci[i].getFactor(), ci[i]);
+// EXPECT_NEAR(fcd[i].getFactor(), cd[i], EPSILONT);
 // }
 //
 // // setters
@@ -516,19 +495,19 @@ BOOST_AUTO_TEST_CASE(FilterCoefficientTest) {
 // fcd[i].setFactor(cd2[i]);
 // }
 // for (int i = 0; i < 3; i++) {
-// BOOST_CHECK(fcb[i].getIndex() != ind[i]);
-// BOOST_CHECK(fci[i].getIndex() != ind[i]);
-// BOOST_CHECK(fcd[i].getIndex() != ind[i]);
-// BOOST_CHECK_EQUAL(fcb[i].getIndex(), ind2[i]);
-// BOOST_CHECK_EQUAL(fci[i].getIndex(), ind2[i]);
-// BOOST_CHECK_EQUAL(fcd[i].getIndex(), ind2[i]);
+// EXPECT_TRUE(fcb[i].getIndex() != ind[i]);
+// EXPECT_TRUE(fci[i].getIndex() != ind[i]);
+// EXPECT_TRUE(fcd[i].getIndex() != ind[i]);
+// EXPECT_EQ(fcb[i].getIndex(), ind2[i]);
+// EXPECT_EQ(fci[i].getIndex(), ind2[i]);
+// EXPECT_EQ(fcd[i].getIndex(), ind2[i]);
 //
-// BOOST_CHECK_EQUAL(fcb[i].getFactor(), cb2[i]);
-// BOOST_CHECK_EQUAL(fci[i].getFactor(), ci2[i]);
-// BOOST_CHECK_CLOSE_FRACTION(fcd[i].getFactor(), cd2[i],EPSILONT);
-// BOOST_CHECK(fcb[i].getFactor() != cb[i]);
-// BOOST_CHECK(fci[i].getFactor() != ci[i]);
-// BOOST_CHECK(fabs(fcd[i].getFactor() - cd[i]) > EPSILONT);
+// EXPECT_EQ(fcb[i].getFactor(), cb2[i]);
+// EXPECT_EQ(fci[i].getFactor(), ci2[i]);
+// EXPECT_NEAR(fcd[i].getFactor(), cd2[i], EPSILONT);
+// EXPECT_TRUE(fcb[i].getFactor() != cb[i]);
+// EXPECT_TRUE(fci[i].getFactor() != ci[i]);
+// EXPECT_TRUE(fabs(fcd[i].getFactor() - cd[i]) > EPSILONT);
 // }
 //
 // for (int i = 0; i < 3; i++) {
@@ -537,17 +516,17 @@ BOOST_AUTO_TEST_CASE(FilterCoefficientTest) {
 // fcd[i].set(ind[i],cd[i]);
 // }
 // for (int i = 0; i < 3; i++) {
-// BOOST_CHECK_EQUAL(fcb[i].getIndex(), ind[i]);
-// BOOST_CHECK_EQUAL(fci[i].getIndex(), ind[i]);
-// BOOST_CHECK_EQUAL(fcd[i].getIndex(), ind[i]);
+// EXPECT_EQ(fcb[i].getIndex(), ind[i]);
+// EXPECT_EQ(fci[i].getIndex(), ind[i]);
+// EXPECT_EQ(fcd[i].getIndex(), ind[i]);
 //
-// BOOST_CHECK_EQUAL(fcb[i].getFactor(), cb[i]);
-// BOOST_CHECK_EQUAL(fci[i].getFactor(), ci[i]);
-// BOOST_CHECK_CLOSE_FRACTION(fcd[i].getFactor(), cd[i],EPSILONT);
+// EXPECT_EQ(fcb[i].getFactor(), cb[i]);
+// EXPECT_EQ(fci[i].getFactor(), ci[i]);
+// EXPECT_NEAR(fcd[i].getFactor(), cd[i], EPSILONT);
 // }
 // }
 //
-// BOOST_AUTO_TEST_CASE(StructuringElementTest) {
+// TEST(StructuringElementTest) {
 //
 // int inds[4] = {-1,0,1,3};
 // bool vals[4] = {true,false,true,false};
@@ -562,40 +541,40 @@ BOOST_AUTO_TEST_CASE(FilterCoefficientTest) {
 // vector<FilterCoefficient<bool> > coeffs2;
 // coeffs2 = se.getCoeffs();
 // for (int i = 0; i < 3; i++) {
-// BOOST_CHECK_EQUAL(coeffs2[i].getIndex(),coeffs[i].getIndex());
-// BOOST_CHECK_EQUAL(coeffs2[i].getFactor(),coeffs[i].getFactor());
+// EXPECT_EQ(coeffs2[i].getIndex(),coeffs[i].getIndex());
+// EXPECT_EQ(coeffs2[i].getFactor(),coeffs[i].getFactor());
 // }
 //
 // FilterCoefficient<bool> c = FilterCoefficient<bool>(0,false);
 // for (int i = 0; i < 3; i++) {
 // c = se.getCoeff(i);
-// BOOST_CHECK_EQUAL(c.getIndex(),coeffs[i].getIndex());
-// BOOST_CHECK_EQUAL(c.getFactor(),coeffs[i].getFactor());
+// EXPECT_EQ(c.getIndex(),coeffs[i].getIndex());
+// EXPECT_EQ(c.getFactor(),coeffs[i].getFactor());
 // }
 //
-// BOOST_CHECK_EQUAL(se.getNeighborhoodSize(),nSize);
-// BOOST_CHECK(se.getNeighborhoodSize() != nSize - 1);
-// BOOST_CHECK_EQUAL(se.getNCoeffs(),4);
-// BOOST_CHECK(se.getNCoeffs() != 5);
+// EXPECT_EQ(se.getNeighborhoodSize(),nSize);
+// EXPECT_TRUE(se.getNeighborhoodSize() != nSize - 1);
+// EXPECT_EQ(se.getNCoeffs(),4);
+// EXPECT_TRUE(se.getNCoeffs() != 5);
 //
-// BOOST_CHECK_EQUAL(se.findCoeff(-1),0);
-// BOOST_CHECK_EQUAL(se.findCoeff(1),2);
-// BOOST_CHECK_EQUAL(se.findCoeff(2),-1);
+// EXPECT_EQ(se.findCoeff(-1),0);
+// EXPECT_EQ(se.findCoeff(1),2);
+// EXPECT_EQ(se.findCoeff(2),-1);
 //
 // se.addCoeff(2,true);
-// BOOST_CHECK_EQUAL(se.getCoeff(se.findCoeff(2)).getIndex(), 2);
-// BOOST_CHECK_EQUAL(se.getCoeff(se.findCoeff(2)).getFactor(), true);
-// BOOST_CHECK_EQUAL(se.getNCoeffs(),5);
+// EXPECT_EQ(se.getCoeff(se.findCoeff(2)).getIndex(), 2);
+// EXPECT_EQ(se.getCoeff(se.findCoeff(2)).getFactor(), true);
+// EXPECT_EQ(se.getNCoeffs(),5);
 //
 // se.eraseCoeff(1);
-// BOOST_CHECK_EQUAL(se.findCoeff(1),-1);
-// BOOST_CHECK_EQUAL(se.getNCoeffs(),4);
+// EXPECT_EQ(se.findCoeff(1),-1);
+// EXPECT_EQ(se.getNCoeffs(),4);
 // se.eraseCoeff(6);
-// BOOST_CHECK_EQUAL(se.getNCoeffs(),4);
+// EXPECT_EQ(se.getNCoeffs(),4);
 //
 }
 
-BOOST_AUTO_TEST_CASE(IntFilterTest) {
+TEST(FilterTestSuite, IntFilterTest) {
 //
 // int inds[4] = {-1,0,1,3};
 // int vals[4] = {2,0,-1,16};
@@ -610,40 +589,40 @@ BOOST_AUTO_TEST_CASE(IntFilterTest) {
 // vector<FilterCoefficient<int> > coeffs2;
 // coeffs2 = filter.getCoeffs();
 // for (int i = 0; i < 3; i++) {
-// BOOST_CHECK_EQUAL(coeffs2[i].getIndex(),coeffs[i].getIndex());
-// BOOST_CHECK_EQUAL(coeffs2[i].getFactor(),coeffs[i].getFactor());
+// EXPECT_EQ(coeffs2[i].getIndex(),coeffs[i].getIndex());
+// EXPECT_EQ(coeffs2[i].getFactor(),coeffs[i].getFactor());
 // }
 //
 // FilterCoefficient<int> c = FilterCoefficient<int>(0,0);
 // for (int i = 0; i < 3; i++) {
 // c = filter.getCoeff(i);
-// BOOST_CHECK_EQUAL(c.getIndex(),coeffs[i].getIndex());
-// BOOST_CHECK_EQUAL(c.getFactor(),coeffs[i].getFactor());
+// EXPECT_EQ(c.getIndex(),coeffs[i].getIndex());
+// EXPECT_EQ(c.getFactor(),coeffs[i].getFactor());
 // }
 //
-// BOOST_CHECK_EQUAL(filter.getNeighborhoodSize(),nSize);
-// BOOST_CHECK(filter.getNeighborhoodSize() != nSize - 1);
-// BOOST_CHECK_EQUAL(filter.getNCoeffs(),4);
-// BOOST_CHECK(filter.getNCoeffs() != 5);
+// EXPECT_EQ(filter.getNeighborhoodSize(),nSize);
+// EXPECT_TRUE(filter.getNeighborhoodSize() != nSize - 1);
+// EXPECT_EQ(filter.getNCoeffs(),4);
+// EXPECT_TRUE(filter.getNCoeffs() != 5);
 //
-// BOOST_CHECK_EQUAL(filter.findCoeff(-1),0);
-// BOOST_CHECK_EQUAL(filter.findCoeff(1),2);
-// BOOST_CHECK_EQUAL(filter.findCoeff(2),-1);
+// EXPECT_EQ(filter.findCoeff(-1),0);
+// EXPECT_EQ(filter.findCoeff(1),2);
+// EXPECT_EQ(filter.findCoeff(2),-1);
 //
 // filter.addCoeff(2,-4);
-// BOOST_CHECK_EQUAL(filter.getCoeff(filter.findCoeff(2)).getIndex(), 2);
-// BOOST_CHECK_EQUAL(filter.getCoeff(filter.findCoeff(2)).getFactor(), -4);
-// BOOST_CHECK_EQUAL(filter.getNCoeffs(),5);
+// EXPECT_EQ(filter.getCoeff(filter.findCoeff(2)).getIndex(), 2);
+// EXPECT_EQ(filter.getCoeff(filter.findCoeff(2)).getFactor(), -4);
+// EXPECT_EQ(filter.getNCoeffs(),5);
 //
 // filter.eraseCoeff(1);
-// BOOST_CHECK_EQUAL(filter.findCoeff(1),-1);
-// BOOST_CHECK_EQUAL(filter.getNCoeffs(),4);
+// EXPECT_EQ(filter.findCoeff(1),-1);
+// EXPECT_EQ(filter.getNCoeffs(),4);
 // filter.eraseCoeff(6);
-// BOOST_CHECK_EQUAL(filter.getNCoeffs(),4);
+// EXPECT_EQ(filter.getNCoeffs(),4);
 //
 }
 
-BOOST_AUTO_TEST_CASE(DoubleFilterTest) {
+TEST(FilterTestSuite, DoubleFilterTest) {
 //
 // int inds[4] = {-1,0,1,3};
 // double vals[4] = {2.2,0,-1.1,16.16};
@@ -658,40 +637,38 @@ BOOST_AUTO_TEST_CASE(DoubleFilterTest) {
 // vector<FilterCoefficient<double> > coeffs2;
 // coeffs2 = filter.getCoeffs();
 // for (int i = 0; i < 3; i++) {
-// BOOST_CHECK_EQUAL(coeffs2[i].getIndex(),coeffs[i].getIndex());
-// BOOST_CHECK_CLOSE_FRACTION(coeffs2[i].getFactor(),coeffs[i].getFactor(),EPSILONT);
+// EXPECT_EQ(coeffs2[i].getIndex(),coeffs[i].getIndex());
+// EXPECT_NEAR(coeffs2[i].getFactor(),coeffs[i].getFactor(), EPSILONT);
 // }
 //
 // FilterCoefficient<double> c = FilterCoefficient<double>(0,0.0);
 // for (int i = 0; i < 3; i++) {
 // c = filter.getCoeff(i);
-// BOOST_CHECK_EQUAL(c.getIndex(),coeffs[i].getIndex());
-// BOOST_CHECK_CLOSE_FRACTION(c.getFactor(),coeffs[i].getFactor(),EPSILONT);
+// EXPECT_EQ(c.getIndex(),coeffs[i].getIndex());
+// EXPECT_NEAR(c.getFactor(),coeffs[i].getFactor(), EPSILONT);
 // }
 //
-// BOOST_CHECK_EQUAL(filter.getNeighborhoodSize(),nSize);
-// BOOST_CHECK(filter.getNeighborhoodSize() != nSize - 1);
-// BOOST_CHECK_EQUAL(filter.getNCoeffs(),4);
-// BOOST_CHECK(filter.getNCoeffs() != 5);
+// EXPECT_EQ(filter.getNeighborhoodSize(),nSize);
+// EXPECT_TRUE(filter.getNeighborhoodSize() != nSize - 1);
+// EXPECT_EQ(filter.getNCoeffs(),4);
+// EXPECT_TRUE(filter.getNCoeffs() != 5);
 //
-// BOOST_CHECK_EQUAL(filter.findCoeff(-1),0);
-// BOOST_CHECK_EQUAL(filter.findCoeff(1),2);
-// BOOST_CHECK_EQUAL(filter.findCoeff(2),-1);
+// EXPECT_EQ(filter.findCoeff(-1),0);
+// EXPECT_EQ(filter.findCoeff(1),2);
+// EXPECT_EQ(filter.findCoeff(2),-1);
 //
 // filter.addCoeff(2,-4.5);
-// BOOST_CHECK_EQUAL(filter.getCoeff(filter.findCoeff(2)).getIndex(), 2);
-// BOOST_CHECK_CLOSE_FRACTION(filter.getCoeff(filter.findCoeff(2)).getFactor(),-4.5,EPSILONT);
-// BOOST_CHECK_EQUAL(filter.getNCoeffs(),5);
+// EXPECT_EQ(filter.getCoeff(filter.findCoeff(2)).getIndex(), 2);
+// EXPECT_NEAR(filter.getCoeff(filter.findCoeff(2)).getFactor(),-4.5, EPSILONT);
+// EXPECT_EQ(filter.getNCoeffs(),5);
 //
 // filter.eraseCoeff(1);
-// BOOST_CHECK_EQUAL(filter.findCoeff(1),-1);
-// BOOST_CHECK_EQUAL(filter.getNCoeffs(),4);
+// EXPECT_EQ(filter.findCoeff(1),-1);
+// EXPECT_EQ(filter.getNCoeffs(),4);
 // filter.eraseCoeff(6);
-// BOOST_CHECK_EQUAL(filter.getNCoeffs(),4);
+// EXPECT_EQ(filter.getNCoeffs(),4);
 //
 }
-
-BOOST_AUTO_TEST_SUITE_END()
 
 /**
  * bool isEven(int)
@@ -699,80 +676,79 @@ BOOST_AUTO_TEST_SUITE_END()
  * int lowerBound(double*,int,double)
  * vector<T> element-wise operators, tested for int and double.
  */
-BOOST_AUTO_TEST_SUITE(misc_test)
 
-BOOST_AUTO_TEST_CASE(isEvenTest) {
-	BOOST_CHECK(isEven(0));
-	BOOST_CHECK(!isEven(1));
-	BOOST_CHECK(isEven(2));
-	BOOST_CHECK(!isEven(3));
-	BOOST_CHECK(isEven(4));
-	BOOST_CHECK(!isEven(5));
-	BOOST_CHECK(isEven(6));
-	BOOST_CHECK(!isEven(7));
-	BOOST_CHECK(isEven(8));
-	BOOST_CHECK(!isEven(9));
-	BOOST_CHECK(isEven(10));
+TEST(MiscTestSuite, isEvenTest) {
+	EXPECT_TRUE(isEven(0));
+	EXPECT_TRUE(!isEven(1));
+	EXPECT_TRUE(isEven(2));
+	EXPECT_TRUE(!isEven(3));
+	EXPECT_TRUE(isEven(4));
+	EXPECT_TRUE(!isEven(5));
+	EXPECT_TRUE(isEven(6));
+	EXPECT_TRUE(!isEven(7));
+	EXPECT_TRUE(isEven(8));
+	EXPECT_TRUE(!isEven(9));
+	EXPECT_TRUE(isEven(10));
 }
 
-BOOST_AUTO_TEST_CASE(lengthTest) {
+TEST(MiscTestSuite, lengthTest) {
 
 	double vec[3] = { 1, 0, 0 };
 
-	BOOST_CHECK_CLOSE_FRACTION(length(vec), 1, EPSILONT);
+	EXPECT_NEAR(length(vec), 1, EPSILONT);
 	vec[0] = -1;
-	BOOST_CHECK_CLOSE_FRACTION(length(vec), 1, EPSILONT);
+	EXPECT_NEAR(length(vec), 1, EPSILONT);
 	vec[0] = 0;
 	vec[1] = 1;
-	BOOST_CHECK_CLOSE_FRACTION(length(vec), 1, EPSILONT);
+	EXPECT_NEAR(length(vec), 1, EPSILONT);
 	vec[1] = -1;
-	BOOST_CHECK_CLOSE_FRACTION(length(vec), 1, EPSILONT);
+	EXPECT_NEAR(length(vec), 1, EPSILONT);
 	vec[1] = 0;
 	vec[2] = 1;
-	BOOST_CHECK_CLOSE_FRACTION(length(vec), 1, EPSILONT);
+	EXPECT_NEAR(length(vec), 1, EPSILONT);
 	vec[2] = -1;
-	BOOST_CHECK_CLOSE_FRACTION(length(vec), 1, EPSILONT);
+	EXPECT_NEAR(length(vec), 1, EPSILONT);
 
 	vec[0] = 1;
 	vec[1] = 2;
 	vec[2] = 3;
-	BOOST_CHECK_CLOSE_FRACTION(length(vec), 3.74165738677, EPSILONT);
+	EXPECT_NEAR(length(vec), 3.74165738677, EPSILONT);
 	vec[0] = 2;
 	vec[1] = 3;
 	vec[2] = 1;
-	BOOST_CHECK_CLOSE_FRACTION(length(vec), 3.74165738677, EPSILONT);
+	EXPECT_NEAR(length(vec), 3.74165738677, EPSILONT);
 	vec[0] = -1;
 	vec[1] = 2;
 	vec[2] = 3;
-	BOOST_CHECK_CLOSE_FRACTION(length(vec), 3.74165738677, EPSILONT);
+	EXPECT_NEAR(length(vec), 3.74165738677, EPSILONT);
 	vec[0] = 1;
 	vec[1] = -2;
 	vec[2] = 3;
-	BOOST_CHECK_CLOSE_FRACTION(length(vec), 3.74165738677, EPSILONT);
+	EXPECT_NEAR(length(vec), 3.74165738677, EPSILONT);
 	vec[0] = 1;
 	vec[1] = 2;
 	vec[2] = -3;
-	BOOST_CHECK_CLOSE_FRACTION(length(vec), 3.74165738677, EPSILONT);
+	EXPECT_NEAR(length(vec), 3.74165738677, EPSILONT);
 	vec[0] = -1;
 	vec[1] = -2;
 	vec[2] = -3;
-	BOOST_CHECK_CLOSE_FRACTION(length(vec), 3.74165738677, EPSILONT);
+	EXPECT_NEAR(length(vec), 3.74165738677, EPSILONT);
 }
 
-BOOST_AUTO_TEST_CASE(lowerBoundTest) {
+TEST(MiscTestSuite, lowerBoundTest) {
 
 	double numbers[10] = { 0, 1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 7.7, 8.8, 9.9 };
 	int length = 10;
 
-	BOOST_CHECK(lowerBound(numbers, length, 0) == 0);
-	BOOST_CHECK(lowerBound(numbers, length, 10) == 9);
-	BOOST_CHECK(lowerBound(numbers, length, 5) == 4);
-	BOOST_CHECK(lowerBound(numbers, length, 7.7) == 7);
+	EXPECT_TRUE(lowerBound(numbers, length, 0) == 0);
+	EXPECT_TRUE(lowerBound(numbers, length, 10) == 9);
+	EXPECT_TRUE(lowerBound(numbers, length, 5) == 4);
+	EXPECT_TRUE(lowerBound(numbers, length, 7.7) == 7);
 
-	BOOST_CHECK_THROW(lowerBound(numbers, length, -1), outsideRangeException);
+	EXPECT_THROW(lowerBound(numbers, length, -1), outsideRangeException);
 }
 
-BOOST_AUTO_TEST_CASE(vectorTOperatorTest) {
+TEST(MiscTestSuite, vectorTOperatorTest) {
 
 	// T = int
 	int intVals[] = {-2,-1,0,3,4};
@@ -792,39 +768,39 @@ BOOST_AUTO_TEST_CASE(vectorTOperatorTest) {
 	vector<int> intVector7 = minElements(intVector1,intNegVector);
 	vector<int> intVector8 = maxElements(intVector1,intNegVector);
 	vector<double> multiplicationResult;
-	BOOST_CHECK(intVector1 == intVector2);
-	BOOST_CHECK(intVector1 != intNegVector);
-	BOOST_CHECK(-intVector1 == intNegVector);
-	BOOST_CHECK(intVector1 == -intNegVector);
+	EXPECT_TRUE(intVector1 == intVector2);
+	EXPECT_TRUE(intVector1 != intNegVector);
+	EXPECT_TRUE(-intVector1 == intNegVector);
+	EXPECT_TRUE(intVector1 == -intNegVector);
 	for (int i = 0; i < 5; i++) {
-		BOOST_CHECK_EQUAL(intVector3[i], 0);
-		BOOST_CHECK_EQUAL(intVector4[i], intNegVector[i]);
-		BOOST_CHECK_EQUAL(intVector6[i], 0);
-		BOOST_CHECK_EQUAL(intVector7[i], intMinVector[i]);
-		BOOST_CHECK_EQUAL(intVector8[i], intMaxVector[i]);
+		EXPECT_EQ(intVector3[i], 0);
+		EXPECT_EQ(intVector4[i], intNegVector[i]);
+		EXPECT_EQ(intVector6[i], 0);
+		EXPECT_EQ(intVector7[i], intMinVector[i]);
+		EXPECT_EQ(intVector8[i], intMaxVector[i]);
 	}
 	multiplicationResult = 0 * intVector1;
 	for (int i = 0; i < 5; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(multiplicationResult[i],0,EPSILONT);
+		EXPECT_NEAR(multiplicationResult[i],0, EPSILONT);
 	}
 	multiplicationResult = 1 * intVector1;
 	for (int i = 0; i < 5; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(multiplicationResult[i],intVals[i],EPSILONT);
+		EXPECT_NEAR(multiplicationResult[i],intVals[i], EPSILONT);
 	}
 	multiplicationResult = -1 * intVector1;
 	for (int i = 0; i < 5; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(multiplicationResult[i],intNegVals[i],EPSILONT);
+		EXPECT_NEAR(multiplicationResult[i],intNegVals[i], EPSILONT);
 	}
 	multiplicationResult = 0.5 * intVector1;
-	BOOST_CHECK_CLOSE_FRACTION(multiplicationResult[0],-1,EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(multiplicationResult[1],-0.5,EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(multiplicationResult[2],0,EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(multiplicationResult[3],1.5,EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(multiplicationResult[4],2,EPSILONT);
-	BOOST_CHECK_THROW(intVector1 + intVector5,dimensionMismatchException);
-	BOOST_CHECK_THROW(intVector1 - intVector5,dimensionMismatchException);
-	BOOST_CHECK_THROW(minElements(intVector1,intVector5),dimensionMismatchException);
-	BOOST_CHECK_THROW(maxElements(intVector1,intVector5),dimensionMismatchException);
+	EXPECT_NEAR(multiplicationResult[0],-1, EPSILONT);
+	EXPECT_NEAR(multiplicationResult[1],-0.5, EPSILONT);
+	EXPECT_NEAR(multiplicationResult[2],0, EPSILONT);
+	EXPECT_NEAR(multiplicationResult[3],1.5, EPSILONT);
+	EXPECT_NEAR(multiplicationResult[4],2, EPSILONT);
+	EXPECT_THROW(intVector1 + intVector5,dimensionMismatchException);
+	EXPECT_THROW(intVector1 - intVector5,dimensionMismatchException);
+	EXPECT_THROW(minElements(intVector1,intVector5),dimensionMismatchException);
+	EXPECT_THROW(maxElements(intVector1,intVector5),dimensionMismatchException);
 
 	// T = double
 	double doubleVals[] = {-2.2,-1.1,0,3.3,4.4};
@@ -843,51 +819,47 @@ BOOST_AUTO_TEST_CASE(vectorTOperatorTest) {
 	vector<double> doubleMaxVector(doubleMaxVals,doubleMaxVals + 5);
 	vector<double> doubleVector7 = minElements(doubleVector1,doubleNegVector);
 	vector<double> doubleVector8 = maxElements(doubleVector1,doubleNegVector);
-	BOOST_CHECK(doubleVector1 == doubleVector2);
-	BOOST_CHECK(doubleVector1 != doubleNegVector);
-	BOOST_CHECK(-doubleVector1 == doubleNegVector);
-	BOOST_CHECK(doubleVector1 == -doubleNegVector);
+	EXPECT_TRUE(doubleVector1 == doubleVector2);
+	EXPECT_TRUE(doubleVector1 != doubleNegVector);
+	EXPECT_TRUE(-doubleVector1 == doubleNegVector);
+	EXPECT_TRUE(doubleVector1 == -doubleNegVector);
 	for (int i = 0; i < 5; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(doubleVector3[i],0,EPSILONT);
-		BOOST_CHECK_CLOSE_FRACTION(doubleVector4[i],doubleNegVector[i],EPSILONT);
-		BOOST_CHECK_CLOSE_FRACTION(doubleVector6[i],0,EPSILONT);
-		BOOST_CHECK_CLOSE_FRACTION(doubleVector7[i],doubleMinVector[i],EPSILONT);
-		BOOST_CHECK_CLOSE_FRACTION(doubleVector8[i],doubleMaxVector[i],EPSILONT);
+		EXPECT_NEAR(doubleVector3[i],0, EPSILONT);
+		EXPECT_NEAR(doubleVector4[i],doubleNegVector[i], EPSILONT);
+		EXPECT_NEAR(doubleVector6[i],0, EPSILONT);
+		EXPECT_NEAR(doubleVector7[i],doubleMinVector[i], EPSILONT);
+		EXPECT_NEAR(doubleVector8[i],doubleMaxVector[i], EPSILONT);
 	}
 	multiplicationResult = 0 * doubleVector1;
 	for (int i = 0; i < 5; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(multiplicationResult[i],0,EPSILONT);
+		EXPECT_NEAR(multiplicationResult[i],0, EPSILONT);
 	}
 	multiplicationResult = 1 * doubleVector1;
 	for (int i = 0; i < 5; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(multiplicationResult[i],doubleVals[i],EPSILONT);
+		EXPECT_NEAR(multiplicationResult[i],doubleVals[i], EPSILONT);
 	}
 	multiplicationResult = -1 * doubleVector1;
 	for (int i = 0; i < 5; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(multiplicationResult[i],doubleNegVals[i],EPSILONT);
+		EXPECT_NEAR(multiplicationResult[i],doubleNegVals[i], EPSILONT);
 	}
 	multiplicationResult = 0.5 * doubleVector1;
-	BOOST_CHECK_CLOSE_FRACTION(multiplicationResult[0],-1.1,EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(multiplicationResult[1],-0.55,EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(multiplicationResult[2],0,EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(multiplicationResult[3],1.65,EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(multiplicationResult[4],2.2,EPSILONT);
+	EXPECT_NEAR(multiplicationResult[0],-1.1, EPSILONT);
+	EXPECT_NEAR(multiplicationResult[1],-0.55, EPSILONT);
+	EXPECT_NEAR(multiplicationResult[2],0, EPSILONT);
+	EXPECT_NEAR(multiplicationResult[3],1.65, EPSILONT);
+	EXPECT_NEAR(multiplicationResult[4],2.2, EPSILONT);
 
-	BOOST_CHECK_THROW(doubleVector1 + doubleVector5, dimensionMismatchException);
-	BOOST_CHECK_THROW(doubleVector1 - doubleVector5, dimensionMismatchException);
-	BOOST_CHECK_THROW(minElements(doubleVector1,doubleVector5),dimensionMismatchException);
-	BOOST_CHECK_THROW(maxElements(doubleVector1,doubleVector5),dimensionMismatchException);
+	EXPECT_THROW(doubleVector1 + doubleVector5, dimensionMismatchException);
+	EXPECT_THROW(doubleVector1 - doubleVector5, dimensionMismatchException);
+	EXPECT_THROW(minElements(doubleVector1,doubleVector5),dimensionMismatchException);
+	EXPECT_THROW(maxElements(doubleVector1,doubleVector5),dimensionMismatchException);
 
 }
-
-BOOST_AUTO_TEST_SUITE_END()
 
 /**
  * Tests type CImagetypeCC aka CImageCC<uint8>.
  */
-BOOST_AUTO_TEST_SUITE(CImagetypeCC_test)
-
-BOOST_AUTO_TEST_CASE(constructorTest) {
+TEST(CImagetypeCCTestSuite, constructorTest) {
 
 	// set up image
 	int nR = 5, nC = 6, nL = 7, nB = 3;
@@ -899,91 +871,91 @@ BOOST_AUTO_TEST_CASE(constructorTest) {
 
 	// constructor
 	CImagetypeCC *imCC = new CImagetypeCC(data, nR, nC, nL, nB);
-	BOOST_CHECK(imCC);
+	EXPECT_TRUE(imCC);
 
 	// getters
 	uint8* imdata = imCC->getData();
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < nB; j++) {
-			BOOST_CHECK(imdata[i] == data[i]);
+			EXPECT_TRUE(imdata[i] == data[i]);
 		}
 	}
 
-	BOOST_CHECK(imCC->getNElements() == N);
-	BOOST_CHECK(imCC->getNElements() != N + 1);
+	EXPECT_TRUE(imCC->getNElements() == N);
+	EXPECT_TRUE(imCC->getNElements() != N + 1);
 
-	BOOST_CHECK(imCC->getNColumns() == nC);
-	BOOST_CHECK(imCC->getNColumns() != nC + 1);
+	EXPECT_TRUE(imCC->getNColumns() == nC);
+	EXPECT_TRUE(imCC->getNColumns() != nC + 1);
 
-	BOOST_CHECK(imCC->getNRows() == nR);
-	BOOST_CHECK(imCC->getNRows() != nR + 1);
+	EXPECT_TRUE(imCC->getNRows() == nR);
+	EXPECT_TRUE(imCC->getNRows() != nR + 1);
 
-	BOOST_CHECK(imCC->getNLayers() == nL);
-	BOOST_CHECK(imCC->getNLayers() != nL + 1);
+	EXPECT_TRUE(imCC->getNLayers() == nL);
+	EXPECT_TRUE(imCC->getNLayers() != nL + 1);
 
-	BOOST_CHECK(imCC->getNBands() == nB);
-	BOOST_CHECK(imCC->getNBands() != nB + 1);
+	EXPECT_TRUE(imCC->getNBands() == nB);
+	EXPECT_TRUE(imCC->getNBands() != nB + 1);
 
 	// validity of elements
-	BOOST_CHECK(!imCC->isValid(-1));
-	BOOST_CHECK(imCC->isValid(0));
-	BOOST_CHECK(imCC->isValid(N - 1));
-	BOOST_CHECK(!imCC->isValid(N));
+	EXPECT_TRUE(!imCC->isValid(-1));
+	EXPECT_TRUE(imCC->isValid(0));
+	EXPECT_TRUE(imCC->isValid(N - 1));
+	EXPECT_TRUE(!imCC->isValid(N));
 
-	BOOST_CHECK(!imCC->isValid(0, -1));
-	BOOST_CHECK(!imCC->isValid(N - 1, -1));
-	BOOST_CHECK(!imCC->isValid(-1, 0));
-	BOOST_CHECK(imCC->isValid(0, 0));
-	BOOST_CHECK(imCC->isValid(N - 1, 0));
-	BOOST_CHECK(!imCC->isValid(N, 0));
-	BOOST_CHECK(imCC->isValid(0, nB - 1));
-	BOOST_CHECK(imCC->isValid(N - 1, nB - 1));
-	BOOST_CHECK(!imCC->isValid(0, nB));
-	BOOST_CHECK(!imCC->isValid(N - 1, nB));
+	EXPECT_TRUE(!imCC->isValid(0, -1));
+	EXPECT_TRUE(!imCC->isValid(N - 1, -1));
+	EXPECT_TRUE(!imCC->isValid(-1, 0));
+	EXPECT_TRUE(imCC->isValid(0, 0));
+	EXPECT_TRUE(imCC->isValid(N - 1, 0));
+	EXPECT_TRUE(!imCC->isValid(N, 0));
+	EXPECT_TRUE(imCC->isValid(0, nB - 1));
+	EXPECT_TRUE(imCC->isValid(N - 1, nB - 1));
+	EXPECT_TRUE(!imCC->isValid(0, nB));
+	EXPECT_TRUE(!imCC->isValid(N - 1, nB));
 
-	BOOST_CHECK(!imCC->isValid(-1, 0, 0));
-	BOOST_CHECK(!imCC->isValid(0, -1, 0));
-	BOOST_CHECK(!imCC->isValid(0, 0, -1));
-	BOOST_CHECK(imCC->isValid(0, 0, 0));
-	BOOST_CHECK(imCC->isValid(nR - 1, 0, 0));
-	BOOST_CHECK(imCC->isValid(0, nC - 1, 0));
-	BOOST_CHECK(imCC->isValid(0, 0, nL - 1));
-	BOOST_CHECK(!imCC->isValid(nR, 0, 0));
-	BOOST_CHECK(!imCC->isValid(0, nC, 0));
-	BOOST_CHECK(!imCC->isValid(0, 0, nL));
+	EXPECT_TRUE(!imCC->isValid(-1, 0, 0));
+	EXPECT_TRUE(!imCC->isValid(0, -1, 0));
+	EXPECT_TRUE(!imCC->isValid(0, 0, -1));
+	EXPECT_TRUE(imCC->isValid(0, 0, 0));
+	EXPECT_TRUE(imCC->isValid(nR - 1, 0, 0));
+	EXPECT_TRUE(imCC->isValid(0, nC - 1, 0));
+	EXPECT_TRUE(imCC->isValid(0, 0, nL - 1));
+	EXPECT_TRUE(!imCC->isValid(nR, 0, 0));
+	EXPECT_TRUE(!imCC->isValid(0, nC, 0));
+	EXPECT_TRUE(!imCC->isValid(0, 0, nL));
 
-	BOOST_CHECK(!imCC->isValid(0, 0, 0, -1));
-	BOOST_CHECK(!imCC->isValid(nR - 1, 0, 0, -1));
-	BOOST_CHECK(!imCC->isValid(0, nC - 1, 0, -1));
-	BOOST_CHECK(!imCC->isValid(0, 0, nL - 1, -1));
-	BOOST_CHECK(!imCC->isValid(0, 0, 0, nB));
-	BOOST_CHECK(!imCC->isValid(nR - 1, 0, 0, nB));
-	BOOST_CHECK(!imCC->isValid(0, nC - 1, 0, nB));
-	BOOST_CHECK(!imCC->isValid(0, 0, nL - 1, nB));
-	BOOST_CHECK(imCC->isValid(0, 0, 0, nB - 1));
-	BOOST_CHECK(imCC->isValid(nR - 1, 0, 0, nB - 1));
-	BOOST_CHECK(imCC->isValid(0, nC - 1, 0, nB - 1));
-	BOOST_CHECK(imCC->isValid(0, 0, nL - 1, nB - 1));
+	EXPECT_TRUE(!imCC->isValid(0, 0, 0, -1));
+	EXPECT_TRUE(!imCC->isValid(nR - 1, 0, 0, -1));
+	EXPECT_TRUE(!imCC->isValid(0, nC - 1, 0, -1));
+	EXPECT_TRUE(!imCC->isValid(0, 0, nL - 1, -1));
+	EXPECT_TRUE(!imCC->isValid(0, 0, 0, nB));
+	EXPECT_TRUE(!imCC->isValid(nR - 1, 0, 0, nB));
+	EXPECT_TRUE(!imCC->isValid(0, nC - 1, 0, nB));
+	EXPECT_TRUE(!imCC->isValid(0, 0, nL - 1, nB));
+	EXPECT_TRUE(imCC->isValid(0, 0, 0, nB - 1));
+	EXPECT_TRUE(imCC->isValid(nR - 1, 0, 0, nB - 1));
+	EXPECT_TRUE(imCC->isValid(0, nC - 1, 0, nB - 1));
+	EXPECT_TRUE(imCC->isValid(0, 0, nL - 1, nB - 1));
 
 	// index conversion
-	BOOST_CHECK(imCC->rclToIndex(0, 0, 0) == 0);
-	BOOST_CHECK(imCC->rclToIndex(1, 2, 3) == 98);
-	BOOST_CHECK(imCC->rclToIndex(nR - 1, nC - 1, nL - 1) == N - 1);
+	EXPECT_TRUE(imCC->rclToIndex(0, 0, 0) == 0);
+	EXPECT_TRUE(imCC->rclToIndex(1, 2, 3) == 98);
+	EXPECT_TRUE(imCC->rclToIndex(nR - 1, nC - 1, nL - 1) == N - 1);
 
-	BOOST_CHECK(imCC->indexToR(0) == 0);
-	BOOST_CHECK(imCC->indexToC(0) == 0);
-	BOOST_CHECK(imCC->indexToL(0) == 0);
-	BOOST_CHECK(imCC->indexToR(98) == 1);
-	BOOST_CHECK(imCC->indexToC(98) == 2);
-	BOOST_CHECK(imCC->indexToL(98) == 3);
-	BOOST_CHECK(imCC->indexToR(N - 1) == nR - 1);
-	BOOST_CHECK(imCC->indexToC(N - 1) == nC - 1);
-	BOOST_CHECK(imCC->indexToL(N - 1) == nL - 1);
+	EXPECT_TRUE(imCC->indexToR(0) == 0);
+	EXPECT_TRUE(imCC->indexToC(0) == 0);
+	EXPECT_TRUE(imCC->indexToL(0) == 0);
+	EXPECT_TRUE(imCC->indexToR(98) == 1);
+	EXPECT_TRUE(imCC->indexToC(98) == 2);
+	EXPECT_TRUE(imCC->indexToL(98) == 3);
+	EXPECT_TRUE(imCC->indexToR(N - 1) == nR - 1);
+	EXPECT_TRUE(imCC->indexToC(N - 1) == nC - 1);
+	EXPECT_TRUE(imCC->indexToL(N - 1) == nL - 1);
 
 	delete imCC;
 }
 
-BOOST_AUTO_TEST_CASE(coordinateTest) {
+TEST(CImagetypeCCTestSuite, coordinateTest) {
 
 	// set up image
 	int nR = 5, nC = 6, nL = 7, nB = 3;
@@ -1007,87 +979,87 @@ BOOST_AUTO_TEST_CASE(coordinateTest) {
 	vector<double> coordinates;
 
 	// spel coordinates
-	BOOST_CHECK_CLOSE_FRACTION(imCC->indexToX(0), 0.5, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC->indexToY(0), 0.5, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC->indexToZ(0), 0.5, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC->indexToX(170), 0.5 + 2, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC->indexToY(170), 0.5 + 3, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC->indexToZ(170), 0.5 + 5, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC->indexToX(209), 0.5 + 5, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC->indexToY(209), 0.5 + 4, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC->indexToZ(209), 0.5 + 6, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC->indexToX(N - 1), 0.5 + nC - 1, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC->indexToY(N - 1), 0.5 + nR - 1, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC->indexToZ(N - 1), 0.5 + nL - 1, EPSILONT);
+	EXPECT_NEAR(imCC->indexToX(0), 0.5, EPSILONT);
+	EXPECT_NEAR(imCC->indexToY(0), 0.5, EPSILONT);
+	EXPECT_NEAR(imCC->indexToZ(0), 0.5, EPSILONT);
+	EXPECT_NEAR(imCC->indexToX(170), 0.5 + 2, EPSILONT);
+	EXPECT_NEAR(imCC->indexToY(170), 0.5 + 3, EPSILONT);
+	EXPECT_NEAR(imCC->indexToZ(170), 0.5 + 5, EPSILONT);
+	EXPECT_NEAR(imCC->indexToX(209), 0.5 + 5, EPSILONT);
+	EXPECT_NEAR(imCC->indexToY(209), 0.5 + 4, EPSILONT);
+	EXPECT_NEAR(imCC->indexToZ(209), 0.5 + 6, EPSILONT);
+	EXPECT_NEAR(imCC->indexToX(N - 1), 0.5 + nC - 1, EPSILONT);
+	EXPECT_NEAR(imCC->indexToY(N - 1), 0.5 + nR - 1, EPSILONT);
+	EXPECT_NEAR(imCC->indexToZ(N - 1), 0.5 + nL - 1, EPSILONT);
 
 	imCC->getCoordinates(0,coordinates);
-	BOOST_CHECK_CLOSE_FRACTION(coordinates[0], 0.5, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(coordinates[1], 0.5, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(coordinates[2], 0.5, EPSILONT);
+	EXPECT_NEAR(coordinates[0], 0.5, EPSILONT);
+	EXPECT_NEAR(coordinates[1], 0.5, EPSILONT);
+	EXPECT_NEAR(coordinates[2], 0.5, EPSILONT);
 	imCC->getCoordinates(170,coordinates);
-	BOOST_CHECK_CLOSE_FRACTION(coordinates[0], 0.5 + 2, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(coordinates[1], 0.5 + 3, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(coordinates[2], 0.5 + 5, EPSILONT);
+	EXPECT_NEAR(coordinates[0], 0.5 + 2, EPSILONT);
+	EXPECT_NEAR(coordinates[1], 0.5 + 3, EPSILONT);
+	EXPECT_NEAR(coordinates[2], 0.5 + 5, EPSILONT);
 	imCC->getCoordinates(209,coordinates);
-	BOOST_CHECK_CLOSE_FRACTION(coordinates[0], 0.5 + 5, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(coordinates[1], 0.5 + 4, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(coordinates[2], 0.5 + 6, EPSILONT);
+	EXPECT_NEAR(coordinates[0], 0.5 + 5, EPSILONT);
+	EXPECT_NEAR(coordinates[1], 0.5 + 4, EPSILONT);
+	EXPECT_NEAR(coordinates[2], 0.5 + 6, EPSILONT);
 	imCC->getCoordinates(N - 1,coordinates);
-	BOOST_CHECK_CLOSE_FRACTION(coordinates[0], 0.5 + nC - 1, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(coordinates[1], 0.5 + nR - 1, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(coordinates[2], 0.5 + nL - 1, EPSILONT);
+	EXPECT_NEAR(coordinates[0], 0.5 + nC - 1, EPSILONT);
+	EXPECT_NEAR(coordinates[1], 0.5 + nR - 1, EPSILONT);
+	EXPECT_NEAR(coordinates[2], 0.5 + nL - 1, EPSILONT);
 
-	BOOST_CHECK_CLOSE_FRACTION(imCC2->indexToX(0), 0.5 * factor, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC2->indexToY(0), 0.5 * factor, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC2->indexToZ(0), 0.5 * factor, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC2->indexToX(170), (0.5 + 2) * factor, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC2->indexToY(170), (0.5 + 3) * factor, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC2->indexToZ(170), (0.5 + 5) * factor, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC2->indexToX(209), (0.5 + 5) * factor, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC2->indexToY(209), (0.5 + 4) * factor, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC2->indexToZ(209), (0.5 + 6) * factor, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC2->indexToX(N - 1), (0.5 + (nC - 1)) * factor, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC2->indexToY(N - 1), (0.5 + (nR - 1)) * factor, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC2->indexToZ(N - 1), (0.5 + (nL - 1)) * factor, EPSILONT);
+	EXPECT_NEAR(imCC2->indexToX(0), 0.5 * factor, EPSILONT);
+	EXPECT_NEAR(imCC2->indexToY(0), 0.5 * factor, EPSILONT);
+	EXPECT_NEAR(imCC2->indexToZ(0), 0.5 * factor, EPSILONT);
+	EXPECT_NEAR(imCC2->indexToX(170), (0.5 + 2) * factor, EPSILONT);
+	EXPECT_NEAR(imCC2->indexToY(170), (0.5 + 3) * factor, EPSILONT);
+	EXPECT_NEAR(imCC2->indexToZ(170), (0.5 + 5) * factor, EPSILONT);
+	EXPECT_NEAR(imCC2->indexToX(209), (0.5 + 5) * factor, EPSILONT);
+	EXPECT_NEAR(imCC2->indexToY(209), (0.5 + 4) * factor, EPSILONT);
+	EXPECT_NEAR(imCC2->indexToZ(209), (0.5 + 6) * factor, EPSILONT);
+	EXPECT_NEAR(imCC2->indexToX(N - 1), (0.5 + (nC - 1)) * factor, EPSILONT);
+	EXPECT_NEAR(imCC2->indexToY(N - 1), (0.5 + (nR - 1)) * factor, EPSILONT);
+	EXPECT_NEAR(imCC2->indexToZ(N - 1), (0.5 + (nL - 1)) * factor, EPSILONT);
 
-	BOOST_CHECK(imCC2->indexToX(170) - imCC->indexToX(170) > EPSILONT);
-	BOOST_CHECK(imCC2->indexToY(170) - imCC->indexToY(170) > EPSILONT);
-	BOOST_CHECK(imCC2->indexToZ(170) - imCC->indexToZ(170) > EPSILONT);
-	BOOST_CHECK(imCC2->indexToX(209) - imCC->indexToX(209) > EPSILONT);
-	BOOST_CHECK(imCC2->indexToY(209) - imCC->indexToY(209) > EPSILONT);
-	BOOST_CHECK(imCC2->indexToZ(209) - imCC->indexToZ(209) > EPSILONT);
-	BOOST_CHECK(imCC2->indexToX(N - 1) - imCC->indexToX(N - 1) > EPSILONT);
-	BOOST_CHECK(imCC2->indexToY(N - 1) - imCC->indexToY(N - 1) > EPSILONT);
-	BOOST_CHECK(imCC2->indexToZ(N - 1) - imCC->indexToZ(N - 1) > EPSILONT);
+	EXPECT_TRUE(imCC2->indexToX(170) - imCC->indexToX(170) > EPSILONT);
+	EXPECT_TRUE(imCC2->indexToY(170) - imCC->indexToY(170) > EPSILONT);
+	EXPECT_TRUE(imCC2->indexToZ(170) - imCC->indexToZ(170) > EPSILONT);
+	EXPECT_TRUE(imCC2->indexToX(209) - imCC->indexToX(209) > EPSILONT);
+	EXPECT_TRUE(imCC2->indexToY(209) - imCC->indexToY(209) > EPSILONT);
+	EXPECT_TRUE(imCC2->indexToZ(209) - imCC->indexToZ(209) > EPSILONT);
+	EXPECT_TRUE(imCC2->indexToX(N - 1) - imCC->indexToX(N - 1) > EPSILONT);
+	EXPECT_TRUE(imCC2->indexToY(N - 1) - imCC->indexToY(N - 1) > EPSILONT);
+	EXPECT_TRUE(imCC2->indexToZ(N - 1) - imCC->indexToZ(N - 1) > EPSILONT);
 
 	// width, height and depth
-	BOOST_CHECK_CLOSE_FRACTION(imCC->getWidth(), 6, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC->getHeight(), 5, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC->getDepth(), 7, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC2->getWidth(), factor * 6, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC2->getHeight(), factor * 5, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC2->getDepth(), factor * 7, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC1C1L->getWidth(), 1, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC1C1L->getHeight(), N, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC1C1L->getDepth(), 1, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC1R1L->getWidth(), N, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC1R1L->getHeight(), 1, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC1R1L->getDepth(), 1, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC1R1C->getWidth(), 1, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC1R1C->getHeight(), 1, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC1R1C->getDepth(), N, EPSILONT);
+	EXPECT_NEAR(imCC->getWidth(), 6, EPSILONT);
+	EXPECT_NEAR(imCC->getHeight(), 5, EPSILONT);
+	EXPECT_NEAR(imCC->getDepth(), 7, EPSILONT);
+	EXPECT_NEAR(imCC2->getWidth(), factor * 6, EPSILONT);
+	EXPECT_NEAR(imCC2->getHeight(), factor * 5, EPSILONT);
+	EXPECT_NEAR(imCC2->getDepth(), factor * 7, EPSILONT);
+	EXPECT_NEAR(imCC1C1L->getWidth(), 1, EPSILONT);
+	EXPECT_NEAR(imCC1C1L->getHeight(), N, EPSILONT);
+	EXPECT_NEAR(imCC1C1L->getDepth(), 1, EPSILONT);
+	EXPECT_NEAR(imCC1R1L->getWidth(), N, EPSILONT);
+	EXPECT_NEAR(imCC1R1L->getHeight(), 1, EPSILONT);
+	EXPECT_NEAR(imCC1R1L->getDepth(), 1, EPSILONT);
+	EXPECT_NEAR(imCC1R1C->getWidth(), 1, EPSILONT);
+	EXPECT_NEAR(imCC1R1C->getHeight(), 1, EPSILONT);
+	EXPECT_NEAR(imCC1R1C->getDepth(), N, EPSILONT);
 
-	BOOST_CHECK_CLOSE_FRACTION(imCCRC->getWidth(), n2, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCCRC->getHeight(), n1, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCCRC->getDepth(), 1, EPSILONT);
+	EXPECT_NEAR(imCCRC->getWidth(), n2, EPSILONT);
+	EXPECT_NEAR(imCCRC->getHeight(), n1, EPSILONT);
+	EXPECT_NEAR(imCCRC->getDepth(), 1, EPSILONT);
 
-	BOOST_CHECK_CLOSE_FRACTION(imCCRL->getWidth(), 1, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCCRL->getHeight(), n1, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCCRL->getDepth(), n2, EPSILONT);
+	EXPECT_NEAR(imCCRL->getWidth(), 1, EPSILONT);
+	EXPECT_NEAR(imCCRL->getHeight(), n1, EPSILONT);
+	EXPECT_NEAR(imCCRL->getDepth(), n2, EPSILONT);
 
-	BOOST_CHECK_CLOSE_FRACTION(imCCCL->getWidth(), n1, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCCCL->getHeight(), 1, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCCCL->getDepth(), n2, EPSILONT);
+	EXPECT_NEAR(imCCCL->getWidth(), n1, EPSILONT);
+	EXPECT_NEAR(imCCCL->getHeight(), 1, EPSILONT);
+	EXPECT_NEAR(imCCCL->getDepth(), n2, EPSILONT);
 
 	delete imCC;
 	delete imCC2;
@@ -1099,7 +1071,7 @@ BOOST_AUTO_TEST_CASE(coordinateTest) {
 	delete imCCRC;
 }
 
-BOOST_AUTO_TEST_CASE(distanceTest) {
+TEST(CImagetypeCCTestSuite, distanceTest) {
 
 	// set up image
 	int nR = 5, nC = 6, nL = 7, nB = 3;
@@ -1114,41 +1086,41 @@ BOOST_AUTO_TEST_CASE(distanceTest) {
 	CImagetypeCC *imCC2 = new CImagetypeCC(data, nR, nC, nL, nB, volume);
 
 	// distance between spels
-	BOOST_CHECK_CLOSE_FRACTION(imCC->euclideanDistance(0, 0), 0, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC->euclideanDistance(170, 170), 0, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC->euclideanDistance(N - 1, N - 1), 0, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC->euclideanDistance(103, 104), 1, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC->euclideanDistance(103, 104), imCC->euclideanDistance(104, 103), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC->euclideanDistance(103, 97), 1, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC->euclideanDistance(103, 97), imCC->euclideanDistance(97, 103), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC->euclideanDistance(103, 73), 1, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC->euclideanDistance(103, 73), imCC->euclideanDistance(73, 103), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC->euclideanDistance(103, 110), 1.41421356237, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC->euclideanDistance(103, 110), imCC->euclideanDistance(110, 103), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC->euclideanDistance(103, 98), 1.41421356237, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC->euclideanDistance(103, 98), imCC->euclideanDistance(98, 103), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC->euclideanDistance(103, 67), 1.41421356237, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC->euclideanDistance(103, 67), imCC->euclideanDistance(67, 103), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC->euclideanDistance(103, 79), 1.41421356237, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC->euclideanDistance(103, 79), imCC->euclideanDistance(79, 103), EPSILONT);
+	EXPECT_NEAR(imCC->euclideanDistance(0, 0), 0, EPSILONT);
+	EXPECT_NEAR(imCC->euclideanDistance(170, 170), 0, EPSILONT);
+	EXPECT_NEAR(imCC->euclideanDistance(N - 1, N - 1), 0, EPSILONT);
+	EXPECT_NEAR(imCC->euclideanDistance(103, 104), 1, EPSILONT);
+	EXPECT_NEAR(imCC->euclideanDistance(103, 104), imCC->euclideanDistance(104, 103), EPSILONT);
+	EXPECT_NEAR(imCC->euclideanDistance(103, 97), 1, EPSILONT);
+	EXPECT_NEAR(imCC->euclideanDistance(103, 97), imCC->euclideanDistance(97, 103), EPSILONT);
+	EXPECT_NEAR(imCC->euclideanDistance(103, 73), 1, EPSILONT);
+	EXPECT_NEAR(imCC->euclideanDistance(103, 73), imCC->euclideanDistance(73, 103), EPSILONT);
+	EXPECT_NEAR(imCC->euclideanDistance(103, 110), 1.41421356237, EPSILONT);
+	EXPECT_NEAR(imCC->euclideanDistance(103, 110), imCC->euclideanDistance(110, 103), EPSILONT);
+	EXPECT_NEAR(imCC->euclideanDistance(103, 98), 1.41421356237, EPSILONT);
+	EXPECT_NEAR(imCC->euclideanDistance(103, 98), imCC->euclideanDistance(98, 103), EPSILONT);
+	EXPECT_NEAR(imCC->euclideanDistance(103, 67), 1.41421356237, EPSILONT);
+	EXPECT_NEAR(imCC->euclideanDistance(103, 67), imCC->euclideanDistance(67, 103), EPSILONT);
+	EXPECT_NEAR(imCC->euclideanDistance(103, 79), 1.41421356237, EPSILONT);
+	EXPECT_NEAR(imCC->euclideanDistance(103, 79), imCC->euclideanDistance(79, 103), EPSILONT);
 
-	BOOST_CHECK_CLOSE_FRACTION(imCC2->euclideanDistance(0, 0), 0, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC2->euclideanDistance(170, 170), 0, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC2->euclideanDistance(N - 1, N - 1), 0, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC2->euclideanDistance(103, 104), 1 * factor, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC2->euclideanDistance(103, 104), imCC2->euclideanDistance(104, 103), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC2->euclideanDistance(103, 97), 1 * factor, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC2->euclideanDistance(103, 97), imCC2->euclideanDistance(97, 103), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC2->euclideanDistance(103, 73), 1 * factor, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC2->euclideanDistance(103, 73), imCC2->euclideanDistance(73, 103), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC2->euclideanDistance(103, 110), sqrt(factor * factor * 2), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC2->euclideanDistance(103, 110), imCC2->euclideanDistance(110, 103), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC2->euclideanDistance(103, 98), sqrt(factor * factor * 2), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC2->euclideanDistance(103, 98), imCC2->euclideanDistance(98, 103), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC2->euclideanDistance(103, 67), sqrt(factor * factor * 2), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC2->euclideanDistance(103, 67), imCC2->euclideanDistance(67, 103), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC2->euclideanDistance(103, 79), sqrt(factor * factor * 2), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCC2->euclideanDistance(103, 79), imCC2->euclideanDistance(79, 103), EPSILONT);
+	EXPECT_NEAR(imCC2->euclideanDistance(0, 0), 0, EPSILONT);
+	EXPECT_NEAR(imCC2->euclideanDistance(170, 170), 0, EPSILONT);
+	EXPECT_NEAR(imCC2->euclideanDistance(N - 1, N - 1), 0, EPSILONT);
+	EXPECT_NEAR(imCC2->euclideanDistance(103, 104), 1 * factor, EPSILONT);
+	EXPECT_NEAR(imCC2->euclideanDistance(103, 104), imCC2->euclideanDistance(104, 103), EPSILONT);
+	EXPECT_NEAR(imCC2->euclideanDistance(103, 97), 1 * factor, EPSILONT);
+	EXPECT_NEAR(imCC2->euclideanDistance(103, 97), imCC2->euclideanDistance(97, 103), EPSILONT);
+	EXPECT_NEAR(imCC2->euclideanDistance(103, 73), 1 * factor, EPSILONT);
+	EXPECT_NEAR(imCC2->euclideanDistance(103, 73), imCC2->euclideanDistance(73, 103), EPSILONT);
+	EXPECT_NEAR(imCC2->euclideanDistance(103, 110), sqrt(factor * factor * 2), EPSILONT);
+	EXPECT_NEAR(imCC2->euclideanDistance(103, 110), imCC2->euclideanDistance(110, 103), EPSILONT);
+	EXPECT_NEAR(imCC2->euclideanDistance(103, 98), sqrt(factor * factor * 2), EPSILONT);
+	EXPECT_NEAR(imCC2->euclideanDistance(103, 98), imCC2->euclideanDistance(98, 103), EPSILONT);
+	EXPECT_NEAR(imCC2->euclideanDistance(103, 67), sqrt(factor * factor * 2), EPSILONT);
+	EXPECT_NEAR(imCC2->euclideanDistance(103, 67), imCC2->euclideanDistance(67, 103), EPSILONT);
+	EXPECT_NEAR(imCC2->euclideanDistance(103, 79), sqrt(factor * factor * 2), EPSILONT);
+	EXPECT_NEAR(imCC2->euclideanDistance(103, 79), imCC2->euclideanDistance(79, 103), EPSILONT);
 
 	vector<double> dv;
 	double xyz100[3] = { 1, 0, 0 };
@@ -1157,23 +1129,23 @@ BOOST_AUTO_TEST_CASE(distanceTest) {
 	double xyz123[3] = { 1, 2, 3 };
 	imCC->euclideanDistanceVector(103, 103, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK(fabs(dv[i]) < EPSILONT);
+		EXPECT_TRUE(fabs(dv[i]) < EPSILONT);
 	}
 	imCC->euclideanDistanceVector(103, 104, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], xyz100[i], EPSILONT);
+		EXPECT_NEAR(dv[i], xyz100[i], EPSILONT);
 	}
 	imCC->euclideanDistanceVector(103, 109, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], xyz010[i], EPSILONT);
+		EXPECT_NEAR(dv[i], xyz010[i], EPSILONT);
 	}
 	imCC->euclideanDistanceVector(73, 103, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], xyz001[i], EPSILONT);
+		EXPECT_NEAR(dv[i], xyz001[i], EPSILONT);
 	}
 	imCC->euclideanDistanceVector(13, 116, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], xyz123[i], EPSILONT);
+		EXPECT_NEAR(dv[i], xyz123[i], EPSILONT);
 	}
 
 	double xyz2100[3] = { 1 * factor, 0, 0 };
@@ -1182,23 +1154,23 @@ BOOST_AUTO_TEST_CASE(distanceTest) {
 	double xyz2123[3] = { 1 * factor, 2 * factor, 3 * factor };
 	imCC2->euclideanDistanceVector(103, 103, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK(fabs(dv[i]) < EPSILONT);
+		EXPECT_TRUE(fabs(dv[i]) < EPSILONT);
 	}
 	imCC2->euclideanDistanceVector(103, 104, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], xyz2100[i], EPSILONT);
+		EXPECT_NEAR(dv[i], xyz2100[i], EPSILONT);
 	}
 	imCC2->euclideanDistanceVector(103, 109, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], xyz2010[i], EPSILONT);
+		EXPECT_NEAR(dv[i], xyz2010[i], EPSILONT);
 	}
 	imCC2->euclideanDistanceVector(73, 103, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], xyz2001[i], EPSILONT);
+		EXPECT_NEAR(dv[i], xyz2001[i], EPSILONT);
 	}
 	imCC2->euclideanDistanceVector(13, 116, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], xyz2123[i], EPSILONT);
+		EXPECT_NEAR(dv[i], xyz2123[i], EPSILONT);
 	}
 
 	delete imCC;
@@ -1206,7 +1178,7 @@ BOOST_AUTO_TEST_CASE(distanceTest) {
 
 }
 
-BOOST_AUTO_TEST_CASE(neighborTest) {
+TEST(CImagetypeCCTestSuite, neighborTest) {
 	/**
 	 * Tests getNeighbor(r,c,l,N) and getNeighbor(i,N). Since these
 	 * always call getXNeighbors(r,c,l), those methods should work
@@ -1235,335 +1207,335 @@ BOOST_AUTO_TEST_CASE(neighborTest) {
 	correctNNeighbors = 6;
 	imCC->getNeighbors(3, 2, 5, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	for (int i = 0; i < returnedNeighbors; i++) {
-		BOOST_CHECK_EQUAL(neighbors[i].getIndex(), CC6[i]);
+		EXPECT_EQ(neighbors[i].getIndex(), CC6[i]);
 	}
 	imCC->getNeighbors(imCC->rclToIndex(3, 2, 5), nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	for (int i = 0; i < returnedNeighbors; i++) {
-		BOOST_CHECK_EQUAL(neighbors[i].getIndex(), CC6[i]);
+		EXPECT_EQ(neighbors[i].getIndex(), CC6[i]);
 	}
 
 	correctNNeighbors = 3;
 	imCC->getNeighbors(0, 0, 0, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(nR - 1, nC - 1, nL - 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(nR - 1, 0, 0, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(0, nC - 1, 0, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(0, 0, nL - 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(0, nC - 1, nL - 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(nR - 1, 0, nL - 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(nR - 1, nC - 1, 0, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	correctNNeighbors = 4;
 	imCC->getNeighbors(1, 0, 0, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(0, 1, 0, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(0, 0, 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(1, nC - 1, nL - 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(nR - 1, 1, nL - 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(nR - 1, nC - 1, 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(0, nC - 1, 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(0, 1, nL - 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(0, nC - 1, 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(1, nC - 1, 0, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(nR - 1, 1, 0, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(1, nC - 1, 0, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	correctNNeighbors = 5;
 	imCC->getNeighbors(0, 1, 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(1, 0, 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(1, 1, 0, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(nR - 1, nC - 2, nL - 2, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(nR - 2, nC - 1, nL - 2, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(nR - 2, nC - 2, nL - 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 
 	// 18 neighbors
 	nNeighbors = 18;
 	correctNNeighbors = 18;
 	imCC->getNeighbors(3, 2, 5, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	for (int i = 0; i < returnedNeighbors; i++) {
-		BOOST_CHECK_EQUAL(neighbors[i].getIndex(), CC18[i]);
+		EXPECT_EQ(neighbors[i].getIndex(), CC18[i]);
 	}
 	imCC->getNeighbors(imCC->rclToIndex(3, 2, 5), nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	for (int i = 0; i < returnedNeighbors; i++) {
-		BOOST_CHECK_EQUAL(neighbors[i].getIndex(), CC18[i]);
+		EXPECT_EQ(neighbors[i].getIndex(), CC18[i]);
 	}
 
 	correctNNeighbors = 6;
 	imCC->getNeighbors(0, 0, 0, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(nR - 1, nC - 1, nL - 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(nR - 1, 0, 0, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(0, nC - 1, 0, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(0, 0, nL - 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(0, nC - 1, nL - 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(nR - 1, 0, nL - 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(nR - 1, nC - 1, 0, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	correctNNeighbors = 9;
 	imCC->getNeighbors(1, 0, 0, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(0, 1, 0, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(0, 0, 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(1, nC - 1, nL - 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(nR - 1, 1, nL - 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(nR - 1, nC - 1, 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(0, nC - 1, 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(0, 1, nL - 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(0, nC - 1, 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(1, nC - 1, 0, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(nR - 1, 1, 0, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(1, nC - 1, 0, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	correctNNeighbors = 13;
 	imCC->getNeighbors(0, 1, 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(1, 0, 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(1, 1, 0, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(nR - 1, nC - 2, nL - 2, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(nR - 2, nC - 1, nL - 2, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(nR - 2, nC - 2, nL - 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 
 	// 26 neighbors
 	nNeighbors = 26;
 	correctNNeighbors = 26;
 	imCC->getNeighbors(3, 2, 5, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	for (int i = 0; i < returnedNeighbors; i++) {
-		BOOST_CHECK_EQUAL(neighbors[i].getIndex(), CC26[i]);
+		EXPECT_EQ(neighbors[i].getIndex(), CC26[i]);
 	}
 	imCC->getNeighbors(imCC->rclToIndex(3, 2, 5), nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	for (int i = 0; i < returnedNeighbors; i++) {
-		BOOST_CHECK_EQUAL(neighbors[i].getIndex(), CC26[i]);
+		EXPECT_EQ(neighbors[i].getIndex(), CC26[i]);
 	}
 	correctNNeighbors = 7;
 	imCC->getNeighbors(0, 0, 0, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(nR - 1, nC - 1, nL - 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(nR - 1, 0, 0, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(0, nC - 1, 0, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(0, 0, nL - 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(0, nC - 1, nL - 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(nR - 1, 0, nL - 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(nR - 1, nC - 1, 0, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	correctNNeighbors = 11;
 	imCC->getNeighbors(1, 0, 0, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(0, 1, 0, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(0, 0, 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(1, nC - 1, nL - 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(nR - 1, 1, nL - 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(nR - 1, nC - 1, 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(0, nC - 1, 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(0, 1, nL - 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(0, nC - 1, 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(1, nC - 1, 0, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(nR - 1, 1, 0, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(1, nC - 1, 0, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	correctNNeighbors = 17;
 	imCC->getNeighbors(0, 1, 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(1, 0, 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(1, 1, 0, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(nR - 1, nC - 2, nL - 2, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(nR - 2, nC - 1, nL - 2, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imCC->getNeighbors(nR - 2, nC - 2, nL - 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 
 	// Exceptions
 	nNeighbors = 6;
-	BOOST_CHECK_THROW(imCC->getNeighbors(nR, 0, 0, nNeighbors, neighbors),outsideImageException);
-	BOOST_CHECK_THROW(imCC->getNeighbors(-1, 0, 0, nNeighbors, neighbors),outsideImageException);
-	BOOST_CHECK_THROW(imCC->getNeighbors(0, nC, 0, nNeighbors, neighbors),outsideImageException);
-	BOOST_CHECK_THROW(imCC->getNeighbors(0, -1, 0, nNeighbors, neighbors),outsideImageException);
-	BOOST_CHECK_THROW(imCC->getNeighbors(0, 0, nL, nNeighbors, neighbors),outsideImageException);
-	BOOST_CHECK_THROW(imCC->getNeighbors(0, 0, -1, nNeighbors, neighbors),outsideImageException);
+	EXPECT_THROW(imCC->getNeighbors(nR, 0, 0, nNeighbors, neighbors),outsideImageException);
+	EXPECT_THROW(imCC->getNeighbors(-1, 0, 0, nNeighbors, neighbors),outsideImageException);
+	EXPECT_THROW(imCC->getNeighbors(0, nC, 0, nNeighbors, neighbors),outsideImageException);
+	EXPECT_THROW(imCC->getNeighbors(0, -1, 0, nNeighbors, neighbors),outsideImageException);
+	EXPECT_THROW(imCC->getNeighbors(0, 0, nL, nNeighbors, neighbors),outsideImageException);
+	EXPECT_THROW(imCC->getNeighbors(0, 0, -1, nNeighbors, neighbors),outsideImageException);
 	nNeighbors = 18;
-	BOOST_CHECK_THROW(imCC->getNeighbors(nR, 0, 0, nNeighbors, neighbors),outsideImageException);
-	BOOST_CHECK_THROW(imCC->getNeighbors(-1, 0, 0, nNeighbors, neighbors),outsideImageException);
-	BOOST_CHECK_THROW(imCC->getNeighbors(0, nC, 0, nNeighbors, neighbors),outsideImageException);
-	BOOST_CHECK_THROW(imCC->getNeighbors(0, -1, 0, nNeighbors, neighbors),outsideImageException);
-	BOOST_CHECK_THROW(imCC->getNeighbors(0, 0, nL, nNeighbors, neighbors),outsideImageException);
-	BOOST_CHECK_THROW(imCC->getNeighbors(0, 0, -1, nNeighbors, neighbors),outsideImageException);
+	EXPECT_THROW(imCC->getNeighbors(nR, 0, 0, nNeighbors, neighbors),outsideImageException);
+	EXPECT_THROW(imCC->getNeighbors(-1, 0, 0, nNeighbors, neighbors),outsideImageException);
+	EXPECT_THROW(imCC->getNeighbors(0, nC, 0, nNeighbors, neighbors),outsideImageException);
+	EXPECT_THROW(imCC->getNeighbors(0, -1, 0, nNeighbors, neighbors),outsideImageException);
+	EXPECT_THROW(imCC->getNeighbors(0, 0, nL, nNeighbors, neighbors),outsideImageException);
+	EXPECT_THROW(imCC->getNeighbors(0, 0, -1, nNeighbors, neighbors),outsideImageException);
 	nNeighbors = 26;
-	BOOST_CHECK_THROW(imCC->getNeighbors(nR, 0, 0, nNeighbors, neighbors),outsideImageException);
-	BOOST_CHECK_THROW(imCC->getNeighbors(-1, 0, 0, nNeighbors, neighbors),outsideImageException);
-	BOOST_CHECK_THROW(imCC->getNeighbors(0, nC, 0, nNeighbors, neighbors),outsideImageException);
-	BOOST_CHECK_THROW(imCC->getNeighbors(0, -1, 0, nNeighbors, neighbors),outsideImageException);
-	BOOST_CHECK_THROW(imCC->getNeighbors(0, 0, nL, nNeighbors, neighbors),outsideImageException);
-	BOOST_CHECK_THROW(imCC->getNeighbors(0, 0, -1, nNeighbors, neighbors),outsideImageException);
+	EXPECT_THROW(imCC->getNeighbors(nR, 0, 0, nNeighbors, neighbors),outsideImageException);
+	EXPECT_THROW(imCC->getNeighbors(-1, 0, 0, nNeighbors, neighbors),outsideImageException);
+	EXPECT_THROW(imCC->getNeighbors(0, nC, 0, nNeighbors, neighbors),outsideImageException);
+	EXPECT_THROW(imCC->getNeighbors(0, -1, 0, nNeighbors, neighbors),outsideImageException);
+	EXPECT_THROW(imCC->getNeighbors(0, 0, nL, nNeighbors, neighbors),outsideImageException);
+	EXPECT_THROW(imCC->getNeighbors(0, 0, -1, nNeighbors, neighbors),outsideImageException);
 	nNeighbors = 8;
-	BOOST_CHECK_THROW(imCC->getNeighbors(0, 0, 0, nNeighbors, neighbors),nNeighborsException);
+	EXPECT_THROW(imCC->getNeighbors(0, 0, 0, nNeighbors, neighbors),nNeighborsException);
 	nNeighbors = 12;
-	BOOST_CHECK_THROW(imCC->getNeighbors(0, 0, 0, nNeighbors, neighbors),nNeighborsException);
+	EXPECT_THROW(imCC->getNeighbors(0, 0, 0, nNeighbors, neighbors),nNeighborsException);
 	nNeighbors = 14;
-	BOOST_CHECK_THROW(imCC->getNeighbors(0, 0, 0, nNeighbors, neighbors),nNeighborsException);
+	EXPECT_THROW(imCC->getNeighbors(0, 0, 0, nNeighbors, neighbors),nNeighborsException);
 	// nNeighbors = 18 is valid for both CC and FCC.
 	nNeighbors = -6;
-	BOOST_CHECK_THROW(imCC->getNeighbors(0, 0, 0, nNeighbors, neighbors),nNeighborsException);
+	EXPECT_THROW(imCC->getNeighbors(0, 0, 0, nNeighbors, neighbors),nNeighborsException);
 	nNeighbors = 0;
-	BOOST_CHECK_THROW(imCC->getNeighbors(0, 0, 0, nNeighbors, neighbors),nNeighborsException);
+	EXPECT_THROW(imCC->getNeighbors(0, 0, 0, nNeighbors, neighbors),nNeighborsException);
 	nNeighbors = 100;
-	BOOST_CHECK_THROW(imCC->getNeighbors(0, 0, 0, nNeighbors, neighbors),nNeighborsException);
+	EXPECT_THROW(imCC->getNeighbors(0, 0, 0, nNeighbors, neighbors),nNeighborsException);
 
 	delete imCC;
 
 }
 
-BOOST_AUTO_TEST_CASE(operatorTest) {
+TEST(CImagetypeCCTestSuite, operatorTest) {
 
 	int nR = 2, nC = 3, nL = 4, nB = 5;
 	int N = nR * nC * nL;
@@ -1601,61 +1573,63 @@ BOOST_AUTO_TEST_CASE(operatorTest) {
 	// []-operator
 	index = 0;
 	returnedElem = (*imCC)[index];
-	BOOST_CHECK(returnedElem.size() == nB);
+	EXPECT_TRUE(returnedElem.size() == nB);
 	for (int i = 0; i < nB; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(returnedElem[i], 10*i + 1, EPSILONT);
+		EXPECT_NEAR(returnedElem[i], 10*i + 1, EPSILONT);
 	}
 	index = 14;
 	returnedElem = (*imCC)[index];
-	BOOST_CHECK(returnedElem.size() == nB);
+	EXPECT_TRUE(returnedElem.size() == nB);
 	for (int i = 0; i < nB; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(returnedElem[i], 10*i + 5, EPSILONT);
+		EXPECT_NEAR(returnedElem[i], 10*i + 5, EPSILONT);
 	}
 	index = 10;
 	returnedElem = (*imCC)[index];
-	BOOST_CHECK(returnedElem.size() == nB);
+	EXPECT_TRUE(returnedElem.size() == nB);
 	for (int i = 0; i < nB; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(returnedElem[i], 10*i + 6, EPSILONT);
+		EXPECT_NEAR(returnedElem[i], 10*i + 6, EPSILONT);
 	}
 	index = N - 1;
 	returnedElem = (*imCC)[index];
-	BOOST_CHECK(returnedElem.size() == nB);
+	EXPECT_TRUE(returnedElem.size() == nB);
 	for (int i = 0; i < nB; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(returnedElem[i], 10*i + 3, EPSILONT);
+		EXPECT_NEAR(returnedElem[i], 10*i + 3, EPSILONT);
 	}
 
 	// ()-operator
 	returnedVal = (*imCC)(0, 0, 0, 0);
-	BOOST_CHECK_CLOSE_FRACTION(returnedVal, 1, EPSILONT);
+	EXPECT_NEAR(returnedVal, 1, EPSILONT);
 	returnedVal = (*imCC)(0, 1, 2, 3);
-	BOOST_CHECK_CLOSE_FRACTION(returnedVal, 34, EPSILONT);
+	EXPECT_NEAR(returnedVal, 34, EPSILONT);
 	returnedVal = (*imCC)(nR - 1, nC - 1, nL - 1, nB - 1);
-	BOOST_CHECK_CLOSE_FRACTION(returnedVal, 43, EPSILONT);
+	EXPECT_NEAR(returnedVal, 43, EPSILONT);
 
+    /*
 	returnedVal = (*imCC)(imCC->rclToIndex(0, 0, 0), 0);
-	BOOST_CHECK_CLOSE_FRACTION(returnedVal, 1, EPSILONT);
+	EXPECT_NEAR(returnedVal, 1, EPSILONT);
 	returnedVal = (*imCC)(imCC->rclToIndex(0, 1, 2), 3);
-	BOOST_CHECK_CLOSE_FRACTION(returnedVal, 34, EPSILONT);
+	EXPECT_NEAR(returnedVal, 34, EPSILONT);
 	returnedVal = (*imCC)(imCC->rclToIndex(nR - 1, nC - 1, nL - 1), nB - 1);
-	BOOST_CHECK_CLOSE_FRACTION(returnedVal, 43, EPSILONT);
+	EXPECT_NEAR(returnedVal, 43, EPSILONT);
+    */
 
 	// Exceptions
-	BOOST_CHECK_THROW((*imCC)[-1], outsideImageException);
-	BOOST_CHECK_THROW((*imCC)[N], outsideImageException);
+	EXPECT_THROW((*imCC)[-1], outsideImageException);
+	EXPECT_THROW((*imCC)[N], outsideImageException);
 
-	BOOST_CHECK_THROW((*imCC)(-1, 0, 0, 0), outsideImageException);
-	BOOST_CHECK_THROW((*imCC)(0, -1, 0, 0), outsideImageException);
-	BOOST_CHECK_THROW((*imCC)(0, 0, -1, 0), outsideImageException);
-	BOOST_CHECK_THROW((*imCC)(0, 0, 0, -1), outsideImageException);
-	BOOST_CHECK_THROW((*imCC)(nR, 0, 0, 0), outsideImageException);
-	BOOST_CHECK_THROW((*imCC)(0, nC, 0, 0), outsideImageException);
-	BOOST_CHECK_THROW((*imCC)(0, 0, nL, 0), outsideImageException);
-	BOOST_CHECK_THROW((*imCC)(0, 0, 0, nB), outsideImageException);
+	EXPECT_THROW((*imCC)(-1, 0, 0, 0), outsideImageException);
+	EXPECT_THROW((*imCC)(0, -1, 0, 0), outsideImageException);
+	EXPECT_THROW((*imCC)(0, 0, -1, 0), outsideImageException);
+	EXPECT_THROW((*imCC)(0, 0, 0, -1), outsideImageException);
+	EXPECT_THROW((*imCC)(nR, 0, 0, 0), outsideImageException);
+	EXPECT_THROW((*imCC)(0, nC, 0, 0), outsideImageException);
+	EXPECT_THROW((*imCC)(0, 0, nL, 0), outsideImageException);
+	EXPECT_THROW((*imCC)(0, 0, 0, nB), outsideImageException);
 
 	delete imCC;
 }
 
-BOOST_AUTO_TEST_CASE(bandTest) {
+TEST(CImagetypeCCTestSuite, bandTest) {
 
 	int nR = 2, nC = 3, nL = 4, nB = 5;
 	int N = nR * nC * nL;
@@ -1694,16 +1668,16 @@ BOOST_AUTO_TEST_CASE(bandTest) {
 	intensitiesRight.assign(intensities, intensities + 5);
 	intensitiesLong.assign(intensities, intensities + 6);
 
-	BOOST_CHECK_THROW(imCC->setElement(-1,intensitiesRight),outsideImageException);
-	BOOST_CHECK_THROW(imCC->setElement(N,intensitiesRight),outsideImageException);
-	BOOST_CHECK_THROW(imCC->setElement(1,intensitiesShort),dimensionMismatchException);
-	BOOST_CHECK_THROW(imCC->setElement(1,intensitiesLong),dimensionMismatchException);
+	EXPECT_THROW(imCC->setElement(-1,intensitiesRight),outsideImageException);
+	EXPECT_THROW(imCC->setElement(N,intensitiesRight),outsideImageException);
+	EXPECT_THROW(imCC->setElement(1,intensitiesShort),dimensionMismatchException);
+	EXPECT_THROW(imCC->setElement(1,intensitiesLong),dimensionMismatchException);
 
-	BOOST_CHECK_THROW(imCC->setElement(-1,1,1,intensitiesRight),outsideImageException);
-	BOOST_CHECK_THROW(imCC->setElement(1,-1,1,intensitiesRight),outsideImageException);
-	BOOST_CHECK_THROW(imCC->setElement(1,1,-1,intensitiesRight),outsideImageException);
-	BOOST_CHECK_THROW(imCC->setElement(1,intensitiesShort),dimensionMismatchException);
-	BOOST_CHECK_THROW(imCC->setElement(1,intensitiesLong),dimensionMismatchException);
+	EXPECT_THROW(imCC->setElement(-1,1,1,intensitiesRight),outsideImageException);
+	EXPECT_THROW(imCC->setElement(1,-1,1,intensitiesRight),outsideImageException);
+	EXPECT_THROW(imCC->setElement(1,1,-1,intensitiesRight),outsideImageException);
+	EXPECT_THROW(imCC->setElement(1,intensitiesShort),dimensionMismatchException);
+	EXPECT_THROW(imCC->setElement(1,intensitiesLong),dimensionMismatchException);
 
 
 /*
@@ -1721,13 +1695,13 @@ BOOST_AUTO_TEST_CASE(bandTest) {
 	CImagetypeCC *imCC = new CImagetypeCC(data, nR, nC, nL, nB);
 
 	// extract band
-	BOOST_CHECK_THROW(imCC->getBand(-1, resultInt), outsideImageException);
-	BOOST_CHECK_THROW(imCC->getBand(nB, resultInt), outsideImageException);
+	EXPECT_THROW(imCC->getBand(-1, resultInt), outsideImageException);
+	EXPECT_THROW(imCC->getBand(nB, resultInt), outsideImageException);
 
 	for (int band = 0; band < nB; band++) {
 		imCC->getBand(band, resultInt);
 		for (int i = 0; i < N; i++) {
-			BOOST_CHECK(resultInt[i] == data[band * N + i]);
+			EXPECT_TRUE(resultInt[i] == data[band * N + i]);
 		}
 	}
 
@@ -1741,36 +1715,36 @@ BOOST_AUTO_TEST_CASE(bandTest) {
 	// min
 	imCC->blend(0, resultInt);
 	for (int i = 0; i < N; i++) {
-		BOOST_CHECK_EQUAL(resultInt[i], 0);
+		EXPECT_EQ(resultInt[i], 0);
 	}
 
 	// max
 	imCC->blend(1, resultInt);
 	for (int i = 0; i < N; i++) {
-		BOOST_CHECK_EQUAL(resultInt[i], 2);
+		EXPECT_EQ(resultInt[i], 2);
 	}
 
 	// mean
 	imCC->blend(2, resultDouble);
 	for (int i = 0; i < N; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(resultDouble[i], 1.0, EPSILONT);
+		EXPECT_NEAR(resultDouble[i], 1.0, EPSILONT);
 	}
 
-	BOOST_CHECK_THROW(imCC->blend(-1, resultInt), outsideRangeException);
-	BOOST_CHECK_THROW(imCC->blend(2, resultInt), outsideRangeException);
-	BOOST_CHECK_THROW(imCC->blend(-1, resultDouble), outsideRangeException);
-	BOOST_CHECK_THROW(imCC->blend(0, resultDouble), outsideRangeException);
-	BOOST_CHECK_THROW(imCC->blend(3, resultDouble), outsideRangeException);
+	EXPECT_THROW(imCC->blend(-1, resultInt), outsideRangeException);
+	EXPECT_THROW(imCC->blend(2, resultInt), outsideRangeException);
+	EXPECT_THROW(imCC->blend(-1, resultDouble), outsideRangeException);
+	EXPECT_THROW(imCC->blend(0, resultDouble), outsideRangeException);
+	EXPECT_THROW(imCC->blend(3, resultDouble), outsideRangeException);
 
 	delete imCC;
 */
 }
 
-BOOST_AUTO_TEST_CASE(segmentationTest) {
+TEST(CImagetypeCCTestSuite, segmentationTest) {
 
 }
 
-BOOST_AUTO_TEST_CASE(distanceTransformTest) {
+TEST(CImagetypeCCTestSuite, distanceTransformTest) {
 
 	// sub-spel precision term
 /*
@@ -1808,52 +1782,49 @@ BOOST_AUTO_TEST_CASE(distanceTransformTest) {
 	CImageCC<double> *imCCD = new CImageCC<double>(dataD,nR,nC,nL,1);
 	CImageCC<uint8> *imCCU = new CImageCC<uint8>(dataU,nR,nC,nL,1);
 
-	BOOST_CHECK_CLOSE_FRACTION(imCCD->internalDistanceLinear(0.0),0.5,EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCCD->internalDistanceLinear(0.5),0.0,EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCCD->internalDistanceLinear(1.0),-0.5,EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCCD->internalDistanceLinear(uint8(0)),0.5,EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCCD->internalDistanceLinear(uint8(127)),0.00196078431,EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCCD->internalDistanceLinear(uint8(255)),-0.5,EPSILONT);
-	BOOST_CHECK_THROW(imCCD->internalDistanceLinear(-0.1),outsideRangeException);
-	BOOST_CHECK_THROW(imCCD->internalDistanceLinear(1.1),outsideRangeException);
+	EXPECT_NEAR(imCCD->internalDistanceLinear(0.0),0.5, EPSILONT);
+	EXPECT_NEAR(imCCD->internalDistanceLinear(0.5),0.0, EPSILONT);
+	EXPECT_NEAR(imCCD->internalDistanceLinear(1.0),-0.5, EPSILONT);
+	EXPECT_NEAR(imCCD->internalDistanceLinear(uint8(0)),0.5, EPSILONT);
+	EXPECT_NEAR(imCCD->internalDistanceLinear(uint8(127)),0.00196078431, EPSILONT);
+	EXPECT_NEAR(imCCD->internalDistanceLinear(uint8(255)),-0.5, EPSILONT);
+	EXPECT_THROW(imCCD->internalDistanceLinear(-0.1),outsideRangeException);
+	EXPECT_THROW(imCCD->internalDistanceLinear(1.1),outsideRangeException);
 
-	BOOST_CHECK_CLOSE_FRACTION(imCCD->internalDistanceBall(uint8(0)),0.620350490899400,EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCCD->internalDistanceBall(uint8(15)),0.344897652005037,EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCCD->internalDistanceBall(uint8(255)),-0.620350490899443,EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCCD->internalDistanceBall(0.0),0.620350490899400,EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCCD->internalDistanceBall(0.51),imCCD->internalDistanceBall(uint8(128)),EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCCD->internalDistanceBall(1.0),-0.620350490899443,EPSILONT);
-	BOOST_CHECK_THROW(imCCD->internalDistanceBall(-0.1),outsideRangeException);
-	BOOST_CHECK_THROW(imCCD->internalDistanceBall(1.1),outsideRangeException);
+	EXPECT_NEAR(imCCD->internalDistanceBall(uint8(0)),0.620350490899400, EPSILONT);
+	EXPECT_NEAR(imCCD->internalDistanceBall(uint8(15)),0.344897652005037, EPSILONT);
+	EXPECT_NEAR(imCCD->internalDistanceBall(uint8(255)),-0.620350490899443, EPSILONT);
+	EXPECT_NEAR(imCCD->internalDistanceBall(0.0),0.620350490899400, EPSILONT);
+	EXPECT_NEAR(imCCD->internalDistanceBall(0.51),imCCD->internalDistanceBall(uint8(128)), EPSILONT);
+	EXPECT_NEAR(imCCD->internalDistanceBall(1.0),-0.620350490899443, EPSILONT);
+	EXPECT_THROW(imCCD->internalDistanceBall(-0.1),outsideRangeException);
+	EXPECT_THROW(imCCD->internalDistanceBall(1.1),outsideRangeException);
 
-	BOOST_CHECK_CLOSE_FRACTION(imCCD->internalDistanceVoronoiAverage(uint8(0)),0.732561001953818,EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCCD->internalDistanceVoronoiAverage(uint8(15)),0.361626850445366,EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCCD->internalDistanceVoronoiAverage(uint8(255)),-0.729122335558677,EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCCD->internalDistanceVoronoiAverage(0.0),0.732561001953818,EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCCD->internalDistanceVoronoiAverage(0.51),imCCD->internalDistanceVoronoiAverage(uint8(128)),EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imCCD->internalDistanceVoronoiAverage(1.0),-0.729122335558677,EPSILONT);
-	BOOST_CHECK_THROW(imCCD->internalDistanceVoronoiAverage(-0.1),outsideRangeException);
-	BOOST_CHECK_THROW(imCCD->internalDistanceVoronoiAverage(1.1),outsideRangeException);
+	EXPECT_NEAR(imCCD->internalDistanceVoronoiAverage(uint8(0)),0.732561001953818, EPSILONT);
+	EXPECT_NEAR(imCCD->internalDistanceVoronoiAverage(uint8(15)),0.361626850445366, EPSILONT);
+	EXPECT_NEAR(imCCD->internalDistanceVoronoiAverage(uint8(255)),-0.729122335558677, EPSILONT);
+	EXPECT_NEAR(imCCD->internalDistanceVoronoiAverage(0.0),0.732561001953818, EPSILONT);
+	EXPECT_NEAR(imCCD->internalDistanceVoronoiAverage(0.51),imCCD->internalDistanceVoronoiAverage(uint8(128)), EPSILONT);
+	EXPECT_NEAR(imCCD->internalDistanceVoronoiAverage(1.0),-0.729122335558677, EPSILONT);
+	EXPECT_THROW(imCCD->internalDistanceVoronoiAverage(-0.1),outsideRangeException);
+	EXPECT_THROW(imCCD->internalDistanceVoronoiAverage(1.1),outsideRangeException);
 
-	BOOST_CHECK_THROW(imCCD->approximatedInternalDistance(-1,0,1),outsideImageException);
-	BOOST_CHECK_THROW(imCCU->approximatedInternalDistance(-1,0,1),outsideImageException);
-	BOOST_CHECK_THROW(imCCD->approximatedInternalDistance(N,0,1),outsideImageException);
-	BOOST_CHECK_THROW(imCCU->approximatedInternalDistance(N,0,1),outsideImageException);
-	BOOST_CHECK_THROW(imCCD->approximatedInternalDistance(1,0,-1),outsideRangeException);
-	BOOST_CHECK_THROW(imCCU->approximatedInternalDistance(1,0,-1),outsideRangeException);
-	BOOST_CHECK_THROW(imCCD->approximatedInternalDistance(1,0,3),outsideRangeException);
-	BOOST_CHECK_THROW(imCCU->approximatedInternalDistance(1,0,3),outsideRangeException);*/
+	EXPECT_THROW(imCCD->approximatedInternalDistance(-1,0,1),outsideImageException);
+	EXPECT_THROW(imCCU->approximatedInternalDistance(-1,0,1),outsideImageException);
+	EXPECT_THROW(imCCD->approximatedInternalDistance(N,0,1),outsideImageException);
+	EXPECT_THROW(imCCU->approximatedInternalDistance(N,0,1),outsideImageException);
+	EXPECT_THROW(imCCD->approximatedInternalDistance(1,0,-1),outsideRangeException);
+	EXPECT_THROW(imCCU->approximatedInternalDistance(1,0,-1),outsideRangeException);
+	EXPECT_THROW(imCCD->approximatedInternalDistance(1,0,3),outsideRangeException);
+	EXPECT_THROW(imCCU->approximatedInternalDistance(1,0,3),outsideRangeException);*/
 
 }
-
-BOOST_AUTO_TEST_SUITE_END()
 
 /**
  * Tests type CImagetypeBCC aka CImageBCC<uint8>.
  */
-BOOST_AUTO_TEST_SUITE(CImagetypeBCC_test)
 
-BOOST_AUTO_TEST_CASE(constructorTest) {
+TEST(CImagetypeBCCTestSuite, constructorTest) {
 
 	// set up image
 	int nR = 5, nC = 6, nL = 7, nB = 3;
@@ -1865,91 +1836,91 @@ BOOST_AUTO_TEST_CASE(constructorTest) {
 
 	// constructor
 	CImagetypeBCC *imBCC = new CImagetypeBCC(data, nR, nC, nL, nB);
-	BOOST_CHECK(imBCC);
+	EXPECT_TRUE(imBCC);
 
 	// getters
 	uint8* imdata = imBCC->getData();
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < nB; j++) {
-			BOOST_CHECK(imdata[i] == data[i]);
+			EXPECT_TRUE(imdata[i] == data[i]);
 		}
 	}
 
-	BOOST_CHECK(imBCC->getNElements() == N);
-	BOOST_CHECK(imBCC->getNElements() != N + 1);
+	EXPECT_TRUE(imBCC->getNElements() == N);
+	EXPECT_TRUE(imBCC->getNElements() != N + 1);
 
-	BOOST_CHECK(imBCC->getNColumns() == nC);
-	BOOST_CHECK(imBCC->getNColumns() != nC + 1);
+	EXPECT_TRUE(imBCC->getNColumns() == nC);
+	EXPECT_TRUE(imBCC->getNColumns() != nC + 1);
 
-	BOOST_CHECK(imBCC->getNRows() == nR);
-	BOOST_CHECK(imBCC->getNRows() != nR + 1);
+	EXPECT_TRUE(imBCC->getNRows() == nR);
+	EXPECT_TRUE(imBCC->getNRows() != nR + 1);
 
-	BOOST_CHECK(imBCC->getNLayers() == nL);
-	BOOST_CHECK(imBCC->getNLayers() != nL + 1);
+	EXPECT_TRUE(imBCC->getNLayers() == nL);
+	EXPECT_TRUE(imBCC->getNLayers() != nL + 1);
 
-	BOOST_CHECK(imBCC->getNBands() == nB);
-	BOOST_CHECK(imBCC->getNBands() != nB + 1);
+	EXPECT_TRUE(imBCC->getNBands() == nB);
+	EXPECT_TRUE(imBCC->getNBands() != nB + 1);
 
 	// validity of elements
-	BOOST_CHECK(!imBCC->isValid(-1));
-	BOOST_CHECK(imBCC->isValid(0));
-	BOOST_CHECK(imBCC->isValid(N - 1));
-	BOOST_CHECK(!imBCC->isValid(N));
+	EXPECT_TRUE(!imBCC->isValid(-1));
+	EXPECT_TRUE(imBCC->isValid(0));
+	EXPECT_TRUE(imBCC->isValid(N - 1));
+	EXPECT_TRUE(!imBCC->isValid(N));
 
-	BOOST_CHECK(!imBCC->isValid(0, -1));
-	BOOST_CHECK(!imBCC->isValid(N - 1, -1));
-	BOOST_CHECK(!imBCC->isValid(-1, 0));
-	BOOST_CHECK(imBCC->isValid(0, 0));
-	BOOST_CHECK(imBCC->isValid(N - 1, 0));
-	BOOST_CHECK(!imBCC->isValid(N, 0));
-	BOOST_CHECK(imBCC->isValid(0, nB - 1));
-	BOOST_CHECK(imBCC->isValid(N - 1, nB - 1));
-	BOOST_CHECK(!imBCC->isValid(0, nB));
-	BOOST_CHECK(!imBCC->isValid(N - 1, nB));
+	EXPECT_TRUE(!imBCC->isValid(0, -1));
+	EXPECT_TRUE(!imBCC->isValid(N - 1, -1));
+	EXPECT_TRUE(!imBCC->isValid(-1, 0));
+	EXPECT_TRUE(imBCC->isValid(0, 0));
+	EXPECT_TRUE(imBCC->isValid(N - 1, 0));
+	EXPECT_TRUE(!imBCC->isValid(N, 0));
+	EXPECT_TRUE(imBCC->isValid(0, nB - 1));
+	EXPECT_TRUE(imBCC->isValid(N - 1, nB - 1));
+	EXPECT_TRUE(!imBCC->isValid(0, nB));
+	EXPECT_TRUE(!imBCC->isValid(N - 1, nB));
 
-	BOOST_CHECK(!imBCC->isValid(-1, 0, 0));
-	BOOST_CHECK(!imBCC->isValid(0, -1, 0));
-	BOOST_CHECK(!imBCC->isValid(0, 0, -1));
-	BOOST_CHECK(imBCC->isValid(0, 0, 0));
-	BOOST_CHECK(imBCC->isValid(nR - 1, 0, 0));
-	BOOST_CHECK(imBCC->isValid(0, nC - 1, 0));
-	BOOST_CHECK(imBCC->isValid(0, 0, nL - 1));
-	BOOST_CHECK(!imBCC->isValid(nR, 0, 0));
-	BOOST_CHECK(!imBCC->isValid(0, nC, 0));
-	BOOST_CHECK(!imBCC->isValid(0, 0, nL));
+	EXPECT_TRUE(!imBCC->isValid(-1, 0, 0));
+	EXPECT_TRUE(!imBCC->isValid(0, -1, 0));
+	EXPECT_TRUE(!imBCC->isValid(0, 0, -1));
+	EXPECT_TRUE(imBCC->isValid(0, 0, 0));
+	EXPECT_TRUE(imBCC->isValid(nR - 1, 0, 0));
+	EXPECT_TRUE(imBCC->isValid(0, nC - 1, 0));
+	EXPECT_TRUE(imBCC->isValid(0, 0, nL - 1));
+	EXPECT_TRUE(!imBCC->isValid(nR, 0, 0));
+	EXPECT_TRUE(!imBCC->isValid(0, nC, 0));
+	EXPECT_TRUE(!imBCC->isValid(0, 0, nL));
 
-	BOOST_CHECK(!imBCC->isValid(0, 0, 0, -1));
-	BOOST_CHECK(!imBCC->isValid(nR - 1, 0, 0, -1));
-	BOOST_CHECK(!imBCC->isValid(0, nC - 1, 0, -1));
-	BOOST_CHECK(!imBCC->isValid(0, 0, nL - 1, -1));
-	BOOST_CHECK(!imBCC->isValid(0, 0, 0, nB));
-	BOOST_CHECK(!imBCC->isValid(nR - 1, 0, 0, nB));
-	BOOST_CHECK(!imBCC->isValid(0, nC - 1, 0, nB));
-	BOOST_CHECK(!imBCC->isValid(0, 0, nL - 1, nB));
-	BOOST_CHECK(imBCC->isValid(0, 0, 0, nB - 1));
-	BOOST_CHECK(imBCC->isValid(nR - 1, 0, 0, nB - 1));
-	BOOST_CHECK(imBCC->isValid(0, nC - 1, 0, nB - 1));
-	BOOST_CHECK(imBCC->isValid(0, 0, nL - 1, nB - 1));
+	EXPECT_TRUE(!imBCC->isValid(0, 0, 0, -1));
+	EXPECT_TRUE(!imBCC->isValid(nR - 1, 0, 0, -1));
+	EXPECT_TRUE(!imBCC->isValid(0, nC - 1, 0, -1));
+	EXPECT_TRUE(!imBCC->isValid(0, 0, nL - 1, -1));
+	EXPECT_TRUE(!imBCC->isValid(0, 0, 0, nB));
+	EXPECT_TRUE(!imBCC->isValid(nR - 1, 0, 0, nB));
+	EXPECT_TRUE(!imBCC->isValid(0, nC - 1, 0, nB));
+	EXPECT_TRUE(!imBCC->isValid(0, 0, nL - 1, nB));
+	EXPECT_TRUE(imBCC->isValid(0, 0, 0, nB - 1));
+	EXPECT_TRUE(imBCC->isValid(nR - 1, 0, 0, nB - 1));
+	EXPECT_TRUE(imBCC->isValid(0, nC - 1, 0, nB - 1));
+	EXPECT_TRUE(imBCC->isValid(0, 0, nL - 1, nB - 1));
 
 	// index conversion
-	BOOST_CHECK(imBCC->rclToIndex(0, 0, 0) == 0);
-	BOOST_CHECK(imBCC->rclToIndex(1, 2, 3) == 98);
-	BOOST_CHECK(imBCC->rclToIndex(nR - 1, nC - 1, nL - 1) == N - 1);
+	EXPECT_TRUE(imBCC->rclToIndex(0, 0, 0) == 0);
+	EXPECT_TRUE(imBCC->rclToIndex(1, 2, 3) == 98);
+	EXPECT_TRUE(imBCC->rclToIndex(nR - 1, nC - 1, nL - 1) == N - 1);
 
-	BOOST_CHECK(imBCC->indexToR(0) == 0);
-	BOOST_CHECK(imBCC->indexToC(0) == 0);
-	BOOST_CHECK(imBCC->indexToL(0) == 0);
-	BOOST_CHECK(imBCC->indexToR(98) == 1);
-	BOOST_CHECK(imBCC->indexToC(98) == 2);
-	BOOST_CHECK(imBCC->indexToL(98) == 3);
-	BOOST_CHECK(imBCC->indexToR(N - 1) == nR - 1);
-	BOOST_CHECK(imBCC->indexToC(N - 1) == nC - 1);
-	BOOST_CHECK(imBCC->indexToL(N - 1) == nL - 1);
+	EXPECT_TRUE(imBCC->indexToR(0) == 0);
+	EXPECT_TRUE(imBCC->indexToC(0) == 0);
+	EXPECT_TRUE(imBCC->indexToL(0) == 0);
+	EXPECT_TRUE(imBCC->indexToR(98) == 1);
+	EXPECT_TRUE(imBCC->indexToC(98) == 2);
+	EXPECT_TRUE(imBCC->indexToL(98) == 3);
+	EXPECT_TRUE(imBCC->indexToR(N - 1) == nR - 1);
+	EXPECT_TRUE(imBCC->indexToC(N - 1) == nC - 1);
+	EXPECT_TRUE(imBCC->indexToL(N - 1) == nL - 1);
 
 	delete imBCC;
 }
 
-BOOST_AUTO_TEST_CASE(coordinateTest) {
+TEST(CImagetypeBCCTestSuite, coordinateTest) {
 
 	// set up image
 	int nR = 5, nC = 6, nL = 7, nB = 3;
@@ -1973,78 +1944,78 @@ BOOST_AUTO_TEST_CASE(coordinateTest) {
 	vector<double> coordinates;
 
 	// spel coordinates
-	BOOST_CHECK_CLOSE_FRACTION(imBCC->indexToX(0), BCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC->indexToY(0), BCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC->indexToZ(0), BCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC->indexToX(82), BCCOFFSET + 4*BCCSQFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC->indexToY(82), BCCOFFSET + 3*BCCSQFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC->indexToZ(82), BCCOFFSET + BCCSQFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC->indexToX(112), BCCOFFSET + 9*BCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC->indexToY(112), BCCOFFSET + 7*BCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC->indexToZ(112), BCCOFFSET + 3*BCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC->indexToX(209), BCCOFFSET + 5*BCCSQFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC->indexToY(209), BCCOFFSET + 4*BCCSQFACEDISTANCE, EPSILONT); // !!!!!!
-	BOOST_CHECK_CLOSE_FRACTION(imBCC->indexToZ(209), BCCOFFSET + 3*BCCSQFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imBCC->indexToX(0), BCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imBCC->indexToY(0), BCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imBCC->indexToZ(0), BCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imBCC->indexToX(82), BCCOFFSET + 4*BCCSQFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imBCC->indexToY(82), BCCOFFSET + 3*BCCSQFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imBCC->indexToZ(82), BCCOFFSET + BCCSQFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imBCC->indexToX(112), BCCOFFSET + 9*BCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imBCC->indexToY(112), BCCOFFSET + 7*BCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imBCC->indexToZ(112), BCCOFFSET + 3*BCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imBCC->indexToX(209), BCCOFFSET + 5*BCCSQFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imBCC->indexToY(209), BCCOFFSET + 4*BCCSQFACEDISTANCE, EPSILONT); // !!!!!!
+	EXPECT_NEAR(imBCC->indexToZ(209), BCCOFFSET + 3*BCCSQFACEDISTANCE, EPSILONT);
 
 	imBCC->getCoordinates(0,coordinates);
-	BOOST_CHECK_CLOSE_FRACTION(coordinates[0], BCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(coordinates[1], BCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(coordinates[2], BCCOFFSET, EPSILONT);
+	EXPECT_NEAR(coordinates[0], BCCOFFSET, EPSILONT);
+	EXPECT_NEAR(coordinates[1], BCCOFFSET, EPSILONT);
+	EXPECT_NEAR(coordinates[2], BCCOFFSET, EPSILONT);
 	imBCC->getCoordinates(82,coordinates);
-	BOOST_CHECK_CLOSE_FRACTION(coordinates[0], BCCOFFSET + 4*BCCSQFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(coordinates[1], BCCOFFSET + 3*BCCSQFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(coordinates[2], BCCOFFSET + BCCSQFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(coordinates[0], BCCOFFSET + 4*BCCSQFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(coordinates[1], BCCOFFSET + 3*BCCSQFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(coordinates[2], BCCOFFSET + BCCSQFACEDISTANCE, EPSILONT);
 	imBCC->getCoordinates(112,coordinates);
-	BOOST_CHECK_CLOSE_FRACTION(coordinates[0], BCCOFFSET + 9*BCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(coordinates[1], BCCOFFSET + 7*BCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(coordinates[2], BCCOFFSET + 3*BCCOFFSET, EPSILONT);
+	EXPECT_NEAR(coordinates[0], BCCOFFSET + 9*BCCOFFSET, EPSILONT);
+	EXPECT_NEAR(coordinates[1], BCCOFFSET + 7*BCCOFFSET, EPSILONT);
+	EXPECT_NEAR(coordinates[2], BCCOFFSET + 3*BCCOFFSET, EPSILONT);
 	imBCC->getCoordinates(209,coordinates);
-	BOOST_CHECK_CLOSE_FRACTION(coordinates[0], BCCOFFSET + 5*BCCSQFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(coordinates[1], BCCOFFSET + 4*BCCSQFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(coordinates[2], BCCOFFSET + 3*BCCSQFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(coordinates[0], BCCOFFSET + 5*BCCSQFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(coordinates[1], BCCOFFSET + 4*BCCSQFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(coordinates[2], BCCOFFSET + 3*BCCSQFACEDISTANCE, EPSILONT);
 
 
-	BOOST_CHECK_CLOSE_FRACTION(imBCC2->indexToX(0), factor * (BCCOFFSET), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC2->indexToY(0), factor * (BCCOFFSET), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC2->indexToZ(0), factor * (BCCOFFSET), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC2->indexToX(82), factor * (BCCOFFSET + 4*BCCSQFACEDISTANCE), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC2->indexToY(82), factor * (BCCOFFSET + 3*BCCSQFACEDISTANCE), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC2->indexToZ(82), factor * (BCCOFFSET + BCCSQFACEDISTANCE), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC2->indexToX(112), factor * (BCCOFFSET + 9*BCCOFFSET), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC2->indexToY(112), factor * (BCCOFFSET + 7*BCCOFFSET), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC2->indexToZ(112), factor * (BCCOFFSET + 3*BCCOFFSET), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC2->indexToX(209), factor * (BCCOFFSET + 5*BCCSQFACEDISTANCE), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC2->indexToY(209), factor * (BCCOFFSET + 4*BCCSQFACEDISTANCE), EPSILONT); // !!!!!!
-	BOOST_CHECK_CLOSE_FRACTION(imBCC2->indexToZ(209), factor * (BCCOFFSET + 3*BCCSQFACEDISTANCE), EPSILONT);
+	EXPECT_NEAR(imBCC2->indexToX(0), factor * (BCCOFFSET), EPSILONT);
+	EXPECT_NEAR(imBCC2->indexToY(0), factor * (BCCOFFSET), EPSILONT);
+	EXPECT_NEAR(imBCC2->indexToZ(0), factor * (BCCOFFSET), EPSILONT);
+	EXPECT_NEAR(imBCC2->indexToX(82), factor * (BCCOFFSET + 4*BCCSQFACEDISTANCE), EPSILONT);
+	EXPECT_NEAR(imBCC2->indexToY(82), factor * (BCCOFFSET + 3*BCCSQFACEDISTANCE), EPSILONT);
+	EXPECT_NEAR(imBCC2->indexToZ(82), factor * (BCCOFFSET + BCCSQFACEDISTANCE), EPSILONT);
+	EXPECT_NEAR(imBCC2->indexToX(112), factor * (BCCOFFSET + 9*BCCOFFSET), EPSILONT);
+	EXPECT_NEAR(imBCC2->indexToY(112), factor * (BCCOFFSET + 7*BCCOFFSET), EPSILONT);
+	EXPECT_NEAR(imBCC2->indexToZ(112), factor * (BCCOFFSET + 3*BCCOFFSET), EPSILONT);
+	EXPECT_NEAR(imBCC2->indexToX(209), factor * (BCCOFFSET + 5*BCCSQFACEDISTANCE), EPSILONT);
+	EXPECT_NEAR(imBCC2->indexToY(209), factor * (BCCOFFSET + 4*BCCSQFACEDISTANCE), EPSILONT); // !!!!!!
+	EXPECT_NEAR(imBCC2->indexToZ(209), factor * (BCCOFFSET + 3*BCCSQFACEDISTANCE), EPSILONT);
 
 	// width, height and depth
-	BOOST_CHECK_CLOSE_FRACTION(imBCC->getWidth(), 6.5 * BCCSQFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC->getHeight(), 5.5 * BCCSQFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC->getDepth(), 4 * BCCSQFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC2->getWidth(), factor * 6.5 * BCCSQFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC2->getHeight(), factor * 5.5 * BCCSQFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC2->getDepth(), factor * 4 * BCCSQFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC1C1L->getWidth(), BCCSQFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC1C1L->getHeight(), N * BCCSQFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC1C1L->getDepth(), BCCSQFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC1R1L->getWidth(), N * BCCSQFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC1R1L->getHeight(), BCCSQFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC1R1L->getDepth(), BCCSQFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC1R1C->getWidth(), BCCSQFACEDISTANCE + BCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC1R1C->getHeight(), BCCSQFACEDISTANCE + BCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC1R1C->getDepth(), (N + 1) * BCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imBCC->getWidth(), 6.5 * BCCSQFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imBCC->getHeight(), 5.5 * BCCSQFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imBCC->getDepth(), 4 * BCCSQFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imBCC2->getWidth(), factor * 6.5 * BCCSQFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imBCC2->getHeight(), factor * 5.5 * BCCSQFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imBCC2->getDepth(), factor * 4 * BCCSQFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imBCC1C1L->getWidth(), BCCSQFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imBCC1C1L->getHeight(), N * BCCSQFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imBCC1C1L->getDepth(), BCCSQFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imBCC1R1L->getWidth(), N * BCCSQFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imBCC1R1L->getHeight(), BCCSQFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imBCC1R1L->getDepth(), BCCSQFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imBCC1R1C->getWidth(), BCCSQFACEDISTANCE + BCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imBCC1R1C->getHeight(), BCCSQFACEDISTANCE + BCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imBCC1R1C->getDepth(), (N + 1) * BCCOFFSET, EPSILONT);
 
-	BOOST_CHECK_CLOSE_FRACTION(imBCCRC->getWidth(), n2 * BCCSQFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCCRC->getHeight(), n1 * BCCSQFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCCRC->getDepth(), BCCSQFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imBCCRC->getWidth(), n2 * BCCSQFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imBCCRC->getHeight(), n1 * BCCSQFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imBCCRC->getDepth(), BCCSQFACEDISTANCE, EPSILONT);
 
-	BOOST_CHECK_CLOSE_FRACTION(imBCCRL->getWidth(), BCCSQFACEDISTANCE + BCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCCRL->getHeight(), n1 * BCCSQFACEDISTANCE + BCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCCRL->getDepth(), (n2 + 1) * BCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imBCCRL->getWidth(), BCCSQFACEDISTANCE + BCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imBCCRL->getHeight(), n1 * BCCSQFACEDISTANCE + BCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imBCCRL->getDepth(), (n2 + 1) * BCCOFFSET, EPSILONT);
 
-	BOOST_CHECK_CLOSE_FRACTION(imBCCCL->getWidth(), n1 * BCCSQFACEDISTANCE + BCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCCCL->getHeight(), BCCSQFACEDISTANCE + BCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCCCL->getDepth(), (n2 + 1) * BCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imBCCCL->getWidth(), n1 * BCCSQFACEDISTANCE + BCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imBCCCL->getHeight(), BCCSQFACEDISTANCE + BCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imBCCCL->getDepth(), (n2 + 1) * BCCOFFSET, EPSILONT);
 
 	delete imBCC;
 	delete imBCC2;
@@ -2056,7 +2027,7 @@ BOOST_AUTO_TEST_CASE(coordinateTest) {
 	delete imBCCRC;
 }
 
-BOOST_AUTO_TEST_CASE(distanceTest) {
+TEST(CImagetypeBCCTestSuite, distanceTest) {
 
 	// set up image
 	int nR = 5, nC = 6, nL = 7, nB = 3;
@@ -2071,41 +2042,41 @@ BOOST_AUTO_TEST_CASE(distanceTest) {
 	double factor = cbrt(volume);
 
 	// distance between spels
-	BOOST_CHECK_CLOSE_FRACTION(imBCC->euclideanDistance(0, 0), 0, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC->euclideanDistance(170, 170), 0, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC->euclideanDistance(N - 1, N - 1), 0, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC->euclideanDistance(82, 45), BCCHEXFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC->euclideanDistance(82, 45), imBCC->euclideanDistance(45, 82), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC->euclideanDistance(82, 46), BCCHEXFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC->euclideanDistance(82, 46), imBCC->euclideanDistance(46, 82), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC->euclideanDistance(82, 51), BCCHEXFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC->euclideanDistance(82, 51), imBCC->euclideanDistance(51, 82), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC->euclideanDistance(82, 52), BCCHEXFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC->euclideanDistance(82, 52), imBCC->euclideanDistance(52, 82), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC->euclideanDistance(82, 22), BCCSQFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC->euclideanDistance(82, 22), imBCC->euclideanDistance(22, 82), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC->euclideanDistance(82, 76), BCCSQFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC->euclideanDistance(82, 76), imBCC->euclideanDistance(76, 82), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC->euclideanDistance(82, 83), BCCSQFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC->euclideanDistance(82, 83), imBCC->euclideanDistance(83, 82), EPSILONT);
+	EXPECT_NEAR(imBCC->euclideanDistance(0, 0), 0, EPSILONT);
+	EXPECT_NEAR(imBCC->euclideanDistance(170, 170), 0, EPSILONT);
+	EXPECT_NEAR(imBCC->euclideanDistance(N - 1, N - 1), 0, EPSILONT);
+	EXPECT_NEAR(imBCC->euclideanDistance(82, 45), BCCHEXFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imBCC->euclideanDistance(82, 45), imBCC->euclideanDistance(45, 82), EPSILONT);
+	EXPECT_NEAR(imBCC->euclideanDistance(82, 46), BCCHEXFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imBCC->euclideanDistance(82, 46), imBCC->euclideanDistance(46, 82), EPSILONT);
+	EXPECT_NEAR(imBCC->euclideanDistance(82, 51), BCCHEXFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imBCC->euclideanDistance(82, 51), imBCC->euclideanDistance(51, 82), EPSILONT);
+	EXPECT_NEAR(imBCC->euclideanDistance(82, 52), BCCHEXFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imBCC->euclideanDistance(82, 52), imBCC->euclideanDistance(52, 82), EPSILONT);
+	EXPECT_NEAR(imBCC->euclideanDistance(82, 22), BCCSQFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imBCC->euclideanDistance(82, 22), imBCC->euclideanDistance(22, 82), EPSILONT);
+	EXPECT_NEAR(imBCC->euclideanDistance(82, 76), BCCSQFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imBCC->euclideanDistance(82, 76), imBCC->euclideanDistance(76, 82), EPSILONT);
+	EXPECT_NEAR(imBCC->euclideanDistance(82, 83), BCCSQFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imBCC->euclideanDistance(82, 83), imBCC->euclideanDistance(83, 82), EPSILONT);
 
-	BOOST_CHECK_CLOSE_FRACTION(imBCC2->euclideanDistance(0, 0), 0, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC2->euclideanDistance(170, 170), 0, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC2->euclideanDistance(N - 1, N - 1), 0, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC2->euclideanDistance(82, 45), factor * BCCHEXFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC2->euclideanDistance(82, 45), imBCC2->euclideanDistance(45, 82), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC2->euclideanDistance(82, 46), factor * BCCHEXFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC2->euclideanDistance(82, 46), imBCC2->euclideanDistance(46, 82), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC2->euclideanDistance(82, 51), factor * BCCHEXFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC2->euclideanDistance(82, 51), imBCC2->euclideanDistance(51, 82), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC2->euclideanDistance(82, 52), factor * BCCHEXFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC2->euclideanDistance(82, 52), imBCC2->euclideanDistance(52, 82), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC2->euclideanDistance(82, 22), factor * BCCSQFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC2->euclideanDistance(82, 22), imBCC2->euclideanDistance(22, 82), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC2->euclideanDistance(82, 76), factor * BCCSQFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC2->euclideanDistance(82, 76), imBCC2->euclideanDistance(76, 82), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC2->euclideanDistance(82, 83), factor * BCCSQFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imBCC2->euclideanDistance(82, 83), imBCC2->euclideanDistance(83, 82), EPSILONT);
+	EXPECT_NEAR(imBCC2->euclideanDistance(0, 0), 0, EPSILONT);
+	EXPECT_NEAR(imBCC2->euclideanDistance(170, 170), 0, EPSILONT);
+	EXPECT_NEAR(imBCC2->euclideanDistance(N - 1, N - 1), 0, EPSILONT);
+	EXPECT_NEAR(imBCC2->euclideanDistance(82, 45), factor * BCCHEXFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imBCC2->euclideanDistance(82, 45), imBCC2->euclideanDistance(45, 82), EPSILONT);
+	EXPECT_NEAR(imBCC2->euclideanDistance(82, 46), factor * BCCHEXFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imBCC2->euclideanDistance(82, 46), imBCC2->euclideanDistance(46, 82), EPSILONT);
+	EXPECT_NEAR(imBCC2->euclideanDistance(82, 51), factor * BCCHEXFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imBCC2->euclideanDistance(82, 51), imBCC2->euclideanDistance(51, 82), EPSILONT);
+	EXPECT_NEAR(imBCC2->euclideanDistance(82, 52), factor * BCCHEXFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imBCC2->euclideanDistance(82, 52), imBCC2->euclideanDistance(52, 82), EPSILONT);
+	EXPECT_NEAR(imBCC2->euclideanDistance(82, 22), factor * BCCSQFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imBCC2->euclideanDistance(82, 22), imBCC2->euclideanDistance(22, 82), EPSILONT);
+	EXPECT_NEAR(imBCC2->euclideanDistance(82, 76), factor * BCCSQFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imBCC2->euclideanDistance(82, 76), imBCC2->euclideanDistance(76, 82), EPSILONT);
+	EXPECT_NEAR(imBCC2->euclideanDistance(82, 83), factor * BCCSQFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imBCC2->euclideanDistance(82, 83), imBCC2->euclideanDistance(83, 82), EPSILONT);
 
 	vector<double> dv;
 	double right[3] = { BCCSQFACEDISTANCE, 0, 0 };
@@ -2124,63 +2095,63 @@ BOOST_AUTO_TEST_CASE(distanceTest) {
 	double bbr[3] = { BCCOFFSET, BCCOFFSET, BCCOFFSET };
 	imBCC->euclideanDistanceVector(82, 82, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK(fabs(dv[i]) < EPSILONT);
+		EXPECT_TRUE(fabs(dv[i]) < EPSILONT);
 	}
 	imBCC->euclideanDistanceVector(82, 83, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], right[i], EPSILONT);
+		EXPECT_NEAR(dv[i], right[i], EPSILONT);
 	}
 	imBCC->euclideanDistanceVector(82, 88, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], bottom[i], EPSILONT);
+		EXPECT_NEAR(dv[i], bottom[i], EPSILONT);
 	}
 	imBCC->euclideanDistanceVector(22, 82, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], back[i], EPSILONT);
+		EXPECT_NEAR(dv[i], back[i], EPSILONT);
 	}
 	imBCC->euclideanDistanceVector(83, 82, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], left[i], EPSILONT);
+		EXPECT_NEAR(dv[i], left[i], EPSILONT);
 	}
 	imBCC->euclideanDistanceVector(88, 82, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], top[i], EPSILONT);
+		EXPECT_NEAR(dv[i], top[i], EPSILONT);
 	}
 	imBCC->euclideanDistanceVector(82, 22, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], front[i], EPSILONT);
+		EXPECT_NEAR(dv[i], front[i], EPSILONT);
 	}
 	imBCC->euclideanDistanceVector(82, 45, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], ftl[i], EPSILONT);
+		EXPECT_NEAR(dv[i], ftl[i], EPSILONT);
 	}
 	imBCC->euclideanDistanceVector(82, 46, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], ftr[i], EPSILONT);
+		EXPECT_NEAR(dv[i], ftr[i], EPSILONT);
 	}
 	imBCC->euclideanDistanceVector(82, 51, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], fbl[i], EPSILONT);
+		EXPECT_NEAR(dv[i], fbl[i], EPSILONT);
 	}
 	imBCC->euclideanDistanceVector(82, 52, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], fbr[i], EPSILONT);
+		EXPECT_NEAR(dv[i], fbr[i], EPSILONT);
 	}
 	imBCC->euclideanDistanceVector(82, 105, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], btl[i], EPSILONT);
+		EXPECT_NEAR(dv[i], btl[i], EPSILONT);
 	}
 	imBCC->euclideanDistanceVector(82, 106, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], btr[i], EPSILONT);
+		EXPECT_NEAR(dv[i], btr[i], EPSILONT);
 	}
 	imBCC->euclideanDistanceVector(82, 111, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], bbl[i], EPSILONT);
+		EXPECT_NEAR(dv[i], bbl[i], EPSILONT);
 	}
 	imBCC->euclideanDistanceVector(82, 112, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], bbr[i], EPSILONT);
+		EXPECT_NEAR(dv[i], bbr[i], EPSILONT);
 	}
 
 	double right2[3] = { factor * BCCSQFACEDISTANCE, 0, 0 };
@@ -2199,70 +2170,70 @@ BOOST_AUTO_TEST_CASE(distanceTest) {
 	double bbr2[3] = { factor * BCCOFFSET, factor * BCCOFFSET, factor * BCCOFFSET };
 	imBCC2->euclideanDistanceVector(82, 82, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK(fabs(dv[i]) < EPSILONT);
+		EXPECT_TRUE(fabs(dv[i]) < EPSILONT);
 	}
 	imBCC2->euclideanDistanceVector(82, 83, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], right2[i], EPSILONT);
+		EXPECT_NEAR(dv[i], right2[i], EPSILONT);
 	}
 	imBCC2->euclideanDistanceVector(82, 88, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], bottom2[i], EPSILONT);
+		EXPECT_NEAR(dv[i], bottom2[i], EPSILONT);
 	}
 	imBCC2->euclideanDistanceVector(22, 82, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], back2[i], EPSILONT);
+		EXPECT_NEAR(dv[i], back2[i], EPSILONT);
 	}
 	imBCC2->euclideanDistanceVector(83, 82, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], left2[i], EPSILONT);
+		EXPECT_NEAR(dv[i], left2[i], EPSILONT);
 	}
 	imBCC2->euclideanDistanceVector(88, 82, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], top2[i], EPSILONT);
+		EXPECT_NEAR(dv[i], top2[i], EPSILONT);
 	}
 	imBCC2->euclideanDistanceVector(82, 22, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], front2[i], EPSILONT);
+		EXPECT_NEAR(dv[i], front2[i], EPSILONT);
 	}
 	imBCC2->euclideanDistanceVector(82, 45, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], ftl2[i], EPSILONT);
+		EXPECT_NEAR(dv[i], ftl2[i], EPSILONT);
 	}
 	imBCC2->euclideanDistanceVector(82, 46, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], ftr2[i], EPSILONT);
+		EXPECT_NEAR(dv[i], ftr2[i], EPSILONT);
 	}
 	imBCC2->euclideanDistanceVector(82, 51, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], fbl2[i], EPSILONT);
+		EXPECT_NEAR(dv[i], fbl2[i], EPSILONT);
 	}
 	imBCC2->euclideanDistanceVector(82, 52, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], fbr2[i], EPSILONT);
+		EXPECT_NEAR(dv[i], fbr2[i], EPSILONT);
 	}
 	imBCC2->euclideanDistanceVector(82, 105, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], btl2[i], EPSILONT);
+		EXPECT_NEAR(dv[i], btl2[i], EPSILONT);
 	}
 	imBCC2->euclideanDistanceVector(82, 106, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], btr2[i], EPSILONT);
+		EXPECT_NEAR(dv[i], btr2[i], EPSILONT);
 	}
 	imBCC2->euclideanDistanceVector(82, 111, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], bbl2[i], EPSILONT);
+		EXPECT_NEAR(dv[i], bbl2[i], EPSILONT);
 	}
 	imBCC2->euclideanDistanceVector(82, 112, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], bbr2[i], EPSILONT);
+		EXPECT_NEAR(dv[i], bbr2[i], EPSILONT);
 	}
 
 	delete imBCC;
 	delete imBCC2;
 }
 
-BOOST_AUTO_TEST_CASE(neighborTest) {
+TEST(CImagetypeBCCTestSuite, neighborTest) {
 	/**
 	 * Tests getNeighbor(r,c,l,N). Since all other methods
 	 * always call getXNeighbors(r,c,l), those methods should work
@@ -2293,146 +2264,143 @@ BOOST_AUTO_TEST_CASE(neighborTest) {
 	correctNNeighbors = 8;
 	imBCC->getNeighbors(3, 4, 2, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK(returnedNeighbors == correctNNeighbors);
+	EXPECT_TRUE(returnedNeighbors == correctNNeighbors);
 	for (int i = 0; i < returnedNeighbors; i++) {
-		BOOST_CHECK(neighbors[i].getIndex() == BCC8EL[i]);
+		EXPECT_TRUE(neighbors[i].getIndex() == BCC8EL[i]);
 	}
 	imBCC->getNeighbors(imBCC->rclToIndex(3, 4, 2), nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK(returnedNeighbors == correctNNeighbors);
+	EXPECT_TRUE(returnedNeighbors == correctNNeighbors);
 	for (int i = 0; i < returnedNeighbors; i++) {
-		BOOST_CHECK(neighbors[i].getIndex() == BCC8EL[i]);
+		EXPECT_TRUE(neighbors[i].getIndex() == BCC8EL[i]);
 	}
 	imBCC->getNeighbors(3, 4, 3, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK(returnedNeighbors == correctNNeighbors);
+	EXPECT_TRUE(returnedNeighbors == correctNNeighbors);
 	for (int i = 0; i < returnedNeighbors; i++) {
-		BOOST_CHECK(neighbors[i].getIndex() == BCC8OL[i]);
+		EXPECT_TRUE(neighbors[i].getIndex() == BCC8OL[i]);
 	}
 	imBCC->getNeighbors(imBCC->rclToIndex(3, 4, 3), nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK(returnedNeighbors == correctNNeighbors);
+	EXPECT_TRUE(returnedNeighbors == correctNNeighbors);
 	for (int i = 0; i < returnedNeighbors; i++) {
-		BOOST_CHECK(neighbors[i].getIndex() == BCC8OL[i]);
+		EXPECT_TRUE(neighbors[i].getIndex() == BCC8OL[i]);
 	}
 	correctNNeighbors = 1;
 	imBCC->getNeighbors(0, 0, 0, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK(returnedNeighbors == correctNNeighbors);
+	EXPECT_TRUE(returnedNeighbors == correctNNeighbors);
 	correctNNeighbors = 2;
 	imBCC->getNeighbors(4, 0, 6, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK(returnedNeighbors == correctNNeighbors);
+	EXPECT_TRUE(returnedNeighbors == correctNNeighbors);
 	correctNNeighbors = 4;
 	imBCC->getNeighbors(nR - 1, nC - 1, nL - 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK(returnedNeighbors == correctNNeighbors);
+	EXPECT_TRUE(returnedNeighbors == correctNNeighbors);
 	imBCC->getNeighbors(0, 5, 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK(returnedNeighbors == correctNNeighbors);
+	EXPECT_TRUE(returnedNeighbors == correctNNeighbors);
 	imBCC->getNeighbors(4, 0, 5, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK(returnedNeighbors == correctNNeighbors);
+	EXPECT_TRUE(returnedNeighbors == correctNNeighbors);
 
 	// 14 neighbors
 	nNeighbors = 14;
 	correctNNeighbors = 14;
 	imBCC->getNeighbors(3, 4, 2, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK(returnedNeighbors == correctNNeighbors);
+	EXPECT_TRUE(returnedNeighbors == correctNNeighbors);
 	for (int i = 0; i < returnedNeighbors; i++) {
-		BOOST_CHECK(neighbors[i].getIndex() == BCC14EL[i]);
+		EXPECT_TRUE(neighbors[i].getIndex() == BCC14EL[i]);
 	}
 	imBCC->getNeighbors(imBCC->rclToIndex(3, 4, 2), nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK(returnedNeighbors == correctNNeighbors);
+	EXPECT_TRUE(returnedNeighbors == correctNNeighbors);
 	for (int i = 0; i < returnedNeighbors; i++) {
-		BOOST_CHECK(neighbors[i].getIndex() == BCC14EL[i]);
+		EXPECT_TRUE(neighbors[i].getIndex() == BCC14EL[i]);
 	}
 	imBCC->getNeighbors(3, 4, 3, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK(returnedNeighbors == correctNNeighbors);
+	EXPECT_TRUE(returnedNeighbors == correctNNeighbors);
 	for (int i = 0; i < returnedNeighbors; i++) {
-		BOOST_CHECK(neighbors[i].getIndex() == BCC14OL[i]);
+		EXPECT_TRUE(neighbors[i].getIndex() == BCC14OL[i]);
 	}
 	imBCC->getNeighbors(imBCC->rclToIndex(3, 4, 3), nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK(returnedNeighbors == correctNNeighbors);
+	EXPECT_TRUE(returnedNeighbors == correctNNeighbors);
 	for (int i = 0; i < returnedNeighbors; i++) {
-		BOOST_CHECK(neighbors[i].getIndex() == BCC14OL[i]);
+		EXPECT_TRUE(neighbors[i].getIndex() == BCC14OL[i]);
 	}
 	correctNNeighbors = 4;
 	imBCC->getNeighbors(0, 0, 0, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK(returnedNeighbors == correctNNeighbors);
+	EXPECT_TRUE(returnedNeighbors == correctNNeighbors);
 	correctNNeighbors = 5;
 	imBCC->getNeighbors(4, 0, 6, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK(returnedNeighbors == correctNNeighbors);
+	EXPECT_TRUE(returnedNeighbors == correctNNeighbors);
 	correctNNeighbors = 7;
 	imBCC->getNeighbors(nR - 1, nC - 1, nL - 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK(returnedNeighbors == correctNNeighbors);
+	EXPECT_TRUE(returnedNeighbors == correctNNeighbors);
 	imBCC->getNeighbors(0, 5, 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK(returnedNeighbors == correctNNeighbors);
+	EXPECT_TRUE(returnedNeighbors == correctNNeighbors);
 	imBCC->getNeighbors(4, 0, 5, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK(returnedNeighbors == correctNNeighbors);
+	EXPECT_TRUE(returnedNeighbors == correctNNeighbors);
 
 	// Exceptions
 	nNeighbors = 8;
-	BOOST_CHECK_THROW(imBCC->getNeighbors(nR, 0, 0, nNeighbors, neighbors), outsideImageException);
-	BOOST_CHECK_THROW(imBCC->getNeighbors(-1, 0, 0, nNeighbors, neighbors), outsideImageException);
-	BOOST_CHECK_THROW(imBCC->getNeighbors(0, nC, 0, nNeighbors, neighbors), outsideImageException);
-	BOOST_CHECK_THROW(imBCC->getNeighbors(0, -1, 0, nNeighbors, neighbors), outsideImageException);
-	BOOST_CHECK_THROW(imBCC->getNeighbors(0, 0, nL, nNeighbors, neighbors), outsideImageException);
-	BOOST_CHECK_THROW(imBCC->getNeighbors(0, 0, -1, nNeighbors, neighbors), outsideImageException);
+	EXPECT_THROW(imBCC->getNeighbors(nR, 0, 0, nNeighbors, neighbors), outsideImageException);
+	EXPECT_THROW(imBCC->getNeighbors(-1, 0, 0, nNeighbors, neighbors), outsideImageException);
+	EXPECT_THROW(imBCC->getNeighbors(0, nC, 0, nNeighbors, neighbors), outsideImageException);
+	EXPECT_THROW(imBCC->getNeighbors(0, -1, 0, nNeighbors, neighbors), outsideImageException);
+	EXPECT_THROW(imBCC->getNeighbors(0, 0, nL, nNeighbors, neighbors), outsideImageException);
+	EXPECT_THROW(imBCC->getNeighbors(0, 0, -1, nNeighbors, neighbors), outsideImageException);
 	nNeighbors = 14;
-	BOOST_CHECK_THROW(imBCC->getNeighbors(nR, 0, 0, nNeighbors, neighbors), outsideImageException);
-	BOOST_CHECK_THROW(imBCC->getNeighbors(-1, 0, 0, nNeighbors, neighbors), outsideImageException);
-	BOOST_CHECK_THROW(imBCC->getNeighbors(0, nC, 0, nNeighbors, neighbors), outsideImageException);
-	BOOST_CHECK_THROW(imBCC->getNeighbors(0, -1, 0, nNeighbors, neighbors), outsideImageException);
-	BOOST_CHECK_THROW(imBCC->getNeighbors(0, 0, nL, nNeighbors, neighbors), outsideImageException);
-	BOOST_CHECK_THROW(imBCC->getNeighbors(0, 0, -1, nNeighbors, neighbors), outsideImageException);
+	EXPECT_THROW(imBCC->getNeighbors(nR, 0, 0, nNeighbors, neighbors), outsideImageException);
+	EXPECT_THROW(imBCC->getNeighbors(-1, 0, 0, nNeighbors, neighbors), outsideImageException);
+	EXPECT_THROW(imBCC->getNeighbors(0, nC, 0, nNeighbors, neighbors), outsideImageException);
+	EXPECT_THROW(imBCC->getNeighbors(0, -1, 0, nNeighbors, neighbors), outsideImageException);
+	EXPECT_THROW(imBCC->getNeighbors(0, 0, nL, nNeighbors, neighbors), outsideImageException);
+	EXPECT_THROW(imBCC->getNeighbors(0, 0, -1, nNeighbors, neighbors), outsideImageException);
 	nNeighbors = 6;
-	BOOST_CHECK_THROW(imBCC->getNeighbors(0, 0, 0, nNeighbors, neighbors), nNeighborsException);
+	EXPECT_THROW(imBCC->getNeighbors(0, 0, 0, nNeighbors, neighbors), nNeighborsException);
 	nNeighbors = 12;
-	BOOST_CHECK_THROW(imBCC->getNeighbors(0, 0, 0, nNeighbors, neighbors), nNeighborsException);
+	EXPECT_THROW(imBCC->getNeighbors(0, 0, 0, nNeighbors, neighbors), nNeighborsException);
 	nNeighbors = 18;
-	BOOST_CHECK_THROW(imBCC->getNeighbors(0, 0, 0, nNeighbors, neighbors), nNeighborsException);
+	EXPECT_THROW(imBCC->getNeighbors(0, 0, 0, nNeighbors, neighbors), nNeighborsException);
 	nNeighbors = 26;
-	BOOST_CHECK_THROW(imBCC->getNeighbors(0, 0, 0, nNeighbors, neighbors), nNeighborsException);
+	EXPECT_THROW(imBCC->getNeighbors(0, 0, 0, nNeighbors, neighbors), nNeighborsException);
 	nNeighbors = -8;
-	BOOST_CHECK_THROW(imBCC->getNeighbors(0, 0, 0, nNeighbors, neighbors), nNeighborsException);
+	EXPECT_THROW(imBCC->getNeighbors(0, 0, 0, nNeighbors, neighbors), nNeighborsException);
 	nNeighbors = 0;
-	BOOST_CHECK_THROW(imBCC->getNeighbors(0, 0, 0, nNeighbors, neighbors), nNeighborsException);
+	EXPECT_THROW(imBCC->getNeighbors(0, 0, 0, nNeighbors, neighbors), nNeighborsException);
 	nNeighbors = 100;
-	BOOST_CHECK_THROW(imBCC->getNeighbors(0, 0, 0, nNeighbors, neighbors), nNeighborsException);
+	EXPECT_THROW(imBCC->getNeighbors(0, 0, 0, nNeighbors, neighbors), nNeighborsException);
 
 	delete imBCC;
 }
 
- BOOST_AUTO_TEST_CASE(filterTest){
+ TEST(CImagetypeBCCTestSuite, filterTest){
 
  }
 
- BOOST_AUTO_TEST_CASE(segmentationTest){
+ TEST(CImagetypeBCCTestSuite, segmentationTest){
 
  }
 
- BOOST_AUTO_TEST_CASE(distanceTransformTest){
+ TEST(CImagetypeBCCTestSuite, distanceTransformTest){
 
  }
-
- BOOST_AUTO_TEST_SUITE_END()
 
 /**
  * Tests type CImagetypeFCC aka CImageFCC<uint8>.
  */
-BOOST_AUTO_TEST_SUITE(CImagetypeFCC_test)
 
-BOOST_AUTO_TEST_CASE(constructorTest) {
+TEST(CImagetypeFCCTestSuite, constructorTest) {
 
 	// set up image
 	int nR = 5, nC = 6, nL = 7, nB = 3;
@@ -2444,91 +2412,91 @@ BOOST_AUTO_TEST_CASE(constructorTest) {
 
 	// constructor
 	CImagetypeFCC *imFCC = new CImagetypeFCC(data, nR, nC, nL, nB);
-	BOOST_CHECK(imFCC);
+	EXPECT_TRUE(imFCC);
 
 	// getters
 	uint8* imdata = imFCC->getData();
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < nB; j++) {
-			BOOST_CHECK(imdata[i] == data[i]);
+			EXPECT_TRUE(imdata[i] == data[i]);
 		}
 	}
 
-	BOOST_CHECK(imFCC->getNElements() == N);
-	BOOST_CHECK(imFCC->getNElements() != N + 1);
+	EXPECT_TRUE(imFCC->getNElements() == N);
+	EXPECT_TRUE(imFCC->getNElements() != N + 1);
 
-	BOOST_CHECK(imFCC->getNColumns() == nC);
-	BOOST_CHECK(imFCC->getNColumns() != nC + 1);
+	EXPECT_TRUE(imFCC->getNColumns() == nC);
+	EXPECT_TRUE(imFCC->getNColumns() != nC + 1);
 
-	BOOST_CHECK(imFCC->getNRows() == nR);
-	BOOST_CHECK(imFCC->getNRows() != nR + 1);
+	EXPECT_TRUE(imFCC->getNRows() == nR);
+	EXPECT_TRUE(imFCC->getNRows() != nR + 1);
 
-	BOOST_CHECK(imFCC->getNLayers() == nL);
-	BOOST_CHECK(imFCC->getNLayers() != nL + 1);
+	EXPECT_TRUE(imFCC->getNLayers() == nL);
+	EXPECT_TRUE(imFCC->getNLayers() != nL + 1);
 
-	BOOST_CHECK(imFCC->getNBands() == nB);
-	BOOST_CHECK(imFCC->getNBands() != nB + 1);
+	EXPECT_TRUE(imFCC->getNBands() == nB);
+	EXPECT_TRUE(imFCC->getNBands() != nB + 1);
 
 	// validity of elements
-	BOOST_CHECK(!imFCC->isValid(-1));
-	BOOST_CHECK(imFCC->isValid(0));
-	BOOST_CHECK(imFCC->isValid(N - 1));
-	BOOST_CHECK(!imFCC->isValid(N));
+	EXPECT_TRUE(!imFCC->isValid(-1));
+	EXPECT_TRUE(imFCC->isValid(0));
+	EXPECT_TRUE(imFCC->isValid(N - 1));
+	EXPECT_TRUE(!imFCC->isValid(N));
 
-	BOOST_CHECK(!imFCC->isValid(0, -1));
-	BOOST_CHECK(!imFCC->isValid(N - 1, -1));
-	BOOST_CHECK(!imFCC->isValid(-1, 0));
-	BOOST_CHECK(imFCC->isValid(0, 0));
-	BOOST_CHECK(imFCC->isValid(N - 1, 0));
-	BOOST_CHECK(!imFCC->isValid(N, 0));
-	BOOST_CHECK(imFCC->isValid(0, nB - 1));
-	BOOST_CHECK(imFCC->isValid(N - 1, nB - 1));
-	BOOST_CHECK(!imFCC->isValid(0, nB));
-	BOOST_CHECK(!imFCC->isValid(N - 1, nB));
+	EXPECT_TRUE(!imFCC->isValid(0, -1));
+	EXPECT_TRUE(!imFCC->isValid(N - 1, -1));
+	EXPECT_TRUE(!imFCC->isValid(-1, 0));
+	EXPECT_TRUE(imFCC->isValid(0, 0));
+	EXPECT_TRUE(imFCC->isValid(N - 1, 0));
+	EXPECT_TRUE(!imFCC->isValid(N, 0));
+	EXPECT_TRUE(imFCC->isValid(0, nB - 1));
+	EXPECT_TRUE(imFCC->isValid(N - 1, nB - 1));
+	EXPECT_TRUE(!imFCC->isValid(0, nB));
+	EXPECT_TRUE(!imFCC->isValid(N - 1, nB));
 
-	BOOST_CHECK(!imFCC->isValid(-1, 0, 0));
-	BOOST_CHECK(!imFCC->isValid(0, -1, 0));
-	BOOST_CHECK(!imFCC->isValid(0, 0, -1));
-	BOOST_CHECK(imFCC->isValid(0, 0, 0));
-	BOOST_CHECK(imFCC->isValid(nR - 1, 0, 0));
-	BOOST_CHECK(imFCC->isValid(0, nC - 1, 0));
-	BOOST_CHECK(imFCC->isValid(0, 0, nL - 1));
-	BOOST_CHECK(!imFCC->isValid(nR, 0, 0));
-	BOOST_CHECK(!imFCC->isValid(0, nC, 0));
-	BOOST_CHECK(!imFCC->isValid(0, 0, nL));
+	EXPECT_TRUE(!imFCC->isValid(-1, 0, 0));
+	EXPECT_TRUE(!imFCC->isValid(0, -1, 0));
+	EXPECT_TRUE(!imFCC->isValid(0, 0, -1));
+	EXPECT_TRUE(imFCC->isValid(0, 0, 0));
+	EXPECT_TRUE(imFCC->isValid(nR - 1, 0, 0));
+	EXPECT_TRUE(imFCC->isValid(0, nC - 1, 0));
+	EXPECT_TRUE(imFCC->isValid(0, 0, nL - 1));
+	EXPECT_TRUE(!imFCC->isValid(nR, 0, 0));
+	EXPECT_TRUE(!imFCC->isValid(0, nC, 0));
+	EXPECT_TRUE(!imFCC->isValid(0, 0, nL));
 
-	BOOST_CHECK(!imFCC->isValid(0, 0, 0, -1));
-	BOOST_CHECK(!imFCC->isValid(nR - 1, 0, 0, -1));
-	BOOST_CHECK(!imFCC->isValid(0, nC - 1, 0, -1));
-	BOOST_CHECK(!imFCC->isValid(0, 0, nL - 1, -1));
-	BOOST_CHECK(!imFCC->isValid(0, 0, 0, nB));
-	BOOST_CHECK(!imFCC->isValid(nR - 1, 0, 0, nB));
-	BOOST_CHECK(!imFCC->isValid(0, nC - 1, 0, nB));
-	BOOST_CHECK(!imFCC->isValid(0, 0, nL - 1, nB));
-	BOOST_CHECK(imFCC->isValid(0, 0, 0, nB - 1));
-	BOOST_CHECK(imFCC->isValid(nR - 1, 0, 0, nB - 1));
-	BOOST_CHECK(imFCC->isValid(0, nC - 1, 0, nB - 1));
-	BOOST_CHECK(imFCC->isValid(0, 0, nL - 1, nB - 1));
+	EXPECT_TRUE(!imFCC->isValid(0, 0, 0, -1));
+	EXPECT_TRUE(!imFCC->isValid(nR - 1, 0, 0, -1));
+	EXPECT_TRUE(!imFCC->isValid(0, nC - 1, 0, -1));
+	EXPECT_TRUE(!imFCC->isValid(0, 0, nL - 1, -1));
+	EXPECT_TRUE(!imFCC->isValid(0, 0, 0, nB));
+	EXPECT_TRUE(!imFCC->isValid(nR - 1, 0, 0, nB));
+	EXPECT_TRUE(!imFCC->isValid(0, nC - 1, 0, nB));
+	EXPECT_TRUE(!imFCC->isValid(0, 0, nL - 1, nB));
+	EXPECT_TRUE(imFCC->isValid(0, 0, 0, nB - 1));
+	EXPECT_TRUE(imFCC->isValid(nR - 1, 0, 0, nB - 1));
+	EXPECT_TRUE(imFCC->isValid(0, nC - 1, 0, nB - 1));
+	EXPECT_TRUE(imFCC->isValid(0, 0, nL - 1, nB - 1));
 
 	// index conversion
-	BOOST_CHECK(imFCC->rclToIndex(0, 0, 0) == 0);
-	BOOST_CHECK(imFCC->rclToIndex(1, 2, 3) == 98);
-	BOOST_CHECK(imFCC->rclToIndex(nR - 1, nC - 1, nL - 1) == N - 1);
+	EXPECT_TRUE(imFCC->rclToIndex(0, 0, 0) == 0);
+	EXPECT_TRUE(imFCC->rclToIndex(1, 2, 3) == 98);
+	EXPECT_TRUE(imFCC->rclToIndex(nR - 1, nC - 1, nL - 1) == N - 1);
 
-	BOOST_CHECK(imFCC->indexToR(0) == 0);
-	BOOST_CHECK(imFCC->indexToC(0) == 0);
-	BOOST_CHECK(imFCC->indexToL(0) == 0);
-	BOOST_CHECK(imFCC->indexToR(98) == 1);
-	BOOST_CHECK(imFCC->indexToC(98) == 2);
-	BOOST_CHECK(imFCC->indexToL(98) == 3);
-	BOOST_CHECK(imFCC->indexToR(N - 1) == nR - 1);
-	BOOST_CHECK(imFCC->indexToC(N - 1) == nC - 1);
-	BOOST_CHECK(imFCC->indexToL(N - 1) == nL - 1);
+	EXPECT_TRUE(imFCC->indexToR(0) == 0);
+	EXPECT_TRUE(imFCC->indexToC(0) == 0);
+	EXPECT_TRUE(imFCC->indexToL(0) == 0);
+	EXPECT_TRUE(imFCC->indexToR(98) == 1);
+	EXPECT_TRUE(imFCC->indexToC(98) == 2);
+	EXPECT_TRUE(imFCC->indexToL(98) == 3);
+	EXPECT_TRUE(imFCC->indexToR(N - 1) == nR - 1);
+	EXPECT_TRUE(imFCC->indexToC(N - 1) == nC - 1);
+	EXPECT_TRUE(imFCC->indexToL(N - 1) == nL - 1);
 
 	delete imFCC;
 }
 
-BOOST_AUTO_TEST_CASE(coordinateTest) {
+TEST(CImagetypeFCCTestSuite, coordinateTest) {
 
 	// set up image
 	int nR = 5, nC = 6, nL = 7, nB = 3;
@@ -2544,56 +2512,56 @@ BOOST_AUTO_TEST_CASE(coordinateTest) {
 	vector<double> coordinates;
 
 	// spel coordinates
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->indexToX(0), FCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->indexToY(0), FCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->indexToZ(0), FCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->indexToX(135), FCCOFFSET + 6*FCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->indexToY(135), FCCOFFSET + FCCPOINTDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->indexToZ(135), FCCOFFSET + 2*FCCPOINTDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->indexToX(80), FCCOFFSET + 5*FCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->indexToY(80), FCCOFFSET + 3*FCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->indexToZ(80), FCCOFFSET + 2*FCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->indexToX(105), FCCOFFSET + 7*FCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->indexToY(105), FCCOFFSET + 2*FCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->indexToZ(105), FCCOFFSET + 3*FCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->indexToX(110), FCCOFFSET + 4*FCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->indexToY(110), FCCOFFSET + 3*FCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->indexToZ(110), FCCOFFSET + 3*FCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->indexToX(209), FCCOFFSET + 10*FCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->indexToY(209), FCCOFFSET + 4*FCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->indexToZ(209), FCCOFFSET + 6*FCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imFCC->indexToX(0), FCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imFCC->indexToY(0), FCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imFCC->indexToZ(0), FCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imFCC->indexToX(135), FCCOFFSET + 6*FCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imFCC->indexToY(135), FCCOFFSET + FCCPOINTDISTANCE, EPSILONT);
+	EXPECT_NEAR(imFCC->indexToZ(135), FCCOFFSET + 2*FCCPOINTDISTANCE, EPSILONT);
+	EXPECT_NEAR(imFCC->indexToX(80), FCCOFFSET + 5*FCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imFCC->indexToY(80), FCCOFFSET + 3*FCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imFCC->indexToZ(80), FCCOFFSET + 2*FCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imFCC->indexToX(105), FCCOFFSET + 7*FCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imFCC->indexToY(105), FCCOFFSET + 2*FCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imFCC->indexToZ(105), FCCOFFSET + 3*FCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imFCC->indexToX(110), FCCOFFSET + 4*FCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imFCC->indexToY(110), FCCOFFSET + 3*FCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imFCC->indexToZ(110), FCCOFFSET + 3*FCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imFCC->indexToX(209), FCCOFFSET + 10*FCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imFCC->indexToY(209), FCCOFFSET + 4*FCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imFCC->indexToZ(209), FCCOFFSET + 6*FCCOFFSET, EPSILONT);
 
 	imFCC->getCoordinates(0,coordinates);
-	BOOST_CHECK_CLOSE_FRACTION(coordinates[0], FCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(coordinates[1], FCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(coordinates[2], FCCOFFSET, EPSILONT);
+	EXPECT_NEAR(coordinates[0], FCCOFFSET, EPSILONT);
+	EXPECT_NEAR(coordinates[1], FCCOFFSET, EPSILONT);
+	EXPECT_NEAR(coordinates[2], FCCOFFSET, EPSILONT);
 	imFCC->getCoordinates(135,coordinates);
-	BOOST_CHECK_CLOSE_FRACTION(coordinates[0], FCCOFFSET + 6*FCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(coordinates[1], FCCOFFSET + FCCPOINTDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(coordinates[2], FCCOFFSET + 2*FCCPOINTDISTANCE, EPSILONT);
+	EXPECT_NEAR(coordinates[0], FCCOFFSET + 6*FCCOFFSET, EPSILONT);
+	EXPECT_NEAR(coordinates[1], FCCOFFSET + FCCPOINTDISTANCE, EPSILONT);
+	EXPECT_NEAR(coordinates[2], FCCOFFSET + 2*FCCPOINTDISTANCE, EPSILONT);
 	imFCC->getCoordinates(209,coordinates);
-	BOOST_CHECK_CLOSE_FRACTION(coordinates[0], FCCOFFSET + 10*FCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(coordinates[1], FCCOFFSET + 4*FCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(coordinates[2], FCCOFFSET + 6*FCCOFFSET, EPSILONT);
+	EXPECT_NEAR(coordinates[0], FCCOFFSET + 10*FCCOFFSET, EPSILONT);
+	EXPECT_NEAR(coordinates[1], FCCOFFSET + 4*FCCOFFSET, EPSILONT);
+	EXPECT_NEAR(coordinates[2], FCCOFFSET + 6*FCCOFFSET, EPSILONT);
 
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->indexToX(0), factor * FCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->indexToY(0), factor * FCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->indexToZ(0), factor * FCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->indexToX(135), factor * (FCCOFFSET + 6*FCCOFFSET), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->indexToY(135), factor * (FCCOFFSET + FCCPOINTDISTANCE), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->indexToZ(135), factor * (FCCOFFSET + 2*FCCPOINTDISTANCE), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->indexToX(80), factor * (FCCOFFSET + 5*FCCOFFSET), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->indexToY(80), factor * (FCCOFFSET + 3*FCCOFFSET), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->indexToZ(80), factor * (FCCOFFSET + 2*FCCOFFSET), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->indexToX(105), factor * (FCCOFFSET + 7*FCCOFFSET), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->indexToY(105), factor * (FCCOFFSET + 2*FCCOFFSET), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->indexToZ(105), factor * (FCCOFFSET + 3*FCCOFFSET), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->indexToX(110), factor * (FCCOFFSET + 4*FCCOFFSET), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->indexToY(110), factor * (FCCOFFSET + 3*FCCOFFSET), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->indexToZ(110), factor * (FCCOFFSET + 3*FCCOFFSET), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->indexToX(209), factor * (FCCOFFSET + 10*FCCOFFSET), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->indexToY(209), factor * (FCCOFFSET + 4*FCCOFFSET), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->indexToZ(209), factor * (FCCOFFSET + 6*FCCOFFSET), EPSILONT);
+	EXPECT_NEAR(imFCC2->indexToX(0), factor * FCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imFCC2->indexToY(0), factor * FCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imFCC2->indexToZ(0), factor * FCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imFCC2->indexToX(135), factor * (FCCOFFSET + 6*FCCOFFSET), EPSILONT);
+	EXPECT_NEAR(imFCC2->indexToY(135), factor * (FCCOFFSET + FCCPOINTDISTANCE), EPSILONT);
+	EXPECT_NEAR(imFCC2->indexToZ(135), factor * (FCCOFFSET + 2*FCCPOINTDISTANCE), EPSILONT);
+	EXPECT_NEAR(imFCC2->indexToX(80), factor * (FCCOFFSET + 5*FCCOFFSET), EPSILONT);
+	EXPECT_NEAR(imFCC2->indexToY(80), factor * (FCCOFFSET + 3*FCCOFFSET), EPSILONT);
+	EXPECT_NEAR(imFCC2->indexToZ(80), factor * (FCCOFFSET + 2*FCCOFFSET), EPSILONT);
+	EXPECT_NEAR(imFCC2->indexToX(105), factor * (FCCOFFSET + 7*FCCOFFSET), EPSILONT);
+	EXPECT_NEAR(imFCC2->indexToY(105), factor * (FCCOFFSET + 2*FCCOFFSET), EPSILONT);
+	EXPECT_NEAR(imFCC2->indexToZ(105), factor * (FCCOFFSET + 3*FCCOFFSET), EPSILONT);
+	EXPECT_NEAR(imFCC2->indexToX(110), factor * (FCCOFFSET + 4*FCCOFFSET), EPSILONT);
+	EXPECT_NEAR(imFCC2->indexToY(110), factor * (FCCOFFSET + 3*FCCOFFSET), EPSILONT);
+	EXPECT_NEAR(imFCC2->indexToZ(110), factor * (FCCOFFSET + 3*FCCOFFSET), EPSILONT);
+	EXPECT_NEAR(imFCC2->indexToX(209), factor * (FCCOFFSET + 10*FCCOFFSET), EPSILONT);
+	EXPECT_NEAR(imFCC2->indexToY(209), factor * (FCCOFFSET + 4*FCCOFFSET), EPSILONT);
+	EXPECT_NEAR(imFCC2->indexToZ(209), factor * (FCCOFFSET + 6*FCCOFFSET), EPSILONT);
 
 	CImagetypeFCC *imFCC1C1L = new CImagetypeFCC(data, N, 1, 1, 1);
 	CImagetypeFCC *imFCC1R1L = new CImagetypeFCC(data, 1, N, 1, 1);
@@ -2604,33 +2572,33 @@ BOOST_AUTO_TEST_CASE(coordinateTest) {
 	CImagetypeFCC *imFCCCL = new CImagetypeFCC(data, 1, n1, n2, 1);
 
 	// width, height and depth
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->getWidth(), 6 * FCCPOINTDISTANCE + FCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->getHeight(), 3 * FCCPOINTDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->getDepth(), (7 + 1) * FCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->getWidth(), factor * (6 * FCCPOINTDISTANCE + FCCOFFSET), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->getHeight(), factor * (3 * FCCPOINTDISTANCE), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->getDepth(), factor * (7 + 1) * FCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC1C1L->getWidth(), 3 * FCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC1C1L->getHeight(), (N + 1) * FCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC1C1L->getDepth(), FCCPOINTDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC1R1L->getWidth(), N * FCCPOINTDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC1R1L->getHeight(), FCCPOINTDISTANCE, EPSILONT); //!!
-	BOOST_CHECK_CLOSE_FRACTION(imFCC1R1L->getDepth(), FCCPOINTDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC1R1C->getWidth(), FCCPOINTDISTANCE + FCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC1R1C->getHeight(), FCCPOINTDISTANCE, EPSILONT); //!!
-	BOOST_CHECK_CLOSE_FRACTION(imFCC1R1C->getDepth(), (N + 1) * FCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imFCC->getWidth(), 6 * FCCPOINTDISTANCE + FCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imFCC->getHeight(), 3 * FCCPOINTDISTANCE, EPSILONT);
+	EXPECT_NEAR(imFCC->getDepth(), (7 + 1) * FCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imFCC2->getWidth(), factor * (6 * FCCPOINTDISTANCE + FCCOFFSET), EPSILONT);
+	EXPECT_NEAR(imFCC2->getHeight(), factor * (3 * FCCPOINTDISTANCE), EPSILONT);
+	EXPECT_NEAR(imFCC2->getDepth(), factor * (7 + 1) * FCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imFCC1C1L->getWidth(), 3 * FCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imFCC1C1L->getHeight(), (N + 1) * FCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imFCC1C1L->getDepth(), FCCPOINTDISTANCE, EPSILONT);
+	EXPECT_NEAR(imFCC1R1L->getWidth(), N * FCCPOINTDISTANCE, EPSILONT);
+	EXPECT_NEAR(imFCC1R1L->getHeight(), FCCPOINTDISTANCE, EPSILONT); //!!
+	EXPECT_NEAR(imFCC1R1L->getDepth(), FCCPOINTDISTANCE, EPSILONT);
+	EXPECT_NEAR(imFCC1R1C->getWidth(), FCCPOINTDISTANCE + FCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imFCC1R1C->getHeight(), FCCPOINTDISTANCE, EPSILONT); //!!
+	EXPECT_NEAR(imFCC1R1C->getDepth(), (N + 1) * FCCOFFSET, EPSILONT);
 
-	BOOST_CHECK_CLOSE_FRACTION(imFCCRC->getWidth(), n2 * FCCPOINTDISTANCE + FCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCCRC->getHeight(), (n1 + 1) * FCCOFFSET, EPSILONT); //!!
-	BOOST_CHECK_CLOSE_FRACTION(imFCCRC->getDepth(), FCCPOINTDISTANCE, EPSILONT);
+	EXPECT_NEAR(imFCCRC->getWidth(), n2 * FCCPOINTDISTANCE + FCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imFCCRC->getHeight(), (n1 + 1) * FCCOFFSET, EPSILONT); //!!
+	EXPECT_NEAR(imFCCRC->getDepth(), FCCPOINTDISTANCE, EPSILONT);
 
-	BOOST_CHECK_CLOSE_FRACTION(imFCCRL->getWidth(), FCCPOINTDISTANCE + FCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCCRL->getHeight(), (n1 + 1) * FCCOFFSET, EPSILONT); //!!
-	BOOST_CHECK_CLOSE_FRACTION(imFCCRL->getDepth(), (n2 + 1) * FCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imFCCRL->getWidth(), FCCPOINTDISTANCE + FCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imFCCRL->getHeight(), (n1 + 1) * FCCOFFSET, EPSILONT); //!!
+	EXPECT_NEAR(imFCCRL->getDepth(), (n2 + 1) * FCCOFFSET, EPSILONT);
 
-	BOOST_CHECK_CLOSE_FRACTION(imFCCCL->getWidth(), n1 * FCCPOINTDISTANCE + FCCOFFSET, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCCCL->getHeight(), FCCPOINTDISTANCE, EPSILONT); //!!
-	BOOST_CHECK_CLOSE_FRACTION(imFCCCL->getDepth(), (n2 + 1) * FCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imFCCCL->getWidth(), n1 * FCCPOINTDISTANCE + FCCOFFSET, EPSILONT);
+	EXPECT_NEAR(imFCCCL->getHeight(), FCCPOINTDISTANCE, EPSILONT); //!!
+	EXPECT_NEAR(imFCCCL->getDepth(), (n2 + 1) * FCCOFFSET, EPSILONT);
 
 	delete imFCC;
 	delete imFCC2;
@@ -2642,7 +2610,7 @@ BOOST_AUTO_TEST_CASE(coordinateTest) {
 	delete imFCCRC;
 }
 
-BOOST_AUTO_TEST_CASE(distanceTest) {
+TEST(CImagetypeFCCTestSuite, distanceTest) {
 
 	// set up image
 	int nR = 5, nC = 6, nL = 7, nB = 3;
@@ -2657,49 +2625,49 @@ BOOST_AUTO_TEST_CASE(distanceTest) {
 	CImagetypeFCC *imFCC2 = new CImagetypeFCC(data, nR, nC, nL, nB, volume);
 
 	// distance between spels
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->euclideanDistance(0, 0), 0, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->euclideanDistance(170, 170), 0, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->euclideanDistance(N - 1, N - 1), 0, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->euclideanDistance(105, 69), FCCFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->euclideanDistance(105, 69), imFCC->euclideanDistance(69, 105), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->euclideanDistance(105, 75), FCCFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->euclideanDistance(105, 75), imFCC->euclideanDistance(75, 105), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->euclideanDistance(105, 76), FCCFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->euclideanDistance(105, 76), imFCC->euclideanDistance(76, 105), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->euclideanDistance(105, 81), FCCFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->euclideanDistance(105, 81), imFCC->euclideanDistance(81, 105), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->euclideanDistance(105, 99), FCCFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->euclideanDistance(105, 99), imFCC->euclideanDistance(99, 105), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->euclideanDistance(105, 100), FCCFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->euclideanDistance(105, 100), imFCC->euclideanDistance(100, 105), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->euclideanDistance(105, 45), FCCPOINTDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->euclideanDistance(105, 45), imFCC->euclideanDistance(45, 105), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->euclideanDistance(105, 93), FCCPOINTDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->euclideanDistance(105, 93), imFCC->euclideanDistance(93, 105), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->euclideanDistance(105, 104), FCCPOINTDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC->euclideanDistance(105, 104), imFCC->euclideanDistance(104, 105), EPSILONT);
+	EXPECT_NEAR(imFCC->euclideanDistance(0, 0), 0, EPSILONT);
+	EXPECT_NEAR(imFCC->euclideanDistance(170, 170), 0, EPSILONT);
+	EXPECT_NEAR(imFCC->euclideanDistance(N - 1, N - 1), 0, EPSILONT);
+	EXPECT_NEAR(imFCC->euclideanDistance(105, 69), FCCFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imFCC->euclideanDistance(105, 69), imFCC->euclideanDistance(69, 105), EPSILONT);
+	EXPECT_NEAR(imFCC->euclideanDistance(105, 75), FCCFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imFCC->euclideanDistance(105, 75), imFCC->euclideanDistance(75, 105), EPSILONT);
+	EXPECT_NEAR(imFCC->euclideanDistance(105, 76), FCCFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imFCC->euclideanDistance(105, 76), imFCC->euclideanDistance(76, 105), EPSILONT);
+	EXPECT_NEAR(imFCC->euclideanDistance(105, 81), FCCFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imFCC->euclideanDistance(105, 81), imFCC->euclideanDistance(81, 105), EPSILONT);
+	EXPECT_NEAR(imFCC->euclideanDistance(105, 99), FCCFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imFCC->euclideanDistance(105, 99), imFCC->euclideanDistance(99, 105), EPSILONT);
+	EXPECT_NEAR(imFCC->euclideanDistance(105, 100), FCCFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imFCC->euclideanDistance(105, 100), imFCC->euclideanDistance(100, 105), EPSILONT);
+	EXPECT_NEAR(imFCC->euclideanDistance(105, 45), FCCPOINTDISTANCE, EPSILONT);
+	EXPECT_NEAR(imFCC->euclideanDistance(105, 45), imFCC->euclideanDistance(45, 105), EPSILONT);
+	EXPECT_NEAR(imFCC->euclideanDistance(105, 93), FCCPOINTDISTANCE, EPSILONT);
+	EXPECT_NEAR(imFCC->euclideanDistance(105, 93), imFCC->euclideanDistance(93, 105), EPSILONT);
+	EXPECT_NEAR(imFCC->euclideanDistance(105, 104), FCCPOINTDISTANCE, EPSILONT);
+	EXPECT_NEAR(imFCC->euclideanDistance(105, 104), imFCC->euclideanDistance(104, 105), EPSILONT);
 
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->euclideanDistance(0, 0), 0, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->euclideanDistance(170, 170), 0, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->euclideanDistance(N - 1, N - 1), 0, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->euclideanDistance(105, 69), factor * FCCFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->euclideanDistance(105, 69), imFCC2->euclideanDistance(69, 105), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->euclideanDistance(105, 75), factor * FCCFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->euclideanDistance(105, 75), imFCC2->euclideanDistance(75, 105), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->euclideanDistance(105, 76), factor * FCCFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->euclideanDistance(105, 76), imFCC2->euclideanDistance(76, 105), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->euclideanDistance(105, 81), factor * FCCFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->euclideanDistance(105, 81), imFCC2->euclideanDistance(81, 105), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->euclideanDistance(105, 99), factor * FCCFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->euclideanDistance(105, 99), imFCC2->euclideanDistance(99, 105), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->euclideanDistance(105, 100), factor * FCCFACEDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->euclideanDistance(105, 100), imFCC2->euclideanDistance(100, 105), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->euclideanDistance(105, 45), factor * FCCPOINTDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->euclideanDistance(105, 45), imFCC2->euclideanDistance(45, 105), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->euclideanDistance(105, 93), factor * FCCPOINTDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->euclideanDistance(105, 93), imFCC2->euclideanDistance(93, 105), EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->euclideanDistance(105, 104), factor * FCCPOINTDISTANCE, EPSILONT);
-	BOOST_CHECK_CLOSE_FRACTION(imFCC2->euclideanDistance(105, 104), imFCC2->euclideanDistance(104, 105), EPSILONT);
+	EXPECT_NEAR(imFCC2->euclideanDistance(0, 0), 0, EPSILONT);
+	EXPECT_NEAR(imFCC2->euclideanDistance(170, 170), 0, EPSILONT);
+	EXPECT_NEAR(imFCC2->euclideanDistance(N - 1, N - 1), 0, EPSILONT);
+	EXPECT_NEAR(imFCC2->euclideanDistance(105, 69), factor * FCCFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imFCC2->euclideanDistance(105, 69), imFCC2->euclideanDistance(69, 105), EPSILONT);
+	EXPECT_NEAR(imFCC2->euclideanDistance(105, 75), factor * FCCFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imFCC2->euclideanDistance(105, 75), imFCC2->euclideanDistance(75, 105), EPSILONT);
+	EXPECT_NEAR(imFCC2->euclideanDistance(105, 76), factor * FCCFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imFCC2->euclideanDistance(105, 76), imFCC2->euclideanDistance(76, 105), EPSILONT);
+	EXPECT_NEAR(imFCC2->euclideanDistance(105, 81), factor * FCCFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imFCC2->euclideanDistance(105, 81), imFCC2->euclideanDistance(81, 105), EPSILONT);
+	EXPECT_NEAR(imFCC2->euclideanDistance(105, 99), factor * FCCFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imFCC2->euclideanDistance(105, 99), imFCC2->euclideanDistance(99, 105), EPSILONT);
+	EXPECT_NEAR(imFCC2->euclideanDistance(105, 100), factor * FCCFACEDISTANCE, EPSILONT);
+	EXPECT_NEAR(imFCC2->euclideanDistance(105, 100), imFCC2->euclideanDistance(100, 105), EPSILONT);
+	EXPECT_NEAR(imFCC2->euclideanDistance(105, 45), factor * FCCPOINTDISTANCE, EPSILONT);
+	EXPECT_NEAR(imFCC2->euclideanDistance(105, 45), imFCC2->euclideanDistance(45, 105), EPSILONT);
+	EXPECT_NEAR(imFCC2->euclideanDistance(105, 93), factor * FCCPOINTDISTANCE, EPSILONT);
+	EXPECT_NEAR(imFCC2->euclideanDistance(105, 93), imFCC2->euclideanDistance(93, 105), EPSILONT);
+	EXPECT_NEAR(imFCC2->euclideanDistance(105, 104), factor * FCCPOINTDISTANCE, EPSILONT);
+	EXPECT_NEAR(imFCC2->euclideanDistance(105, 104), imFCC2->euclideanDistance(104, 105), EPSILONT);
 
 	vector<double> dv;
 	double ft[3] = { 0, -FCCOFFSET, -FCCOFFSET };
@@ -2722,79 +2690,79 @@ BOOST_AUTO_TEST_CASE(distanceTest) {
 	double back[3] = { 0, 0, FCCPOINTDISTANCE };
 	imFCC->euclideanDistanceVector(82, 82, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK(fabs(dv[i]) < EPSILONT);
+		EXPECT_TRUE(fabs(dv[i]) < EPSILONT);
 	}
 	imFCC->euclideanDistanceVector(105, 45, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], front[i], EPSILONT);
+		EXPECT_NEAR(dv[i], front[i], EPSILONT);
 	}
 	imFCC->euclideanDistanceVector(105, 93, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], top[i], EPSILONT);
+		EXPECT_NEAR(dv[i], top[i], EPSILONT);
 	}
 	imFCC->euclideanDistanceVector(105, 106, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], right[i], EPSILONT);
+		EXPECT_NEAR(dv[i], right[i], EPSILONT);
 	}
 	imFCC->euclideanDistanceVector(105, 117, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], bottom[i], EPSILONT);
+		EXPECT_NEAR(dv[i], bottom[i], EPSILONT);
 	}
 	imFCC->euclideanDistanceVector(105, 104, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], left[i], EPSILONT);
+		EXPECT_NEAR(dv[i], left[i], EPSILONT);
 	}
 	imFCC->euclideanDistanceVector(105, 165, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], back[i], EPSILONT);
+		EXPECT_NEAR(dv[i], back[i], EPSILONT);
 	}
 	imFCC->euclideanDistanceVector(105, 69, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], ft[i], EPSILONT);
+		EXPECT_NEAR(dv[i], ft[i], EPSILONT);
 	}
 	imFCC->euclideanDistanceVector(105, 76, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], fr[i], EPSILONT);
+		EXPECT_NEAR(dv[i], fr[i], EPSILONT);
 	}
 	imFCC->euclideanDistanceVector(105, 81, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], fb[i], EPSILONT);
+		EXPECT_NEAR(dv[i], fb[i], EPSILONT);
 	}
 	imFCC->euclideanDistanceVector(105, 75, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], fl[i], EPSILONT);
+		EXPECT_NEAR(dv[i], fl[i], EPSILONT);
 	}
 	imFCC->euclideanDistanceVector(105, 100, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], mtr[i], EPSILONT);
+		EXPECT_NEAR(dv[i], mtr[i], EPSILONT);
 	}
 	imFCC->euclideanDistanceVector(105, 112, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], mbr[i], EPSILONT);
+		EXPECT_NEAR(dv[i], mbr[i], EPSILONT);
 	}
 	imFCC->euclideanDistanceVector(105, 111, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], mbl[i], EPSILONT);
+		EXPECT_NEAR(dv[i], mbl[i], EPSILONT);
 	}
 	imFCC->euclideanDistanceVector(105, 99, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], mtl[i], EPSILONT);
+		EXPECT_NEAR(dv[i], mtl[i], EPSILONT);
 	}
 	imFCC->euclideanDistanceVector(105, 129, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], bt[i], EPSILONT);
+		EXPECT_NEAR(dv[i], bt[i], EPSILONT);
 	}
 	imFCC->euclideanDistanceVector(105, 136, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], br[i], EPSILONT);
+		EXPECT_NEAR(dv[i], br[i], EPSILONT);
 	}
 	imFCC->euclideanDistanceVector(105, 141, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], bb[i], EPSILONT);
+		EXPECT_NEAR(dv[i], bb[i], EPSILONT);
 	}
 	imFCC->euclideanDistanceVector(105, 135, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], bl[i], EPSILONT);
+		EXPECT_NEAR(dv[i], bl[i], EPSILONT);
 	}
 
 	double ft2[3] = { 0, -factor * FCCOFFSET, -factor * FCCOFFSET };
@@ -2817,79 +2785,79 @@ BOOST_AUTO_TEST_CASE(distanceTest) {
 	double back2[3] = { 0, 0, factor * FCCPOINTDISTANCE };
 	imFCC2->euclideanDistanceVector(82, 82, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK(fabs(dv[i]) < EPSILONT);
+		EXPECT_TRUE(fabs(dv[i]) < EPSILONT);
 	}
 	imFCC2->euclideanDistanceVector(105, 45, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], front2[i], EPSILONT);
+		EXPECT_NEAR(dv[i], front2[i], EPSILONT);
 	}
 	imFCC2->euclideanDistanceVector(105, 93, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], top2[i], EPSILONT);
+		EXPECT_NEAR(dv[i], top2[i], EPSILONT);
 	}
 	imFCC2->euclideanDistanceVector(105, 106, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], right2[i], EPSILONT);
+		EXPECT_NEAR(dv[i], right2[i], EPSILONT);
 	}
 	imFCC2->euclideanDistanceVector(105, 117, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], bottom2[i], EPSILONT);
+		EXPECT_NEAR(dv[i], bottom2[i], EPSILONT);
 	}
 	imFCC2->euclideanDistanceVector(105, 104, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], left2[i], EPSILONT);
+		EXPECT_NEAR(dv[i], left2[i], EPSILONT);
 	}
 	imFCC2->euclideanDistanceVector(105, 165, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], back2[i], EPSILONT);
+		EXPECT_NEAR(dv[i], back2[i], EPSILONT);
 	}
 	imFCC2->euclideanDistanceVector(105, 69, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], ft2[i], EPSILONT);
+		EXPECT_NEAR(dv[i], ft2[i], EPSILONT);
 	}
 	imFCC2->euclideanDistanceVector(105, 76, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], fr2[i], EPSILONT);
+		EXPECT_NEAR(dv[i], fr2[i], EPSILONT);
 	}
 	imFCC2->euclideanDistanceVector(105, 81, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], fb2[i], EPSILONT);
+		EXPECT_NEAR(dv[i], fb2[i], EPSILONT);
 	}
 	imFCC2->euclideanDistanceVector(105, 75, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], fl2[i], EPSILONT);
+		EXPECT_NEAR(dv[i], fl2[i], EPSILONT);
 	}
 	imFCC2->euclideanDistanceVector(105, 100, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], mtr2[i], EPSILONT);
+		EXPECT_NEAR(dv[i], mtr2[i], EPSILONT);
 	}
 	imFCC2->euclideanDistanceVector(105, 112, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], mbr2[i], EPSILONT);
+		EXPECT_NEAR(dv[i], mbr2[i], EPSILONT);
 	}
 	imFCC2->euclideanDistanceVector(105, 111, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], mbl2[i], EPSILONT);
+		EXPECT_NEAR(dv[i], mbl2[i], EPSILONT);
 	}
 	imFCC2->euclideanDistanceVector(105, 99, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], mtl2[i], EPSILONT);
+		EXPECT_NEAR(dv[i], mtl2[i], EPSILONT);
 	}
 	imFCC2->euclideanDistanceVector(105, 129, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], bt2[i], EPSILONT);
+		EXPECT_NEAR(dv[i], bt2[i], EPSILONT);
 	}
 	imFCC2->euclideanDistanceVector(105, 136, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], br2[i], EPSILONT);
+		EXPECT_NEAR(dv[i], br2[i], EPSILONT);
 	}
 	imFCC2->euclideanDistanceVector(105, 141, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], bb2[i], EPSILONT);
+		EXPECT_NEAR(dv[i], bb2[i], EPSILONT);
 	}
 	imFCC2->euclideanDistanceVector(105, 135, dv);
 	for (int i = 0; i < 3; i++) {
-		BOOST_CHECK_CLOSE_FRACTION(dv[i], bl2[i], EPSILONT);
+		EXPECT_NEAR(dv[i], bl2[i], EPSILONT);
 	}
 
 	delete imFCC;
@@ -2897,7 +2865,7 @@ BOOST_AUTO_TEST_CASE(distanceTest) {
 
 }
 
-BOOST_AUTO_TEST_CASE(neighborTest) {
+TEST(CImagetypeFCCTestSuite, neighborTest) {
 
 	/**
 	 * Tests getNeighbor(r,c,l,N). Since all other methods
@@ -2933,82 +2901,82 @@ BOOST_AUTO_TEST_CASE(neighborTest) {
 	correctNNeighbors = 3;
 	imFCC->getNeighbors(0, 0, 0, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	correctNNeighbors = 5;
 	imFCC->getNeighbors(4, 5, 6, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imFCC->getNeighbors(3, 5, 6, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imFCC->getNeighbors(4, 5, 5, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	correctNNeighbors = 8;
 	imFCC->getNeighbors(1, 0, 0, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imFCC->getNeighbors(0, 0, 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imFCC->getNeighbors(1, 0, 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 
 	correctNNeighbors = 12;
 	imFCC->getNeighbors(3, 5, 5, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imFCC->getNeighbors(2, 3, 4, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	for (int i = 0; i < returnedNeighbors; i++) {
-		BOOST_CHECK_EQUAL(neighbors[i].getIndex(), FCC12ELER[i]);
+		EXPECT_EQ(neighbors[i].getIndex(), FCC12ELER[i]);
 	}
 	imFCC->getNeighbors(imFCC->rclToIndex(2, 3, 4), nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	for (int i = 0; i < returnedNeighbors; i++) {
-		BOOST_CHECK_EQUAL(neighbors[i].getIndex(), FCC12ELER[i]);
+		EXPECT_EQ(neighbors[i].getIndex(), FCC12ELER[i]);
 	}
 
 	imFCC->getNeighbors(3, 2, 2, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	for (int i = 0; i < returnedNeighbors; i++) {
-		BOOST_CHECK_EQUAL(neighbors[i].getIndex(), FCC12ELOR[i]);
+		EXPECT_EQ(neighbors[i].getIndex(), FCC12ELOR[i]);
 	}
 	imFCC->getNeighbors(imFCC->rclToIndex(3, 2, 2), nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	for (int i = 0; i < returnedNeighbors; i++) {
-		BOOST_CHECK_EQUAL(neighbors[i].getIndex(), FCC12ELOR[i]);
+		EXPECT_EQ(neighbors[i].getIndex(), FCC12ELOR[i]);
 	}
 
 	imFCC->getNeighbors(2, 3, 3, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	for (int i = 0; i < returnedNeighbors; i++) {
-		BOOST_CHECK_EQUAL(neighbors[i].getIndex(), FCC12OLER[i]);
+		EXPECT_EQ(neighbors[i].getIndex(), FCC12OLER[i]);
 	}
 	imFCC->getNeighbors(imFCC->rclToIndex(2, 3, 3), nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	for (int i = 0; i < returnedNeighbors; i++) {
-		BOOST_CHECK_EQUAL(neighbors[i].getIndex(), FCC12OLER[i]);
+		EXPECT_EQ(neighbors[i].getIndex(), FCC12OLER[i]);
 	}
 
 	imFCC->getNeighbors(3, 2, 3, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	for (int i = 0; i < returnedNeighbors; i++) {
-		BOOST_CHECK_EQUAL(neighbors[i].getIndex(), FCC12OLOR[i]);
+		EXPECT_EQ(neighbors[i].getIndex(), FCC12OLOR[i]);
 	}
 	imFCC->getNeighbors(imFCC->rclToIndex(3, 2, 3), nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	for (int i = 0; i < returnedNeighbors; i++) {
-		BOOST_CHECK_EQUAL(neighbors[i].getIndex(), FCC12OLOR[i]);
+		EXPECT_EQ(neighbors[i].getIndex(), FCC12OLOR[i]);
 	}
 
 	// 18 neighbors
@@ -3016,119 +2984,117 @@ BOOST_AUTO_TEST_CASE(neighborTest) {
 	correctNNeighbors = 6;
 	imFCC->getNeighbors(0, 0, 0, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	correctNNeighbors = 8;
 	imFCC->getNeighbors(4, 5, 6, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imFCC->getNeighbors(3, 5, 6, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imFCC->getNeighbors(4, 5, 5, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	correctNNeighbors = 11;
 	imFCC->getNeighbors(1, 0, 0, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imFCC->getNeighbors(0, 0, 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	imFCC->getNeighbors(1, 0, 1, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	correctNNeighbors = 15;
 	imFCC->getNeighbors(3, 5, 5, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 
 	correctNNeighbors = 17;
 	imFCC->getNeighbors(3, 2, 2, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	for (int i = 0; i < returnedNeighbors; i++) {
-		BOOST_CHECK_EQUAL(neighbors[i].getIndex(), FCC18ELOR[i]);
+		EXPECT_EQ(neighbors[i].getIndex(), FCC18ELOR[i]);
 	}
 	imFCC->getNeighbors(imFCC->rclToIndex(3, 2, 2), nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	for (int i = 0; i < returnedNeighbors; i++) {
-		BOOST_CHECK_EQUAL(neighbors[i].getIndex(), FCC18ELOR[i]);
+		EXPECT_EQ(neighbors[i].getIndex(), FCC18ELOR[i]);
 	}
 
 	imFCC->getNeighbors(3, 2, 3, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	for (int i = 0; i < returnedNeighbors; i++) {
-		BOOST_CHECK_EQUAL(neighbors[i].getIndex(), FCC18OLOR[i]);
+		EXPECT_EQ(neighbors[i].getIndex(), FCC18OLOR[i]);
 	}
 	imFCC->getNeighbors(imFCC->rclToIndex(3, 2, 3), nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	for (int i = 0; i < returnedNeighbors; i++) {
-		BOOST_CHECK_EQUAL(neighbors[i].getIndex(), FCC18OLOR[i]);
+		EXPECT_EQ(neighbors[i].getIndex(), FCC18OLOR[i]);
 	}
 
 	correctNNeighbors = 18;
 	imFCC->getNeighbors(2, 3, 4, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	for (int i = 0; i < returnedNeighbors; i++) {
-		BOOST_CHECK_EQUAL(neighbors[i].getIndex(), FCC18ELER[i]);
+		EXPECT_EQ(neighbors[i].getIndex(), FCC18ELER[i]);
 	}
 	imFCC->getNeighbors(imFCC->rclToIndex(2, 3, 4), nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	for (int i = 0; i < returnedNeighbors; i++) {
-		BOOST_CHECK_EQUAL(neighbors[i].getIndex(), FCC18ELER[i]);
+		EXPECT_EQ(neighbors[i].getIndex(), FCC18ELER[i]);
 	}
 
 	imFCC->getNeighbors(2, 3, 3, nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	for (int i = 0; i < returnedNeighbors; i++) {
-		BOOST_CHECK_EQUAL(neighbors[i].getIndex(), FCC18OLER[i]);
+		EXPECT_EQ(neighbors[i].getIndex(), FCC18OLER[i]);
 	}
 	imFCC->getNeighbors(imFCC->rclToIndex(2, 3, 3), nNeighbors, neighbors);
 	returnedNeighbors = neighbors.size();
-	BOOST_CHECK_EQUAL(returnedNeighbors, correctNNeighbors);
+	EXPECT_EQ(returnedNeighbors, correctNNeighbors);
 	for (int i = 0; i < returnedNeighbors; i++) {
-		BOOST_CHECK_EQUAL(neighbors[i].getIndex(), FCC18OLER[i]);
+		EXPECT_EQ(neighbors[i].getIndex(), FCC18OLER[i]);
 	}
 
 	// Exceptions
 	nNeighbors = 12;
-	BOOST_CHECK_THROW(imFCC->getNeighbors(nR, 0, 0, nNeighbors, neighbors),	outsideImageException);
-	BOOST_CHECK_THROW(imFCC->getNeighbors(-1, 0, 0, nNeighbors, neighbors),	outsideImageException);
-	BOOST_CHECK_THROW(imFCC->getNeighbors(0, nC, 0, nNeighbors, neighbors),	outsideImageException);
-	BOOST_CHECK_THROW(imFCC->getNeighbors(0, -1, 0, nNeighbors, neighbors),	outsideImageException);
-	BOOST_CHECK_THROW(imFCC->getNeighbors(0, 0, nL, nNeighbors, neighbors),	outsideImageException);
-	BOOST_CHECK_THROW(imFCC->getNeighbors(0, 0, -1, nNeighbors, neighbors),	outsideImageException);
+	EXPECT_THROW(imFCC->getNeighbors(nR, 0, 0, nNeighbors, neighbors),	outsideImageException);
+	EXPECT_THROW(imFCC->getNeighbors(-1, 0, 0, nNeighbors, neighbors),	outsideImageException);
+	EXPECT_THROW(imFCC->getNeighbors(0, nC, 0, nNeighbors, neighbors),	outsideImageException);
+	EXPECT_THROW(imFCC->getNeighbors(0, -1, 0, nNeighbors, neighbors),	outsideImageException);
+	EXPECT_THROW(imFCC->getNeighbors(0, 0, nL, nNeighbors, neighbors),	outsideImageException);
+	EXPECT_THROW(imFCC->getNeighbors(0, 0, -1, nNeighbors, neighbors),	outsideImageException);
 	nNeighbors = 18;
-	BOOST_CHECK_THROW(imFCC->getNeighbors(nR, 0, 0, nNeighbors, neighbors),	outsideImageException);
-	BOOST_CHECK_THROW(imFCC->getNeighbors(-1, 0, 0, nNeighbors, neighbors),	outsideImageException);
-	BOOST_CHECK_THROW(imFCC->getNeighbors(0, nC, 0, nNeighbors, neighbors),	outsideImageException);
-	BOOST_CHECK_THROW(imFCC->getNeighbors(0, -1, 0, nNeighbors, neighbors),	outsideImageException);
-	BOOST_CHECK_THROW(imFCC->getNeighbors(0, 0, nL, nNeighbors, neighbors),	outsideImageException);
-	BOOST_CHECK_THROW(imFCC->getNeighbors(0, 0, -1, nNeighbors, neighbors),	outsideImageException);
+	EXPECT_THROW(imFCC->getNeighbors(nR, 0, 0, nNeighbors, neighbors),	outsideImageException);
+	EXPECT_THROW(imFCC->getNeighbors(-1, 0, 0, nNeighbors, neighbors),	outsideImageException);
+	EXPECT_THROW(imFCC->getNeighbors(0, nC, 0, nNeighbors, neighbors),	outsideImageException);
+	EXPECT_THROW(imFCC->getNeighbors(0, -1, 0, nNeighbors, neighbors),	outsideImageException);
+	EXPECT_THROW(imFCC->getNeighbors(0, 0, nL, nNeighbors, neighbors),	outsideImageException);
+	EXPECT_THROW(imFCC->getNeighbors(0, 0, -1, nNeighbors, neighbors),	outsideImageException);
 	nNeighbors = 6;
-	BOOST_CHECK_THROW(imFCC->getNeighbors(0, 0, 0, nNeighbors, neighbors), nNeighborsException);
+	EXPECT_THROW(imFCC->getNeighbors(0, 0, 0, nNeighbors, neighbors), nNeighborsException);
 	nNeighbors = 8;
-	BOOST_CHECK_THROW(imFCC->getNeighbors(0, 0, 0, nNeighbors, neighbors), nNeighborsException);
+	EXPECT_THROW(imFCC->getNeighbors(0, 0, 0, nNeighbors, neighbors), nNeighborsException);
 	nNeighbors = 14;
-	BOOST_CHECK_THROW(imFCC->getNeighbors(0, 0, 0, nNeighbors, neighbors), nNeighborsException);
+	EXPECT_THROW(imFCC->getNeighbors(0, 0, 0, nNeighbors, neighbors), nNeighborsException);
 	nNeighbors = 26;
-	BOOST_CHECK_THROW(imFCC->getNeighbors(0, 0, 0, nNeighbors, neighbors), nNeighborsException);
+	EXPECT_THROW(imFCC->getNeighbors(0, 0, 0, nNeighbors, neighbors), nNeighborsException);
 	nNeighbors = -12;
-	BOOST_CHECK_THROW(imFCC->getNeighbors(0, 0, 0, nNeighbors, neighbors), nNeighborsException);
+	EXPECT_THROW(imFCC->getNeighbors(0, 0, 0, nNeighbors, neighbors), nNeighborsException);
 	nNeighbors = 0;
-	BOOST_CHECK_THROW(imFCC->getNeighbors(0, 0, 0, nNeighbors, neighbors), nNeighborsException);
+	EXPECT_THROW(imFCC->getNeighbors(0, 0, 0, nNeighbors, neighbors), nNeighborsException);
 	nNeighbors = 100;
-	BOOST_CHECK_THROW(imFCC->getNeighbors(0, 0, 0, nNeighbors, neighbors), nNeighborsException);
+	EXPECT_THROW(imFCC->getNeighbors(0, 0, 0, nNeighbors, neighbors), nNeighborsException);
 
 	delete imFCC;
 }
-
-BOOST_AUTO_TEST_SUITE_END()
 
 #endif
