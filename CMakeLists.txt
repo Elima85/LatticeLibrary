@@ -33,9 +33,20 @@ set(TEST_SOURCE_FILES
     ${SOURCE_FILES}
     ${GTEST_ROOT}/src/gtest-all.cc
     filetest.cpp
-    imagebcctest.cpp
-    imagecctest.cpp
-    imagefcctest.cpp
+    cimagebcctestbands.cpp
+    cimagebcctestcoordinates.cpp
+    cimagebcctestinitialization.cpp
+    cimagebcctestneighbors.cpp
+    cimagecctestbands.cpp
+    cimagecctestcoordinates.cpp
+    cimagecctestdownsample.cpp
+    cimagecctestedt.cpp
+    cimagecctestinitialization.cpp
+    cimagecctestneighbors.cpp
+    cimagefcctestbands.cpp
+    cimagefcctestcoordinates.cpp
+    cimagefcctestinitialization.cpp
+    cimagefcctestneighbors.cpp
     misctest.cpp
     neighbortest.cpp
     normtest.cpp
