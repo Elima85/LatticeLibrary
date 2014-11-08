@@ -1673,81 +1673,82 @@ public:
 		}
 	}
 
-	/**
-	 * Implements CImage::downsample(const CImage<T>* original, double newSpelVolume, T* data)
-	 */
-	T* downsample(const CImage<T>* original, double newSpelVolume) {
+    /**
+    * Implements CImage::downsample(const CImage<T>* original, double newSpelVolume, T* data)
+    */
+    T *downsample(const CImage<T> *original, double newSpelVolume) {
 
-		// high resolution image parameters
-		double oldWidth = original->getWidth();
-		double oldHeight = original->getHeight();
-		double oldDepth = original->getDepth();
-		int oldNElements = original->getNElements();
-		int nBands = original->getNBands();
+        // high resolution image parameters
+        double oldWidth = original->getWidth();
+        double oldHeight = original->getHeight();
+        double oldDepth = original->getDepth();
+        int oldNElements = original->getNElements();
+        int nBands = original->getNBands();
 
-		// low resolution image parameters
-		double newScaleFactor = cbrt(newSpelVolume);
-		int newNRows = floor(oldHeight/newScaleFactor);
-		int newNColumns = floor(oldWidth/newScaleFactor);
-		int newNLayers = floor(oldDepth/newScaleFactor);
-		int newNElements = newNRows * newNColumns * newNLayers;
-		this->nRows = newNRows;
-		this->nColumns = newNColumns;
-		this->nLayers = newNLayers;
-		this->nElements = newNElements;
-		this->nBands = nBands;
+        // low resolution image parameters
+        double newScaleFactor = cbrt(newSpelVolume);
+        int newNRows = floor(oldHeight / newScaleFactor);
+        int newNColumns = floor(oldWidth / newScaleFactor);
+        int newNLayers = floor(oldDepth / newScaleFactor);
+        int newNElements = newNRows * newNColumns * newNLayers;
+        this->nRows = newNRows;
+        this->nColumns = newNColumns;
+        this->nLayers = newNLayers;
+        this->nElements = newNElements;
+        this->nBands = nBands;
         this->scaleFactor = newScaleFactor;
-		this->data = new T[newNElements * nBands];
-        if(!this->data) {
+        this->data = new T[newNElements * nBands];
+        if (!this->data) {
             throw nullPointerException();
         }
         double newWidth = this->getWidth();
-		double newHeight = this->getHeight();
-		double newDepth = this->getDepth();
+        double newHeight = this->getHeight();
+        double newDepth = this->getDepth();
 
-		vector<Neighbor> neighbors;
-		int nNeighbors, nSubSpels;
-		vector<double> newIntensity, newLocation, oldLocation, neighborLocation;
-		vector< vector<double> > newNeighborLocations;
-		double squaredDistanceToCurrent, squaredDistanceToNeighbor, volumeFactor;
-		bool inside;
-		for (int newE = 0; newE < newNElements; newE++) {
-			nSubSpels = 0;
-			newIntensity.assign(nBands,0.0);
-			this->getCoordinates(newE,newLocation);
-			this->getNeighbors(newE, 6, neighbors); // enough, since the six closest neighbors define the Voronoi cell
-			nNeighbors = neighbors.size();
-			newNeighborLocations.clear();
-			for (int n = 0; n < nNeighbors; n++) {
-				this->getCoordinates(neighbors[n].getIndex(),neighborLocation);
-				newNeighborLocations.push_back(neighborLocation);
-			}
-			for (int oldE = 0; oldE < oldNElements; oldE++) { // Should be optimized to some search area!!
-				original->getCoordinates(oldE,oldLocation);
-				squaredDistanceToCurrent = 0;
-				for (int i = 0; i < 3; i++) {
-					squaredDistanceToCurrent = squaredDistanceToCurrent + (newLocation[i] - oldLocation[i]) * (newLocation[i] - oldLocation[i]);
-				}
-				inside = true;
-				for (int n = 0; (n < nNeighbors) && inside; n++) {
+        vector<Neighbor> neighbors;
+        int nNeighbors, nSubSpels;
+        vector<double> newIntensity, newLocation, oldLocation, neighborLocation;
+        vector<vector<double> > newNeighborLocations;
+        double squaredDistanceToCurrent, squaredDistanceToNeighbor, volumeFactor;
+        bool inside;
+        for (int newE = 0; newE < newNElements; newE++) {
+            nSubSpels = 0;
+            newIntensity.assign(nBands, 0.0);
+            this->getCoordinates(newE, newLocation);
+            this->getNeighbors(newE, 6, neighbors); // enough, since the six closest neighbors define the Voronoi cell
+            nNeighbors = neighbors.size();
+            newNeighborLocations.clear();
+            for (int n = 0; n < nNeighbors; n++) {
+                this->getCoordinates(neighbors[n].getIndex(), neighborLocation);
+                newNeighborLocations.push_back(neighborLocation);
+            }
+            for (int oldE = 0; oldE < oldNElements; oldE++) { // Should be optimized to some search area!!
+                original->getCoordinates(oldE, oldLocation);
+                squaredDistanceToCurrent = 0;
+                for (int i = 0; i < 3; i++) {
+                    squaredDistanceToCurrent = squaredDistanceToCurrent + (newLocation[i] - oldLocation[i]) * (newLocation[i] - oldLocation[i]);
+                }
+                inside = true;
+                for (int n = 0; (n < nNeighbors) && inside; n++) {
                     squaredDistanceToNeighbor = 0;
-					for (int i = 0; i < 3; i++) {
-						squaredDistanceToNeighbor = squaredDistanceToNeighbor + (newNeighborLocations[n][i] - oldLocation[i]) * (newNeighborLocations[n][i] - oldLocation[i]);
-					}
-					if (squaredDistanceToNeighbor < squaredDistanceToCurrent) {
-						inside = false;
-					}
-				}
-				if (inside) {
-					newIntensity = newIntensity + (*original)[oldE];
-					nSubSpels++;
-				}
-			}
+                    for (int i = 0; i < 3; i++) {
+                        squaredDistanceToNeighbor = squaredDistanceToNeighbor + (newNeighborLocations[n][i] - oldLocation[i]) * (newNeighborLocations[n][i] - oldLocation[i]);
+                    }
+                    if (squaredDistanceToNeighbor < squaredDistanceToCurrent) {
+                        inside = false;
+                    }
+                }
+                if (inside) {
+                    newIntensity = newIntensity + (*original)[oldE];
+                    nSubSpels++;
+                }
+            }
             volumeFactor = 1.0 / double(nSubSpels);
-			this->setElement(newE, (volumeFactor * newIntensity));
-		}
+            this->setElement(newE, (volumeFactor * newIntensity));
+        }
         return this->data;
-	}
+    }
+
 
 	/**
 	 * Pads the input vector with values for the missing neighbors by adding

@@ -8,29 +8,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1d3fad42-4462-467b-9f60-ce02ab03900c" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMakeLists.txt" afterPath="$PROJECT_DIR$/CMakeLists.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cimage.h" afterPath="$PROJECT_DIR$/cimage.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cimageBCC.h" afterPath="$PROJECT_DIR$/cimageBCC.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cimageCC.h" afterPath="$PROJECT_DIR$/cimageCC.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cimageFCC.h" afterPath="$PROJECT_DIR$/cimageFCC.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/defs.h" afterPath="$PROJECT_DIR$/defs.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/filehandling.cpp" afterPath="$PROJECT_DIR$/filehandling.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/filehandling.h" afterPath="$PROJECT_DIR$/filehandling.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/filetest.cpp" afterPath="$PROJECT_DIR$/filetest.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/filtertest.cpp" afterPath="$PROJECT_DIR$/filtertest.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/imagebcctest.cpp" afterPath="$PROJECT_DIR$/imagebcctest.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/imagecctest.cpp" afterPath="$PROJECT_DIR$/imagecctest.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/imagefcctest.cpp" afterPath="$PROJECT_DIR$/imagefcctest.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/miscellaneous.cpp" afterPath="$PROJECT_DIR$/miscellaneous.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/miscellaneous.h" afterPath="$PROJECT_DIR$/miscellaneous.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/misctest.cpp" afterPath="$PROJECT_DIR$/misctest.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/neighbortest.cpp" afterPath="$PROJECT_DIR$/neighbortest.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/normtest.cpp" afterPath="$PROJECT_DIR$/normtest.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/priorityqueue.h" afterPath="$PROJECT_DIR$/priorityqueue.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/priorityqueuetest.cpp" afterPath="$PROJECT_DIR$/priorityqueuetest.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test.cpp" afterPath="$PROJECT_DIR$/test.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vectoroperators.h" afterPath="$PROJECT_DIR$/vectoroperators.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="cimage.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -64,57 +45,41 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="imagecctest.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/imagecctest.cpp">
+      <file leaf-file-name="cimageBCC.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/cimageBCC.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-59.727272" vertical-offset="15435" max-vertical-offset="18810">
-              <caret line="1248" column="6" selection-start-line="1248" selection-start-column="6" selection-end-line="1248" selection-end-column="6" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="1100" max-vertical-offset="3555">
+              <caret line="50" column="0" selection-start-line="50" selection-start-column="0" selection-end-line="50" selection-end-column="0" />
               <folding>
-                <element signature="e#41#65#0" expanded="true" />
-                <element signature="e#336#3743#0" expanded="true" />
-                <element signature="e#3772#9023#0" expanded="true" />
-                <element signature="e#9050#14053#0" expanded="true" />
-                <element signature="e#14080#32074#0" expanded="true" />
-                <element signature="e#32101#35075#0" expanded="true" />
-                <element signature="e#35098#39527#0" expanded="true" />
-                <element signature="e#39558#39563#0" expanded="true" />
-                <element signature="e#39599#43003#0" expanded="true" />
-                <element signature="e#43031#57770#0" expanded="true" />
+                <element signature="e#41#58#0" expanded="true" />
+                <element signature="e#10655#14154#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="cimageCC.h" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/cimageCC.h">
+      <file leaf-file-name="imagebcctest.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/imagebcctest.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="2.425" vertical-offset="24965" max-vertical-offset="27690">
-              <caret line="1729" column="17" selection-start-line="1729" selection-start-column="17" selection-end-line="1729" selection-end-column="17" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="24069" max-vertical-offset="25800">
+              <caret line="1831" column="35" selection-start-line="1831" selection-start-column="35" selection-end-line="1831" selection-end-column="35" />
               <folding>
-                <element signature="e#39#56#0" expanded="true" />
-                <element signature="e#3108#3207#0" expanded="true" />
-                <element signature="e#3209#3237#0" expanded="true" />
-                <element signature="e#3256#3389#0" expanded="true" />
-                <element signature="e#3392#3525#0" expanded="true" />
-                <element signature="e#3528#3661#0" expanded="true" />
-                <element signature="e#3664#3823#0" expanded="true" />
-                <element signature="e#3826#3984#0" expanded="true" />
-                <element signature="e#3987#4145#0" expanded="true" />
-                <element signature="e#4148#4314#0" expanded="true" />
-                <element signature="e#4317#4635#0" expanded="true" />
-                <element signature="e#4638#5716#0" expanded="true" />
-                <element signature="e#5719#6027#0" expanded="true" />
-                <element signature="e#6030#8024#0" expanded="true" />
-                <element signature="e#8027#8348#0" expanded="true" />
-                <element signature="e#8351#9919#0" expanded="true" />
-                <element signature="e#9922#10251#0" expanded="true" />
-                <element signature="e#10254#23262#0" expanded="true" />
-                <element signature="e#23265#23608#0" expanded="true" />
-                <element signature="e#23611#51613#0" expanded="true" />
-                <element signature="e#51616#51959#0" expanded="true" />
-                <element signature="e#51962#52830#0" expanded="true" />
-                <element signature="e#52833#54215#0" expanded="true" />
-                <element signature="e#57160#59564#0" expanded="true" />
+                <element signature="e#43#67#0" expanded="true" />
+                <element signature="e#302#35069#0" expanded="true" />
+                <element signature="e#35099#40659#0" expanded="true" />
+                <element signature="e#40687#50961#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="imagecctest.cpp" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/imagecctest.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.825" vertical-offset="8520" max-vertical-offset="11340">
+              <caret line="2074" column="35" selection-start-line="2074" selection-start-column="35" selection-end-line="2074" selection-end-column="35" />
+              <folding>
+                <element signature="e#41#65#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -131,6 +96,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectFrameBounds">
+    <option name="x" value="23" />
     <option name="y" value="23" />
     <option name="width" value="1280" />
     <option name="height" value="706" />
@@ -262,7 +228,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1280" height="706" extended-state="6" />
+    <frame x="23" y="23" width="1280" height="706" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -277,7 +243,7 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.16328125" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32810047" sideWeight="0.4997397" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32810047" sideWeight="0.4997397" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -304,7 +270,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="45" />
+      <option name="time" value="48" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -331,32 +297,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="100">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#39#56#0" expanded="true" />
-            <element signature="e#3108#3207#0" expanded="true" />
-            <element signature="e#3209#3237#0" expanded="true" />
-            <element signature="e#3256#3389#0" expanded="true" />
-            <element signature="e#3392#3525#0" expanded="true" />
-            <element signature="e#3528#3661#0" expanded="true" />
-            <element signature="e#3664#3823#0" expanded="true" />
-            <element signature="e#3826#3984#0" expanded="true" />
-            <element signature="e#3987#4145#0" expanded="true" />
-            <element signature="e#4148#4314#0" expanded="true" />
-            <element signature="e#4317#4635#0" expanded="true" />
-            <element signature="e#4638#5716#0" expanded="true" />
-            <element signature="e#5719#6027#0" expanded="true" />
-            <element signature="e#6030#8024#0" expanded="true" />
-            <element signature="e#8027#8348#0" expanded="true" />
-            <element signature="e#8351#9919#0" expanded="true" />
-            <element signature="e#9922#10251#0" expanded="true" />
-            <element signature="e#10254#23262#0" expanded="true" />
-            <element signature="e#23265#23608#0" expanded="true" />
-            <element signature="e#23611#51613#0" expanded="true" />
-            <element signature="e#51616#51959#0" expanded="true" />
-            <element signature="e#51962#52830#0" expanded="true" />
-            <element signature="e#52833#54215#0" expanded="true" />
-            <element signature="e#57160#59564#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -381,32 +322,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="26640" max-vertical-offset="28200">
           <caret line="1776" column="61" selection-start-line="1776" selection-start-column="61" selection-end-line="1776" selection-end-column="61" />
-          <folding>
-            <element signature="e#39#56#0" expanded="true" />
-            <element signature="e#3108#3207#0" expanded="true" />
-            <element signature="e#3209#3237#0" expanded="true" />
-            <element signature="e#3256#3389#0" expanded="true" />
-            <element signature="e#3392#3525#0" expanded="true" />
-            <element signature="e#3528#3661#0" expanded="true" />
-            <element signature="e#3664#3823#0" expanded="true" />
-            <element signature="e#3826#3984#0" expanded="true" />
-            <element signature="e#3987#4145#0" expanded="true" />
-            <element signature="e#4148#4314#0" expanded="true" />
-            <element signature="e#4317#4635#0" expanded="true" />
-            <element signature="e#4638#5716#0" expanded="true" />
-            <element signature="e#5719#6027#0" expanded="true" />
-            <element signature="e#6030#8024#0" expanded="true" />
-            <element signature="e#8027#8348#0" expanded="true" />
-            <element signature="e#8351#9919#0" expanded="true" />
-            <element signature="e#9922#10251#0" expanded="true" />
-            <element signature="e#10254#23262#0" expanded="true" />
-            <element signature="e#23265#23608#0" expanded="true" />
-            <element signature="e#23611#51613#0" expanded="true" />
-            <element signature="e#51616#51959#0" expanded="true" />
-            <element signature="e#51962#52830#0" expanded="true" />
-            <element signature="e#52833#54215#0" expanded="true" />
-            <element signature="e#57160#59564#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -421,32 +337,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="26715" max-vertical-offset="28185">
           <caret line="1781" column="9" selection-start-line="1781" selection-start-column="9" selection-end-line="1781" selection-end-column="9" />
-          <folding>
-            <element signature="e#39#56#0" expanded="true" />
-            <element signature="e#3108#3207#0" expanded="true" />
-            <element signature="e#3209#3237#0" expanded="true" />
-            <element signature="e#3256#3389#0" expanded="true" />
-            <element signature="e#3392#3525#0" expanded="true" />
-            <element signature="e#3528#3661#0" expanded="true" />
-            <element signature="e#3664#3823#0" expanded="true" />
-            <element signature="e#3826#3984#0" expanded="true" />
-            <element signature="e#3987#4145#0" expanded="true" />
-            <element signature="e#4148#4314#0" expanded="true" />
-            <element signature="e#4317#4635#0" expanded="true" />
-            <element signature="e#4638#5716#0" expanded="true" />
-            <element signature="e#5719#6027#0" expanded="true" />
-            <element signature="e#6030#8024#0" expanded="true" />
-            <element signature="e#8027#8348#0" expanded="true" />
-            <element signature="e#8351#9919#0" expanded="true" />
-            <element signature="e#9922#10251#0" expanded="true" />
-            <element signature="e#10254#23262#0" expanded="true" />
-            <element signature="e#23265#23608#0" expanded="true" />
-            <element signature="e#23611#51613#0" expanded="true" />
-            <element signature="e#51616#51959#0" expanded="true" />
-            <element signature="e#51962#52830#0" expanded="true" />
-            <element signature="e#52833#54215#0" expanded="true" />
-            <element signature="e#57160#59564#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -585,6 +476,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.82101804" vertical-offset="310" max-vertical-offset="1095">
           <caret line="69" column="5" selection-start-line="69" selection-start-column="5" selection-end-line="69" selection-end-column="5" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -595,24 +487,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/cimageBCC.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1" max-vertical-offset="3165">
-          <caret line="11" column="28" selection-start-line="11" selection-start-column="28" selection-end-line="11" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/cimageFCC.h">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3150">
           <caret line="11" column="28" selection-start-line="11" selection-start-column="28" selection-end-line="11" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/imagebcctest.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="25" max-vertical-offset="450">
-          <caret line="585" column="1" selection-start-line="585" selection-start-column="1" selection-end-line="585" selection-end-column="1" />
+          <folding>
+            <element signature="e#39#56#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -644,13 +525,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/filetest.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.14117648" vertical-offset="0" max-vertical-offset="425">
-          <caret line="4" column="25" selection-start-line="4" selection-start-column="25" selection-end-line="4" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/filehandling.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.45" vertical-offset="0" max-vertical-offset="585">
@@ -676,25 +550,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/imagecctest.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-59.727272" vertical-offset="15435" max-vertical-offset="18810">
-          <caret line="1248" column="6" selection-start-line="1248" selection-start-column="6" selection-end-line="1248" selection-end-column="6" />
-          <folding>
-            <element signature="e#41#65#0" expanded="true" />
-            <element signature="e#336#3743#0" expanded="true" />
-            <element signature="e#3772#9023#0" expanded="true" />
-            <element signature="e#9050#14053#0" expanded="true" />
-            <element signature="e#14080#32074#0" expanded="true" />
-            <element signature="e#32101#35075#0" expanded="true" />
-            <element signature="e#35098#39527#0" expanded="true" />
-            <element signature="e#39558#39563#0" expanded="true" />
-            <element signature="e#39599#43003#0" expanded="true" />
-            <element signature="e#43031#57770#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="195" max-vertical-offset="930">
@@ -705,33 +560,50 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/cimageCC.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="2.425" vertical-offset="24965" max-vertical-offset="27690">
-          <caret line="1729" column="17" selection-start-line="1729" selection-start-column="17" selection-end-line="1729" selection-end-column="17" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="24800" max-vertical-offset="27705">
+          <caret line="1673" column="5" selection-start-line="1673" selection-start-column="5" selection-end-line="1749" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/filetest.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.15" vertical-offset="0" max-vertical-offset="400">
+          <caret line="4" column="25" selection-start-line="4" selection-start-column="25" selection-end-line="4" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cimageBCC.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="950" max-vertical-offset="3555">
+          <caret line="50" column="0" selection-start-line="50" selection-start-column="0" selection-end-line="50" selection-end-column="0" />
           <folding>
-            <element signature="e#39#56#0" expanded="true" />
-            <element signature="e#3108#3207#0" expanded="true" />
-            <element signature="e#3209#3237#0" expanded="true" />
-            <element signature="e#3256#3389#0" expanded="true" />
-            <element signature="e#3392#3525#0" expanded="true" />
-            <element signature="e#3528#3661#0" expanded="true" />
-            <element signature="e#3664#3823#0" expanded="true" />
-            <element signature="e#3826#3984#0" expanded="true" />
-            <element signature="e#3987#4145#0" expanded="true" />
-            <element signature="e#4148#4314#0" expanded="true" />
-            <element signature="e#4317#4635#0" expanded="true" />
-            <element signature="e#4638#5716#0" expanded="true" />
-            <element signature="e#5719#6027#0" expanded="true" />
-            <element signature="e#6030#8024#0" expanded="true" />
-            <element signature="e#8027#8348#0" expanded="true" />
-            <element signature="e#8351#9919#0" expanded="true" />
-            <element signature="e#9922#10251#0" expanded="true" />
-            <element signature="e#10254#23262#0" expanded="true" />
-            <element signature="e#23265#23608#0" expanded="true" />
-            <element signature="e#23611#51613#0" expanded="true" />
-            <element signature="e#51616#51959#0" expanded="true" />
-            <element signature="e#51962#52830#0" expanded="true" />
-            <element signature="e#52833#54215#0" expanded="true" />
-            <element signature="e#57160#59564#0" expanded="true" />
+            <element signature="e#41#58#0" expanded="true" />
+            <element signature="e#10655#14154#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/imagebcctest.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="24069" max-vertical-offset="25800">
+          <caret line="1831" column="35" selection-start-line="1831" selection-start-column="35" selection-end-line="1831" selection-end-column="35" />
+          <folding>
+            <element signature="e#43#67#0" expanded="true" />
+            <element signature="e#302#35069#0" expanded="true" />
+            <element signature="e#35099#40659#0" expanded="true" />
+            <element signature="e#40687#50961#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/imagecctest.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.825" vertical-offset="8520" max-vertical-offset="11340">
+          <caret line="2074" column="35" selection-start-line="2074" selection-start-column="35" selection-end-line="2074" selection-end-column="35" />
+          <folding>
+            <element signature="e#41#65#0" expanded="true" />
           </folding>
         </state>
       </provider>

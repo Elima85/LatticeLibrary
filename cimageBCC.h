@@ -49,7 +49,6 @@ public:
 	}
 	~CImageBCC() {}
 
-	// Get coordinates
 	/**
 	 * Implements CImage::indexToX()
 	 */
@@ -125,145 +124,131 @@ public:
 		return internalDistanceVoronoiAverage(convertedCoverage);
 	}
 
-	// Get neighbors based on index or coordinates
 	/**
 	 * Returns the hexagonal face neighbors of the spel at \f$(r,c,l)\f$.
 	 */
-//	vector<Neighbor> get8Neighbors(int r, int c, int l) const {
 	void get8Neighbors(int r, int c, int l, vector<Neighbor> &neighbors) const {
 		if(!this->isValid(r,c,l)){
 			throw outsideImageException();
 		}
-//		vector<Neighbor> result;
-//		result.reserve(8);
 		neighbors.clear();
 		if(l%2==0){
 			if(this->isValid(r-1,c-1,l-1)){
-				neighbors.push_back(Neighbor(0,this->rclToIndex(r-1,c-1,l-1))); //,BCCD1)); // top left front
+				neighbors.push_back(Neighbor(0,this->rclToIndex(r-1,c-1,l-1))); // top left front
 			}
 			if(this->isValid(r-1,c,l-1)){
-				neighbors.push_back(Neighbor(1,this->rclToIndex(r-1,c,l-1))); //,BCCD1)); // top right front
+				neighbors.push_back(Neighbor(1,this->rclToIndex(r-1,c,l-1))); // top right front
 			}
 			if(this->isValid(r,c-1,l-1)){
-				neighbors.push_back(Neighbor(2,this->rclToIndex(r,c-1,l-1))); //,BCCD1)); // bottom left front
+				neighbors.push_back(Neighbor(2,this->rclToIndex(r,c-1,l-1))); // bottom left front
 			}
 			if(this->isValid(r,c,l-1)){
-				neighbors.push_back(Neighbor(3,this->rclToIndex(r,c,l-1))); //,BCCD1)); // bottom right front
+				neighbors.push_back(Neighbor(3,this->rclToIndex(r,c,l-1))); // bottom right front
 			}
 			if(this->isValid(r-1,c-1,l+1)){
-				neighbors.push_back(Neighbor(4,this->rclToIndex(r-1,c-1,l+1))); //,BCCD1)); // top left back
+				neighbors.push_back(Neighbor(4,this->rclToIndex(r-1,c-1,l+1))); // top left back
 			}
 			if(this->isValid(r-1,c,l+1)){
-				neighbors.push_back(Neighbor(5,this->rclToIndex(r-1,c,l+1))); //,BCCD1)); // top right back
+				neighbors.push_back(Neighbor(5,this->rclToIndex(r-1,c,l+1))); // top right back
 			}
 			if(this->isValid(r,c-1,l+1)){
-				neighbors.push_back(Neighbor(6,this->rclToIndex(r,c-1,l+1))); //,BCCD1)); // bottom left back
+				neighbors.push_back(Neighbor(6,this->rclToIndex(r,c-1,l+1))); // bottom left back
 			}
 			if(this->isValid(r,c,l+1)){
-				neighbors.push_back(Neighbor(7,this->rclToIndex(r,c,l+1))); //,BCCD1)); // bottom right back
+				neighbors.push_back(Neighbor(7,this->rclToIndex(r,c,l+1))); // bottom right back
 			}
 		}
 		else{ // offset layers
 			if(this->isValid(r,c,l-1)){
-				neighbors.push_back(Neighbor(0,this->rclToIndex(r,c,l-1))); //,BCCD1)); // top left front
+				neighbors.push_back(Neighbor(0,this->rclToIndex(r,c,l-1))); // top left front
 			}
 			if(this->isValid(r,c+1,l-1)){
-				neighbors.push_back(Neighbor(1,this->rclToIndex(r,c+1,l-1))); //,BCCD1)); // top right front
+				neighbors.push_back(Neighbor(1,this->rclToIndex(r,c+1,l-1))); // top right front
 			}
 			if(this->isValid(r+1,c,l-1)){
-				neighbors.push_back(Neighbor(2,this->rclToIndex(r+1,c,l-1))); //,BCCD1)); // bottom left front
+				neighbors.push_back(Neighbor(2,this->rclToIndex(r+1,c,l-1))); // bottom left front
 			}
 			if(this->isValid(r+1,c+1,l-1)){
-				neighbors.push_back(Neighbor(3,this->rclToIndex(r+1,c+1,l-1))); //,BCCD1)); // bottom right front
+				neighbors.push_back(Neighbor(3,this->rclToIndex(r+1,c+1,l-1))); // bottom right front
 			}
 			if(this->isValid(r,c,l+1)){
-				neighbors.push_back(Neighbor(4,this->rclToIndex(r,c,l+1))); //,BCCD1)); // top left back
+				neighbors.push_back(Neighbor(4,this->rclToIndex(r,c,l+1))); // top left back
 			}
 			if(this->isValid(r,c+1,l+1)){
-				neighbors.push_back(Neighbor(5,this->rclToIndex(r,c+1,l+1))); //,BCCD1)); // top right back
+				neighbors.push_back(Neighbor(5,this->rclToIndex(r,c+1,l+1))); // top right back
 			}
 			if(this->isValid(r+1,c,l+1)){
-				neighbors.push_back(Neighbor(6,this->rclToIndex(r+1,c,l+1))); //,BCCD1)); // bottom left back
+				neighbors.push_back(Neighbor(6,this->rclToIndex(r+1,c,l+1))); // bottom left back
 			}
 			if(this->isValid(r+1,c+1,l+1)){
-				neighbors.push_back(Neighbor(7,this->rclToIndex(r+1,c+1,l+1))); //,BCCD1)); // bottom right back
+				neighbors.push_back(Neighbor(7,this->rclToIndex(r+1,c+1,l+1))); // bottom right back
 			}
 		}
-//		return neighbors;
 	}
 
 	/**
 	 * Returns the face neighbors of the spel with index \f$(i)\f$.
 	 */
-//	vector<Neighbor> get8Neighbors(int i) const {
 	void get8Neighbors(int i, vector<Neighbor> &neighbors) const {
 		get8Neighbors(this->indexToR(i), this->indexToC(i), this->indexToL(i), neighbors);
-//		return get8Neighbors(this->indexToR(i), this->indexToC(i), this->indexToL(i));
 	}
 
 	/**
 	 * Returns the hexagonal and square face neighbors of the spel at \f$(r,c,l)\f$.
 	 */
-//	vector<Neighbor> get14Neighbors(int r, int c, int l) const {
 	void get14Neighbors(int r, int c, int l, vector<Neighbor> &neighbors) const {
 		if(!this->isValid(r,c,l)){
 			throw outsideImageException();
 		}
-//		vector<Neighbor> result;
-//		result.reserve(14);
-//		result = get8Neighbors(r,c,l);
 		neighbors.clear();
 		get8Neighbors(r,c,l,neighbors);
 		if(l%2==0){
 			if(this->isValid(r-1,c,l)){
-				neighbors.push_back(Neighbor(8,this->rclToIndex(r-1,c,l))); //,BCCD2)); // top
+				neighbors.push_back(Neighbor(8,this->rclToIndex(r-1,c,l))); // top
 			}
 			if(this->isValid(r,c,l-2)){
-				neighbors.push_back(Neighbor(9,this->rclToIndex(r,c,l-2))); //,BCCD2)); // front
+				neighbors.push_back(Neighbor(9,this->rclToIndex(r,c,l-2))); // front
 			}
 			if(this->isValid(r,c-1,l)){
-				neighbors.push_back(Neighbor(10,this->rclToIndex(r,c-1,l))); //,BCCD2)); // left
+				neighbors.push_back(Neighbor(10,this->rclToIndex(r,c-1,l))); // left
 			}
 			if(this->isValid(r,c,l+2)){
-				neighbors.push_back(Neighbor(11,this->rclToIndex(r,c,l+2))); //,BCCD2)); // back
+				neighbors.push_back(Neighbor(11,this->rclToIndex(r,c,l+2))); // back
 			}
 			if(this->isValid(r,c+1,l)){
-				neighbors.push_back(Neighbor(12,this->rclToIndex(r,c+1,l))); //,BCCD2)); // right
+				neighbors.push_back(Neighbor(12,this->rclToIndex(r,c+1,l))); // right
 			}
 			if(this->isValid(r+1,c,l)){
-				neighbors.push_back(Neighbor(13,this->rclToIndex(r+1,c,l))); //,BCCD2)); // bottom
+				neighbors.push_back(Neighbor(13,this->rclToIndex(r+1,c,l))); // bottom
 			}
 		}
 		else{ // offset layers
 			if(this->isValid(r-1,c,l)){
-				neighbors.push_back(Neighbor(8,this->rclToIndex(r-1,c,l))); //,BCCD2)); // top
+				neighbors.push_back(Neighbor(8,this->rclToIndex(r-1,c,l))); // top
 			}
 			if(this->isValid(r,c,l-2)){
-				neighbors.push_back(Neighbor(9,this->rclToIndex(r,c,l-2))); //,BCCD2)); // front
+				neighbors.push_back(Neighbor(9,this->rclToIndex(r,c,l-2))); // front
 			}
 			if(this->isValid(r,c-1,l)){
-				neighbors.push_back(Neighbor(10,this->rclToIndex(r,c-1,l))); //,BCCD2)); // left
+				neighbors.push_back(Neighbor(10,this->rclToIndex(r,c-1,l))); // left
 			}
 			if(this->isValid(r,c,l+2)){
-				neighbors.push_back(Neighbor(11,this->rclToIndex(r,c,l+2))); //,BCCD2)); // back
+				neighbors.push_back(Neighbor(11,this->rclToIndex(r,c,l+2))); // back
 			}
 			if(this->isValid(r,c+1,l)){
-				neighbors.push_back(Neighbor(12,this->rclToIndex(r,c+1,l))); //,BCCD2)); // right
+				neighbors.push_back(Neighbor(12,this->rclToIndex(r,c+1,l))); // right
 			}
 			if(this->isValid(r+1,c,l)){
-				neighbors.push_back(Neighbor(13,this->rclToIndex(r+1,c,l))); //,BCCD2)); // bottom
+				neighbors.push_back(Neighbor(13,this->rclToIndex(r+1,c,l))); // bottom
 			}
 		}
-//		return neighbors;
 	}
 
 	/**
 	 * Returns the hexagonal and square face neighbors of the spel with index \f$(i)\f$.
 	 */
-//	vector<Neighbor> get14Neighbors(int i) const {
 	void get14Neighbors(int i, vector<Neighbor> &neighbors) const {
 		get14Neighbors(this->indexToR(i), this->indexToC(i), this->indexToL(i), neighbors);
-//		return get14Neighbors(this->indexToR(i), this->indexToC(i), this->indexToL(i));
 	}
 
 	/**
@@ -274,15 +259,12 @@ public:
 	 * 8  | hexagonal face
 	 * 14 | hexagonal face, square face
 	 */
-//	vector<Neighbor> getNeighbors(int r, int c, int l, int N) const {
 	void getNeighbors(int r, int c, int l, int N, vector<Neighbor> &neighbors) const {
 		switch (N){
 		case 8:
-//			return get8Neighbors(r, c, l);
 			get8Neighbors(r, c, l, neighbors);
 			break;
 		case 14:
-//			return get14Neighbors(r, c, l);
 			get14Neighbors(r, c, l, neighbors);
 			break;
 		default:
@@ -298,21 +280,94 @@ public:
 	 * 8  | hexagonal face
 	 * 14 | hexagonal face, square face
 	 */
-//	vector<Neighbor> getNeighbors(int i, int N) const {
 	void getNeighbors(int i, int N, vector<Neighbor> &neighbors) const {
 		switch (N){
 		case 8:
 			get8Neighbors(i,neighbors);
-//			return get8Neighbors(i);
 			break;
 		case 14:
 			get14Neighbors(i,neighbors);
-//			return get14Neighbors(i);
 			break;
 		default:
 			throw nNeighborsException();
 		}
 	}
+
+    /**
+    * Implements CImage::downsample(const CImage<T>* original, double newSpelVolume, T* data)
+    */
+    T *downsample(const CImage<T> *original, double newSpelVolume) {
+
+        // high resolution image parameters
+        double oldWidth = original->getWidth();
+        double oldHeight = original->getHeight();
+        double oldDepth = original->getDepth();
+        int oldNElements = original->getNElements();
+        int nBands = original->getNBands();
+
+        // low resolution image parameters
+        double newScaleFactor = cbrt(newSpelVolume);
+        int newNRows = floor(oldHeight / newScaleFactor);
+        int newNColumns = floor(oldWidth / newScaleFactor);
+        int newNLayers = floor(oldDepth / newScaleFactor);
+        int newNElements = newNRows * newNColumns * newNLayers;
+        this->nRows = newNRows;
+        this->nColumns = newNColumns;
+        this->nLayers = newNLayers;
+        this->nElements = newNElements;
+        this->nBands = nBands;
+        this->scaleFactor = newScaleFactor;
+        this->data = new T[newNElements * nBands];
+        if (!this->data) {
+            throw nullPointerException();
+        }
+        double newWidth = this->getWidth();
+        double newHeight = this->getHeight();
+        double newDepth = this->getDepth();
+
+        vector<Neighbor> neighbors;
+        int nNeighbors, nSubSpels;
+        vector<double> newIntensity, newLocation, oldLocation, neighborLocation;
+        vector<vector<double> > newNeighborLocations;
+        double squaredDistanceToCurrent, squaredDistanceToNeighbor, volumeFactor;
+        bool inside;
+        for (int newE = 0; newE < newNElements; newE++) {
+            nSubSpels = 0;
+            newIntensity.assign(nBands, 0.0);
+            this->getCoordinates(newE, newLocation);
+            this->getNeighbors(newE, 8, neighbors); // enough, since the six closest neighbors define the Voronoi cell
+            nNeighbors = neighbors.size();
+            newNeighborLocations.clear();
+            for (int n = 0; n < nNeighbors; n++) {
+                this->getCoordinates(neighbors[n].getIndex(), neighborLocation);
+                newNeighborLocations.push_back(neighborLocation);
+            }
+            for (int oldE = 0; oldE < oldNElements; oldE++) { // Should be optimized to some search area!!
+                original->getCoordinates(oldE, oldLocation);
+                squaredDistanceToCurrent = 0;
+                for (int i = 0; i < 3; i++) {
+                    squaredDistanceToCurrent = squaredDistanceToCurrent + (newLocation[i] - oldLocation[i]) * (newLocation[i] - oldLocation[i]);
+                }
+                inside = true;
+                for (int n = 0; (n < nNeighbors) && inside; n++) {
+                    squaredDistanceToNeighbor = 0;
+                    for (int i = 0; i < 3; i++) {
+                        squaredDistanceToNeighbor = squaredDistanceToNeighbor + (newNeighborLocations[n][i] - oldLocation[i]) * (newNeighborLocations[n][i] - oldLocation[i]);
+                    }
+                    if (squaredDistanceToNeighbor < squaredDistanceToCurrent) {
+                        inside = false;
+                    }
+                }
+                if (inside) {
+                    newIntensity = newIntensity + (*original)[oldE];
+                    nSubSpels++;
+                }
+            }
+            volumeFactor = 1.0 / double(nSubSpels);
+            this->setElement(newE, (volumeFactor * newIntensity));
+        }
+        return this->data;
+    }
 
 	/**
 	 * Pads the input vector with values for the missing neighbors by adding
@@ -332,8 +387,8 @@ public:
 	 * 				|			|	2: mirror
 	 * neighbors	| IN/OUT	| vector of existing neighbors, to be padded
 	 */
-/*	void padNeighborhood(int i, int nSize, int padding, vector<Neighbor> &neighbors) {
-
+	void padNeighborhood(int i, int nSize, int padding, vector<Neighbor> &neighbors) {
+/*
 		if (!this->isValid(i)){
 			throw outsideImageException();
 		}
@@ -373,8 +428,8 @@ public:
 			break;
 		default:
 			throw outsideRangeException();
-		}
-	}*/
+		}*/
+	}
 };
 
 typedef CImageBCC<uint8> CImagetypeBCC;
