@@ -3,13 +3,13 @@
 
 #include <vector>
 #include <iostream>
-#include <math.h>
-#include <tgmath.h> // for round
+#include <cmath>  // for cbrt and round
 #include "cimage.h"
 #include "exception.h"
 #include "defs.h"
 #include "neighbor.h"
-//#include "df.h"
+#include "miscellaneous.h"
+#include "vectoroperators.h"
 using namespace std;
 
 namespace CImage {

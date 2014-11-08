@@ -90,15 +90,7 @@ public:
 		data = d;
 		scaleFactor = cbrt(elementVolume);
 	}
-	CImage(){
-		nLayers = 0;
-		nColumns = 0;
-		nRows = 0;
-		nElements = 0;
-		nBands = 0;
-		data = NULL;
-		scaleFactor = 0;
-	}
+	CImage() : CImage(NULL, 0, 0, 0, 0, 1){}
 	virtual ~CImage() {};
 
 	// Getters
@@ -137,12 +129,31 @@ public:
 		return nBands;
 	}
 
+    /**
+    * Returns the lattice scale factor.
+    */
+    double getScaleFactor() const {
+        return scaleFactor;
+    }
+
 	/**
 	 * Returns a pointer to the data array of the image.
 	 */
 	T* getData() const{
 		return data;
 	}
+
+    /**
+    * Prints the parameters of the image.
+    */
+    void printParameters() const {
+        cout << "#rows: " << nRows << endl;
+        cout << "#columns: " << nColumns << endl;
+        cout << "#layers: " << nLayers << endl;
+        cout << "#modality bands: " << nBands << endl;
+        cout << "scale factor: " << scaleFactor << endl;
+        cout << "data array: " << data << endl;
+    }
 
 	/**
 	 * Returns the width of the image in distance units.
@@ -309,8 +320,8 @@ public:
 	 * :----------	| :--------
 	 * coverage		| 1 means total coverage, 0 means no coverage.
 	 */
-	virtual double internalDistanceVoronoiAverage(uint8 coverage) const = 0;
-	virtual double internalDistanceVoronoiAverage(double coverage) const = 0;
+	//virtual double internalDistanceVoronoiAverage(uint8 coverage) const = 0;
+	//virtual double internalDistanceVoronoiAverage(double coverage) const = 0;
 
 	/*
 	 * Uses the intensity value of a spel, regarded as a coverage value, to approximate the distance between the spel center and the surface that, supposedly, intersects the spel.
@@ -372,6 +383,26 @@ public:
 		return intensityValues;
 	}
 
+    /**
+    * Sets the intensity of element i to the specified intensity.
+    *
+    * Parameter		| Comment
+    * :----------		| :--------
+    * i				| element index
+    * intensityValues	| intensity values for each band
+    */
+    void setElement(int i, vector<T> intensityValues) {
+        if (!this->isValid(i)) {
+            throw outsideImageException();
+        }
+        if (intensityValues.size() != nBands) {
+            throw dimensionMismatchException();
+        }
+        for (int b = 0; b < this->nBands; b++) {
+            data[b * nElements + i] = intensityValues[b];
+        }
+    }
+
 	/**
 	 * Sets the intensity of element (r,c,l) to the specified intensity.
 	 *
@@ -384,35 +415,7 @@ public:
 	 */
 	void setElement(int r, int c, int l, vector<T> intensityValues) {
 		int i = rclToIndex(r,c,l);
-		if(!this->isValid(i)){
-			throw outsideImageException();
-		}
-		if(intensityValues.size() != nBands) {
-			throw dimensionMismatchException();
-		}
-		for (int b = 0; b < this->nBands; b++) {
-			data[b*nElements + i] = intensityValues[i];
-		}
-	}
-
-	/**
-	 * Sets the intensity of element i to the specified intensity.
-	 *
-	 * Parameter		| Comment
-	 * :----------		| :--------
-	 * i				| element index
-	 * intensityValues	| intensity values for each band
-	 */
-	void setElement(int i, vector<T> intensityValues) {
-		if(!this->isValid(i)){
-			throw outsideImageException();
-		}
-		if(intensityValues.size() != nBands) {
-			throw dimensionMismatchException();
-		}
-		for (int b = 0; b < this->nBands; b++) {
-			data[b*nElements + i] = intensityValues[i];
-		}
+		this->setElement(i,intensityValues);
 	}
 
 	/**
@@ -542,7 +545,7 @@ public:
 	 * padding		|			| defines filter behavior for edge spels
 	 * result		| OUTPUT	| filtered image
 	 */
-	// Fixa en padding-metod, som tar en grannskapsvektor och fyller pŒ den med vŠrden fšr grannarna som fattas.
+	// Fixa en padding-metod, som tar en grannskapsvektor och fyller pï¿½ den med vï¿½rden fï¿½r grannarna som fattas.
 //	void filter(ScalarFilter<S> filter, int nN, int padding, T* result) const {
 //
 //	}
@@ -556,7 +559,7 @@ public:
 	 * newSpelVolume	|			| volume of a spel in the downsampled image
 	 * data				| OUTPUT	| Pointer to the data array of the resulting image, as the CImage destructor does not delete it.
 	 */
-	//virtual void downsample(const CImage<T>* original, double newSpelVolume, T* data) = 0;
+	//virtual T* downsample(const CImage<T>* original, double newSpelVolume) = 0;
 
 };
 

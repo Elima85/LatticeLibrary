@@ -12,11 +12,16 @@ set(SOURCE_FILES
     cimageFCC.h
     defs.h
     exception.h
+    filehandling.cpp
+    filehandling.h
     filter.h
     label.h
+    miscellaneous.cpp
+    miscellaneous.h
     neighbor.h
     norm.h
     priorityqueue.h
+    vectoroperators.h
     )
 
 set(MAIN_SOURCE_FILES
@@ -27,6 +32,14 @@ set(MAIN_SOURCE_FILES
 set(TEST_SOURCE_FILES
     ${SOURCE_FILES}
     ${GTEST_ROOT}/src/gtest-all.cc
+    filetest.cpp
+    imagebcctest.cpp
+    imagecctest.cpp
+    imagefcctest.cpp
+    misctest.cpp
+    neighbortest.cpp
+    normtest.cpp
+    priorityqueuetest.cpp
     test.cpp
     )
 
