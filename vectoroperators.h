@@ -78,5 +78,15 @@ namespace CImage {
         }
         return result;
     }
+
+    template<class T>
+    void printVector(vector<T> v) {
+        int nElements = v.size();
+        cout << "(" << v[0];
+        for (int i = 1; i < nElements; i++){
+            cout << ", " << v[i];
+        }
+        cout << ")" << endl;
+    }
 }
 #endif

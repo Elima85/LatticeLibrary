@@ -13,7 +13,7 @@ namespace CImage {
         return c;
     }
 
-    bool isEven(int i) {
+    bool IS_EVEN(int i) {
         return (i % 2 == 0);
     }
 

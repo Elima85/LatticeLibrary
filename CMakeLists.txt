@@ -35,6 +35,7 @@ set(TEST_SOURCE_FILES
     filetest.cpp
     cimagebcctestbands.cpp
     cimagebcctestcoordinates.cpp
+    cimagebcctestdownsample.cpp
     cimagebcctestinitialization.cpp
     cimagebcctestneighbors.cpp
     cimagecctestbands.cpp

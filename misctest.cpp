@@ -9,24 +9,24 @@
 using namespace CImage;
 
 /**
-* bool isEven(int)
+* bool IS_EVEN(int)
 * int length() (of vector)
 * int lowerBound(double*,int,double)
 * vector<T> element-wise operators, tested for int and double.
 */
 
-TEST(Miscellaneous, isEven) {
-    EXPECT_TRUE(isEven(0));
-    EXPECT_FALSE(isEven(1));
-    EXPECT_TRUE(isEven(2));
-    EXPECT_FALSE(isEven(3));
-    EXPECT_TRUE(isEven(4));
-    EXPECT_FALSE(isEven(5));
-    EXPECT_TRUE(isEven(6));
-    EXPECT_FALSE(isEven(7));
-    EXPECT_TRUE(isEven(8));
-    EXPECT_FALSE(isEven(9));
-    EXPECT_TRUE(isEven(10));
+TEST(Miscellaneous, IS_EVEN) {
+    EXPECT_TRUE(IS_EVEN(0));
+    EXPECT_FALSE(IS_EVEN(1));
+    EXPECT_TRUE(IS_EVEN(2));
+    EXPECT_FALSE(IS_EVEN(3));
+    EXPECT_TRUE(IS_EVEN(4));
+    EXPECT_FALSE(IS_EVEN(5));
+    EXPECT_TRUE(IS_EVEN(6));
+    EXPECT_FALSE(IS_EVEN(7));
+    EXPECT_TRUE(IS_EVEN(8));
+    EXPECT_FALSE(IS_EVEN(9));
+    EXPECT_TRUE(IS_EVEN(10));
 }
 
 TEST(Miscellaneous, lowerBound) {

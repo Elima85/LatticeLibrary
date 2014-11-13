@@ -1792,7 +1792,7 @@ void padNeighborhood(int index, int nSize, int padding, vector<Neighbor> &neighb
 		case 1: // nearest neighbor
 			// This does not work for 2D-images!!!
 			for (int n = 0; n < nSize; n++) {
-				if (neighbors[n].getLocation() == currentLoc) { // neighbor is present
+				if (neighbors[n].getPosition() == currentLoc) { // neighbor is present
 					currentLoc++;
 				}
 				else { // neighbor is missing

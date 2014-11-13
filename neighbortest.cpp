@@ -20,14 +20,14 @@ TEST(Neighbor, Neighbor) {
     Neighbor n2 = Neighbor(location2, index2); //, distance2);
 
     // constructor and getters
-    EXPECT_EQ(n1.getLocation(), location1);
+    EXPECT_EQ(n1.getPosition(), location1);
     EXPECT_EQ(n1.getIndex(), index1);
-    EXPECT_NE(n1.getLocation(), location2);
+    EXPECT_NE(n1.getPosition(), location2);
     EXPECT_NE(n1.getIndex(), index2);
 
-    EXPECT_EQ(n2.getLocation(), location2);
+    EXPECT_EQ(n2.getPosition(), location2);
     EXPECT_EQ(n2.getIndex(), index2);
-    EXPECT_NE(n2.getLocation(), location1);
+    EXPECT_NE(n2.getPosition(), location1);
     EXPECT_NE(n2.getIndex(), index1);
 
     // setter

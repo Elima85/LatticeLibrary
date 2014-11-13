@@ -10,6 +10,7 @@
 #include "neighbor.h"
 #include "miscellaneous.h"
 #include "vectoroperators.h"
+#include "filehandling.h" // DEBUG
 using namespace std;
 
 namespace CImage {
@@ -57,8 +58,8 @@ public:
 		double x;
 		c = this->indexToC(i);
 		l = this->indexToL(i);
-		//x = c * BCCFACTORX2 + (!isEven(l)) * BCCOFFSET;
-		x = this->scaleFactor * ((1 + !isEven(l)) * BCCOFFSET + c * BCCSQFACEDISTANCE);
+		//x = c * BCCFACTORX2 + (!IS_EVEN(l)) * BCCOFFSET;
+		x = this->scaleFactor * ((1 + !IS_EVEN(l)) * BCCOFFSET + c * BCCSQFACEDISTANCE);
 		return x;
 	}
 
@@ -70,8 +71,8 @@ public:
 		double y;
 		r = this->indexToR(i);
 		l = this->indexToL(i);
-		//y = r * BCCFACTORX2 + (!isEven(l)) * BCCOFFSET;
-		y = this->scaleFactor * ((1 + !isEven(l)) * BCCOFFSET + r * BCCSQFACEDISTANCE);
+		//y = r * BCCFACTORX2 + (!IS_EVEN(l)) * BCCOFFSET;
+		y = this->scaleFactor * ((1 + !IS_EVEN(l)) * BCCOFFSET + r * BCCSQFACEDISTANCE);
 		return y;
 	}
 
@@ -132,7 +133,7 @@ public:
 			throw outsideImageException();
 		}
 		neighbors.clear();
-		if(l%2==0){
+		if(IS_EVEN(l)){
 			if(this->isValid(r-1,c-1,l-1)){
 				neighbors.push_back(Neighbor(0,this->rclToIndex(r-1,c-1,l-1))); // top left front
 			}
@@ -199,49 +200,27 @@ public:
 	void get14Neighbors(int r, int c, int l, vector<Neighbor> &neighbors) const {
 		if(!this->isValid(r,c,l)){
 			throw outsideImageException();
-		}
-		neighbors.clear();
-		get8Neighbors(r,c,l,neighbors);
-		if(l%2==0){
-			if(this->isValid(r-1,c,l)){
-				neighbors.push_back(Neighbor(8,this->rclToIndex(r-1,c,l))); // top
-			}
-			if(this->isValid(r,c,l-2)){
-				neighbors.push_back(Neighbor(9,this->rclToIndex(r,c,l-2))); // front
-			}
-			if(this->isValid(r,c-1,l)){
-				neighbors.push_back(Neighbor(10,this->rclToIndex(r,c-1,l))); // left
-			}
-			if(this->isValid(r,c,l+2)){
-				neighbors.push_back(Neighbor(11,this->rclToIndex(r,c,l+2))); // back
-			}
-			if(this->isValid(r,c+1,l)){
-				neighbors.push_back(Neighbor(12,this->rclToIndex(r,c+1,l))); // right
-			}
-			if(this->isValid(r+1,c,l)){
-				neighbors.push_back(Neighbor(13,this->rclToIndex(r+1,c,l))); // bottom
-			}
-		}
-		else{ // offset layers
-			if(this->isValid(r-1,c,l)){
-				neighbors.push_back(Neighbor(8,this->rclToIndex(r-1,c,l))); // top
-			}
-			if(this->isValid(r,c,l-2)){
-				neighbors.push_back(Neighbor(9,this->rclToIndex(r,c,l-2))); // front
-			}
-			if(this->isValid(r,c-1,l)){
-				neighbors.push_back(Neighbor(10,this->rclToIndex(r,c-1,l))); // left
-			}
-			if(this->isValid(r,c,l+2)){
-				neighbors.push_back(Neighbor(11,this->rclToIndex(r,c,l+2))); // back
-			}
-			if(this->isValid(r,c+1,l)){
-				neighbors.push_back(Neighbor(12,this->rclToIndex(r,c+1,l))); // right
-			}
-			if(this->isValid(r+1,c,l)){
-				neighbors.push_back(Neighbor(13,this->rclToIndex(r+1,c,l))); // bottom
-			}
-		}
+        }
+        neighbors.clear();
+        get8Neighbors(r,c,l,neighbors);
+        if(this->isValid(r-1,c,l)){
+            neighbors.push_back(Neighbor(8,this->rclToIndex(r-1,c,l))); // top
+        }
+        if(this->isValid(r,c,l-2)){
+            neighbors.push_back(Neighbor(9,this->rclToIndex(r,c,l-2))); // front
+        }
+        if(this->isValid(r,c-1,l)){
+            neighbors.push_back(Neighbor(10,this->rclToIndex(r,c-1,l))); // left
+        }
+        if(this->isValid(r,c,l+2)){
+            neighbors.push_back(Neighbor(11,this->rclToIndex(r,c,l+2))); // back
+        }
+        if(this->isValid(r,c+1,l)){
+            neighbors.push_back(Neighbor(12,this->rclToIndex(r,c+1,l))); // right
+        }
+        if(this->isValid(r+1,c,l)){
+            neighbors.push_back(Neighbor(13,this->rclToIndex(r+1,c,l))); // bottom
+        }
 	}
 
 	/**
@@ -305,11 +284,20 @@ public:
         int oldNElements = original->getNElements();
         int nBands = original->getNBands();
 
+//        cout << "old #rows: " << original->getNRows() << endl; // DEBUG
+//        cout << "old #columns: " << original->getNColumns() << endl; // DEBUG
+//        cout << "old #layers: " << original->getNLayers() << endl; // DEBUG
+
         // low resolution image parameters
         double newScaleFactor = cbrt(newSpelVolume);
-        int newNRows = floor(oldHeight / newScaleFactor);
-        int newNColumns = floor(oldWidth / newScaleFactor);
-        int newNLayers = floor(oldDepth / newScaleFactor);
+        if((oldDepth < newScaleFactor * (BCCSQFACEDISTANCE + BCCOFFSET)) || (oldWidth < newScaleFactor * (BCCSQFACEDISTANCE + BCCOFFSET)) || (oldHeight < newScaleFactor * (BCCSQFACEDISTANCE + BCCOFFSET))){
+            // Must have more than two layers, columns and rows to be a BCC lattice.
+            throw downsampleException();
+        }
+        // get dimensions
+        int newNRows = (int) floor((oldHeight - newScaleFactor * BCCOFFSET) / (newScaleFactor * BCCSQFACEDISTANCE));
+        int newNColumns = (int) floor((oldWidth - newScaleFactor * BCCOFFSET) / (newScaleFactor * BCCSQFACEDISTANCE));
+        int newNLayers = (int) floor((oldDepth - newScaleFactor * BCCOFFSET) / (newScaleFactor * BCCOFFSET));
         int newNElements = newNRows * newNColumns * newNLayers;
         this->nRows = newNRows;
         this->nColumns = newNColumns;
@@ -325,47 +313,94 @@ public:
         double newHeight = this->getHeight();
         double newDepth = this->getDepth();
 
-        vector<Neighbor> neighbors;
+        //cout << "new #rows: " << this->getNRows() << endl; // DEBUG
+        //cout << "new #columns: " << this->getNColumns() << endl; // DEBUG
+        //cout << "new #layers: " << this->getNLayers() << endl; // DEBUG
+
+        vector<Neighbor> newNeighbors;
         int nNeighbors, nSubSpels;
-        vector<double> newIntensity, newLocation, oldLocation, neighborLocation;
-        vector<vector<double> > newNeighborLocations;
-        double squaredDistanceToCurrent, squaredDistanceToNeighbor, volumeFactor;
+        int minR, maxR, minC, maxC, minL, maxL; // DEBUG
+//        double *voronoiCells = new double[oldNElements]; // DEBUG
+//        for (int i = 0; i < oldNElements; i++) { // DEBUG
+//            voronoiCells[i] = 0; // DEBUG
+//        } // DEBUG
+        vector<double> newIntensity, newCoordinates, oldCoordinates, neighborCoordinates;
+        vector<vector<double> > newNeighborCoordinates;
+        double squaredDistanceToCurrent, squaredDistanceToNeighbor, volumeFactor, squaredRadius = pow(1.1 * this->scaleFactor * BCCOFFSET,2);
         bool inside;
-        for (int newE = 0; newE < newNElements; newE++) {
+        for (int newIndex = 0; newIndex < newNElements; newIndex++) {
+//            cout << "Element index: " << newIndex << endl; // DEBUG
             nSubSpels = 0;
+//            minR = 10000; // DEBUG
+//            maxR = 0; // DEBUG
+//            minC = 10000; // DEBUG
+//            maxC = 0; // DEBUG
+//            minL = 10000; // DEBUG
+//            maxL = 0; // DEBUG
             newIntensity.assign(nBands, 0.0);
-            this->getCoordinates(newE, newLocation);
-            this->getNeighbors(newE, 8, neighbors); // enough, since the six closest neighbors define the Voronoi cell
-            nNeighbors = neighbors.size();
-            newNeighborLocations.clear();
+            this->getCoordinates(newIndex, newCoordinates);
+//            cout << "new element location: " << endl; // DEBUG
+//            printVector(newCoordinates); // DEBUG
+            this->getNeighbors(newIndex, 14, newNeighbors);
+            nNeighbors = newNeighbors.size();
+//            cout << "#neighbors: " << nNeighbors << endl; // DEBUG
+//            for (int n = 0; n < nNeighbors; n++) { // DEBUG
+//                cout <<"\t" << newNeighbors[n].getIndex() << endl; // DEBUG
+//            } // DEBUG
+            newNeighborCoordinates.clear();
+//            cout << "neighbors: " << endl; // DEBUG
             for (int n = 0; n < nNeighbors; n++) {
-                this->getCoordinates(neighbors[n].getIndex(), neighborLocation);
-                newNeighborLocations.push_back(neighborLocation);
+                this->getCoordinates(newNeighbors[n].getIndex(), neighborCoordinates);
+                newNeighborCoordinates.push_back(neighborCoordinates);
+//                printVector(newNeighborCoordinates[n]); // DEBUG
             }
-            for (int oldE = 0; oldE < oldNElements; oldE++) { // Should be optimized to some search area!!
-                original->getCoordinates(oldE, oldLocation);
+            for (int oldIndex = 0; oldIndex < oldNElements; oldIndex++) { // Should be optimized to some search area!! Check if squaredDistanceToCurrent is less than some regionOfInterest, e.g. (scaleFactor*BCCOFFSET)^2?
+                original->getCoordinates(oldIndex, oldCoordinates);
                 squaredDistanceToCurrent = 0;
                 for (int i = 0; i < 3; i++) {
-                    squaredDistanceToCurrent = squaredDistanceToCurrent + (newLocation[i] - oldLocation[i]) * (newLocation[i] - oldLocation[i]);
+                    squaredDistanceToCurrent = squaredDistanceToCurrent + pow(newCoordinates[i] - oldCoordinates[i],2);
                 }
-                inside = true;
-                for (int n = 0; (n < nNeighbors) && inside; n++) {
-                    squaredDistanceToNeighbor = 0;
-                    for (int i = 0; i < 3; i++) {
-                        squaredDistanceToNeighbor = squaredDistanceToNeighbor + (newNeighborLocations[n][i] - oldLocation[i]) * (newNeighborLocations[n][i] - oldLocation[i]);
+                if (squaredDistanceToCurrent < squaredRadius) {
+                    inside = true;
+                    for (int n = 0; n < nNeighbors; n++) {
+                        squaredDistanceToNeighbor = 0;
+                        for (int i = 0; i < 3; i++) {
+                            squaredDistanceToNeighbor = squaredDistanceToNeighbor + pow(newNeighborCoordinates[n][i] - oldCoordinates[i], 2);
+                        }
+                        if (squaredDistanceToNeighbor < squaredDistanceToCurrent) {
+                            inside = false;
+                            break;
+                        }
                     }
-                    if (squaredDistanceToNeighbor < squaredDistanceToCurrent) {
-                        inside = false;
+
+                    if (inside) {
+//                        voronoiCells[oldIndex] = newIndex; // DEBUG
+                        newIntensity = newIntensity + (*original)[oldIndex];
+                        nSubSpels++;
+//                    minR = MIN(minR, original->indexToR(oldIndex)); // DEBUG
+//                    maxR = MAX(maxR, original->indexToR(oldIndex)); // DEBUG
+//                    minC = MIN(minC, original->indexToC(oldIndex)); // DEBUG
+//                    maxC = MAX(maxC, original->indexToC(oldIndex)); // DEBUG
+//                    minL = MIN(minL, original->indexToL(oldIndex)); // DEBUG
+//                    maxL = MAX(maxL, original->indexToL(oldIndex)); // DEBUG
                     }
-                }
-                if (inside) {
-                    newIntensity = newIntensity + (*original)[oldE];
-                    nSubSpels++;
                 }
             }
+//            cout << "range of R: [" << minR << "," << maxR << "]" << endl; //DEBUG
+//            cout << "range of C: [" << minC << "," << maxC << "]" << endl; //DEBUG
+//            cout << "range of L: [" << minL << "," << maxL << "]" << endl; //DEBUG
+//            cout << "#subSpels: " << nSubSpels << endl; // DEBUG
+//            cout << "accumulated intensity: " << endl; // DEBUG
+//            printVector(newIntensity); // DEBUG
             volumeFactor = 1.0 / double(nSubSpels);
-            this->setElement(newE, (volumeFactor * newIntensity));
+            this->setElement(newIndex, (volumeFactor * newIntensity));
+//            cout << "new intensity:" << endl; // DEBUG
+//            printVector((*this)[newIndex]); // DEBUG
         }
+//        char filename[] = "voronoiCells.bin"; // DEBUG
+//        char *filepointer = filename; // DEBUG
+//        writeVolume(filepointer, voronoiCells, oldNElements); // DEBUG
+//        delete[] voronoiCells; // DEBUG
         return this->data;
     }
 
@@ -406,7 +441,7 @@ public:
 			break;
 		case 1: // nearest neighbor
 			for (int n = 0; n < nSize; n++) {
-				if (neighbors[n].getLocation() == current) { // neighbor is present
+				if (neighbors[n].getPosition() == current) { // neighbor is present
 					current++;
 				}
 				else { // neighbor is missing

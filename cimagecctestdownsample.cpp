@@ -3,8 +3,6 @@
 #include "cimage.h"
 #include "cimageCC.h"
 #include "exception.h"
-#include <cmath>
-#include <vector>
 #include "filehandling.h"
 
 using namespace CImage;
