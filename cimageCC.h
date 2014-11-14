@@ -1705,46 +1705,48 @@ public:
         double newHeight = this->getHeight();
         double newDepth = this->getDepth();
 
-        vector<Neighbor> neighbors;
+        vector<Neighbor> newNeighbors;
         int nNeighbors, nSubSpels;
-        vector<double> newIntensity, newLocation, oldLocation, neighborLocation;
-        vector<vector<double> > newNeighborLocations;
-        double squaredDistanceToCurrent, squaredDistanceToNeighbor, volumeFactor;
+        vector<double> newIntensity, newCoordinates, oldCoordinates, neighborCoordinates;
+        vector<vector<double> > newNeighborCoordinates;
+        double squaredDistanceToCurrent, squaredDistanceToNeighbor, volumeFactor, squaredRadius = pow(1.1 * this->scaleFactor * sqrt(2), 2); // For the unit lattice, the "radius" of spel is sqrt(2).
         bool inside;
-        for (int newE = 0; newE < newNElements; newE++) {
+        for (int newIndex = 0; newIndex < newNElements; newIndex++) {
             nSubSpels = 0;
             newIntensity.assign(nBands, 0.0);
-            this->getCoordinates(newE, newLocation);
-            this->getNeighbors(newE, 6, neighbors); // enough, since the six closest neighbors define the Voronoi cell
-            nNeighbors = neighbors.size();
-            newNeighborLocations.clear();
+            this->getCoordinates(newIndex, newCoordinates);
+            this->getNeighbors(newIndex, 6, newNeighbors); // enough, since the six closest newNeighbors define the Voronoi cell
+            nNeighbors = newNeighbors.size();
+            newNeighborCoordinates.clear();
             for (int n = 0; n < nNeighbors; n++) {
-                this->getCoordinates(neighbors[n].getIndex(), neighborLocation);
-                newNeighborLocations.push_back(neighborLocation);
+                this->getCoordinates(newNeighbors[n].getIndex(), neighborCoordinates);
+                newNeighborCoordinates.push_back(neighborCoordinates);
             }
-            for (int oldE = 0; oldE < oldNElements; oldE++) { // Should be optimized to some search area!!
-                original->getCoordinates(oldE, oldLocation);
+            for (int oldIndex = 0; oldIndex < oldNElements; oldIndex++) { // Should be optimized to some search area!!
+                original->getCoordinates(oldIndex, oldCoordinates);
                 squaredDistanceToCurrent = 0;
                 for (int i = 0; i < 3; i++) {
-                    squaredDistanceToCurrent = squaredDistanceToCurrent + (newLocation[i] - oldLocation[i]) * (newLocation[i] - oldLocation[i]);
+                    squaredDistanceToCurrent = squaredDistanceToCurrent + (newCoordinates[i] - oldCoordinates[i]) * (newCoordinates[i] - oldCoordinates[i]);
                 }
-                inside = true;
-                for (int n = 0; (n < nNeighbors) && inside; n++) {
-                    squaredDistanceToNeighbor = 0;
-                    for (int i = 0; i < 3; i++) {
-                        squaredDistanceToNeighbor = squaredDistanceToNeighbor + (newNeighborLocations[n][i] - oldLocation[i]) * (newNeighborLocations[n][i] - oldLocation[i]);
+                if (squaredDistanceToCurrent < squaredRadius) {
+                    inside = true;
+                    for (int n = 0; (n < nNeighbors) && inside; n++) {
+                        squaredDistanceToNeighbor = 0;
+                        for (int i = 0; i < 3; i++) {
+                            squaredDistanceToNeighbor = squaredDistanceToNeighbor + (newNeighborCoordinates[n][i] - oldCoordinates[i]) * (newNeighborCoordinates[n][i] - oldCoordinates[i]);
+                        }
+                        if (squaredDistanceToNeighbor < squaredDistanceToCurrent) {
+                            inside = false;
+                        }
                     }
-                    if (squaredDistanceToNeighbor < squaredDistanceToCurrent) {
-                        inside = false;
+                    if (inside) {
+                        newIntensity = newIntensity + (*original)[oldIndex];
+                        nSubSpels++;
                     }
-                }
-                if (inside) {
-                    newIntensity = newIntensity + (*original)[oldE];
-                    nSubSpels++;
                 }
             }
             volumeFactor = 1.0 / double(nSubSpels);
-            this->setElement(newE, (volumeFactor * newIntensity));
+            this->setElement(newIndex, (volumeFactor * newIntensity));
         }
         return this->data;
     }

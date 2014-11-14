@@ -313,20 +313,20 @@ public:
         double newHeight = this->getHeight();
         double newDepth = this->getDepth();
 
-        //cout << "new #rows: " << this->getNRows() << endl; // DEBUG
-        //cout << "new #columns: " << this->getNColumns() << endl; // DEBUG
-        //cout << "new #layers: " << this->getNLayers() << endl; // DEBUG
+//        cout << "new #rows: " << this->getNRows() << endl; // DEBUG
+//        cout << "new #columns: " << this->getNColumns() << endl; // DEBUG
+//        cout << "new #layers: " << this->getNLayers() << endl; // DEBUG
 
         vector<Neighbor> newNeighbors;
         int nNeighbors, nSubSpels;
-        int minR, maxR, minC, maxC, minL, maxL; // DEBUG
+//        int minR, maxR, minC, maxC, minL, maxL; // DEBUG
 //        double *voronoiCells = new double[oldNElements]; // DEBUG
 //        for (int i = 0; i < oldNElements; i++) { // DEBUG
 //            voronoiCells[i] = 0; // DEBUG
 //        } // DEBUG
         vector<double> newIntensity, newCoordinates, oldCoordinates, neighborCoordinates;
         vector<vector<double> > newNeighborCoordinates;
-        double squaredDistanceToCurrent, squaredDistanceToNeighbor, volumeFactor, squaredRadius = pow(1.1 * this->scaleFactor * BCCOFFSET,2);
+        double squaredDistanceToCurrent, squaredDistanceToNeighbor, volumeFactor, squaredRadius = pow(1.1 * this->scaleFactor * BCCOFFSET * sqrt(1.25),2);
         bool inside;
         for (int newIndex = 0; newIndex < newNElements; newIndex++) {
 //            cout << "Element index: " << newIndex << endl; // DEBUG
