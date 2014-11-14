@@ -23,21 +23,22 @@ TEST(CImageBCC, downsample) { // may need a 6 layer image, so that all neighbors
     double *data1 = readVolume(filePointer1, nTotHighRes);
     double *data2 = readVolume(filePointer2, nTotHighRes);
     double *data3 = readVolume(filePointer3, nTotHighRes);
-    //double *data4 = readVolume(filePointer4, 2 * nTotHighRes);
+    double *data4 = readVolume(filePointer4, 2 * nTotHighRes);
     CImageCC<double> *HighRes1 = new CImageCC<double>(data1, nRHighRes, nCHighRes, nLHighRes, 1, pow(0.01 * BCCSQFACEDISTANCE, 3) + 0.000000001 * EPSILONT);
     CImageCC<double> *HighRes2 = new CImageCC<double>(data2, nRHighRes, nCHighRes, nLHighRes, 1, pow(0.01 * BCCSQFACEDISTANCE, 3) + 0.000000001 * EPSILONT);
     CImageCC<double> *HighRes3 = new CImageCC<double>(data3, nRHighRes, nCHighRes, nLHighRes, 1, pow(0.01 * BCCSQFACEDISTANCE, 3) + 0.000000001 * EPSILONT);
-    //CImageCC<double> *HighRes4 = new CImageCC<double>(data4, nRHighRes, nCHighRes, nLHighRes, 2, pow(0.1 * BCCSQFACEDISTANCE, 3) + 0.000000001 * EPSILONT);
+    CImageCC<double> *HighRes4 = new CImageCC<double>(data4, nRHighRes, nCHighRes, nLHighRes, 2, pow(0.01 * BCCSQFACEDISTANCE, 3) + 0.000000001 * EPSILONT);
 
     double gt1[] = {1, 1, 1, 1,  1, 0.5, 1, 0.5};
     double gt2[] = {1, 1, 1, 1,  1, 1, 0.5, 0.5};
     double gt3[] = {1, 1, 1, 1,  0.5, 0.5, 0.5, 0.5};
-    //double gt4[] = {0.5, 1, 0, 0.5,  0.5, 1, 0, 0.5, 0.5, 0.5, 0, 0,  0.5, 0.5, 0, 0};
+    double gt4[] = {0.5, 1, 0, 0.5,  0.5, 1, 0, 0.5, 0.5, 0.5, 0, 0,  0.5, 0.5, 0, 0};
 
     CImageBCC<double> *imBCCLowRes1 = new CImageBCC<double>();
     CImageBCC<double> *imBCCLowRes2 = new CImageBCC<double>();
     CImageBCC<double> *imBCCLowRes3 = new CImageBCC<double>();
-    //CImageBCC<double> *imBCCLowRes4 = new CImageBCC<double>();
+    CImageBCC<double> *imBCCLowRes4 = new CImageBCC<double>();
+    CImageBCC<double> *imBCCVeryLowRes = new CImageBCC<double>();
 
     double *downsampledData1, *downsampledData2, *downsampledData3, *downsampledData4;
 
@@ -63,7 +64,6 @@ TEST(CImageBCC, downsample) { // may need a 6 layer image, so that all neighbors
     EXPECT_NEAR(gt1[6], downsampledData1[57], EPSILONT);
     EXPECT_NEAR(gt1[7], downsampledData1[58], EPSILONT);
 
-/*
     downsampledData2 = imBCCLowRes2->downsample(HighRes2, 1);
     EXPECT_TRUE(downsampledData2);
     EXPECT_EQ(downsampledData2, imBCCLowRes2->getData());
@@ -79,9 +79,7 @@ TEST(CImageBCC, downsample) { // may need a 6 layer image, so that all neighbors
     EXPECT_NEAR(gt2[5], downsampledData2[54], EPSILONT);
     EXPECT_NEAR(gt2[6], downsampledData2[57], EPSILONT);
     EXPECT_NEAR(gt2[7], downsampledData2[58], EPSILONT);
-*/
 
-/*
     downsampledData3 = imBCCLowRes3->downsample(HighRes3, 1);
     EXPECT_TRUE(downsampledData3);
     EXPECT_EQ(downsampledData3, imBCCLowRes3->getData());
@@ -97,9 +95,7 @@ TEST(CImageBCC, downsample) { // may need a 6 layer image, so that all neighbors
     EXPECT_NEAR(gt3[5], downsampledData3[54], EPSILONT);
     EXPECT_NEAR(gt3[6], downsampledData3[57], EPSILONT);
     EXPECT_NEAR(gt3[7], downsampledData3[58], EPSILONT);
-*/
 
-/*
     downsampledData4 = imBCCLowRes4->downsample(HighRes4, 1);
     EXPECT_TRUE(downsampledData4);
     EXPECT_EQ(downsampledData4, imBCCLowRes4->getData());
@@ -124,19 +120,21 @@ TEST(CImageBCC, downsample) { // may need a 6 layer image, so that all neighbors
     EXPECT_NEAR(gt4[13], downsampledData4[54 + 64], EPSILONT);
     EXPECT_NEAR(gt4[14], downsampledData4[57 + 64], EPSILONT);
     EXPECT_NEAR(gt4[15], downsampledData4[58 + 64], EPSILONT);
-*/
+
+    EXPECT_THROW(imBCCVeryLowRes->downsample(HighRes1, 10), downsampleException);
 
     delete HighRes1;
     delete HighRes2;
     delete HighRes3;
-    //delete HighRes4;
+    delete HighRes4;
     delete imBCCLowRes1;
     delete imBCCLowRes2;
     delete imBCCLowRes3;
-    //delete imBCCLowRes4;
+    delete imBCCLowRes4;
+    delete imBCCVeryLowRes;
     delete[] downsampledData1;
-    //delete[] downsampledData2;
-    //delete[] downsampledData3;
-    //delete[] downsampledData4;
+    delete[] downsampledData2;
+    delete[] downsampledData3;
+    delete[] downsampledData4;
 
 }

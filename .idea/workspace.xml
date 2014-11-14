@@ -8,17 +8,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1d3fad42-4462-467b-9f60-ce02ab03900c" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BCCdoubleband.bin" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BCChighresX.bin" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BCChighresY.bin" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BCChighresZ.bin" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BCCveryhighdoubleband.bin" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BCCveryhighresX.bin" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BCCveryhighresY.bin" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BCCveryhighresZ.bin" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cimageBCC.h" afterPath="$PROJECT_DIR$/cimageBCC.h" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/FCCveryhighdoubleband.bin" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/FCCveryhighresX.bin" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/FCCveryhighresY.bin" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/FCCveryhighresZ.bin" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/newtestim2345.bin" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/cimagefcctestdownsample.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cimageCC.h" afterPath="$PROJECT_DIR$/cimageCC.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cimageFCC.h" afterPath="$PROJECT_DIR$/cimageFCC.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cimagebcctestdownsample.cpp" afterPath="$PROJECT_DIR$/cimagebcctestdownsample.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cimagecctestdownsample.cpp" afterPath="$PROJECT_DIR$/cimagecctestdownsample.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="cimage.iws" />
@@ -68,7 +66,7 @@
       <file leaf-file-name="cimageBCC.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/cimageBCC.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="4110" max-vertical-offset="7200">
+            <state vertical-scroll-proportion="0.0" vertical-offset="4035" max-vertical-offset="7200">
               <caret line="328" column="150" selection-start-line="328" selection-start-column="150" selection-end-line="328" selection-end-column="150" />
               <folding>
                 <element signature="e#41#58#0" expanded="true" />
@@ -94,10 +92,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="cimageFCC.h" pinned="false" current-in-tab="true">
+      <file leaf-file-name="cimageFCC.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/cimageFCC.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.081717454" vertical-offset="6886" max-vertical-offset="8280">
+            <state vertical-scroll-proportion="0.0" vertical-offset="6451" max-vertical-offset="8280">
               <caret line="489" column="39" selection-start-line="489" selection-start-column="39" selection-end-line="489" selection-end-column="39" />
               <folding>
                 <element signature="e#39#56#0" expanded="true" />
@@ -123,8 +121,8 @@
       <file leaf-file-name="cimageCC.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/cimageCC.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="2352" max-vertical-offset="3960">
-              <caret line="1745" column="17" selection-start-line="1745" selection-start-column="17" selection-end-line="1745" selection-end-column="17" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="2007" max-vertical-offset="4035">
+              <caret line="1690" column="78" selection-start-line="1690" selection-start-column="78" selection-end-line="1690" selection-end-column="78" />
               <folding />
             </state>
           </provider>
@@ -143,8 +141,32 @@
       <file leaf-file-name="cimagebcctestdownsample.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/cimagebcctestdownsample.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="420" max-vertical-offset="2205">
-              <caret line="28" column="104" selection-start-line="28" selection-start-column="104" selection-end-line="28" selection-end-column="104" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="1413" max-vertical-offset="2175">
+              <caret line="123" column="9" selection-start-line="123" selection-start-column="0" selection-end-line="124" selection-end-column="0" />
+              <folding>
+                <element signature="e#0#24#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="cimagefcctestdownsample.cpp" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/cimagefcctestdownsample.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.54293627" vertical-offset="1498" max-vertical-offset="2220">
+              <caret line="126" column="20" selection-start-line="126" selection-start-column="20" selection-end-line="126" selection-end-column="20" />
+              <folding>
+                <element signature="e#0#24#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="cimagecctestdownsample.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/cimagecctestdownsample.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="3093" max-vertical-offset="3855">
+              <caret line="241" column="0" selection-start-line="241" selection-start-column="0" selection-end-line="242" selection-end-column="86" />
               <folding>
                 <element signature="e#0#24#0" expanded="true" />
               </folding>
@@ -296,7 +318,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-328" y="-1177" width="1920" height="1177" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2870036" sideWeight="0.4997397" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -306,7 +328,7 @@
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.19466248" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.108333334" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39801443" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32310468" sideWeight="0.4997397" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32310468" sideWeight="0.4997397" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32850242" sideWeight="0.5" order="9" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
@@ -342,13 +364,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/test.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="100">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/cimage.h">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="8370" max-vertical-offset="8550">
@@ -393,6 +408,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.33281493" vertical-offset="17874" max-vertical-offset="20128">
           <caret line="1079" column="8" selection-start-line="1079" selection-start-column="8" selection-end-line="1079" selection-end-column="8" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -400,6 +416,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.3592535" vertical-offset="32103" max-vertical-offset="39117">
           <caret line="1914" column="13" selection-start-line="1914" selection-start-column="13" selection-end-line="1914" selection-end-column="13" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -428,6 +445,10 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.911841" vertical-offset="1665" max-vertical-offset="2822">
           <caret line="160" column="0" selection-start-line="160" selection-start-column="0" selection-end-line="160" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#17#0" expanded="false" />
+            <element signature="e#174#192#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -505,6 +526,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="3095" max-vertical-offset="3555">
           <caret line="231" column="1" selection-start-line="231" selection-start-column="1" selection-end-line="231" selection-end-column="1" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -512,6 +534,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="6810">
           <caret line="4" column="22" selection-start-line="4" selection-start-column="22" selection-end-line="4" selection-end-column="22" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -527,6 +550,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.14117648" vertical-offset="0" max-vertical-offset="10980">
           <caret line="4" column="22" selection-start-line="4" selection-start-column="22" selection-end-line="4" selection-end-column="22" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -548,6 +572,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-22.775" vertical-offset="9605" max-vertical-offset="10005">
           <caret line="39" column="26" selection-start-line="39" selection-start-column="26" selection-end-line="39" selection-end-column="26" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -563,6 +588,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.225" vertical-offset="0" max-vertical-offset="400">
           <caret line="733" column="0" selection-start-line="733" selection-start-column="0" selection-end-line="733" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -570,6 +596,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.5775" vertical-offset="2784" max-vertical-offset="3600">
           <caret line="207" column="25" selection-start-line="207" selection-start-column="25" selection-end-line="207" selection-end-column="25" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -577,6 +604,18 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1485">
           <caret line="90" column="1" selection-start-line="90" selection-start-column="1" selection-end-line="90" selection-end-column="1" />
+          <folding>
+            <element signature="e#41#60#0" expanded="false" />
+            <element signature="e#271#380#0" expanded="false" />
+            <element signature="e#561#681#0" expanded="false" />
+            <element signature="e#852#965#0" expanded="false" />
+            <element signature="e#1098#1189#0" expanded="false" />
+            <element signature="e#1321#1408#0" expanded="false" />
+            <element signature="e#1538#1632#0" expanded="false" />
+            <element signature="e#1787#1880#0" expanded="false" />
+            <element signature="e#2080#2183#0" expanded="false" />
+            <element signature="e#2383#2503#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -584,16 +623,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.039473683" vertical-offset="0" max-vertical-offset="760">
           <caret line="5" column="1" selection-start-line="5" selection-start-column="1" selection-end-line="5" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cimagecctestdownsample.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="15" max-vertical-offset="3795">
-          <caret line="46" column="33" selection-start-line="46" selection-start-column="33" selection-end-line="47" selection-end-column="61" />
-          <folding>
-            <element signature="e#0#24#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -611,6 +640,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.23595506" vertical-offset="0" max-vertical-offset="445">
           <caret line="833" column="1" selection-start-line="833" selection-start-column="1" selection-end-line="833" selection-end-column="1" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -669,6 +699,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.24930748" vertical-offset="0" max-vertical-offset="722">
           <caret line="12" column="2" selection-start-line="12" selection-start-column="2" selection-end-line="12" selection-end-column="2" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -676,16 +707,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="375">
           <caret line="1" column="22" selection-start-line="1" selection-start-column="22" selection-end-line="1" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cimagebcctestdownsample.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2205">
-          <caret line="28" column="104" selection-start-line="28" selection-start-column="104" selection-end-line="28" selection-end-column="104" />
-          <folding>
-            <element signature="e#0#24#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -724,17 +745,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/cimageCC.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="2352" max-vertical-offset="3960">
-          <caret line="1745" column="17" selection-start-line="1745" selection-start-column="17" selection-end-line="1745" selection-end-column="17" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/cimageFCC.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.081717454" vertical-offset="6886" max-vertical-offset="8280">
+        <state vertical-scroll-proportion="0.0" vertical-offset="6886" max-vertical-offset="8280">
           <caret line="489" column="39" selection-start-line="489" selection-start-column="39" selection-end-line="489" selection-end-column="39" />
           <folding>
             <element signature="e#39#56#0" expanded="true" />
@@ -752,6 +765,44 @@
             <element signature="e#12314#12601#0" expanded="true" />
             <element signature="e#12685#16216#0" expanded="true" />
             <element signature="e#16304#16591#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cimageCC.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="2007" max-vertical-offset="4035">
+          <caret line="1690" column="78" selection-start-line="1690" selection-start-column="78" selection-end-line="1690" selection-end-column="78" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cimagecctestdownsample.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="3093" max-vertical-offset="3855">
+          <caret line="241" column="0" selection-start-line="241" selection-start-column="0" selection-end-line="242" selection-end-column="86" />
+          <folding>
+            <element signature="e#0#24#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cimagebcctestdownsample.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1413" max-vertical-offset="2175">
+          <caret line="123" column="9" selection-start-line="123" selection-start-column="0" selection-end-line="124" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#24#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cimagefcctestdownsample.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.54293627" vertical-offset="1498" max-vertical-offset="2220">
+          <caret line="126" column="20" selection-start-line="126" selection-start-column="20" selection-end-line="126" selection-end-column="20" />
+          <folding>
+            <element signature="e#0#24#0" expanded="true" />
           </folding>
         </state>
       </provider>

@@ -1687,6 +1687,11 @@ public:
 
         // low resolution image parameters
         double newScaleFactor = cbrt(newSpelVolume);
+        if ((oldDepth < newScaleFactor) || (oldHeight < newScaleFactor) || (oldWidth < newScaleFactor)) {
+            // Must have at least one row, column and layer to be a CC lattice.
+            throw downsampleException();
+        }
+
         int newNRows = floor(oldHeight / newScaleFactor);
         int newNColumns = floor(oldWidth / newScaleFactor);
         int newNLayers = floor(oldDepth / newScaleFactor);

@@ -32,6 +32,7 @@ TEST(CImageCC, downsample) {
 //    }
 
     CImageCC<double> *imCCLowRes125 = new CImageCC<double>();
+    CImageCC<double> *imCCVeryLowRes = new CImageCC<double>();
 //    CImageCC<double> *imCCLowRes1000 = new CImageCC<double>();
     double *downsampledData = NULL; // *dataLowRes1000 = NULL;
 
@@ -239,8 +240,11 @@ TEST(CImageCC, downsample) {
     EXPECT_NEAR(dataLowRes[190], downsampledData[190], EPSILONT);
     EXPECT_NEAR(dataLowRes[191], downsampledData[191], EPSILONT);
 
+    EXPECT_THROW(imCCVeryLowRes->downsample(imCCHighRes, 10000), downsampleException);
+
     delete imCCHighRes;
     delete imCCLowRes125;
+    delete imCCVeryLowRes;
     delete[] dataLowRes;
     delete[] dataHighRes;
     delete[] downsampledData;
