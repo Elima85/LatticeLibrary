@@ -8,7 +8,7 @@
 
 using namespace CImage;
 
-TEST(CImageBCC, downsample) { // may need a 6 layer image, so that all neighbors exist for the 8 middle spels.
+TEST(CImageFCC, downsample) { // may need a 6 layer image, so that all neighbors exist for the 8 middle spels.
 
     int nRHighRes = 350, nCHighRes = 450, nLHighRes = 350;
     int nTotHighRes = nRHighRes * nCHighRes * nLHighRes;
