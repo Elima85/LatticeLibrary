@@ -46,6 +46,7 @@ set(TEST_SOURCE_FILES
     cimagecctestneighbors.cpp
     cimagefcctestbands.cpp
     cimagefcctestcoordinates.cpp
+    cimagefcctestdownsample.cpp
     cimagefcctestinitialization.cpp
     cimagefcctestneighbors.cpp
     misctest.cpp
