@@ -329,7 +329,7 @@ public:
         double squaredDistanceToCurrent, squaredDistanceToNeighbor, volumeFactor, squaredRadius = pow(1.1 * this->scaleFactor * BCCOFFSET * sqrt(1.25),2);
         bool inside;
         for (int newIndex = 0; newIndex < newNElements; newIndex++) {
-//            cout << "Element index: " << newIndex << endl; // DEBUG
+            cout << "Element index: " << newIndex << endl; // DEBUG
             nSubSpels = 0;
 //            minR = 10000; // DEBUG
 //            maxR = 0; // DEBUG
@@ -394,8 +394,8 @@ public:
 //            printVector(newIntensity); // DEBUG
             volumeFactor = 1.0 / double(nSubSpels);
             this->setElement(newIndex, (volumeFactor * newIntensity));
-//            cout << "new intensity:" << endl; // DEBUG
-//            printVector((*this)[newIndex]); // DEBUG
+            cout << "new intensity:" << endl; // DEBUG
+            printVector((*this)[newIndex]); // DEBUG
         }
 //        char filename[] = "voronoiCells.bin"; // DEBUG
 //        char *filepointer = filename; // DEBUG

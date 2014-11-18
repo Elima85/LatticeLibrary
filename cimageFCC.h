@@ -505,6 +505,7 @@ public:
         double squaredDistanceToCurrent, squaredDistanceToNeighbor, volumeFactor, squaredRadius = pow(1.1 * this->scaleFactor * FCCOFFSET, 2);
         bool inside;
         for (int newIndex = 0; newIndex < newNElements; newIndex++) {
+//            cout << "Element index: " << newIndex << endl; // DEBUG
             nSubSpels = 0;
             newIntensity.assign(nBands, 0.0);
             this->getCoordinates(newIndex, newCoordinates);
@@ -540,6 +541,8 @@ public:
             }
             volumeFactor = 1.0 / double(nSubSpels);
             this->setElement(newIndex, (volumeFactor * newIntensity));
+            cout << "element " << newIndex << ", new intensity:"; // DEBUG
+            printVector((*this)[newIndex]); // DEBUG
         }
         return this->data;
     }

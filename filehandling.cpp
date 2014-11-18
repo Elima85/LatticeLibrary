@@ -11,8 +11,8 @@ namespace CImage {
         if (f == NULL) {
             throw fileException();
         }
-        double *vol = new double[nTot];
-        if (!vol) {
+        double *vol = new (nothrow) double[nTot];
+        if (vol == NULL) {
             throw allocationException();
         }
 
