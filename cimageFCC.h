@@ -10,6 +10,7 @@
 #include "neighbor.h"
 #include "miscellaneous.h"
 #include "vectoroperators.h"
+#include "filehandling.h" // DEBUG
 using namespace std;
 
 namespace CImage {
@@ -475,15 +476,19 @@ public:
 
         // low resolution image parameters
         double newScaleFactor = cbrt(newSpelVolume);
-        if ((oldDepth < newScaleFactor * (FCCPOINTDISTANCE + FCCOFFSET)) || (oldWidth < newScaleFactor * (FCCPOINTDISTANCE + FCCOFFSET)) || (oldHeight < newScaleFactor * (FCCPOINTDISTANCE + FCCOFFSET))) {
-            // Must have at least two layers, columns and rows to be an FCC lattice.
-            throw downsampleException();
-        }
+        //if ((oldDepth < newScaleFactor * (FCCPOINTDISTANCE + FCCOFFSET)) || (oldWidth < newScaleFactor * (FCCPOINTDISTANCE + FCCOFFSET)) || (oldHeight < newScaleFactor * (FCCPOINTDISTANCE + FCCOFFSET))) {
+        //    // Must have at least two layers, columns and rows to be an FCC lattice.
+        //    throw downsampleException();
+        //}
         // get dimensions
         int newNRows = (int) floor((oldHeight - newScaleFactor * FCCOFFSET) / (newScaleFactor * FCCOFFSET));
         int newNColumns = (int) floor((oldWidth - newScaleFactor * FCCOFFSET) / (newScaleFactor * FCCPOINTDISTANCE));
         int newNLayers = (int) floor((oldDepth - newScaleFactor * FCCOFFSET) / (newScaleFactor * FCCOFFSET));
         int newNElements = newNRows * newNColumns * newNLayers;
+        if ((newNRows < 2) || (newNColumns < 2) || (newNLayers < 2)) {
+            // Must have at least two layers, columns and rows to be an FCC lattice.
+            throw downsampleException();
+        }
         this->nRows = newNRows;
         this->nColumns = newNColumns;
         this->nLayers = newNLayers;
@@ -500,50 +505,98 @@ public:
 
         vector<Neighbor> newNeighbors;
         int nNeighbors, nSubSpels;
+        int minR, maxR, minC, maxC, minL, maxL; // DEBUG
+        double minX, maxX, minY, maxY, minZ, maxZ; // DEBUG
         vector<double> newIntensity, newCoordinates, oldCoordinates, neighborCoordinates;
         vector<vector<double> > newNeighborCoordinates;
-        double squaredDistanceToCurrent, squaredDistanceToNeighbor, volumeFactor, squaredRadius = pow(1.1 * this->scaleFactor * FCCOFFSET, 2);
+        double squaredDistanceToCurrent, squaredDistanceToNeighbor, volumeFactor, squaredRadius = pow(sqrt(2.2) * this->scaleFactor * FCCOFFSET, 2); // sqrt(2 + 10%), to be sure to find all subspels, except on the image edge
         bool inside;
+        double *voronoiCells = new double[oldNElements]; // DEBUG
+        for (int i = 0; i < oldNElements; i++) { // DEBUG
+            voronoiCells[i] = -1; // DEBUG
+        } // DEBUG
         for (int newIndex = 0; newIndex < newNElements; newIndex++) {
 //            cout << "Element index: " << newIndex << endl; // DEBUG
+//            minR = 10000; // DEBUG
+//            maxR = 0; // DEBUG
+//            minC = 10000; // DEBUG
+//            maxC = 0; // DEBUG
+//            minL = 10000; // DEBUG
+//            maxL = 0; // DEBUG
+//            minX = 10000; // DEBUG
+//            maxX = 0; // DEBUG
+//            minY = 10000; // DEBUG
+//            maxY = 0; // DEBUG
+//            minZ = 10000; // DEBUG
+//            maxZ = 0; // DEBUG
             nSubSpels = 0;
             newIntensity.assign(nBands, 0.0);
             this->getCoordinates(newIndex, newCoordinates);
-            this->getNeighbors(newIndex, 12, newNeighbors); // enough, since the six closest newNeighbors define the Voronoi cell
+//            cout << "position of " << newIndex << ": "; // DEBUG
+//            printVector(newCoordinates); // DEBUG
+            this->getNeighbors(newIndex, 18, newNeighbors);
             nNeighbors = newNeighbors.size();
             newNeighborCoordinates.clear();
             for (int n = 0; n < nNeighbors; n++) {
                 this->getCoordinates(newNeighbors[n].getIndex(), neighborCoordinates);
                 newNeighborCoordinates.push_back(neighborCoordinates);
             }
-            for (int oldIndex = 0; oldIndex < oldNElements; oldIndex++) { // Should be optimized to some search area!!
+            for (int oldIndex = 0; oldIndex < oldNElements; oldIndex++) {
                 original->getCoordinates(oldIndex, oldCoordinates);
                 squaredDistanceToCurrent = 0;
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i < 3; i++) { // FCC is only defined in 3D anyway
                     squaredDistanceToCurrent = squaredDistanceToCurrent + (newCoordinates[i] - oldCoordinates[i]) * (newCoordinates[i] - oldCoordinates[i]);
                 }
                 if (squaredDistanceToCurrent < squaredRadius) {
                     inside = true;
-                    for (int n = 0; (n < nNeighbors) && inside; n++) {
+                    for (int n = 0; n < nNeighbors; n++) {
                         squaredDistanceToNeighbor = 0;
                         for (int i = 0; i < 3; i++) {
                             squaredDistanceToNeighbor = squaredDistanceToNeighbor + (newNeighborCoordinates[n][i] - oldCoordinates[i]) * (newNeighborCoordinates[n][i] - oldCoordinates[i]);
                         }
                         if (squaredDistanceToNeighbor < squaredDistanceToCurrent) {
                             inside = false;
+                            break;
                         }
                     }
                     if (inside) {
+                        voronoiCells[oldIndex] = newIndex; // DEBUG
                         newIntensity = newIntensity + (*original)[oldIndex];
                         nSubSpels++;
+//                        minR = MIN(minR, original->indexToR(oldIndex)); // DEBUG
+//                        maxR = MAX(maxR, original->indexToR(oldIndex)); // DEBUG
+//                        minC = MIN(minC, original->indexToC(oldIndex)); // DEBUG
+//                        maxC = MAX(maxC, original->indexToC(oldIndex)); // DEBUG
+//                        minL = MIN(minL, original->indexToL(oldIndex)); // DEBUG
+//                        maxL = MAX(maxL, original->indexToL(oldIndex)); // DEBUG
+//                        minX = MIN(minX, original->indexToX(oldIndex)); // DEBUG
+//                        maxX = MAX(maxX, original->indexToX(oldIndex)); // DEBUG
+//                        minY = MIN(minY, original->indexToY(oldIndex)); // DEBUG
+//                        maxY = MAX(maxY, original->indexToY(oldIndex)); // DEBUG
+//                        minZ = MIN(minZ, original->indexToZ(oldIndex)); // DEBUG
+//                        maxZ = MAX(maxZ, original->indexToZ(oldIndex)); // DEBUG
                     }
                 }
             }
+//            cout << "range of R: [" << minR << "," << maxR << "]" << endl; //DEBUG
+//            cout << "range of C: [" << minC << "," << maxC << "]" << endl; //DEBUG
+//            cout << "range of L: [" << minL << "," << maxL << "]" << endl; //DEBUG
+//            cout << "range of X: [" << minX << "," << maxX << "]" << endl; //DEBUG
+//            cout << "range of Y: [" << minY << "," << maxY << "]" << endl; //DEBUG
+//            cout << "range of Z: [" << minZ << "," << maxZ << "]" << endl; //DEBUG
+            cout << "#subSpels: " << nSubSpels << endl; // DEBUG
+            cout << "accumulated intensity: " << endl; // DEBUG
+            printVector(newIntensity); // DEBUG
             volumeFactor = 1.0 / double(nSubSpels);
             this->setElement(newIndex, (volumeFactor * newIntensity));
             cout << "element " << newIndex << ", new intensity:"; // DEBUG
             printVector((*this)[newIndex]); // DEBUG
+            cout << endl; // DEBUG
         }
+        char filename[] = "FCCvoronoiCells.bin"; // DEBUG
+        char *filepointer = filename; // DEBUG
+        writeVolume(filepointer, voronoiCells, oldNElements); // DEBUG
+        delete[] voronoiCells; // DEBUG
         return this->data;
     }
 

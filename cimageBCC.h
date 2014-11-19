@@ -326,7 +326,7 @@ public:
 //        } // DEBUG
         vector<double> newIntensity, newCoordinates, oldCoordinates, neighborCoordinates;
         vector<vector<double> > newNeighborCoordinates;
-        double squaredDistanceToCurrent, squaredDistanceToNeighbor, volumeFactor, squaredRadius = pow(1.1 * this->scaleFactor * BCCOFFSET * sqrt(1.25),2);
+        double squaredDistanceToCurrent, squaredDistanceToNeighbor, volumeFactor, squaredRadius = pow(sqrt(2.2) * this->scaleFactor * BCCOFFSET * sqrt(1.25),2);
         bool inside;
         for (int newIndex = 0; newIndex < newNElements; newIndex++) {
             cout << "Element index: " << newIndex << endl; // DEBUG

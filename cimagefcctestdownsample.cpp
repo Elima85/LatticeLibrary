@@ -10,41 +10,27 @@ using namespace CImage;
 
 TEST(CImageFCC, downsample) {
 
-    double gt1[] = {1, 0.5, 1, 0,  1, 0, 1, 0.5};
-    double gt2[] = {1, 1, 0.5, 0.5, 1, 1, 0.5, 0.5};
-    double gt3[] = {1, 1, 1, 1, 0.5, 0.5, 0.5, 0.5};
-    double gt4[] = {0.5, 0, 0.5, 0,  0, 0, 1, 0,   0.5, 0.5, 1, 1,  0, 0, 0.5, 0.5};
-
-    CImageFCC<double> *imFCCLowRes1 = new CImageFCC<double>();
-    CImageFCC<double> *imFCCLowRes2 = new CImageFCC<double>();
-    CImageFCC<double> *imFCCLowRes3 = new CImageFCC<double>();
-    CImageFCC<double> *imFCCLowRes4 = new CImageFCC<double>();
-    CImageFCC<double> *imFCCVeryLowRes = new CImageFCC<double>();
-
-    int nRHighRes = 700, nCHighRes = 900, nLHighRes = 700;
+    int nRHighRes = 350, nCHighRes = 450, nLHighRes = 350;
     int nTotHighRes = nRHighRes * nCHighRes * nLHighRes;
-    char fileName1[] = "FCCveryhighresX.bin";
-    char fileName2[] = "FCCveryhighresY.bin";
-    char fileName3[] = "FCCveryhighresZ.bin";
-    char fileName4[] = "FCCveryhighdoubleband.bin";
-    char *filePointer1 = fileName1;
-    char *filePointer2 = fileName2;
-    char *filePointer3 = fileName3;
-    char *filePointer4 = fileName4;
-    double *downsampledData1, *downsampledData2, *downsampledData3, *downsampledData4;
+    double volumeFactor = 0.01;
 
+    char fileName1[] = "FCChighresX.bin";
+    char *filePointer1 = fileName1;
     double *data1 = readVolume(filePointer1, nTotHighRes);
     EXPECT_TRUE(data1);
-    cout << "Read first file." << endl;
-    CImageCC<double> *HighRes1 = new CImageCC<double>(data1, nRHighRes, nCHighRes, nLHighRes, 1, pow(0.005 * FCCPOINTDISTANCE, 3) + 0.000000001 * EPSILONT);
-    downsampledData1 = imFCCLowRes1->downsample(HighRes1, 1);
+    CImageCC<double> *HighRes1 = new CImageCC<double>(data1, nRHighRes, nCHighRes, nLHighRes, 1, pow(volumeFactor * FCCPOINTDISTANCE, 3) + 0.000000001 * EPSILONT);
+    double gt1[] = {1, 0.5, 1, 0,  1, 0, 1, 0.5};
+
+    CImageFCC<double> *imFCCLowRes1 = new CImageFCC<double>();
+    double *downsampledData1 = imFCCLowRes1->downsample(HighRes1, 1);
+    EXPECT_TRUE(downsampledData1);
+
     cout << "Old width: " << HighRes1->getWidth() << endl;
     cout << "Old height: " << HighRes1->getHeight() << endl;
     cout << "Old depth: " << HighRes1->getDepth() << endl;
     cout << "New width: " << imFCCLowRes1->getWidth() << endl;
     cout << "New height: " << imFCCLowRes1->getHeight() << endl;
     cout << "New depth: " << imFCCLowRes1->getDepth() << endl;
-    EXPECT_TRUE(downsampledData1);
     EXPECT_EQ(downsampledData1, imFCCLowRes1->getData());
     EXPECT_EQ(6, imFCCLowRes1->getNRows());
     EXPECT_EQ(4, imFCCLowRes1->getNColumns());
@@ -58,14 +44,20 @@ TEST(CImageFCC, downsample) {
     EXPECT_NEAR(gt1[5], downsampledData1[82], EPSILONT);
     EXPECT_NEAR(gt1[6], downsampledData1[85], EPSILONT);
     EXPECT_NEAR(gt1[7], downsampledData1[86], EPSILONT);
+    delete imFCCLowRes1;
     delete HighRes1;
     delete[] data1;
+    delete[] downsampledData1;
 
+/*    CImageFCC<double> *imFCCLowRes2 = new CImageFCC<double>();
+    char fileName2[] = "fccY.bin";
+    char *filePointer2 = fileName2;
     double *data2 = readVolume(filePointer2, nTotHighRes);
     EXPECT_TRUE(data2);
     cout << "Read second file." << endl;
-    CImageCC<double> *HighRes2 = new CImageCC<double>(data2, nRHighRes, nCHighRes, nLHighRes, 1, pow(0.005 * FCCPOINTDISTANCE, 3) + 0.000000001 * EPSILONT);
-    downsampledData2 = imFCCLowRes2->downsample(HighRes2, 1);
+    CImageCC<double> *HighRes2 = new CImageCC<double>(data2, nRHighRes, nCHighRes, nLHighRes, 1, pow(volumeFactor * FCCPOINTDISTANCE, 3) + 0.000000001 * EPSILONT);
+    double gt2[] = {1, 1, 0.5, 0.5, 1, 1, 0.5, 0.5};
+    double *downsampledData2 = imFCCLowRes2->downsample(HighRes2, 1);
     EXPECT_TRUE(downsampledData2);
     EXPECT_EQ(downsampledData2, imFCCLowRes2->getData());
     EXPECT_EQ(6, imFCCLowRes2->getNRows());
@@ -81,13 +73,18 @@ TEST(CImageFCC, downsample) {
     EXPECT_NEAR(gt2[6], downsampledData2[85], EPSILONT);
     EXPECT_NEAR(gt2[7], downsampledData2[86], EPSILONT);
     delete HighRes2;
-    delete[] data2;
+    delete imFCCLowRes2;
+    delete[] downsampledData2;
+    delete[] data2;*/
 
-    double *data3 = readVolume(filePointer3, nTotHighRes);
+/*    CImageFCC<double> *imFCCLowRes3 = new CImageFCC<double>();
+    char fileName3[] = "fccZ.bin";
+    char *filePointer3 = fileName3;double *data3 = readVolume(filePointer3, nTotHighRes);
     EXPECT_TRUE(data3);
     cout << "Read third file." << endl;
-    CImageCC<double> *HighRes3 = new CImageCC<double>(data3, nRHighRes, nCHighRes, nLHighRes, 1, pow(0.005 * FCCPOINTDISTANCE, 3) + 0.000000001 * EPSILONT);
-    downsampledData3 = imFCCLowRes3->downsample(HighRes3, 1);
+    CImageCC<double> *HighRes3 = new CImageCC<double>(data3, nRHighRes, nCHighRes, nLHighRes, 1, pow(volumeFactor * FCCPOINTDISTANCE, 3) + 0.000000001 * EPSILONT);
+    double gt3[] = {1, 1, 1, 1, 0.5, 0.5, 0.5, 0.5};
+    double *downsampledData3 = imFCCLowRes3->downsample(HighRes3, 1);
     EXPECT_TRUE(downsampledData3);
     EXPECT_EQ(downsampledData3, imFCCLowRes3->getData());
     EXPECT_EQ(6, imFCCLowRes3->getNRows());
@@ -103,13 +100,19 @@ TEST(CImageFCC, downsample) {
     EXPECT_NEAR(gt3[6], downsampledData3[85], EPSILONT);
     EXPECT_NEAR(gt3[7], downsampledData3[86], EPSILONT);
     delete HighRes3;
-    delete[] data3;
+    delete imFCCLowRes3;
+    delete[] downsampledData3;
+    delete[] data3;*/
 
+/*    CImageFCC<double> *imFCCLowRes4 = new CImageFCC<double>();
+    char fileName4[] = "FCCveryhighdoubleband.bin";
+    char *filePointer4 = fileName4;
     double *data4 = readVolume(filePointer4, 2 * nTotHighRes);
     EXPECT_TRUE(data4);
     cout << "Read fourth file." << endl;
-    CImageCC<double> *HighRes4 = new CImageCC<double>(data4, nRHighRes, nCHighRes, nLHighRes, 2, pow(0.005 * FCCPOINTDISTANCE, 3) + 0.000000001 * EPSILONT);
-    downsampledData4 = imFCCLowRes4->downsample(HighRes4, 1);
+    CImageCC<double> *HighRes4 = new CImageCC<double>(data4, nRHighRes, nCHighRes, nLHighRes, 2, pow(volumeFactor * FCCPOINTDISTANCE, 3) + 0.000000001 * EPSILONT);
+    double gt4[] = {0.5, 0, 0.5, 0,  0, 0, 1, 0,   0.5, 0.5, 1, 1,  0, 0, 0.5, 0.5};
+    doube *downsampledData4 = imFCCLowRes4->downsample(HighRes4, 1);
     EXPECT_TRUE(downsampledData4);
     EXPECT_EQ(downsampledData4, imFCCLowRes4->getData());
     EXPECT_EQ(6, imFCCLowRes4->getNRows());
@@ -134,18 +137,12 @@ TEST(CImageFCC, downsample) {
     EXPECT_NEAR(gt4[14], downsampledData4[85 + 144], EPSILONT);
     EXPECT_NEAR(gt4[15], downsampledData4[86 + 144], EPSILONT);
     delete HighRes4;
-    delete[] data4;
-
-    EXPECT_THROW(imFCCVeryLowRes->downsample(HighRes1, 100), downsampleException);
-
-    delete imFCCLowRes1;
-    delete imFCCLowRes2;
-    delete imFCCLowRes3;
     delete imFCCLowRes4;
-    delete imFCCVeryLowRes;
-    delete[] downsampledData1;
-    delete[] downsampledData2;
-    delete[] downsampledData3;
     delete[] downsampledData4;
+    delete[] data4;*/
+
+    CImageFCC<double> *imFCCVeryLowRes = new CImageFCC<double>();
+    EXPECT_THROW(imFCCVeryLowRes->downsample(HighRes1, 1000), downsampleException);
+    delete imFCCVeryLowRes;
 
 }
