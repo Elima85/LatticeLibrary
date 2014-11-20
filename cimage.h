@@ -173,71 +173,71 @@ public:
 	/**
 	 * Checks whether a spel is inside the image.
 	 */
-	bool isValid(int i, int b=0) const{
-		return((i>=0 && i<nElements) && (b>=0 && b<nBands));
+	bool isValid(int index, int band = 0) const{
+		return((index >= 0 && index < nElements) && (band >= 0 && band < nBands));
 	}
 
 	/**
 	 * Checks whether a spel is inside the image.
 	 */
-	bool isValid(int r, int c, int l, int b=0) const{
-		return((r>=0 && r<nRows) && (c>=0 && c<nColumns) && (l>=0 && l<nLayers) && (b>=0 && b<nBands));
+	bool isValid(int row, int column, int layer, int band = 0) const{
+		return((row >= 0 && row < nRows) && (column >= 0 && column < nColumns) && (layer >= 0 && layer < nLayers) && (band >= 0 && band < nBands));
 	}
 
 	/**
 	 * Converts the row-, column-, and layer indices of a spatial element to its index in the data array.
 	 */
-	int rclToIndex(int r, int c, int l) const{
-		if(!this->isValid(r,c,l)){
+	int rclToIndex(int row, int column, int layer) const{
+		if(!this->isValid(row, column, layer)){
 			throw outsideImageException();
 		}
-		return(nRows*nColumns*l + nColumns*r + c);
+		return(nRows * nColumns * layer + nColumns * row + column);
 	}
 
 	/**
 	 * Converts the index of a spatial element to its column index.
 	 */
-	int indexToC(int i) const{
-		if(!this->isValid(i)){
+	int indexToC(int index) const{
+		if(!this->isValid(index)){
 			throw outsideImageException();
 		}
-		return (i%(nRows*nColumns))%nColumns;
+		return (index % (nRows * nColumns)) % nColumns;
 	}
 
 	/**
 	 * Converts the index of a spatial element to its row index.
 	 */
-	int indexToR(int i) const{
-		if(!this->isValid(i)){
+	int indexToR(int index) const{
+		if(!this->isValid(index)){
 			throw outsideImageException();
 		}
-		return (i%(nRows*nColumns))/nColumns;
+		return (index % (nRows * nColumns)) / nColumns;
 	}
 
 	/**
 	 * Converts the index of a spatial element to its layer index.
 	 */
-	int indexToL(int i) const{
-		if(!this->isValid(i)){
+	int indexToL(int index) const{
+		if(!this->isValid(index)){
 			throw outsideImageException();
 		}
-		return i/(nRows*nColumns);
+		return index / (nRows * nColumns);
 	}
 
 	/**
 	 * Converts the index of a spatial element to its x-coordinate.
 	 */
-	virtual double indexToX(int i) const = 0;
+	virtual double indexToX(int index) const = 0;
 
 	/**
 	 * Converts the index of a spatial element to its y-coordinate.
 	 */
-	virtual double indexToY(int i) const = 0;
+	virtual double indexToY(int index) const = 0;
 
 	/**
 	 * Converts the index of a spatial element to its z-coordinate.
 	 */
-	virtual double indexToZ(int i) const = 0;
+	virtual double indexToZ(int index) const = 0;
 
 	/**
 	 * Uses indexTo[X,Y,Z](i) to compute the coordinates of the spatial element with index i.
@@ -247,32 +247,32 @@ public:
 	 * i			| 			| index of spatial element
 	 * coordinates	| OUTPUT	| coordinates of the spatial elements
 	 */
-	void getCoordinates(int i, vector<double> &coordinates) const {
+	void getCoordinates(int index, vector<double> &coordinates) const {
 		coordinates.clear();
-		coordinates.push_back(this->indexToX(i));
-		coordinates.push_back(this->indexToY(i));
-		coordinates.push_back(this->indexToZ(i));
+		coordinates.push_back(this->indexToX(index));
+		coordinates.push_back(this->indexToY(index));
+		coordinates.push_back(this->indexToZ(index));
 	}
 
 	/**
 	 * Computes the Euclidean distance to another sample point.
 	 */
-	double euclideanDistance(int i, int j) const {
-		double xd,yd,zd;
-		xd = this->indexToX(i) - this->indexToX(j);
-		yd = this->indexToY(i) - this->indexToY(j);
-		zd = this->indexToZ(i) - this->indexToZ(j);
-		return sqrt(xd*xd + yd*yd + zd*zd);
+	double euclideanDistance(int index1, int index2) const {
+		double xDistance, yDistance, zDistance;
+		xDistance = this->indexToX(index1) - this->indexToX(index2);
+		yDistance = this->indexToY(index1) - this->indexToY(index2);
+		zDistance = this->indexToZ(index1) - this->indexToZ(index2);
+		return sqrt(xDistance * xDistance + yDistance * yDistance + zDistance * zDistance);
 	}
 
 	/**
 	 * Computes the Euclidean distance vector pointing from point i to point j.
 	 */
-	void euclideanDistanceVector(int i, int j, vector<double> &distanceVector) const {
+	void euclideanDistanceVector(int index1, int index2, vector<double> &distanceVector) const {
 		distanceVector.clear();
-		distanceVector.push_back(this->indexToX(j) - this->indexToX(i));
-		distanceVector.push_back(this->indexToY(j) - this->indexToY(i));
-		distanceVector.push_back(this->indexToZ(j) - this->indexToZ(i));
+		distanceVector.push_back(this->indexToX(index2) - this->indexToX(index1));
+		distanceVector.push_back(this->indexToY(index2) - this->indexToY(index1));
+		distanceVector.push_back(this->indexToZ(index2) - this->indexToZ(index1));
 	}
 
 	/**
@@ -335,13 +335,13 @@ public:
 	 * 				|	1: ball
 	 * 				|	2: Voronoi cell average
 	 */
-	double approximatedInternalDistance(int i, int b, int method) const {
+	double approximatedInternalDistance(int index, int band, int method) const {
 
-		if (!isValid(i,b)) {
+		if (!isValid(index, band)) {
 			throw outsideImageException();
 		}
 
-		T intensity = (*this)(i,b);
+		T intensity = (*this)(index, band);
 		switch(method) {
 		case 0:
 			return internalDistanceLinear(intensity);
@@ -358,48 +358,48 @@ public:
 	}
 
 	// Operators
-	T& operator()(int r, int c, int l, int b=0) const {
-		if(!this->isValid(r,c,l,b)){
+	T& operator()(int row, int column, int layer, int band = 0) const {
+		if(!this->isValid(row, column, layer, band)){
 			throw outsideImageException();
 		}
-		return this->data[b*this->nElements + this->rclToIndex(r,c,l)];
+		return this->data[band * this->nElements + this->rclToIndex(row, column, layer)];
 	}
 
-	T& operator()(int i, int b) const {
-		if(!this->isValid(i,b)){
+	T& operator()(int index, int band) const {
+		if(!this->isValid(index, band)){
 			throw outsideImageException();
 		}
-		return this->data[b * nElements + i];
+		return this->data[band * nElements + index];
 	}
 
-	vector<T> operator[](int i) const {
-		if(!this->isValid(i)){
+	vector<T> operator[](int index) const {
+		if(!this->isValid(index)){
 			throw outsideImageException();
 		}
 		vector<T> intensityValues;
-		for (int j = 0; j < this->nBands; j++) {
-			intensityValues.push_back(this->data[j*this->nElements + i]);
+		for (int band = 0; band < this->nBands; band++) {
+			intensityValues.push_back(this->data[band * this->nElements + index]);
 		}
 		return intensityValues;
 	}
 
     /**
-    * Sets the intensity of element i to the specified intensity.
+    * Sets the intensity of element [index] to the specified intensity.
     *
-    * Parameter		| Comment
-    * :----------		| :--------
-    * i				| element index
+    * Parameter		    | Comment
+    * :----------   	| :--------
+    * index			    | element index
     * intensityValues	| intensity values for each band
     */
-    void setElement(int i, vector<T> intensityValues) {
-        if (!this->isValid(i)) {
+    void setElement(int index, vector<T> intensityValues) {
+        if (!this->isValid(index)) {
             throw outsideImageException();
         }
         if (intensityValues.size() != nBands) {
             throw dimensionMismatchException();
         }
-        for (int b = 0; b < this->nBands; b++) {
-            data[b * nElements + i] = intensityValues[b];
+        for (int band = 0; band < this->nBands; band++) {
+            data[band * nElements + index] = intensityValues[band];
         }
     }
 
@@ -408,14 +408,14 @@ public:
 	 *
 	 * Parameter		| Comment
 	 * :----------		| :--------
-	 * r				| row index
-	 * c				| column index
-	 * l				| layer index
+	 * row				| row index
+	 * column			| column index
+	 * layer			| layer index
 	 * intensityValues	| intensity values for each band
 	 */
-	void setElement(int r, int c, int l, vector<T> intensityValues) {
-		int i = rclToIndex(r,c,l);
-		this->setElement(i,intensityValues);
+	void setElement(int row, int column, int layer, vector<T> intensityValues) {
+		int index = rclToIndex(row, column, layer);
+		this->setElement(index, intensityValues);
 	}
 
 	/**
@@ -423,14 +423,14 @@ public:
 	 * Returns the neighbors of a sample point.
 	 */
 	//virtual vector<Neighbor> getNeighbors(int r, int c, int l, int nN) const  = 0;
-	virtual void getNeighbors(int r, int c, int l, int nN, vector<Neighbor> &neighbors) const  = 0;
+	virtual void getNeighbors(int row, int column, int layer, int nNeighbors, vector<Neighbor> &neighbors) const  = 0;
 
 	/**
 	 * Virtual method.
 	 * Returns the neighbors of a sample point.
 	 */
 //	virtual vector<Neighbor> getNeighbors(int i, int nN) const  = 0;
-	virtual void getNeighbors(int i, int nN, vector<Neighbor> &neighbors) const  = 0;
+	virtual void getNeighbors(int index, int nNeighbors, vector<Neighbor> &neighbors) const  = 0;
 
 	/**
 	 * Pads the input vector with values for the missing neighbors by adding
@@ -460,12 +460,12 @@ public:
 	 * index		|			| Index of the band to be extracted.
 	 * result		| OUTPUT	| extracted values
 	 */
-	void getBand(int b, T* result) const {
-		if (!(b >= 0 && b < nBands)) {
+	void getBand(int band, T* result) const {
+		if (!(band >= 0 && band < nBands)) {
 			throw outsideImageException();
 		}
-		for (int i = 0; i < nElements; i++) {
-			result[i] = data[b * nElements + i];
+		for (int index = 0; index < nElements; index++) {
+			result[index] = data[band * nElements + index];
 		}
 	}
 

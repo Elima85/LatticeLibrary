@@ -54,36 +54,36 @@ public:
 	/**
 	 * Implements CImage::indexToX()
 	 */
-	double indexToX(int i) const {
-		int r,c,l;
+	double indexToX(int index) const {
+		int row, column, layer;
 		double x;
-		r = this->indexToR(i);
-		c = this->indexToC(i);
-		l = this->indexToL(i);
+		row = this->indexToR(index);
+		column = this->indexToC(index);
+		layer = this->indexToL(index);
 		//x = c * FCCPOINTDISTANCE + (1 - IS_EVEN(l+r)) * FCCOFFSET;
-		x = this->scaleFactor * ((1 + !IS_EVEN(l + r)) * FCCOFFSET + c * FCCPOINTDISTANCE);
+		x = this->scaleFactor * ((1 + !IS_EVEN(layer + row)) * FCCOFFSET + column * FCCPOINTDISTANCE);
 		return x;
 	}
 
 	/**
 	 * Implements CImage::indexToY()
 	 */
-	double indexToY(int i) const {
-		int r;
+	double indexToY(int index) const {
+		int row;
 		double y;
-		r = this->indexToR(i);
+		row = this->indexToR(index);
 		//y = r * FCCOFFSET;
-		y = this->scaleFactor * ((r + 1) * FCCOFFSET);
+		y = this->scaleFactor * ((row + 1) * FCCOFFSET);
 		return y;
 	}
 
 	/**
 	 * Implements CImage::indexToZ()
 	 */
-	double indexToZ(int i) const {
-		int l = this->indexToL(i);
+	double indexToZ(int index) const {
+		int layer = this->indexToL(index);
 		//double z = l * FCCOFFSET;
-		double z = this->scaleFactor * ((l + 1) * FCCOFFSET);
+		double z = this->scaleFactor * ((layer + 1) * FCCOFFSET);
 		return z;
 	}
 
@@ -471,8 +471,13 @@ public:
         double oldWidth = original->getWidth();
         double oldHeight = original->getHeight();
         double oldDepth = original->getDepth();
+//        cout << "input width: " << oldWidth << endl; // DEBUG
+//        cout << "input heigh: " << oldHeight << endl; // DEBUG
+//        cout << "input depth: " << oldDepth << endl; // DEBUG
         int oldNElements = original->getNElements();
         int nBands = original->getNBands();
+//        cout << "#elements: " << oldNElements << endl; // DEBUG
+//        cout << "#bands: " << nBands << endl; // DEBUG
 
         // low resolution image parameters
         double newScaleFactor = cbrt(newSpelVolume);
@@ -516,7 +521,7 @@ public:
             voronoiCells[i] = -1; // DEBUG
         } // DEBUG
         for (int newIndex = 0; newIndex < newNElements; newIndex++) {
-//            cout << "Element index: " << newIndex << endl; // DEBUG
+            cout << "Element index: " << newIndex << endl; // DEBUG
 //            minR = 10000; // DEBUG
 //            maxR = 0; // DEBUG
 //            minC = 10000; // DEBUG
@@ -536,23 +541,25 @@ public:
 //            printVector(newCoordinates); // DEBUG
             this->getNeighbors(newIndex, 18, newNeighbors);
             nNeighbors = newNeighbors.size();
+//            cout << "#neighbors: " << nNeighbors << endl; // DEBUG
             newNeighborCoordinates.clear();
             for (int n = 0; n < nNeighbors; n++) {
                 this->getCoordinates(newNeighbors[n].getIndex(), neighborCoordinates);
+//                printVector(neighborCoordinates); // DEBUG
                 newNeighborCoordinates.push_back(neighborCoordinates);
             }
             for (int oldIndex = 0; oldIndex < oldNElements; oldIndex++) {
                 original->getCoordinates(oldIndex, oldCoordinates);
                 squaredDistanceToCurrent = 0;
-                for (int i = 0; i < 3; i++) { // FCC is only defined in 3D anyway
-                    squaredDistanceToCurrent = squaredDistanceToCurrent + (newCoordinates[i] - oldCoordinates[i]) * (newCoordinates[i] - oldCoordinates[i]);
+                for (int dimension = 0; dimension < 3; dimension++) { // FCC is only defined in 3D anyway
+                    squaredDistanceToCurrent = squaredDistanceToCurrent + pow(newCoordinates[dimension] - oldCoordinates[dimension], 2);
                 }
                 if (squaredDistanceToCurrent < squaredRadius) {
                     inside = true;
-                    for (int n = 0; n < nNeighbors; n++) {
+                    for (int neighborIndex = 0; neighborIndex < nNeighbors; neighborIndex++) {
                         squaredDistanceToNeighbor = 0;
-                        for (int i = 0; i < 3; i++) {
-                            squaredDistanceToNeighbor = squaredDistanceToNeighbor + (newNeighborCoordinates[n][i] - oldCoordinates[i]) * (newNeighborCoordinates[n][i] - oldCoordinates[i]);
+                        for (int dimension = 0; dimension < 3; dimension++) {
+                            squaredDistanceToNeighbor = squaredDistanceToNeighbor + pow(newNeighborCoordinates[neighborIndex][dimension] - oldCoordinates[dimension], 2);
                         }
                         if (squaredDistanceToNeighbor < squaredDistanceToCurrent) {
                             inside = false;
