@@ -49,8 +49,8 @@ TEST(CImageFCC, downsample) {
     delete[] data1;
     delete[] downsampledData1;
 
-/*    CImageFCC<double> *imFCCLowRes2 = new CImageFCC<double>();
-    char fileName2[] = "fccY.bin";
+    CImageFCC<double> *imFCCLowRes2 = new CImageFCC<double>();
+    char fileName2[] = "FCChighresY.bin";
     char *filePointer2 = fileName2;
     double *data2 = readVolume(filePointer2, nTotHighRes);
     EXPECT_TRUE(data2);
@@ -75,10 +75,10 @@ TEST(CImageFCC, downsample) {
     delete HighRes2;
     delete imFCCLowRes2;
     delete[] downsampledData2;
-    delete[] data2;*/
+    delete[] data2;
 
-/*    CImageFCC<double> *imFCCLowRes3 = new CImageFCC<double>();
-    char fileName3[] = "fccZ.bin";
+    CImageFCC<double> *imFCCLowRes3 = new CImageFCC<double>();
+    char fileName3[] = "FCChighresZ.bin";
     char *filePointer3 = fileName3;double *data3 = readVolume(filePointer3, nTotHighRes);
     EXPECT_TRUE(data3);
     cout << "Read third file." << endl;
@@ -102,10 +102,10 @@ TEST(CImageFCC, downsample) {
     delete HighRes3;
     delete imFCCLowRes3;
     delete[] downsampledData3;
-    delete[] data3;*/
+    delete[] data3;
 
-/*    CImageFCC<double> *imFCCLowRes4 = new CImageFCC<double>();
-    char fileName4[] = "FCCveryhighdoubleband.bin";
+    CImageFCC<double> *imFCCLowRes4 = new CImageFCC<double>();
+    char fileName4[] = "FCChighresdoubleband.bin";
     char *filePointer4 = fileName4;
     double *data4 = readVolume(filePointer4, 2 * nTotHighRes);
     EXPECT_TRUE(data4);
@@ -139,7 +139,7 @@ TEST(CImageFCC, downsample) {
     delete HighRes4;
     delete imFCCLowRes4;
     delete[] downsampledData4;
-    delete[] data4;*/
+    delete[] data4;
 
     CImageFCC<double> *imFCCVeryLowRes = new CImageFCC<double>();
     EXPECT_THROW(imFCCVeryLowRes->downsample(HighRes1, 1000), downsampleException);
