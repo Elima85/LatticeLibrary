@@ -2,6 +2,7 @@
 #define INTENSITYCIMAGEUINT8_H
 
 #include "intensitycimage.h"
+#include "intensitycimagedouble.h"
 
 namespace CImage {
 
@@ -12,13 +13,16 @@ namespace CImage {
 
     public:
         IntensityCImageUint8(uint8 *d, Lattice &l, int nB);
-
+        /**
+        * To enable switching to a lower precision format.
+        */
+        //IntensityCImageUint8(IntensityCImageDouble *original);
         ~IntensityCImageUint8();
 
         /**
         * Implements IntensityCImage::adjustIntensity().
         */
-        uint8 adjustIntensity(uint8 intensity);
+        uint8 adjustIntensity(uint8 intensity) const ;
     };
 }
 

@@ -1,10 +1,10 @@
 #include "fuzzysegmentationcimageuint8.h"
 
 namespace CImage {
-    FuzzySegmentationCImageUint8::FuzzySegmentationCImageUint8(double *d, const Lattice &l, int nB) : FuzzySegmentationCImage<uint8>(d, l, nB) {};
-    FuzzySegmentationCImageUint8::~FuzzySegmentationCImageUint8();
+    FuzzySegmentationCImageUint8::FuzzySegmentationCImageUint8(uint8 *d, Lattice &l, int nB) : FuzzySegmentationCImage<uint8>(d, l, nB) {};
+    FuzzySegmentationCImageUint8::~FuzzySegmentationCImageUint8() {};
 
-    double FuzzySegmentationCImageUint8::adjustIntensity(double intensity) const {
+    uint8 FuzzySegmentationCImageUint8::adjustIntensity(uint8 intensity) const {
         return MIN(1, MAX(0, intensity));
     }
     double FuzzySegmentationCImageUint8::getApproximatedInternalDistance(int index, int band, int method) const {
@@ -28,5 +28,3 @@ namespace CImage {
     }
 
 }
-
-#endif

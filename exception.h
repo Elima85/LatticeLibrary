@@ -19,7 +19,7 @@ namespace CImage {
 /**
 * Exception thrown when trying to use a neighborhood that is not defined for the image sampling lattice.
 */
-    struct nNeighborsException : public exception {
+    struct neighborhoodSizeException : public exception {
         const char* what () const throw () {
             return "Incorrect neighborhood size for this type of image.";
         }

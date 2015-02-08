@@ -10,6 +10,7 @@
 #include "defs.h"
 #include "priorityqueue.h"
 #include "neighbor.h"
+#include "lattice.h"
 
 namespace CImage {
 
@@ -21,14 +22,10 @@ const double subSpelDistanceBall[] = {0.620350490899400, 0.555652269755901, 0.52
  * The modality bands are stored one after another, in accordance with the file format used.
  *
  * Member 		| Comment
- * --------		| --------
+ * :-------		| :-------
  * data			| 1D array of spel values
- * nColumns		| #rows of the volume image
- * nRows		| #columns of the volume image
- * nLayers		| #layers of the volume image
- * nElements	| total #elements  of the volume image
- * nBands		| #modality bands
- * scaleFactor	| Determines the scaling of the lattice. Default is one sample/unit volume.
+ * lattice      | specifies the sampling lattice of the image
+ * nBands		| \#modality bands
  *
  * Elements are accessed starting from 0, using \f$(r,c,l)\f$, or by a single index \f$i = \#rows\times\#cols\times l + \#cols\times r + c\f$.
  *//*
@@ -47,79 +44,58 @@ const double subSpelDistanceBall[] = {0.620350490899400, 0.555652269755901, 0.52
 template <class T>
 class CImage{
 protected:
-	/** pixel values in a 1D array */
-	T* data;
+    /** pixel values in a 1D array */
+    T *data;
 
-	/** \#columns */
-	int nColumns;
-
-	/** \#rows */
-	int nRows;
-
-	/** \#layers */
-	int nLayers;
-
-	/** \#spatial elements */
-	int nElements;
+    /** sampling lattice of the image, containing its dimensions */
+    Lattice &lattice;
 
 	/** \#modality bands */
 	int nBands;
 
-	/** Determines the sample density of the image. */
-	double scaleFactor;
-
 public:
-	/**
-	 * Color image constructor
-	 *
-	 * Parameter		| Comment
-	 * :----------		| :--------
-	 * d				| image data, must be of length nr*nc*nl*nb or more.
-	 * nr				| #rows, >= 1
-	 * nc				| #columns, >= 1
-	 * nl				| #layers(=1), >= 1 (>1 for 3D)
-	 * nb				| #bands(=1), >= 1 (>1 for color image)
-	 * elementVolume	| volume of a single spatial element
-	 **/
-	CImage(T *d,int nr, int nc, int nl, int nb, double elementVolume = 1){
-		nLayers = nl;
-		nColumns = nc;
-		nRows = nr;
-		nElements = nc*nr*nl;
-		nBands = nb;
-		data = d;
-		scaleFactor = cbrt(elementVolume);
-	}
-	CImage() : CImage(NULL, 0, 0, 0, 0, 1){}
-	virtual ~CImage() {};
+    /**
+    * Color image constructor
+    *
+    * Parameter     | Comment
+    * :---------    | :-------
+    * d             | Image data, must be of length l->nElements or more.
+    * l             | Image sampling lattice, will not be deleted by the CImage destructor.
+    * nB            | \#modality bands, >=1
+    */
+    CImage(T *d, Lattice &l, int nB) : lattice(l) {
+        data = d;
+        nBands = nB;
+    }
+	~CImage() {};
 
 	// Getters
 	/**
 	 * Returns the number of spatial elements in the image.
 	 */
 	int getNElements() const{
-		return nElements;
+		return lattice.getNElements();
 	}
 
 	/*
 	 * Returns the number of rows in the image.
 	 */
 	int getNColumns() const{
-		return nColumns;
+		return lattice.getNColumns();
 	}
 
 	/**
 	 * Returns the number of columns in the image.
 	 */
 	int getNRows() const{
-		return nRows;
+		return lattice.getNRows();
 	}
 
 	/**
 	 * Returns the number of layers in a 3D image.
 	 */
 	int getNLayers() const{
-		return nLayers;
+		return lattice.getNLayers();
 	}
 
 	/**
@@ -133,7 +109,7 @@ public:
     * Returns the lattice scale factor.
     */
     double getScaleFactor() const {
-        return scaleFactor;
+        return lattice.getScaleFactor();
     }
 
 	/**
@@ -147,41 +123,49 @@ public:
     * Prints the parameters of the image.
     */
     void printParameters() const {
-        cout << "#rows: " << nRows << endl;
-        cout << "#columns: " << nColumns << endl;
-        cout << "#layers: " << nLayers << endl;
+        cout << "#rows: " << lattice.getNRows() << endl;
+        cout << "#columns: " << lattice.getNColumns() << endl;
+        cout << "#layers: " << lattice.getNLayers() << endl;
         cout << "#modality bands: " << nBands << endl;
-        cout << "scale factor: " << scaleFactor << endl;
+        cout << "scale factor: " << lattice.getScaleFactor() << endl;
         cout << "data array: " << data << endl;
     }
 
 	/**
 	 * Returns the width of the image in distance units.
 	 */
-	virtual double getWidth() const = 0;
+    double getWidth() const {
+        return lattice.getWidth();
+    }
 
 	/**
 	 * Returns the height of the image in distance units.
 	 */
-	virtual double getHeight() const = 0;
+	double getHeight() const {
+        return lattice.getHeight();
+    }
 
 	/**
 	 * Returns the depth of the image in distance units.
 	 */
-	virtual double getDepth() const = 0;
+    double getDepth() const {
+        return lattice.getDepth();
+    }
 
 	/**
 	 * Checks whether a spel is inside the image.
 	 */
 	bool isValid(int index, int band = 0) const{
-		return((index >= 0 && index < nElements) && (band >= 0 && band < nBands));
+		//return((index >= 0 && index < lattice.getNElements()) && (band >= 0 && band < nBands));
+        return (lattice.isValid(index) && (band >= 0 && band < nBands));
 	}
 
 	/**
 	 * Checks whether a spel is inside the image.
 	 */
 	bool isValid(int row, int column, int layer, int band = 0) const{
-		return((row >= 0 && row < nRows) && (column >= 0 && column < nColumns) && (layer >= 0 && layer < nLayers) && (band >= 0 && band < nBands));
+		//return((row >= 0 && row < lattice.getNRows()) && (column >= 0 && column < lattice.getNColumns()) && (layer >= 0 && layer < lattice.getNLayers()) && (band >= 0 && band < nBands));
+        return (lattice.isValid(row, column, layer) && (band >= 0 && band < nBands));
 	}
 
 	/**
@@ -191,7 +175,7 @@ public:
 		if(!this->isValid(row, column, layer)){
 			throw outsideImageException();
 		}
-		return(nRows * nColumns * layer + nColumns * row + column);
+		return(lattice.getNRows() * lattice.getNColumns() * layer + lattice.getNColumns() * row + column);
 	}
 
 	/**
@@ -201,7 +185,7 @@ public:
 		if(!this->isValid(index)){
 			throw outsideImageException();
 		}
-		return (index % (nRows * nColumns)) % nColumns;
+		return (index % (lattice.getNRows() * lattice.getNColumns())) % lattice.getNColumns();
 	}
 
 	/**
@@ -211,7 +195,7 @@ public:
 		if(!this->isValid(index)){
 			throw outsideImageException();
 		}
-		return (index % (nRows * nColumns)) / nColumns;
+		return (index % (lattice.getNRows() * lattice.getNColumns())) / lattice.getNColumns();
 	}
 
 	/**
@@ -221,23 +205,29 @@ public:
 		if(!this->isValid(index)){
 			throw outsideImageException();
 		}
-		return index / (nRows * nColumns);
+		return index / (lattice.getNRows() * lattice.getNColumns());
 	}
 
 	/**
 	 * Converts the index of a spatial element to its x-coordinate.
 	 */
-	virtual double indexToX(int index) const = 0;
+    double indexToX(int index) const {
+        return lattice.indexToX(index);
+    }
 
 	/**
 	 * Converts the index of a spatial element to its y-coordinate.
 	 */
-	virtual double indexToY(int index) const = 0;
+	double indexToY(int index) const {
+        return lattice.indexToY(index);
+    }
 
 	/**
 	 * Converts the index of a spatial element to its z-coordinate.
 	 */
-	virtual double indexToZ(int index) const = 0;
+	double indexToZ(int index) const {
+        return lattice.indexToZ(index);
+    }
 
 	/**
 	 * Uses indexTo[X,Y,Z](i) to compute the coordinates of the spatial element with index i.
@@ -248,31 +238,21 @@ public:
 	 * coordinates	| OUTPUT	| coordinates of the spatial elements
 	 */
 	void getCoordinates(int index, vector<double> &coordinates) const {
-		coordinates.clear();
-		coordinates.push_back(this->indexToX(index));
-		coordinates.push_back(this->indexToY(index));
-		coordinates.push_back(this->indexToZ(index));
+        lattice.getCoordinates(index,coordinates);
 	}
 
 	/**
-	 * Computes the Euclidean distance to another sample point.
+	 * Computes the Euclidean distance to another spatial element.
 	 */
 	double euclideanDistance(int index1, int index2) const {
-		double xDistance, yDistance, zDistance;
-		xDistance = this->indexToX(index1) - this->indexToX(index2);
-		yDistance = this->indexToY(index1) - this->indexToY(index2);
-		zDistance = this->indexToZ(index1) - this->indexToZ(index2);
-		return sqrt(xDistance * xDistance + yDistance * yDistance + zDistance * zDistance);
+        return lattice.euclideanDistance(index1, index2);
 	}
 
 	/**
 	 * Computes the Euclidean distance vector pointing from point i to point j.
 	 */
 	void euclideanDistanceVector(int index1, int index2, vector<double> &distanceVector) const {
-		distanceVector.clear();
-		distanceVector.push_back(this->indexToX(index2) - this->indexToX(index1));
-		distanceVector.push_back(this->indexToY(index2) - this->indexToY(index1));
-		distanceVector.push_back(this->indexToZ(index2) - this->indexToZ(index1));
+        lattice.euclideanDistanceVector(index1, index2, distanceVector);
 	}
 
 	/**
@@ -335,7 +315,7 @@ public:
 	 * 				|	1: ball
 	 * 				|	2: Voronoi cell average
 	 */
-	double approximatedInternalDistance(int index, int band, int method) const {
+	/*double approximatedInternalDistance(int index, int band, int method) const {
 
 		if (!isValid(index, band)) {
 			throw outsideImageException();
@@ -355,21 +335,21 @@ public:
 		default:
 			throw outsideRangeException();
 		}
-	}
+	}*/
 
 	// Operators
 	T& operator()(int row, int column, int layer, int band = 0) const {
 		if(!this->isValid(row, column, layer, band)){
 			throw outsideImageException();
 		}
-		return this->data[band * this->nElements + this->rclToIndex(row, column, layer)];
+		return this->data[band * this->lattice.getNElements() + this->rclToIndex(row, column, layer)];
 	}
 
 	T& operator()(int index, int band) const {
 		if(!this->isValid(index, band)){
 			throw outsideImageException();
 		}
-		return this->data[band * nElements + index];
+		return this->data[band * lattice.getNElements() + index];
 	}
 
 	vector<T> operator[](int index) const {
@@ -378,7 +358,7 @@ public:
 		}
 		vector<T> intensityValues;
 		for (int band = 0; band < this->nBands; band++) {
-			intensityValues.push_back(this->data[band * this->nElements + index]);
+			intensityValues.push_back(this->data[band * this->lattice.getNElements() + index]);
 		}
 		return intensityValues;
 	}
@@ -399,7 +379,7 @@ public:
             throw dimensionMismatchException();
         }
         for (int band = 0; band < this->nBands; band++) {
-            data[band * nElements + index] = intensityValues[band];
+            data[band * lattice.getNElements() + index] = intensityValues[band];
         }
     }
 
@@ -419,18 +399,18 @@ public:
 	}
 
 	/**
-	 * Virtual method.
-	 * Returns the neighbors of a sample point.
+	 * Returns the neighbors of a spatial element.
 	 */
-	//virtual vector<Neighbor> getNeighbors(int r, int c, int l, int nN) const  = 0;
-	virtual void getNeighbors(int row, int column, int layer, int nNeighbors, vector<Neighbor> &neighbors) const  = 0;
+    void getNeighbors(int row, int column, int layer, int neighborhoodSize, vector<Neighbor> &neighbors) {
+        lattice.getNeighbors(row, column, layer, neighborhoodSize, neighbors);
+    }
 
 	/**
-	 * Virtual method.
-	 * Returns the neighbors of a sample point.
+	 * Returns the neighbors of a spatial element.
 	 */
-//	virtual vector<Neighbor> getNeighbors(int i, int nN) const  = 0;
-	virtual void getNeighbors(int index, int nNeighbors, vector<Neighbor> &neighbors) const  = 0;
+    void getNeighbors(int index, int neighborhoodSize, vector<Neighbor> &neighbors) const  {
+        lattice.getNeighbors(index, neighborhoodSize, neighbors);
+    }
 
 	/**
 	 * Pads the input vector with values for the missing neighbors by adding
@@ -464,8 +444,8 @@ public:
 		if (!(band >= 0 && band < nBands)) {
 			throw outsideImageException();
 		}
-		for (int index = 0; index < nElements; index++) {
-			result[index] = data[band * nElements + index];
+		for (int index = 0; index < lattice.getNElements(); index++) {
+			result[index] = data[band * lattice.getNElements() + index];
 		}
 	}
 
@@ -484,19 +464,19 @@ public:
 		T val;
 		switch(flag) {
 		case 0: // min
-			for (int i = 0; i < nElements; i++) {
+			for (int i = 0; i < lattice.getNElements(); i++) {
 				val = T(INF);
 				for (int b = 0; b < nBands; b++) {
-					val = min(val, data[b * nElements + i]);
+					val = min(val, data[b * lattice.getNElements() + i]);
 				}
 				result[i] = val;
 			}
 			break;
 		case 1: // max
-			for (int i = 0; i < nElements; i++) {
+			for (int i = 0; i < lattice.getNElements(); i++) {
 				val = T(-INF);
 				for (int b = 0; b < nBands; b++) {
-					val = max(val, data[b * nElements + i]);
+					val = max(val, data[b * lattice.getNElements() + i]);
 				}
 				result[i] = val;
 			}
@@ -520,10 +500,10 @@ public:
 		double val;
 		switch(flag) {
 		case 2: // mean
-			for (int i = 0; i < nElements; i++) {
+			for (int i = 0; i < lattice.getNElements(); i++) {
 				val = 0.0;
 				for (int b = 0; b < nBands; b++) {
-					val = val + double(data[b * nElements + i]);
+					val = val + double(data[b * lattice.getNElements() + i]);
 				}
 				result[i] = val/double(nBands);
 			}

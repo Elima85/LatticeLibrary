@@ -42,8 +42,7 @@ namespace CImage {
         /**
         * Sets value to input value.
         */
-        PriorityQueueElement(
-                long i, T v) {
+        PriorityQueueElement(long i, T v) {
             value = v;
             index = i;
         }
@@ -51,34 +50,24 @@ namespace CImage {
         /**
         * Sets value to the input norm of the input vector.
         */
-        PriorityQueueElement(long i, const vector<T> &v,
-                const Norm *n) {
+        PriorityQueueElement(long i, const vector<T> &v, const Norm *n) {
             value = n->compute(v);
             index = i;
         }
 
-        T getValue()
-        const {
+        T getValue() const {
             return value;
         }
 
-        long
-
-        getIndex() const {
+        long getIndex() const {
             return index;
         }
 
-        bool
-
-        operator== (const
-        PriorityQueueElement& rhs)
-        const {
+        bool operator== (const PriorityQueueElement& rhs) const {
             return fabs(this->value - rhs.value) < EPSILONPQ;
         }
 
-        bool operator!= (const PriorityQueueElement& rhs)
-
-        const {
+        bool operator!= (const PriorityQueueElement& rhs) const {
             return fabs(this->value - rhs.value) > EPSILONPQ;
         }
     };
@@ -86,8 +75,7 @@ namespace CImage {
     /**
     * Comparison of two queue elements.
     */
-    class
-    PriorityQueueElementComparison{
+    class PriorityQueueElementComparison{
     public:
         template <class T>
         bool operator() (const

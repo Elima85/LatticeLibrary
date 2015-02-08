@@ -31,6 +31,7 @@ public:
 class PNorm : public Norm {
 private:
 	double p; // for pow(double base, double exponent)
+
 public:
 	PNorm(double pval) : Norm() {
 		p = pval;

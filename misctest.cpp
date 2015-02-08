@@ -5,6 +5,7 @@
 #include "miscellaneous.h"
 #include "defs.h"
 #include "vectoroperators.h"
+#include "exception.h"
 
 using namespace CImage;
 

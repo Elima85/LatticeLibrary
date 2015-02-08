@@ -10,7 +10,7 @@ typedef unsigned char uint8;
 #define INF 10000000.0
 #define MIN(a, b) (a < b ? a : b)
 #define MAX(a, b) (a > b ? a : b)
-//#define IS_EVEN(a) (a % 2 == 0)
+#define IS_EVEN(a) ((a) % 2 == 0)
 
 // CC definitions
 const int mirrorCC[] = {1, 0, 3, 2, 5, 4, 11, 10, 13, 12,  7,  6,  9,  8, 17, 16, 15, 14, 24, 25, 22, 23, 20, 21, 18, 19};

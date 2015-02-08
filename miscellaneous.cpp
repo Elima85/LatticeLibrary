@@ -13,9 +13,9 @@ namespace CImage {
         return c;
     }
 
-    bool IS_EVEN(int i) {
+    /*bool IS_EVEN(int i) {
         return (i % 2 == 0);
-    }
+    }*/
 
     int lowerBound(const double *array, int size, double val) {
 

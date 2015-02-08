@@ -11,7 +11,7 @@ namespace CImage {
     /**
     * Returns true if the input value is even.
     */
-    bool IS_EVEN(int i);
+    //bool IS_EVEN(int i);
 
 /**
 * Binary search algorithm, only values >= 0.

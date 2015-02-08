@@ -7,9 +7,20 @@ set(GTEST_ROOT "${PROJECT_SOURCE_DIR}/googletest")
 
 set(SOURCE_FILES
     cimage.h
-    cimageBCC.h
-    cimageCC.h
-    cimageFCC.h
+    binarycimage.h
+    binarycimage.cpp
+    crispsegmentationcimage.h
+    crispsegmentationcimage.cpp
+    intensitycimage.h
+    intensitycimagedouble.h
+    intensitycimagedouble.cpp
+    intensitycimageuint8.h
+    intensitycimageuint8.cpp
+    fuzzysegmentationcimage.h
+    fuzzysegmentationcimagedouble.h
+    fuzzysegmentationcimagedouble.cpp
+    fuzzysegmentationcimageuint8.h
+    fuzzysegmentationcimageuint8.cpp
     defs.h
     exception.h
     filehandling.cpp
@@ -22,6 +33,14 @@ set(SOURCE_FILES
     norm.h
     priorityqueue.h
     vectoroperators.h
+    lattice.h
+    lattice.cpp
+    cclattice.h
+    cclattice.cpp
+    bcclattice.h
+    bcclattice.cpp
+    fcclattice.h
+    fcclattice.cpp
     )
 
 set(MAIN_SOURCE_FILES
@@ -33,26 +52,23 @@ set(TEST_SOURCE_FILES
     ${SOURCE_FILES}
     ${GTEST_ROOT}/src/gtest-all.cc
     filetest.cpp
-    cimagebcctestbands.cpp
-    cimagebcctestcoordinates.cpp
-    cimagebcctestdownsample.cpp
-    cimagebcctestinitialization.cpp
-    cimagebcctestneighbors.cpp
-    cimagecctestbands.cpp
-    cimagecctestcoordinates.cpp
-    cimagecctestdownsample.cpp
-    cimagecctestedt.cpp
-    cimagecctestinitialization.cpp
-    cimagecctestneighbors.cpp
-    cimagefcctestbands.cpp
-    cimagefcctestcoordinates.cpp
-    cimagefcctestdownsample.cpp
-    cimagefcctestinitialization.cpp
-    cimagefcctestneighbors.cpp
+    cclatticetestinitialization.cpp
+    cclatticetestcoordinates.cpp
+    cclatticetestneighbors.cpp
+    bcclatticetestinitialization.cpp
+    bcclatticetestcoordinates.cpp
+    bcclatticetestneighbors.cpp
+    fcclatticetestinitialization.cpp
+    fcclatticetestcoordinates.cpp
+    fcclatticetestneighbors.cpp
     misctest.cpp
     neighbortest.cpp
     normtest.cpp
     priorityqueuetest.cpp
+    cimagetestinitialization.cpp
+    cimagetestcoordinates.cpp
+    cimagetestbands.cpp
+    cimagetestneighbors.cpp
     test.cpp
     )
 

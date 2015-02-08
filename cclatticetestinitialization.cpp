@@ -13,7 +13,10 @@ TEST(CCLattice,initialization) {
     double scaleFactor1 = 1.0;
     double scaleFactor2 = 2.5;
 
-    CCLattice* lattice1 = new CCLattice(nRows, nColumns, nLayers, scaleFactor1);
+    CCLattice *lattice1 = new CCLattice(nRows, nColumns, nLayers, scaleFactor1);
+    CCLattice *lattice2 = new CCLattice(nRows, nColumns, nLayers, scaleFactor2);
+    CCLattice *lattice3 = new CCLattice(*lattice2);
+
     EXPECT_TRUE(lattice1);
     EXPECT_EQ(lattice1->getNRows(), nRows);
     EXPECT_NE(lattice1->getNRows(), nRows + 1);
@@ -25,7 +28,6 @@ TEST(CCLattice,initialization) {
     EXPECT_NE(lattice1->getNElements(), nElements + 1);
     EXPECT_NEAR(lattice1->getScaleFactor(), scaleFactor1, EPSILONT);
 
-    CCLattice *lattice2 = new CCLattice(nRows, nColumns, nLayers, scaleFactor2);
     EXPECT_TRUE(lattice2);
     EXPECT_EQ(lattice2->getNRows(), nRows);
     EXPECT_NE(lattice2->getNRows(), nRows + 1);
@@ -36,6 +38,15 @@ TEST(CCLattice,initialization) {
     EXPECT_EQ(lattice2->getNElements(), nElements);
     EXPECT_NE(lattice2->getNElements(), nElements + 1);
     EXPECT_NEAR(lattice2->getScaleFactor(), scaleFactor2, EPSILONT);
+
+    // copy constructor
+    EXPECT_TRUE(lattice3);
+    EXPECT_EQ(lattice2->getNRows(), lattice3->getNRows());
+    EXPECT_EQ(lattice2->getNColumns(), lattice3->getNColumns());
+    EXPECT_EQ(lattice2->getNLayers(), lattice3->getNLayers());
+    EXPECT_EQ(lattice2->getNElements(), lattice3->getNElements());
+    EXPECT_EQ(lattice2->getScaleFactor(), lattice3->getScaleFactor());
+    EXPECT_NE(lattice1->getScaleFactor(), lattice3->getScaleFactor());
 
     // validity of elements
     EXPECT_FALSE(lattice1->isValid(-1));

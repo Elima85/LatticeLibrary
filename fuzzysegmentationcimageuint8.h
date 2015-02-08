@@ -11,7 +11,7 @@ namespace CImage {
     class FuzzySegmentationCImageUint8 : public FuzzySegmentationCImage<uint8> {
 
     public:
-        FuzzySegmentationCImageUint8(uint8 *d, const Lattice &l, int nB);
+        FuzzySegmentationCImageUint8(uint8 *d, Lattice &l, int nB);
         // FuzzySegmentationCImageUint8(const FuzzySegmentationCImageDouble *original);
         ~FuzzySegmentationCImageUint8();
 
@@ -36,7 +36,7 @@ namespace CImage {
         * 				|	1: ball
         * 				|	2: Voronoi cell average
         */
-        uint8 getApproximatedInternalDistance(int index, int band, int method) const;
+        double getApproximatedInternalDistance(int index, int band, int method) const;
 
     };
 
