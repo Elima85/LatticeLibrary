@@ -12,24 +12,21 @@ set(SOURCE_FILES
     crispsegmentationcimage.h
     crispsegmentationcimage.cpp
     intensitycimage.h
-    intensitycimagedouble.h
-    intensitycimagedouble.cpp
-    intensitycimageuint8.h
-    intensitycimageuint8.cpp
+    distancecimage.h
+    distancecimage.cpp
     fuzzysegmentationcimage.h
-    fuzzysegmentationcimagedouble.h
-    fuzzysegmentationcimagedouble.cpp
-    fuzzysegmentationcimageuint8.h
-    fuzzysegmentationcimageuint8.cpp
     defs.h
     exception.h
     filehandling.cpp
     filehandling.h
     filter.h
+    seed.h
+    seed.cpp
     label.h
     miscellaneous.cpp
     miscellaneous.h
     neighbor.h
+    neighbor.cpp
     norm.h
     priorityqueue.h
     vectoroperators.h

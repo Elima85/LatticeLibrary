@@ -2,6 +2,7 @@
 #define LABEL_H
 
 #include "cimage.h"
+#include "intensitycimage.h"
 #include "priorityqueue.h"
 #include <vector>
 #include <cfloat>
@@ -10,7 +11,7 @@ namespace CImage {
 
 /**
  * Approximated vectorial minimum barrier distance
- * Strand et al. 2012, Kårsnäs and Strand 2012
+ * Strand et al. 2012, K√•rsn√§s and Strand 2012
  *
  * Approximates the minimum of the difference between the maximum and minimum values along a path, based on the locally optimal path ("greedy" algorithm).
  * Is the other approximation (min(max)-max(min)) valid for VMBD? Can min(max) and max(min) be computed for each band by itself? (probably not)
@@ -18,14 +19,14 @@ namespace CImage {
  * Parameter			| in/out	| Comment
  * :----------			| :-------	| :--------
  * image				|			| Input image
- * seeds				|			| Data array where seed elements contain their label and the rest are 0.
- * labels				| OUTPUT	| Segmented data array, where each element contains its label.
- * distanceTransform	| OUTPUT	| Distance transform of the image.
+ * seeds				|			| Data array where seed elements contain their label and the rest are 0. !!!! CrispSegmentationCImage?
+ * labels				| OUTPUT	| Segmented data array, where each element contains its label. !!!! CrispSegmentationCImage or something
+ * distanceTransform	| OUTPUT	| Distance transform of the image. !!!! "DistanceMapCImage"?
  * norm					|			| The norm used in the definition of distance.
- * nNeighbors			|			| #neighbors to use.
+ * neighborhoodSize		|			| #neighbors to use.
  */
 template <class T>
-void approximateMinimumBarrierBoundingBox(const CImage<T> *image, const uint8* seeds, Norm* norm, int nNeighbors, uint8* labels, double* distanceTransform) { // TODO: Make norm const somehow!
+void approximateMinimumBarrierBoundingBox(const IntensityCImage<T> *image, const uint8* seeds, Norm* norm, int neighborhoodSize, uint8* labels, double* distanceTransform) { // TODO: Make norm const somehow!
 
 	if (!image || !seeds || !labels || !distanceTransform || !norm) {
 		throw nullPointerException();
@@ -66,7 +67,7 @@ void approximateMinimumBarrierBoundingBox(const CImage<T> *image, const uint8* s
 		currentIndex = topElement.getIndex();
 		if(inQueue[currentIndex]){
 			inQueue[currentIndex] = false; // so that old queue elements offering larger distances are skipped
-			image->getNeighbors(currentIndex,nNeighbors,neighbors);
+			image->getNeighbors(currentIndex, neighborhoodSize,neighbors);
 			for(uint8 i = 0; i < neighbors.size(); i++){ // propagate distance to neighbors
 				neighborIndex = neighbors[i].getIndex();
 				minIntensities = minElements(pathMin[currentIndex],(*image)[neighborIndex]);
@@ -97,7 +98,7 @@ void approximateMinimumBarrierBoundingBox(const CImage<T> *image, const uint8* s
  * Udupa 1996, Udupa 2003
  *
  * Maximizes the weakest link, defined as the difference in value between two neighbors along the path. OBS!!! Only takes the first band into account! Use norm of color difference vector?
- * Should an inter-neighbor euclidian distance be used a factor, to consider different kinds of neighbors and lattices? Ask Punam Saha about fuzzy adjacency.
+ * Should an inter-neighbor Euclidian distance be used a factor, to consider different kinds of neighbors and lattices? Ask Punam Saha about fuzzy adjacency.
  *
  * Parameter			| in/out	| Comment
  * :----------			| :-------	| :--------
@@ -105,11 +106,10 @@ void approximateMinimumBarrierBoundingBox(const CImage<T> *image, const uint8* s
  * seeds				|			| Data array where seed elements contain their label and the rest are 0.
  * labels				| OUTPUT	| Segmented data array, where each element contains its label.
  * distanceTransform	| OUTPUT	| Distance transform of the image.
- * nNeighbors			|			| #neighbors to use.
+ * neighborhoodSize		|			| #neighbors to use.
  */
 template <class T>
-void fuzzyConnectedness(const CImage<T> *image, const uint8* seeds, Norm* norm, int nNeighbors, uint8* labels, double* distanceTransform) {
-//void fuzzyConnectedness(const CImage<T> *image, const uint8* seeds, int nNeighbors, uint8* labels, double* distanceTransform) {
+void fuzzyConnectedness(const IntensityCImage<T> *image, const uint8* seeds, Norm* norm, int neighborhoodSize, uint8* labels, double* distanceTransform) {
 
 	if (!image || !seeds || !labels || !distanceTransform) {
 		throw nullPointerException();
@@ -141,7 +141,7 @@ void fuzzyConnectedness(const CImage<T> *image, const uint8* seeds, Norm* norm, 
 		currentIndex = topElement.getIndex();
 		if(inQueue[currentIndex]){
 			inQueue[currentIndex] = false;
-			image->getNeighbors(currentIndex,nNeighbors,neighbors);
+			image->getNeighbors(currentIndex, neighborhoodSize,neighbors);
 			for(uint8 i = 0; i < neighbors.size(); i++){
 				neighborIndex = neighbors[i].getIndex();
 				distance = MAX(distanceTransform[currentIndex], norm->compute((*image)[neighborIndex] - (*image)[currentIndex]));  // if the current link is not weaker, the distance does not change.
@@ -171,11 +171,10 @@ void fuzzyConnectedness(const CImage<T> *image, const uint8* seeds, Norm* norm, 
  * seeds				|			| Data array where seed elements contain their label and the rest are 0.
  * labels				| OUTPUT	| Segmented data array, where each element contains its label.
  * distanceTransform	| OUTPUT	| Distance transform of the image.
- * nNeighbors			|			| #neighbors to use.
+ * neighborhoodSize		|			| #neighbors to use.
  */
 template <class T>
-void fuzzyDistance(const CImage<T> *image, const uint8* seeds, Norm* norm, int nNeighbors, uint8* labels, double* distanceTransform) {
-//void fuzzyDistance(const CImage<T> *image, const uint8* seeds, int nNeighbors, uint8* labels, double* distanceTransform) {
+void fuzzyDistance(const IntensityCImage<T> *image, const uint8* seeds, Norm* norm, int neighborhoodSize, uint8* labels, double* distanceTransform) {
 
 	if (!image || !seeds || !labels || !distanceTransform) {
 		throw nullPointerException();
@@ -205,7 +204,7 @@ void fuzzyDistance(const CImage<T> *image, const uint8* seeds, Norm* norm, int n
 		currentIndex = topElement.getIndex();
 		if(inQueue[currentIndex]){
 			inQueue[currentIndex] = false;
-			image->getNeighbors(currentIndex,nNeighbors,neighbors);
+			image->getNeighbors(currentIndex, neighborhoodSize,neighbors);
 			for(uint8 i = 0; i < neighbors.size(); i++){
 				neighborIndex = neighbors[i].getIndex();
 				//distanceToNeighbor = neighbors[i].getDistance();
@@ -240,11 +239,10 @@ void fuzzyDistance(const CImage<T> *image, const uint8* seeds, Norm* norm, int n
  * seeds				|			| Data array where seed elements contain their label and the rest are 0.
  * labels				| OUTPUT	| Segmented data array, where each element contains its label.
  * distanceTransform	| OUTPUT	| Distance transform of the image.
- * nNeighbors			|			| #neighbors to use.
+ * neighborhoodSize		|			| #neighbors to use.
  */
 template <class T>
-void geodesicDistance(const CImage<T> *image, const uint8* seeds, Norm* norm, int nNeighbors, uint8* labels, double* distanceTransform) {
-//void geodesicDistance(const CImage<T> *image, const uint8* seeds, int nNeighbors, uint8* labels, double* distanceTransform) {
+void geodesicDistance(const IntensityCImage<T> *image, const uint8* seeds, Norm* norm, int neighborhoodSize, uint8* labels, double* distanceTransform) {
 
 	if (!image || !seeds || !labels || !distanceTransform) {
 		throw nullPointerException();
@@ -279,7 +277,7 @@ void geodesicDistance(const CImage<T> *image, const uint8* seeds, Norm* norm, in
 			inQueue[currentIndex] = false;
 			currentIntensity = (*image)[currentIndex];
 //			currentIntensity = (*image)(currentIndex,0);
-			image->getNeighbors(currentIndex,nNeighbors,neighbors);
+			image->getNeighbors(currentIndex, neighborhoodSize,neighbors);
 			for(uint8 i = 0; i < neighbors.size(); i++){
 				neighborIndex = neighbors[i].getIndex();
 				//distanceToNeighbor = neighbors[i].getDistance();

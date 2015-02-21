@@ -300,8 +300,8 @@ namespace CImage {
     void FCCLattice::get18Neighbors(int index, vector<Neighbor> &neighbors) const {
         get18Neighbors(this->indexToR(index), this->indexToC(index), this->indexToL(index), neighbors);
     }
-    void FCCLattice::getNeighbors(int row, int column, int layer, int nNeighbors, vector<Neighbor> &neighbors) const {
-        switch (nNeighbors) {
+    void FCCLattice::getNeighbors(int row, int column, int layer, int neighborhoodSize, vector<Neighbor> &neighbors) const {
+        switch (neighborhoodSize) {
             case 12:
                 get12Neighbors(row, column, layer, neighbors);
                 break;
@@ -312,8 +312,8 @@ namespace CImage {
                 throw neighborhoodSizeException();
         }
     }
-    void FCCLattice::getNeighbors(int index, int nNeighbors, vector<Neighbor> &neighbors) const {
-        switch (nNeighbors) {
+    void FCCLattice::getNeighbors(int index, int neighborhoodSize, vector<Neighbor> &neighbors) const {
+        switch (neighborhoodSize) {
             case 12:
                 get12Neighbors(index, neighbors);
                 break;

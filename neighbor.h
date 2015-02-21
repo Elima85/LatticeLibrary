@@ -9,25 +9,20 @@ namespace CImage {
 class Neighbor {
 private:
 	/** Location relative to the middle spel. */
-	int position;
+	int positionIndex;
 
 	/** Index of the neighbor in the image data array. */
-	int index;
+	int imageIndex;
 
 public:
-	Neighbor(int l, int i) {//, double d) {
-		position = l;
-		index = i;
-		//distance = d; // not good for maintainability
-	}
+	Neighbor(int l, int i);
+	~Neighbor();
 
-	int getPosition() const {
-		return position;
-	}
+	/** Returns positionIndex, indicating the position of the neighbor relative to the middle spel. */
+	int getPosition() const;
 
-	int getIndex() const {
-		return index;
-	}
+	/** Returns imageIndex, the index of the middle spel in the image data array. */
+	int getIndex() const;
 };
 
 }

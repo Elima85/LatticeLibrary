@@ -150,26 +150,26 @@ namespace CImage {
         /**
         * Returns the neighbors of an element.
         *
-        * Parameter	    | in/out	| Comment
-        * :----------	| :-------	| :--------
-        * row		    | 			| row of the element
-        * column	    |           | column of the element
-        * layer         |           | layer of the element
-        * nNeighbors    |           | requested neighborhood size
-        * neighbors     | OUTPUT    | vector of neighbor objects, containing the global and local index of each neighbor.
+        * Parameter	        | in/out	| Comment
+        * :----------	    | :-------	| :--------
+        * row		        | 			| row of the element
+        * column	        |           | column of the element
+        * layer             |           | layer of the element
+        * neighborhoodSize  |           | requested neighborhood size
+        * neighbors         | OUTPUT    | vector of neighbor objects, containing the global and local index of each neighbor.
         */
-        virtual void getNeighbors(int row, int column, int layer, int nNeighbors, vector<Neighbor> &neighbors) const = 0;
+        virtual void getNeighbors(int row, int column, int layer, int neighborhoodSize, vector<Neighbor> &neighbors) const = 0;
 
         /**
         * Returns the neighbors of an element.
         *
-        * Parameter	    | in/out	| Comment
-        * :----------	| :-------	| :--------
-        * index		    | 			| index of the element
-        * nNeighbors    |           | requested neighborhood size
-        * neighbors     | OUTPUT    | vector of neighbor objects, containing the global and local index of each neighbor.
+        * Parameter	        | in/out	| Comment
+        * :----------	    | :-------	| :--------
+        * index		        | 			| index of the element
+        * neighborhoodSize  |           | requested neighborhood size
+        * neighbors         | OUTPUT    | vector of neighbor objects, containing the global and local index of each neighbor.
         */
-        virtual void getNeighbors(int index, int nNeighbors, vector<Neighbor> &neighbors) const = 0;
+        virtual void getNeighbors(int index, int neighborhoodSize, vector<Neighbor> &neighbors) const = 0;
 
         /**
         *

@@ -12,17 +12,8 @@ namespace CImage {
     class FuzzySegmentationCImage : public IntensityCImage<T> {
 
     public:
-        FuzzySegmentationCImage(T *d, Lattice &l, int nB) : IntensityCImage<T>(d, l, nB) {};
+        FuzzySegmentationCImage(T *d, Lattice &l, int nB, T minVal, T maxVal) : IntensityCImage<T>(d, l, nB, minVal, maxVal) {};
         virtual ~FuzzySegmentationCImage() {};
-
-        /**
-        * Truncates the intensity value to fit into the range of the IntensityCImage object.
-        *
-        * Parameter     | Comment
-        * :---------    | :-------
-        * intensity     | intensity of a spatial element
-        */
-        virtual T adjustIntensity(T intensity) const = 0;
 
         /**
         * Uses the intensity value of a spel, regarded as a coverage value, to approximate the distance between the spel center and the surface that, supposedly, intersects the spel.
@@ -36,7 +27,7 @@ namespace CImage {
         * 				|	1: ball
         * 				|	2: Voronoi cell average
         */
-        virtual double getApproximatedInternalDistance(int index, int band, int method) const = 0;
+        double getApproximatedInternalDistance(int index, int band, int method) const {}
 
     };
 

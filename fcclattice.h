@@ -68,24 +68,24 @@ namespace CImage {
         /**
         * Implements Lattice::getNeighbors(int row, int column, int layer, int nNeighbors, vector <Neighbor> &neighbors).
         *
-        * Parameter	    | in/out	| Comment
-        * :----------	| :-------	| :--------
-        * nNeighbors    |           | requested neighborhood size
-        *               |           | 12: face neighbors
-        *               |           | 18: face- and point neighbors
+        * Parameter	        | in/out	| Comment
+        * :----------	    | :-------	| :--------
+        * neighborhoodSize  |           | requested neighborhood size
+        *                   |           | 12: face neighbors
+        *                   |           | 18: face- and point neighbors
         */
-        void getNeighbors(int row, int column, int layer, int nNeighbors, vector<Neighbor> &neighbors) const;
+        void getNeighbors(int row, int column, int layer, int neighborhoodSize, vector<Neighbor> &neighbors) const;
 
         /**
         * Implements Lattice::getNeighbors(int index, int nNeighbors, vector <Neighbor> &neighbors).
         *
-        * Parameter	    | in/out	| Comment
-        * :----------	| :-------	| :--------
-        * nNeighbors    |           | requested neighborhood size
-        *               |           | 12: face neighbors
-        *               |           | 18: face- and point neighbors
+        * Parameter	        | in/out	| Comment
+        * :----------	    | :-------	| :--------
+        * neighborhoodSize  |           | requested neighborhood size
+        *                   |           | 12: face neighbors
+        *                   |           | 18: face- and point neighbors
         */
-        void getNeighbors(int index, int nNeighbors, vector<Neighbor> &neighbors) const;
+        void getNeighbors(int index, int neighborhoodSize, vector<Neighbor> &neighbors) const;
     };
 
 }
