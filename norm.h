@@ -10,7 +10,7 @@ using namespace std;
 
 namespace CImage {
 
-class Norm { // zero-norm, sort of.
+class Norm {
 public:
 	Norm() {}
 	Norm(const Norm* n) {}

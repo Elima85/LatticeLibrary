@@ -99,6 +99,16 @@ TEST(Miscellaneous, vectorTOperators) {
     EXPECT_THROW(minElements(intVector1, intVector5), dimensionMismatchException);
     EXPECT_THROW(maxElements(intVector1, intVector5), dimensionMismatchException);
 
+    EXPECT_EQ(getIndexOfMinumumValue(intVector1),0);
+    EXPECT_EQ(getIndexOfMinumumValue(intNegVector), 4);
+    EXPECT_EQ(getIndexOfMinumumValue(intMinVector), 4);
+    EXPECT_EQ(getIndexOfMinumumValue(intMaxVector), 2);
+
+    EXPECT_EQ(sumOfElements(intVector1), 4);
+    EXPECT_EQ(sumOfElements(intNegVector), -4);
+    EXPECT_EQ(sumOfElements(intMinVector), -10);
+    EXPECT_EQ(sumOfElements(intMaxVector), 10);
+
     // T = double
     double doubleVals[] = {-2.2, -1.1, 0, 3.3, 4.4};
     double doubleNegVals[] = {2.2, 1.1, 0, -3.3, -4.4};
@@ -150,6 +160,16 @@ TEST(Miscellaneous, vectorTOperators) {
     EXPECT_THROW(doubleVector1 - doubleVector5, dimensionMismatchException);
     EXPECT_THROW(minElements(doubleVector1, doubleVector5), dimensionMismatchException);
     EXPECT_THROW(maxElements(doubleVector1, doubleVector5), dimensionMismatchException);
+
+    EXPECT_EQ(getIndexOfMinumumValue(doubleVector1), 0);
+    EXPECT_EQ(getIndexOfMinumumValue(doubleNegVector), 4);
+    EXPECT_EQ(getIndexOfMinumumValue(doubleMinVector), 4);
+    EXPECT_EQ(getIndexOfMinumumValue(doubleMaxVector), 2);
+
+    EXPECT_NEAR(sumOfElements(doubleVector1), 4.4, EPSILONT);
+    EXPECT_NEAR(sumOfElements(doubleNegVector), -4.4, EPSILONT);
+    EXPECT_NEAR(sumOfElements(doubleMinVector), -11, EPSILONT);
+    EXPECT_NEAR(sumOfElements(doubleMaxVector), 11, EPSILONT);
 
 }
 

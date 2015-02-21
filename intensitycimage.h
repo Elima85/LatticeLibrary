@@ -30,7 +30,7 @@ namespace CImage {
         * intensity     | intensity of a spatial element
         */
         template<class S>
-        T adjustIntensity(S intensity) const {
+        T adjustIntensity(S intensity) const { // TODO: Needs something for rounding S to T.
             return MIN(maxValue, MAX(minValue, intensity));
         }
 

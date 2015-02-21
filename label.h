@@ -2,6 +2,8 @@
 #define LABEL_H
 
 #include "cimage.h"
+#include "crispsegmentationcimage.h"
+#include "distancecimage.h"
 #include "intensitycimage.h"
 #include "priorityqueue.h"
 #include <vector>

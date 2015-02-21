@@ -363,6 +363,38 @@ public:
 		return intensityValues;
 	}
 
+	/**
+	* Sets the intensity of element [index] to the specified intensity.
+	*
+	* Parameter		| Comment
+	* :----------   | :--------
+	* index			| element index
+	* band			| band index
+	* intensity		| new intensity valuse
+	*/
+	void setElement(int index, int band, T intensity) { // TODO: Test!!
+		if (!this->isValid(index, band)) {
+			throw outsideImageException();
+		}
+		data[band * lattice.getNElements() + index] = intensity;
+	}
+
+	/**
+	* Sets the intensity of element (r,c,l) to the specified intensity.
+	*
+	* Parameter		| Comment
+	* :----------	| :--------
+	* row			| row index
+	* column		| column index
+	* layer			| layer index
+	* band			| band index
+	* intensity		| new intensity valuse
+	*/
+	void setElement(int row, int column, int layer, int band, T intensity) { // TODO: Test!!
+		int index = rclToIndex(row, column, layer);
+		this->setElement(index, band, intensity);
+	}
+
     /**
     * Sets the intensity of element [index] to the specified intensity.
     *
@@ -371,7 +403,7 @@ public:
     * index			    | element index
     * intensityValues	| intensity values for each band
     */
-    void setElement(int index, vector<T> intensityValues) {
+    void setElement(int index, vector<T> intensityValues) { // TODO: Test!!
         if (!this->isValid(index)) {
             throw outsideImageException();
         }
@@ -393,7 +425,7 @@ public:
 	 * layer			| layer index
 	 * intensityValues	| intensity values for each band
 	 */
-	void setElement(int row, int column, int layer, vector<T> intensityValues) {
+	void setElement(int row, int column, int layer, vector<T> intensityValues) { // TODO: Test!!
 		int index = rclToIndex(row, column, layer);
 		this->setElement(index, intensityValues);
 	}

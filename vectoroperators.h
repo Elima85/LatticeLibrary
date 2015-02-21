@@ -80,6 +80,30 @@ namespace CImage {
     }
 
     template<class T>
+    int getIndexOfMinumumValue(vector<T> v) {
+        int length = v.size();
+        int index;
+        double minValue = INF;
+        for (int i = 0; i < length; i++) {
+            if (v[i] < minValue) {
+                minValue = v[i];
+                index = i;
+            }
+        }
+        return index;
+    }
+
+    template<class T>
+    T sumOfElements(vector<T> v) {
+        int length = v.size();
+        T sum = 0;
+        for (int i = 0; i < length; i++) {
+            sum += v[i];
+        }
+        return sum;
+    }
+
+    template<class T>
     void printVector(vector<T> v) {
         int nElements = v.size();
         cout << "(" << v[0];
