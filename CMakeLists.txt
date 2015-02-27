@@ -68,6 +68,7 @@ set(TEST_SOURCE_FILES
     cimagetestbands.cpp
     cimagetestneighbors.cpp
     cimagetestmanipulation.cpp
+    intensitycimagetest.cpp
     test.cpp
     )
 

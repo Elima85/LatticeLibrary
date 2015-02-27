@@ -2,6 +2,7 @@
 #include "defs.h"
 #include "cimage.h"
 #include "cclattice.h"
+#include <float.h>
 
 using namespace CImage;
 

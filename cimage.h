@@ -376,11 +376,12 @@ public:
 	* band			| band index
 	* intensity		| new intensity valuse
 	*/
-	virtual void setElement(int index, int band, T intensity) { // TODO: Test!!
+	template<class S>
+	void setElement(int index, int band, S intensity) {
 		if (!this->isValid(index, band)) {
 			throw outsideImageException();
 		}
-		data[band * lattice.getNElements() + index] = intensity;
+		data[band * lattice.getNElements() + index] = T(intensity);
 	}
 
 	/**
@@ -394,7 +395,8 @@ public:
 	* band			| band index
 	* intensity		| new intensity valuse
 	*/
-	void setElement(int row, int column, int layer, int band, T intensity) { // TODO: Test!!
+	template<class S>
+	void setElement(int row, int column, int layer, int band, S intensity) {
 		int index = rclToIndex(row, column, layer);
 		this->setElement(index, band, intensity);
 	}
@@ -407,7 +409,8 @@ public:
     * index			    | element index
     * intensityValues	| intensity values for each band
     */
-    virtual void setElement(int index, vector<T> intensityValues) { // TODO: Test!!
+	template<class S>
+    void setElement(int index, vector<S> intensityValues) {
         if (!this->isValid(index)) {
             throw outsideImageException();
         }
@@ -415,7 +418,7 @@ public:
             throw dimensionMismatchException();
         }
         for (int band = 0; band < this->nBands; band++) {
-            data[band * lattice.getNElements() + index] = intensityValues[band];
+            data[band * lattice.getNElements() + index] = T(intensityValues[band]);
         }
     }
 
@@ -429,7 +432,8 @@ public:
 	 * layer			| layer index
 	 * intensityValues	| intensity values for each band
 	 */
-	void setElement(int row, int column, int layer, vector<T> intensityValues) { // TODO: Test!!
+	template<class S>
+	void setElement(int row, int column, int layer, vector<S> intensityValues) {
 		int index = rclToIndex(row, column, layer);
 		this->setElement(index, intensityValues);
 	}
