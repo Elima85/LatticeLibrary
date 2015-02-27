@@ -2,6 +2,7 @@
 #include "exception.h"
 #include "filehandling.h"
 #include "defs.h"
+#include <new> // nothrow
 
 namespace CImage {
 
@@ -11,7 +12,7 @@ namespace CImage {
         if (f == NULL) {
             throw fileException();
         }
-        double *vol = new (nothrow) double[nTot];
+        double *vol = new (std::nothrow) double[nTot];
         if (vol == NULL) {
             throw allocationException();
         }

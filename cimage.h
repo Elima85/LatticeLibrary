@@ -119,17 +119,9 @@ public:
 		return data;
 	}
 
-    /**
-    * Prints the parameters of the image.
-    */
-    void printParameters() const {
-        cout << "#rows: " << lattice.getNRows() << endl;
-        cout << "#columns: " << lattice.getNColumns() << endl;
-        cout << "#layers: " << lattice.getNLayers() << endl;
-        cout << "#modality bands: " << nBands << endl;
-        cout << "scale factor: " << lattice.getScaleFactor() << endl;
-        cout << "data array: " << data << endl;
-    }
+	Lattice& getLattice() const {
+		return lattice;
+	}
 
 	/**
 	 * Returns the width of the image in distance units.
@@ -151,6 +143,18 @@ public:
     double getDepth() const {
         return lattice.getDepth();
     }
+
+	/**
+	* Prints the parameters of the image.
+	*/
+	void printParameters() const {
+		cout << "#rows: " << lattice.getNRows() << endl;
+		cout << "#columns: " << lattice.getNColumns() << endl;
+		cout << "#layers: " << lattice.getNLayers() << endl;
+		cout << "#modality bands: " << nBands << endl;
+		cout << "scale factor: " << lattice.getScaleFactor() << endl;
+		cout << "data array: " << data << endl;
+	}
 
 	/**
 	 * Checks whether a spel is inside the image.
@@ -372,7 +376,7 @@ public:
 	* band			| band index
 	* intensity		| new intensity valuse
 	*/
-	void setElement(int index, int band, T intensity) { // TODO: Test!!
+	virtual void setElement(int index, int band, T intensity) { // TODO: Test!!
 		if (!this->isValid(index, band)) {
 			throw outsideImageException();
 		}
@@ -403,7 +407,7 @@ public:
     * index			    | element index
     * intensityValues	| intensity values for each band
     */
-    void setElement(int index, vector<T> intensityValues) { // TODO: Test!!
+    virtual void setElement(int index, vector<T> intensityValues) { // TODO: Test!!
         if (!this->isValid(index)) {
             throw outsideImageException();
         }

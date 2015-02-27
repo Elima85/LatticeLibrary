@@ -4,6 +4,7 @@
 #include "cimage.h"
 #include "crispsegmentationcimage.h"
 #include "fuzzysegmentationcimage.h"
+#include "seed.h"
 
 namespace CImage {
 
@@ -30,7 +31,25 @@ namespace CImage {
         * maxValue      | value corresponding to 100% membership of a labelled class
         */
         template<class T>
-        FuzzySegmentationCImage<T>* fuzzyLabel(T minValue, T maxValue) const;
+        FuzzySegmentationCImage<T>* fuzzyLabel(T minValue, T maxValue) const {
+            int nElements = getNElements();
+            T *labels = new T[nElements * nBands];
+            if (labels == NULL) {
+                throw allocationException();
+            }
+            FuzzySegmentationCImage<T> *segmentation = new FuzzySegmentationCImage<T>(labels, lattice, nBands, minValue, maxValue);
+            T membershipRange = maxValue - minValue;
+            for (int index = 0; index < nElements; index++) {
+                PNorm sum(1);
+                vector<double> distances = (*this)[index];
+                double sumOfDistances = sum.compute(distances);
+                for (int band = 0; band < nBands; band++) {
+                    // Should there be some kind of threshold value here, or something else that enables assigning 100% values to some (inner) spels?
+                    segmentation->setElement(index, band, minValue + membershipRange / sumOfDistances * distances[band]);
+                }
+            }
+            return segmentation;
+        }
 
     };
 

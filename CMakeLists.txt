@@ -22,6 +22,7 @@ set(SOURCE_FILES
     filter.h
     seed.h
     seed.cpp
+    seededdistancetransform.h
     label.h
     miscellaneous.cpp
     miscellaneous.h
@@ -66,6 +67,7 @@ set(TEST_SOURCE_FILES
     cimagetestcoordinates.cpp
     cimagetestbands.cpp
     cimagetestneighbors.cpp
+    cimagetestmanipulation.cpp
     test.cpp
     )
 

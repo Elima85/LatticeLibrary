@@ -7,6 +7,7 @@
 #include "intensitycimage.h"
 #include "priorityqueue.h"
 #include <vector>
+#include "vectoroperators.h"
 #include <cfloat>
 
 namespace CImage {

@@ -220,6 +220,32 @@ TEST(CImage, coordinates) {
     EXPECT_NEAR(imageBCC2->getHeight(), scaleFactor2 * 5.5 * BCCSQFACEDISTANCE, EPSILONT);
     EXPECT_NEAR(imageBCC2->getDepth(), scaleFactor2 * 4 * BCCSQFACEDISTANCE, EPSILONT);
 
+    Lattice *extractedCCLattice1, *extractedCCLattice2, *extractedBCCLattice, *extractedFCCLattice;
+    extractedCCLattice1 = &(imageCC1->getLattice());
+    extractedCCLattice2 = &(imageCC2->getLattice());
+    extractedBCCLattice = &(imageBCC1->getLattice());
+    extractedFCCLattice = &(imageFCC1->getLattice());
+    EXPECT_GT(fabs(extractedCCLattice1->getScaleFactor() - extractedCCLattice2->getScaleFactor()), EPSILONT);
+    EXPECT_GT(fabs(extractedCCLattice1->getWidth() - extractedCCLattice2->getWidth()), EPSILONT);
+    EXPECT_GT(fabs(extractedCCLattice1->getWidth() - extractedBCCLattice->getWidth()), EPSILONT);
+    EXPECT_GT(fabs(extractedCCLattice1->getWidth() - extractedFCCLattice->getWidth()), EPSILONT);
+    EXPECT_GT(fabs(extractedBCCLattice->getWidth() - extractedFCCLattice->getWidth()), EPSILONT);
+    EXPECT_NEAR(extractedCCLattice1->getScaleFactor(), latticeCC1->getScaleFactor(), EPSILONT);
+    EXPECT_NEAR(extractedCCLattice1->getWidth(), latticeCC1->getWidth(), EPSILONT);
+    EXPECT_NEAR(extractedCCLattice1->getHeight(), latticeCC1->getHeight(), EPSILONT);
+    EXPECT_NEAR(extractedCCLattice1->getDepth(), latticeCC1->getDepth(), EPSILONT);
+    EXPECT_NEAR(extractedCCLattice2->getScaleFactor(), latticeCC2->getScaleFactor(), EPSILONT);
+    EXPECT_NEAR(extractedCCLattice2->getWidth(), latticeCC2->getWidth(), EPSILONT);
+    EXPECT_NEAR(extractedCCLattice2->getHeight(), latticeCC2->getHeight(), EPSILONT);
+    EXPECT_NEAR(extractedCCLattice2->getDepth(), latticeCC2->getDepth(), EPSILONT);
+    EXPECT_NEAR(extractedBCCLattice->getScaleFactor(), latticeBCC1->getScaleFactor(), EPSILONT);
+    EXPECT_NEAR(extractedBCCLattice->getWidth(), latticeBCC1->getWidth(), EPSILONT);
+    EXPECT_NEAR(extractedBCCLattice->getHeight(), latticeBCC1->getHeight(), EPSILONT);
+    EXPECT_NEAR(extractedBCCLattice->getDepth(), latticeBCC1->getDepth(), EPSILONT);
+    EXPECT_NEAR(extractedFCCLattice->getScaleFactor(), latticeFCC1->getScaleFactor(), EPSILONT);
+    EXPECT_NEAR(extractedFCCLattice->getWidth(), latticeFCC1->getWidth(), EPSILONT);
+    EXPECT_NEAR(extractedFCCLattice->getHeight(), latticeFCC1->getHeight(), EPSILONT);
+    EXPECT_NEAR(extractedFCCLattice->getDepth(), latticeFCC1->getDepth(), EPSILONT);
 
     delete latticeCC1;
     delete latticeCC2;
