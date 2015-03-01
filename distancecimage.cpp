@@ -1,6 +1,5 @@
 #include "distancecimage.h"
 #include "crispsegmentationcimage.h"
-#include "fuzzysegmentationcimage.h"
 #include "exception.h"
 #include "vectoroperators.h"
 #include "norm.h"

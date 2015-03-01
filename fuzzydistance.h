@@ -1,0 +1,4 @@
+#ifndef FUZZYDISTANCE_H
+#define FUZZYDISTANCE_H
+
+#endif
