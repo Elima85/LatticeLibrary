@@ -17,8 +17,16 @@ namespace CImage {
             throw allocationException();
         }
         CrispSegmentationCImage *segmentation = new CrispSegmentationCImage(labels, lattice, nBands);
-        for (int index = 0; index < nElements; index++) {
-            segmentation->setElement(index, getIndexOfMinumumValue((*this)[index]), true);
+        for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
+            int label = getIndexOfMinumumValue((*this)[elementIndex]);
+            for (int bandIndex = 0; bandIndex < this->nBands; bandIndex++) {
+                if (bandIndex == label) {
+                    segmentation->setElement(elementIndex, bandIndex, true);
+                }
+                else {
+                    segmentation->setElement(elementIndex, bandIndex, false);
+                }
+            }
         }
         return segmentation;
     }

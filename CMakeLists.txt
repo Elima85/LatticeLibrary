@@ -69,6 +69,7 @@ set(TEST_SOURCE_FILES
     cimagetestneighbors.cpp
     cimagetestmanipulation.cpp
     intensitycimagetest.cpp
+    distancecimagetest.cpp
     test.cpp
     )
 
