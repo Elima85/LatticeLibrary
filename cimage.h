@@ -55,7 +55,7 @@ protected:
 
 public:
     /**
-    * Color image constructor
+    * Color image constructor.
     *
     * Parameter     | Comment
     * :---------    | :-------
@@ -67,7 +67,19 @@ public:
         data = d;
         nBands = nB;
     }
-	~CImage() {};
+
+	/**
+	* Color image copy constructor.
+	*/
+	CImage(const CImage<T> &original) : lattice(original.getLattice()) {
+		nBands = original.nBands;
+		int nTotal = nBands * original.getNElements();
+		data = new T[nTotal];
+		for (int dataIndex = 0; dataIndex < nTotal; dataIndex++) {
+			data[dataIndex] = original.data[dataIndex];
+		}
+	}
+	~CImage() {}; // TODO: Should this delete the data array?
 
 	// Getters
 	/**

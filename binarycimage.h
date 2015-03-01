@@ -13,6 +13,7 @@ namespace CImage {
 
     public:
         BinaryCImage(bool* d, Lattice &l, int nB);
+        BinaryCImage(const BinaryCImage &original);
         ~BinaryCImage();
 
     };

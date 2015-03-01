@@ -70,6 +70,7 @@ set(TEST_SOURCE_FILES
     cimagetestmanipulation.cpp
     intensitycimagetest.cpp
     distancecimagetest.cpp
+    seededdistancetransformtest.cpp
     test.cpp
     )
 

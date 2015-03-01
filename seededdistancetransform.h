@@ -30,14 +30,10 @@ namespace CImage {
 * neighborhoodSize  | #neighbors to use.
 */
     template<class T>
-    DistanceCImage* approximateMinimumBarrierBoundingBox(const IntensityCImage<T> *image, const vector<Seed> seeds, Norm *norm, int neighborhoodSize) { // TODO: Make norm const somehow!
-
-        if (!image || !norm) {
-            throw nullPointerException();
-        }
+    DistanceCImage approximateMinimumBarrierBoundingBox(const IntensityCImage<T> &image, const vector<Seed> seeds, Norm &norm, int neighborhoodSize) { // TODO: Make norm const somehow!
 
         // initialization
-        int nElements = image->getNElements();
+        int nElements = image.getNElements();
         int nSeeds = seeds.size();
         int nLabels = 0;
         vector<int> listOfLabels;
@@ -49,7 +45,7 @@ namespace CImage {
             }
         }
         double *distanceValues = new double[nElements * nLabels];
-        DistanceCImage *distanceTransform = new DistanceCImage(distanceValues, image->getLattice(), nLabels);
+        DistanceCImage distanceTransform(distanceValues, image.getLattice(), nLabels);
 
         // Every layer represents the distance from seed points of one class
         vector<T> *pathMin = new vector<T>[nElements];
@@ -59,9 +55,9 @@ namespace CImage {
 
             // initialize background
             for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
-                pathMin[elementIndex] = (*image)[elementIndex]; // the spel is always part of the path between itself and the object boundary
-                pathMax[elementIndex] = (*image)[elementIndex];
-                distanceTransform->setElement(elementIndex, labelIndex, DBL_MAX);
+                pathMin[elementIndex] = image[elementIndex]; // the spel is always part of the path between itself and the object boundary
+                pathMax[elementIndex] = image[elementIndex];
+                distanceTransform.setElement(elementIndex, labelIndex, DBL_MAX);
                 inQueue[elementIndex] = false;
             }
 
@@ -71,7 +67,7 @@ namespace CImage {
             for (int seedIndex = 0; seedIndex < nSeeds; seedIndex++) {
                 if (seeds[seedIndex].getLabel() == currentLabel) {
                     int elementIndex = seeds[seedIndex].getIndex();
-                    distanceTransform->setElement(elementIndex, labelIndex, 0);
+                    distanceTransform.setElement(elementIndex, labelIndex, 0);
                     queue.push(PriorityQueueElement<T>(elementIndex, 0));
                     inQueue[elementIndex] = true;
                 }
@@ -85,15 +81,15 @@ namespace CImage {
                 int currentIndex = topElement.getIndex();
                 if (inQueue[currentIndex]) {
                     inQueue[currentIndex] = false; // so that old queue elements offering larger distances are skipped
-                    image->getNeighbors(currentIndex, neighborhoodSize, neighbors);
+                    image.getNeighbors(currentIndex, neighborhoodSize, neighbors);
                     for (int neighborIndex = 0; neighborIndex < neighbors.size(); neighborIndex++) {
                         int neighborGlobalIndex = neighbors[neighborIndex].getIndex();
-                        vector<T> minIntensities = minElements(pathMin[currentIndex], (*image)[neighborGlobalIndex]);
-                        vector<T> maxIntensities = maxElements(pathMax[currentIndex], (*image)[neighborGlobalIndex]);
+                        vector<T> minIntensities = minElements(pathMin[currentIndex], image[neighborGlobalIndex]);
+                        vector<T> maxIntensities = maxElements(pathMax[currentIndex], image[neighborGlobalIndex]);
                         vector<T> intensitySpans = maxIntensities - minIntensities;
-                        double distance = norm->compute(intensitySpans);
-                        if (distance < (*distanceTransform)(neighborGlobalIndex, labelIndex)) {
-                            distanceTransform->setElement(neighborGlobalIndex, labelIndex, distance);
+                        double distance = norm.compute(intensitySpans);
+                        if (distance < distanceTransform(neighborGlobalIndex, labelIndex)) {
+                            distanceTransform.setElement(neighborGlobalIndex, labelIndex, distance);
                             pathMin[neighborGlobalIndex] = minIntensities;
                             pathMax[neighborGlobalIndex] = maxIntensities;
                             queue.push(PriorityQueueElement<T>(neighborGlobalIndex, pathMax[neighborGlobalIndex] - pathMin[neighborGlobalIndex], norm));
@@ -126,14 +122,10 @@ namespace CImage {
 * neighborhoodSize  | #neighbors to use.
 */
     template<class T>
-    DistanceCImage* fuzzyConnectedness(const IntensityCImage<T> *image, const vector<Seed> seeds, Norm *norm, int neighborhoodSize) {
-
-        if (!image || !norm) {
-            throw nullPointerException();
-        }
+    DistanceCImage fuzzyConnectedness(const IntensityCImage<T> &image, const vector<Seed> seeds, Norm &norm, int neighborhoodSize) {
 
         // initialization
-        int nElements = image->getNElements();
+        int nElements = image.getNElements();
         int nSeeds = seeds.size();
         int nLabels = 0;
         vector<int> listOfLabels;
@@ -145,7 +137,7 @@ namespace CImage {
             }
         }
         double *distanceValues = new double[nElements * nLabels];
-        DistanceCImage *distanceTransform = new DistanceCImage(distanceValues, image->getLattice(), nLabels);
+        DistanceCImage distanceTransform(distanceValues, image.getLattice(), nLabels);
 
         // Every layer represents the distance from seed points of one class
         bool *inQueue = new bool[nElements];
@@ -153,7 +145,7 @@ namespace CImage {
 
             // initialize background
             for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
-                distanceTransform->setElement(elementIndex, labelIndex, DBL_MAX);
+                distanceTransform.setElement(elementIndex, labelIndex, DBL_MAX);
                 inQueue[elementIndex] = false;
             }
 
@@ -163,7 +155,7 @@ namespace CImage {
             for (int seedIndex = 0; seedIndex < nSeeds; seedIndex++) {
                 if (seeds[seedIndex].getLabel() == currentLabel) {
                     int elementIndex = seeds[seedIndex].getIndex();
-                    distanceTransform->setElement(elementIndex, labelIndex, 0);
+                    distanceTransform.setElement(elementIndex, labelIndex, 0);
                     queue.push(PriorityQueueElement<T>(elementIndex, 0));
                     inQueue[elementIndex] = true;
                 }
@@ -177,12 +169,12 @@ namespace CImage {
                 int elementIndex = topElement.getIndex();
                 if (inQueue[elementIndex]) {
                     inQueue[elementIndex] = false;
-                    image->getNeighbors(elementIndex, neighborhoodSize, neighbors);
+                    image.getNeighbors(elementIndex, neighborhoodSize, neighbors);
                     for (int neighborIndex = 0; neighborIndex < neighbors.size(); neighborIndex++) {
                         int neighborGlobalIndex = neighbors[neighborIndex].getIndex();
-                        double distance = MAX((*distanceTransform)(elementIndex,labelIndex), norm->compute((*image)[neighborGlobalIndex] - (*image)[elementIndex]));  // if the current link is not weaker, the distance does not change.
-                        if (distance < (*distanceTransform)(neighborGlobalIndex,labelIndex)) {
-                            distanceTransform->setElement(neighborGlobalIndex, labelIndex, distance);
+                        double distance = MAX(distanceTransform(elementIndex,labelIndex), norm.compute(image[neighborGlobalIndex] - image[elementIndex]));  // if the current link is not weaker, the distance does not change.
+                        if (distance < distanceTransform(neighborGlobalIndex,labelIndex)) {
+                            distanceTransform.setElement(neighborGlobalIndex, labelIndex, distance);
                             queue.push(PriorityQueueElement<T>(neighborGlobalIndex, distance));
                             inQueue[neighborGlobalIndex] = true;
                         }
@@ -208,14 +200,10 @@ namespace CImage {
 * neighborhoodSize  | #neighbors to use.
 */
     template<class T>
-    DistanceCImage* fuzzyDistance(const IntensityCImage<T> *image, const vector<Seed> seeds, Norm *norm, int neighborhoodSize) {
-
-        if (!image || !norm) {
-            throw nullPointerException();
-        }
+    DistanceCImage fuzzyDistance(const IntensityCImage<T> &image, const vector<Seed> seeds, Norm &norm, int neighborhoodSize) {
 
         // initialization
-        int nElements = image->getNElements();
+        int nElements = image.getNElements();
         int nSeeds = seeds.size();
         int nLabels = 0;
         vector<int> listOfLabels;
@@ -227,7 +215,7 @@ namespace CImage {
             }
         }
         double *distanceValues = new double[nElements * nLabels];
-        DistanceCImage *distanceTransform = new DistanceCImage(distanceValues, image->getLattice(), nLabels);
+        DistanceCImage distanceTransform(distanceValues, image.getLattice(), nLabels);
 
         // Every layer represents the distance from seed points of one class
         bool *inQueue = new bool[nElements];
@@ -235,7 +223,7 @@ namespace CImage {
 
             // initialize background
             for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
-                distanceTransform->setElement(elementIndex, labelIndex, DBL_MAX);
+                distanceTransform.setElement(elementIndex, labelIndex, DBL_MAX);
                 inQueue[elementIndex] = false;
             }
 
@@ -245,7 +233,7 @@ namespace CImage {
             for (int seedIndex = 0; seedIndex < nSeeds; seedIndex++) {
                 if (seeds[seedIndex].getLabel() == currentLabel) {
                     int elementIndex = seeds[seedIndex].getIndex();
-                    distanceTransform->setElement(elementIndex, labelIndex, 0);
+                    distanceTransform.setElement(elementIndex, labelIndex, 0);
                     queue.push(PriorityQueueElement<T>(elementIndex, 0));
                     inQueue[elementIndex] = true;
                 }
@@ -259,14 +247,14 @@ namespace CImage {
                 int elementIndex = topElement.getIndex();
                 if (inQueue[elementIndex]) {
                     inQueue[elementIndex] = false;
-                    image->getNeighbors(elementIndex, neighborhoodSize, neighbors);
+                    image.getNeighbors(elementIndex, neighborhoodSize, neighbors);
                     for (int neighborIndex = 0; neighborIndex < neighbors.size(); neighborIndex++) {
                         int neighborGlobalIndex = neighbors[neighborIndex].getIndex();
-                        double distanceToNeighbor = image->euclideanDistance(elementIndex, neighborGlobalIndex);
-                        double distance = (*distanceTransform)(elementIndex, nLabels) + 0.5 * norm->compute((*image)[neighborGlobalIndex] + (*image)[elementIndex]) * distanceToNeighbor;
-//				distance = distanceTransform[currentIndex] + 0.5 * fabs((*image)(neighborIndex,0) + (*image)(currentIndex,0)) * distanceToNeighbor; // vector to scalar!
-                        if (distance < (*distanceTransform)(neighborGlobalIndex, labelIndex)) {
-                            distanceTransform->setElement(neighborGlobalIndex, labelIndex, distance);
+                        double distanceToNeighbor = image.euclideanDistance(elementIndex, neighborGlobalIndex);
+                        double distance = distanceTransform(elementIndex, nLabels) + 0.5 * norm.compute(image[neighborGlobalIndex] + image[elementIndex]) * distanceToNeighbor;
+//				distance = distanceTransform[currentIndex] + 0.5 * fabs(image(neighborIndex,0) + image(currentIndex,0)) * distanceToNeighbor; // vector to scalar!
+                        if (distance < distanceTransform(neighborGlobalIndex, labelIndex)) {
+                            distanceTransform.setElement(neighborGlobalIndex, labelIndex, distance);
                             queue.push(PriorityQueueElement<T>(neighborGlobalIndex, distance));
                             inQueue[neighborGlobalIndex] = true;
                         }
@@ -296,14 +284,10 @@ namespace CImage {
 * neighborhoodSize  | #neighbors to use.
 */
     template<class T>
-    DistanceCImage* geodesicDistance(const IntensityCImage<T> *image, const vector<Seed> seeds, Norm *norm, int neighborhoodSize) {
-
-        if (!image || !norm) {
-            throw nullPointerException();
-        }
+    DistanceCImage geodesicDistance(const IntensityCImage<T> &image, const vector<Seed> seeds, Norm &norm, int neighborhoodSize) {
 
         // initialization
-        int nElements = image->getNElements();
+        int nElements = image.getNElements();
         int nSeeds = seeds.size();
         int nLabels = 0;
         vector<int> listOfLabels;
@@ -315,14 +299,14 @@ namespace CImage {
             }
         }
         double *distanceValues = new double[nElements * nLabels];
-        DistanceCImage *distanceTransform = new DistanceCImage(distanceValues, image->getLattice(), nLabels);
+        DistanceCImage distanceTransform(distanceValues, image.getLattice(), nLabels);
 
         bool *inQueue = new bool[nElements];
         for (int labelIndex = 0; labelIndex < nLabels; labelIndex++) {
 
             // initialize background
             for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
-                distanceTransform->setElement(elementIndex, labelIndex, DBL_MAX);
+                distanceTransform.setElement(elementIndex, labelIndex, DBL_MAX);
                 inQueue[elementIndex] = false;
             }
 
@@ -332,7 +316,7 @@ namespace CImage {
             for (int seedIndex = 0; seedIndex < nSeeds; seedIndex++) {
                 if (seeds[seedIndex].getLabel() == currentLabel) {
                     int elementIndex = seeds[seedIndex].getIndex();
-                    distanceTransform->setElement(elementIndex, labelIndex, 0);
+                    distanceTransform.setElement(elementIndex, labelIndex, 0);
                     queue.push(PriorityQueueElement<T>(elementIndex, 0));
                     inQueue[elementIndex] = true;
                 }
@@ -347,17 +331,17 @@ namespace CImage {
                 int elementIndex = topElement.getIndex();
                 if (inQueue[elementIndex]) {
                     inQueue[elementIndex] = false;
-                    vector<T> elementIntensity = (*image)[elementIndex];
-                    image->getNeighbors(elementIndex, neighborhoodSize, neighbors);
+                    vector<T> elementIntensity = image[elementIndex];
+                    image.getNeighbors(elementIndex, neighborhoodSize, neighbors);
                     for (int neighborIndex = 0; neighborIndex < neighbors.size(); neighborIndex++) {
                         int neighborGlobalIndex = neighbors[neighborIndex].getIndex();
-                        double distanceToNeighbor = image->euclideanDistance(elementIndex, neighborGlobalIndex);
-                        vector<T> intensityDifference = elementIntensity - (*image)[neighborGlobalIndex];
-                        distance = (*distanceTransform)(elementIndex, labelIndex) + sqrt(norm->compute(intensityDifference) * norm->compute(intensityDifference) + distanceToNeighbor * distanceToNeighbor); // Not perfect... Weights are messed up if it's not the 2-norm, I think.
-//				intensityDifference = currentIntensity - (*image)(neighborIndex,0);
+                        double distanceToNeighbor = image.euclideanDistance(elementIndex, neighborGlobalIndex);
+                        vector<T> intensityDifference = elementIntensity - image[neighborGlobalIndex];
+                        distance = distanceTransform(elementIndex, labelIndex) + sqrt(norm.compute(intensityDifference) * norm.compute(intensityDifference) + distanceToNeighbor * distanceToNeighbor); // Not perfect... Weights are messed up if it's not the 2-norm, I think.
+//				intensityDifference = currentIntensity - image(neighborIndex,0);
 //				distance = distanceTransform[currentIndex] + sqrt(intensityDifference * intensityDifference + distanceToNeighbor * distanceToNeighbor);
-                        if (distance < (*distanceTransform)(neighborGlobalIndex, nLabels)) {
-                            distanceTransform->setElement(neighborGlobalIndex, labelIndex, distance);
+                        if (distance < distanceTransform(neighborGlobalIndex, nLabels)) {
+                            distanceTransform.setElement(neighborGlobalIndex, labelIndex, distance);
                             queue.push(PriorityQueueElement<T>(neighborGlobalIndex, distance));
                             inQueue[neighborGlobalIndex] = true;
                         }

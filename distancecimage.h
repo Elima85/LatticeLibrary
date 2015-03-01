@@ -20,9 +20,10 @@ namespace CImage {
         /**
         * Produces a crisp segmentation based on the distance transform.
         */
-        CrispSegmentationCImage* crispLabel() const;
+        CrispSegmentationCImage crispLabel() const;
 
         /**
+        * NOT WORKING!!!! Distance 0 leads to nan membership. Don't know how to solve memberships for object "inner" spels.
         * Produces a fuzzy segmentation based on the distance transform.
         *
         * Parameter     | Comment
@@ -37,17 +38,21 @@ namespace CImage {
             if (labels == NULL) {
                 throw allocationException();
             }
-//            FuzzySegmentationCImage<T> *segmentation = new FuzzySegmentationCImage<T>(labels, lattice, nBands, minValue, maxValue);
             FuzzySegmentationCImage<T> segmentation(labels, lattice, nBands, minValue, maxValue);
             T membershipRange = maxValue - minValue;
-            for (int index = 0; index < nElements; index++) {
+            for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
                 PNorm sum(1);
-                vector<double> distances = (*this)[index];
-                double sumOfDistances = sum.compute(distances);
-                for (int band = 0; band < nBands; band++) {
-                    // Should there be some kind of threshold value here, or something else that enables assigning 100% values to some (inner) spels?
-                    segmentation.setElement(index, band, minValue + membershipRange / sumOfDistances * distances[band]);
+                vector<double> distances = (*this)[elementIndex];
+                vector<double> invertedDistances;
+                for (int bandIndex = 0; bandIndex < nBands; bandIndex++) {
+                    invertedDistances.push_back(1/(distances[bandIndex])); // TODO
                 }
+                double sumOfDistances = sum.compute(invertedDistances);
+                for (int bandIndex = 0; bandIndex < nBands; bandIndex++) {
+                    // Should there be some kind of threshold value here, or something else that enables assigning 100% values to some (inner) spels?
+                    segmentation.setElement(elementIndex, bandIndex, minValue + membershipRange / sumOfDistances * invertedDistances[bandIndex]);
+                }
+                //std::cout << "Membership of spel [" << elementIndex << "]: (" << labels[elementIndex] << "," << labels[nElements + elementIndex] << "," << labels[2*nElements + elementIndex] << ")" << std::endl;
             }
             return segmentation;
         }

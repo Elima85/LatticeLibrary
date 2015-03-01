@@ -23,6 +23,10 @@ namespace CImage {
                 this->data[intensityIndex] = MIN(this->maxValue, MAX(this->minValue, this->data[intensityIndex]));
             }
         }
+        IntensityCImage(const IntensityCImage &original) : CImage<T>(original) {
+            minValue = original.minValue;
+            maxValue = original.maxValue;
+        }
         ~IntensityCImage() {};
 
         /**

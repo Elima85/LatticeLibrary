@@ -14,8 +14,8 @@ TEST(PriorityQueue, Test) {
     double values2[] = {4.4, 5.5, 6.6};
     vector<double> vector1(values1, values1 + 3);
     vector<double> vector2(values2, values2 + 3);
-    PNorm *norm1 = new PNorm(1);
-    PNorm *norm2 = new PNorm(2);
+    PNorm norm1(1);
+    PNorm norm2(2);
     priority_queue<PriorityQueueElement<double>, vector<PriorityQueueElement<double> >, PriorityQueueElementComparison> queue;
     PriorityQueueElement<double> singleElement1(0, 1);
     PriorityQueueElement<double> singleElement2(1, 2);

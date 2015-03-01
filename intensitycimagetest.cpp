@@ -154,6 +154,110 @@ TEST(IntensityCImage, initialization) {
 
 }
 
+TEST(IntensityCImage, copying) {
+
+    int nRows = 2;
+    int nColumns = 3;
+    int nLayers = 4;
+    int nElements = nRows * nColumns * nLayers;
+    double scaleFactor = 1.0;
+    CCLattice lattice(nRows, nColumns, nLayers, scaleFactor);
+
+    int nBands = 3;
+    uint8 data[nElements * nBands];
+    for (int i = 0; i < nBands * nElements; i++) {
+        data[i] = i;
+    }
+
+    IntensityCImage<uint8> original(data, lattice, nBands, 0, 255);
+    IntensityCImage<uint8> copy(original);
+    EXPECT_EQ(original.getNRows(), copy.getNRows());
+    EXPECT_EQ(original.getNColumns(), copy.getNColumns());
+    EXPECT_EQ(original.getNLayers(), copy.getNLayers());
+    EXPECT_EQ(original.getNElements(), copy.getNElements());
+    EXPECT_EQ(original.getScaleFactor(), copy.getScaleFactor());
+    EXPECT_EQ(original.getNBands(), copy.getNBands());
+    EXPECT_NE(original.getData(), copy.getData());
+
+    uint8 *originalData = original.getData();
+    uint8 *copiedData = copy.getData();
+    EXPECT_EQ(originalData[0], copiedData[0]);
+    EXPECT_EQ(originalData[1], copiedData[1]);
+    EXPECT_EQ(originalData[2], copiedData[2]);
+    EXPECT_EQ(originalData[3], copiedData[3]);
+    EXPECT_EQ(originalData[4], copiedData[4]);
+    EXPECT_EQ(originalData[5], copiedData[5]);
+    EXPECT_EQ(originalData[6], copiedData[6]);
+    EXPECT_EQ(originalData[7], copiedData[7]);
+    EXPECT_EQ(originalData[8], copiedData[8]);
+    EXPECT_EQ(originalData[9], copiedData[9]);
+    EXPECT_EQ(originalData[10], copiedData[10]);
+    EXPECT_EQ(originalData[11], copiedData[11]);
+    EXPECT_EQ(originalData[12], copiedData[12]);
+    EXPECT_EQ(originalData[13], copiedData[13]);
+    EXPECT_EQ(originalData[14], copiedData[14]);
+    EXPECT_EQ(originalData[15], copiedData[15]);
+    EXPECT_EQ(originalData[16], copiedData[16]);
+    EXPECT_EQ(originalData[17], copiedData[17]);
+    EXPECT_EQ(originalData[18], copiedData[18]);
+    EXPECT_EQ(originalData[19], copiedData[19]);
+    EXPECT_EQ(originalData[20], copiedData[20]);
+    EXPECT_EQ(originalData[21], copiedData[21]);
+    EXPECT_EQ(originalData[22], copiedData[22]);
+    EXPECT_EQ(originalData[23], copiedData[23]);
+    EXPECT_EQ(originalData[24], copiedData[24]);
+    EXPECT_EQ(originalData[25], copiedData[25]);
+    EXPECT_EQ(originalData[26], copiedData[26]);
+    EXPECT_EQ(originalData[27], copiedData[27]);
+    EXPECT_EQ(originalData[28], copiedData[28]);
+    EXPECT_EQ(originalData[29], copiedData[29]);
+    EXPECT_EQ(originalData[30], copiedData[30]);
+    EXPECT_EQ(originalData[31], copiedData[31]);
+    EXPECT_EQ(originalData[32], copiedData[32]);
+    EXPECT_EQ(originalData[33], copiedData[33]);
+    EXPECT_EQ(originalData[34], copiedData[34]);
+    EXPECT_EQ(originalData[35], copiedData[35]);
+    EXPECT_EQ(originalData[36], copiedData[36]);
+    EXPECT_EQ(originalData[37], copiedData[37]);
+    EXPECT_EQ(originalData[38], copiedData[38]);
+    EXPECT_EQ(originalData[39], copiedData[39]);
+    EXPECT_EQ(originalData[40], copiedData[40]);
+    EXPECT_EQ(originalData[41], copiedData[41]);
+    EXPECT_EQ(originalData[42], copiedData[42]);
+    EXPECT_EQ(originalData[43], copiedData[43]);
+    EXPECT_EQ(originalData[44], copiedData[44]);
+    EXPECT_EQ(originalData[45], copiedData[45]);
+    EXPECT_EQ(originalData[46], copiedData[46]);
+    EXPECT_EQ(originalData[47], copiedData[47]);
+    EXPECT_EQ(originalData[48], copiedData[48]);
+    EXPECT_EQ(originalData[49], copiedData[49]);
+    EXPECT_EQ(originalData[50], copiedData[50]);
+    EXPECT_EQ(originalData[51], copiedData[51]);
+    EXPECT_EQ(originalData[52], copiedData[52]);
+    EXPECT_EQ(originalData[53], copiedData[53]);
+    EXPECT_EQ(originalData[54], copiedData[54]);
+    EXPECT_EQ(originalData[55], copiedData[55]);
+    EXPECT_EQ(originalData[56], copiedData[56]);
+    EXPECT_EQ(originalData[57], copiedData[57]);
+    EXPECT_EQ(originalData[58], copiedData[58]);
+    EXPECT_EQ(originalData[59], copiedData[59]);
+    EXPECT_EQ(originalData[60], copiedData[60]);
+    EXPECT_EQ(originalData[61], copiedData[61]);
+    EXPECT_EQ(originalData[62], copiedData[62]);
+    EXPECT_EQ(originalData[63], copiedData[63]);
+    EXPECT_EQ(originalData[64], copiedData[64]);
+    EXPECT_EQ(originalData[65], copiedData[65]);
+    EXPECT_EQ(originalData[66], copiedData[66]);
+    EXPECT_EQ(originalData[67], copiedData[67]);
+    EXPECT_EQ(originalData[68], copiedData[68]);
+    EXPECT_EQ(originalData[69], copiedData[69]);
+    EXPECT_EQ(originalData[70], copiedData[70]);
+    EXPECT_EQ(originalData[71], copiedData[71]);
+
+    delete copiedData;
+
+}
+
 TEST(IntensityCImage, manipulation) {
 
     int nRows = 5;

@@ -50,8 +50,8 @@ namespace CImage {
         /**
         * Sets value to the input norm of the input vector.
         */
-        PriorityQueueElement(long i, const vector<T> &v, const Norm *n) {
-            value = n->compute(v);
+        PriorityQueueElement(long i, const vector<T> &v, const Norm &n) {
+            value = n.compute(v);
             index = i;
         }
 

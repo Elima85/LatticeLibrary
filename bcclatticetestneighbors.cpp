@@ -12,7 +12,7 @@ TEST(BCCLattice,neighbors) {
     int nElements = nRows * nColumns * nLayers;
     double scaleFactor1 = 1.0;
     double scaleFactor2 = 2.5;
-    BCCLattice *lattice = new BCCLattice(nRows, nColumns, nLayers, scaleFactor1);
+    BCCLattice lattice(nRows, nColumns, nLayers, scaleFactor1);
     // {tlf,trf,bolf,borf,tlba,trba,bolba,borba,   t,f,l,ba,r,bo}
     int BCC8EL[8] = {45, 46, 51, 52, 105, 106, 111, 112};
     int BCC8OL[8] = {82, 83, 88, 89, 142, 143, 148, 149};
@@ -24,7 +24,7 @@ TEST(BCCLattice,neighbors) {
     // 8 neighbors
     neighborhoodSize = 8;
     correctNNeighbors = 8;
-    lattice->getNeighbors(3, 4, 2, neighborhoodSize, neighbors);
+    lattice.getNeighbors(3, 4, 2, neighborhoodSize, neighbors);
     EXPECT_EQ(neighbors.size(), correctNNeighbors);
     EXPECT_EQ(neighbors[0].getIndex(), BCC8EL[0]);
     EXPECT_EQ(neighbors[1].getIndex(), BCC8EL[1]);
@@ -34,7 +34,7 @@ TEST(BCCLattice,neighbors) {
     EXPECT_EQ(neighbors[5].getIndex(), BCC8EL[5]);
     EXPECT_EQ(neighbors[6].getIndex(), BCC8EL[6]);
     EXPECT_EQ(neighbors[7].getIndex(), BCC8EL[7]);
-    lattice->getNeighbors(lattice->rclToIndex(3, 4, 2), neighborhoodSize, neighbors);
+    lattice.getNeighbors(lattice.rclToIndex(3, 4, 2), neighborhoodSize, neighbors);
     EXPECT_EQ(neighbors.size(), correctNNeighbors);
     EXPECT_EQ(neighbors[0].getIndex(), BCC8EL[0]);
     EXPECT_EQ(neighbors[1].getIndex(), BCC8EL[1]);
@@ -44,7 +44,7 @@ TEST(BCCLattice,neighbors) {
     EXPECT_EQ(neighbors[5].getIndex(), BCC8EL[5]);
     EXPECT_EQ(neighbors[6].getIndex(), BCC8EL[6]);
     EXPECT_EQ(neighbors[7].getIndex(), BCC8EL[7]);
-    lattice->getNeighbors(3, 4, 3, neighborhoodSize, neighbors);
+    lattice.getNeighbors(3, 4, 3, neighborhoodSize, neighbors);
     EXPECT_EQ(neighbors.size(), correctNNeighbors);
     EXPECT_EQ(neighbors[0].getIndex(), BCC8OL[0]);
     EXPECT_EQ(neighbors[1].getIndex(), BCC8OL[1]);
@@ -54,7 +54,7 @@ TEST(BCCLattice,neighbors) {
     EXPECT_EQ(neighbors[5].getIndex(), BCC8OL[5]);
     EXPECT_EQ(neighbors[6].getIndex(), BCC8OL[6]);
     EXPECT_EQ(neighbors[7].getIndex(), BCC8OL[7]);
-    lattice->getNeighbors(lattice->rclToIndex(3, 4, 3), neighborhoodSize, neighbors);
+    lattice.getNeighbors(lattice.rclToIndex(3, 4, 3), neighborhoodSize, neighbors);
     EXPECT_EQ(neighbors.size(), correctNNeighbors);
     EXPECT_EQ(neighbors[0].getIndex(), BCC8OL[0]);
     EXPECT_EQ(neighbors[1].getIndex(), BCC8OL[1]);
@@ -65,23 +65,23 @@ TEST(BCCLattice,neighbors) {
     EXPECT_EQ(neighbors[6].getIndex(), BCC8OL[6]);
     EXPECT_EQ(neighbors[7].getIndex(), BCC8OL[7]);
     correctNNeighbors = 1;
-    lattice->getNeighbors(0, 0, 0, neighborhoodSize, neighbors);
+    lattice.getNeighbors(0, 0, 0, neighborhoodSize, neighbors);
     EXPECT_EQ(neighbors.size(), correctNNeighbors);
     correctNNeighbors = 2;
-    lattice->getNeighbors(4, 0, 6, neighborhoodSize, neighbors);
+    lattice.getNeighbors(4, 0, 6, neighborhoodSize, neighbors);
     EXPECT_EQ(neighbors.size(), correctNNeighbors);
     correctNNeighbors = 4;
-    lattice->getNeighbors(nRows - 1, nColumns - 1, nLayers - 1, neighborhoodSize, neighbors);
+    lattice.getNeighbors(nRows - 1, nColumns - 1, nLayers - 1, neighborhoodSize, neighbors);
     EXPECT_EQ(neighbors.size(), correctNNeighbors);
-    lattice->getNeighbors(0, 5, 1, neighborhoodSize, neighbors);
+    lattice.getNeighbors(0, 5, 1, neighborhoodSize, neighbors);
     EXPECT_EQ(neighbors.size(), correctNNeighbors);
-    lattice->getNeighbors(4, 0, 5, neighborhoodSize, neighbors);
+    lattice.getNeighbors(4, 0, 5, neighborhoodSize, neighbors);
     EXPECT_EQ(neighbors.size(), correctNNeighbors);
 
     // 14 neighbors
     neighborhoodSize = 14;
     correctNNeighbors = 14;
-    lattice->getNeighbors(3, 4, 2, neighborhoodSize, neighbors);
+    lattice.getNeighbors(3, 4, 2, neighborhoodSize, neighbors);
     EXPECT_EQ(neighbors.size(), correctNNeighbors);
     EXPECT_EQ(neighbors[0].getIndex(), BCC14EL[0]);
     EXPECT_EQ(neighbors[1].getIndex(), BCC14EL[1]);
@@ -97,7 +97,7 @@ TEST(BCCLattice,neighbors) {
     EXPECT_EQ(neighbors[11].getIndex(), BCC14EL[11]);
     EXPECT_EQ(neighbors[12].getIndex(), BCC14EL[12]);
     EXPECT_EQ(neighbors[13].getIndex(), BCC14EL[13]);
-    lattice->getNeighbors(lattice->rclToIndex(3, 4, 2), neighborhoodSize, neighbors);
+    lattice.getNeighbors(lattice.rclToIndex(3, 4, 2), neighborhoodSize, neighbors);
     EXPECT_EQ(neighbors.size(), correctNNeighbors);
     EXPECT_EQ(neighbors[0].getIndex(), BCC14EL[0]);
     EXPECT_EQ(neighbors[1].getIndex(), BCC14EL[1]);
@@ -113,7 +113,7 @@ TEST(BCCLattice,neighbors) {
     EXPECT_EQ(neighbors[11].getIndex(), BCC14EL[11]);
     EXPECT_EQ(neighbors[12].getIndex(), BCC14EL[12]);
     EXPECT_EQ(neighbors[13].getIndex(), BCC14EL[13]);
-    lattice->getNeighbors(3, 4, 3, neighborhoodSize, neighbors);
+    lattice.getNeighbors(3, 4, 3, neighborhoodSize, neighbors);
     EXPECT_EQ(neighbors.size(), correctNNeighbors);
     EXPECT_EQ(neighbors[0].getIndex(), BCC14OL[0]);
     EXPECT_EQ(neighbors[1].getIndex(), BCC14OL[1]);
@@ -129,7 +129,7 @@ TEST(BCCLattice,neighbors) {
     EXPECT_EQ(neighbors[11].getIndex(), BCC14OL[11]);
     EXPECT_EQ(neighbors[12].getIndex(), BCC14OL[12]);
     EXPECT_EQ(neighbors[13].getIndex(), BCC14OL[13]);
-    lattice->getNeighbors(lattice->rclToIndex(3, 4, 3), neighborhoodSize, neighbors);
+    lattice.getNeighbors(lattice.rclToIndex(3, 4, 3), neighborhoodSize, neighbors);
     EXPECT_EQ(neighbors.size(), correctNNeighbors);
     EXPECT_EQ(neighbors[0].getIndex(), BCC14OL[0]);
     EXPECT_EQ(neighbors[1].getIndex(), BCC14OL[1]);
@@ -146,48 +146,46 @@ TEST(BCCLattice,neighbors) {
     EXPECT_EQ(neighbors[12].getIndex(), BCC14OL[12]);
     EXPECT_EQ(neighbors[13].getIndex(), BCC14OL[13]);
     correctNNeighbors = 4;
-    lattice->getNeighbors(0, 0, 0, neighborhoodSize, neighbors);
+    lattice.getNeighbors(0, 0, 0, neighborhoodSize, neighbors);
     EXPECT_EQ(neighbors.size(), correctNNeighbors);
     correctNNeighbors = 5;
-    lattice->getNeighbors(4, 0, 6, neighborhoodSize, neighbors);
+    lattice.getNeighbors(4, 0, 6, neighborhoodSize, neighbors);
     EXPECT_EQ(neighbors.size(), correctNNeighbors);
     correctNNeighbors = 7;
-    lattice->getNeighbors(nRows - 1, nColumns - 1, nLayers - 1, neighborhoodSize, neighbors);
+    lattice.getNeighbors(nRows - 1, nColumns - 1, nLayers - 1, neighborhoodSize, neighbors);
     EXPECT_EQ(neighbors.size(), correctNNeighbors);
-    lattice->getNeighbors(0, 5, 1, neighborhoodSize, neighbors);
+    lattice.getNeighbors(0, 5, 1, neighborhoodSize, neighbors);
     EXPECT_EQ(neighbors.size(), correctNNeighbors);
-    lattice->getNeighbors(4, 0, 5, neighborhoodSize, neighbors);
+    lattice.getNeighbors(4, 0, 5, neighborhoodSize, neighbors);
     EXPECT_EQ(neighbors.size(), correctNNeighbors);
 
     // Exceptions
     neighborhoodSize = 8;
-    EXPECT_THROW(lattice->getNeighbors(nRows, 0, 0, neighborhoodSize, neighbors), outsideRangeException);
-    EXPECT_THROW(lattice->getNeighbors(-1, 0, 0, neighborhoodSize, neighbors), outsideRangeException);
-    EXPECT_THROW(lattice->getNeighbors(0, nColumns, 0, neighborhoodSize, neighbors), outsideRangeException);
-    EXPECT_THROW(lattice->getNeighbors(0, -1, 0, neighborhoodSize, neighbors), outsideRangeException);
-    EXPECT_THROW(lattice->getNeighbors(0, 0, nLayers, neighborhoodSize, neighbors), outsideRangeException);
-    EXPECT_THROW(lattice->getNeighbors(0, 0, -1, neighborhoodSize, neighbors), outsideRangeException);
+    EXPECT_THROW(lattice.getNeighbors(nRows, 0, 0, neighborhoodSize, neighbors), outsideRangeException);
+    EXPECT_THROW(lattice.getNeighbors(-1, 0, 0, neighborhoodSize, neighbors), outsideRangeException);
+    EXPECT_THROW(lattice.getNeighbors(0, nColumns, 0, neighborhoodSize, neighbors), outsideRangeException);
+    EXPECT_THROW(lattice.getNeighbors(0, -1, 0, neighborhoodSize, neighbors), outsideRangeException);
+    EXPECT_THROW(lattice.getNeighbors(0, 0, nLayers, neighborhoodSize, neighbors), outsideRangeException);
+    EXPECT_THROW(lattice.getNeighbors(0, 0, -1, neighborhoodSize, neighbors), outsideRangeException);
     neighborhoodSize = 14;
-    EXPECT_THROW(lattice->getNeighbors(nRows, 0, 0, neighborhoodSize, neighbors), outsideRangeException);
-    EXPECT_THROW(lattice->getNeighbors(-1, 0, 0, neighborhoodSize, neighbors), outsideRangeException);
-    EXPECT_THROW(lattice->getNeighbors(0, nColumns, 0, neighborhoodSize, neighbors), outsideRangeException);
-    EXPECT_THROW(lattice->getNeighbors(0, -1, 0, neighborhoodSize, neighbors), outsideRangeException);
-    EXPECT_THROW(lattice->getNeighbors(0, 0, nLayers, neighborhoodSize, neighbors), outsideRangeException);
-    EXPECT_THROW(lattice->getNeighbors(0, 0, -1, neighborhoodSize, neighbors), outsideRangeException);
+    EXPECT_THROW(lattice.getNeighbors(nRows, 0, 0, neighborhoodSize, neighbors), outsideRangeException);
+    EXPECT_THROW(lattice.getNeighbors(-1, 0, 0, neighborhoodSize, neighbors), outsideRangeException);
+    EXPECT_THROW(lattice.getNeighbors(0, nColumns, 0, neighborhoodSize, neighbors), outsideRangeException);
+    EXPECT_THROW(lattice.getNeighbors(0, -1, 0, neighborhoodSize, neighbors), outsideRangeException);
+    EXPECT_THROW(lattice.getNeighbors(0, 0, nLayers, neighborhoodSize, neighbors), outsideRangeException);
+    EXPECT_THROW(lattice.getNeighbors(0, 0, -1, neighborhoodSize, neighbors), outsideRangeException);
     neighborhoodSize = 6;
-    EXPECT_THROW(lattice->getNeighbors(0, 0, 0, neighborhoodSize, neighbors), neighborhoodSizeException);
+    EXPECT_THROW(lattice.getNeighbors(0, 0, 0, neighborhoodSize, neighbors), neighborhoodSizeException);
     neighborhoodSize = 12;
-    EXPECT_THROW(lattice->getNeighbors(0, 0, 0, neighborhoodSize, neighbors), neighborhoodSizeException);
+    EXPECT_THROW(lattice.getNeighbors(0, 0, 0, neighborhoodSize, neighbors), neighborhoodSizeException);
     neighborhoodSize = 18;
-    EXPECT_THROW(lattice->getNeighbors(0, 0, 0, neighborhoodSize, neighbors), neighborhoodSizeException);
+    EXPECT_THROW(lattice.getNeighbors(0, 0, 0, neighborhoodSize, neighbors), neighborhoodSizeException);
     neighborhoodSize = 26;
-    EXPECT_THROW(lattice->getNeighbors(0, 0, 0, neighborhoodSize, neighbors), neighborhoodSizeException);
+    EXPECT_THROW(lattice.getNeighbors(0, 0, 0, neighborhoodSize, neighbors), neighborhoodSizeException);
     neighborhoodSize = -8;
-    EXPECT_THROW(lattice->getNeighbors(0, 0, 0, neighborhoodSize, neighbors), neighborhoodSizeException);
+    EXPECT_THROW(lattice.getNeighbors(0, 0, 0, neighborhoodSize, neighbors), neighborhoodSizeException);
     neighborhoodSize = 0;
-    EXPECT_THROW(lattice->getNeighbors(0, 0, 0, neighborhoodSize, neighbors), neighborhoodSizeException);
+    EXPECT_THROW(lattice.getNeighbors(0, 0, 0, neighborhoodSize, neighbors), neighborhoodSizeException);
     neighborhoodSize = 100;
-    EXPECT_THROW(lattice->getNeighbors(0, 0, 0, neighborhoodSize, neighbors), neighborhoodSizeException);
-    
-    delete lattice;
+    EXPECT_THROW(lattice.getNeighbors(0, 0, 0, neighborhoodSize, neighbors), neighborhoodSizeException);
 }

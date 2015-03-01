@@ -7,13 +7,11 @@
 #include <vector>
 #include "defs.h"
 #include "cclattice.h"
-#include "bcclattice.h"
-#include "fcclattice.h"
 #include "exception.h"
 
 using namespace CImage;
 
-TEST(SeededDistanceTransform, ApproximateMBDBB) {
+TEST(SeededDistanceTransform, ApproximateMBDBBUint8) {
 
     int nRows = 321, nColumns = 481, nLayers = 1;
     int nElements = nRows * nColumns * nLayers;
@@ -27,59 +25,56 @@ TEST(SeededDistanceTransform, ApproximateMBDBB) {
             seeds.push_back(Seed(elementIndex, round(seedData[elementIndex])));
         }
     }
-    delete seedData;
-    seedData = NULL;
-    std::cout << "extracted seeds." << std::endl;
 
     // make images
     double scaleFactor = 1;
     CCLattice lattice(nRows, nColumns, nLayers, scaleFactor);
 
-    char flowersRGBUint8File[] = "flowers.bin";
-    double *flowersRGBUint8DoubleData = readVolume(flowersRGBUint8File, 3 * nElements);
-    std::cout << "read uint8 file: " << (void*) flowersRGBUint8DoubleData<< std::endl;
-    uint8 *flowersRGBUint8Data = new(std::nothrow) uint8(3 * nRows * nColumns * nLayers);
+    // read uint8 image
+    char flowersRGBFile[] = "flowers.bin";
+    double *flowersRGBDoubleData = readVolume(flowersRGBFile, 3 * nElements);
     for (int elementIndex = 0; elementIndex < 3 * nElements; elementIndex++) {
-        flowersRGBUint8Data[elementIndex] = uint8(flowersRGBUint8DoubleData[elementIndex]);
+        flowersRGBDoubleData[elementIndex] = flowersRGBDoubleData[elementIndex];
     }
-    delete flowersRGBUint8DoubleData;
-    flowersRGBUint8DoubleData = NULL;
+    std::cout << "read and traversed file data." << std::endl;
+    uint8 *flowersRGBData = new uint8[3 * nElements];
+    for (int elementIndex = 0; elementIndex < 3 * nElements; elementIndex++) {
+        flowersRGBData[elementIndex] = 0;
+    }
+    std::cout << "allocated and traversed uint8 array." << std::endl;
+    for (int elementIndex = 0; elementIndex < 3 * nElements; elementIndex++) {
+        flowersRGBData[elementIndex] = uint8(flowersRGBDoubleData[elementIndex]);
+    }
+    std::cout << "converted data from file." << std::endl;
 
-    std::cout << "converted doubles to uint8: " << (void*) flowersRGBUint8Data << std::endl;
-    char flowersRGBDoubleFile[] = "flowersDouble.bin";
-    double *flowersRGBDoubleData = readVolume(flowersRGBDoubleFile, 3 * nElements);
-    std::cout << "read double file: " << (void*) flowersRGBDoubleData << std::endl;
-    double *flowersRData = flowersRGBDoubleData;
-    std::cout << "initialized red band: " << (void *) flowersRData << std::endl;
-    double *flowersGData = flowersRGBDoubleData + nElements;
-    std::cout << "initialized green band: " << (void *) flowersGData << std::endl;
-    double *flowersBData = flowersRGBDoubleData + 2*nElements;
-    std::cout << "initialized blue band: " << (void*) flowersBData << std::endl;
-    IntensityCImage<uint8> *flowersRGBUint8 = new IntensityCImage<uint8>(flowersRGBUint8Data,lattice, 3, 0, 255);
-    std::cout << "initialized uint8 image: " << (void*) flowersRGBUint8 << std::endl;
-    IntensityCImage<double> *flowersRGBDouble = new IntensityCImage<double>(flowersRGBDoubleData, lattice, 3, 0, 1);
-    std::cout << "initialized double image: " << (void*) flowersRGBDouble << std::endl;
-    IntensityCImage<double> *flowersRDouble = new IntensityCImage<double>(flowersRData, lattice, 1, 0, 1);
-    std::cout << "initialized red image: " << (void*) flowersRDouble << std::endl;
-    IntensityCImage<double> *flowersGDouble = new IntensityCImage<double>(flowersGData, lattice, 1, 0, 1);
-    std::cout << "initialized green image" << (void*) flowersGDouble << std::endl;
-    IntensityCImage<double> *flowersBDouble = new IntensityCImage<double>(flowersBData, lattice, 1, 0, 1);
-    std::cout << "initialized blue image" << (void*) flowersBDouble << std::endl;
+    uint8* flowersRData = flowersRGBData;
+    uint8* flowersGData = flowersRGBData + nElements;
+    uint8* flowersBData = flowersRGBData + 2 * nElements;
 
+    IntensityCImage<uint8> flowersRGB(flowersRGBData, lattice, 3, 0, 255);
+    IntensityCImage<uint8> flowersR(flowersRData, lattice, 1, 0, 255);
+    IntensityCImage<uint8> flowersG(flowersGData, lattice, 1, 0, 255);
+    IntensityCImage<uint8> flowersB(flowersBData, lattice, 1, 0, 255);
 
-    // segment
+    PNorm norm(2);
 
+    DistanceCImage distanceTransformRGB = approximateMinimumBarrierBoundingBox(flowersRGB, seeds, norm, 26);
+    DistanceCImage distanceTransformR = approximateMinimumBarrierBoundingBox(flowersR, seeds, norm, 26);
+    DistanceCImage distanceTransformG = approximateMinimumBarrierBoundingBox(flowersG, seeds, norm, 26);
+    DistanceCImage distanceTransformB = approximateMinimumBarrierBoundingBox(flowersB, seeds, norm, 26);
 
-    // save image
+    char flowersRGBOut[] = "flowersRGB_AMBDBB_uint8_2norm.bin";
+    char flowersROut[] = "flowersR_AMBDBB_uint8_2norm.bin";
+    char flowersGOut[] = "flowersG_AMBDBB_uint8_2norm.bin";
+    char flowersBOut[] = "flowersB_AMBDBB_uint8_2norm.bin";
 
-    delete flowersRGBUint8;
-    delete flowersRGBDouble;
-    delete flowersRDouble;
-    delete flowersGDouble;
-    delete flowersBDouble;
+    writeVolume(flowersRGBOut, distanceTransformRGB.getData(), 3 * nElements);
+    writeVolume(flowersROut, distanceTransformR.getData(), nElements);
+    writeVolume(flowersGOut, distanceTransformG.getData(), nElements);
+    writeVolume(flowersBOut, distanceTransformB.getData(), nElements);
+
+    delete seedData;
     delete flowersRGBDoubleData;
-    delete flowersRGBUint8Data;
-    std::cout << "end of seededdistancetransform.h" << std::endl;
-
+    delete flowersRGBData;
 }
 
