@@ -1,9 +1,6 @@
 #include "defs.h"
 #include "string.h"
 #include "cimage.h"
-#include "cimageCC.h"
-#include "cimageBCC.h"
-#include "cimageFCC.h"
 #include "label.h"
 //#include "priorityqueue.h"
 #include <cstdlib>
@@ -42,7 +39,7 @@ using namespace CImage;
 }*/
 
 int main(int argc, char *argv[]) {
-
+/*
 	if (argc != 11) {
 		cerr << "Usage: dist inputfile [c|b|f] #rows #columns #layers #bands #neighbors outputfile seedfile method" << endl;
 		exit(1);
@@ -155,6 +152,6 @@ int main(int argc, char *argv[]) {
 	delete[] seedsD;
 	delete input;
 	delete norm;
-
+*/
 	return 0;
 }

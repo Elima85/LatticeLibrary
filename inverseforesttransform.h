@@ -4,6 +4,7 @@
 #include "intensitycimage.h"
 #include "distancecimage.h"
 #include "rootcimage.h"
+#include "distancemeasure.h"
 
 namespace CImage {
 
@@ -22,6 +23,9 @@ namespace CImage {
             int *rootValues = new int(image.getNElements() * nLabels);
             roots(rootValues, image.getLattice(), nLabels);
         }
+        ~InverseForestTransform();
+
+        compute(DistanceMeasure *distanceMeasure, int neighborhoodSize);
     };
 }
 

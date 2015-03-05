@@ -69,15 +69,16 @@ public:
     }
 
 	/**
-	* Color image copy constructor.
+	* Color image copy constructor. Only the pointer to the data array is copied.
 	*/
 	CImage(const CImage<T> &original) : lattice(original.getLattice()) {
 		nBands = original.nBands;
 		int nTotal = nBands * original.getNElements();
-		data = new T[nTotal];
-		for (int dataIndex = 0; dataIndex < nTotal; dataIndex++) {
-			data[dataIndex] = original.data[dataIndex];
-		}
+		data = original.data;
+		//data = new T[nTotal];
+		//for (int dataIndex = 0; dataIndex < nTotal; dataIndex++) {
+		//	data[dataIndex] = original.data[dataIndex];
+		//}
 	}
 	~CImage() {}; // TODO: Should this delete the data array?
 
