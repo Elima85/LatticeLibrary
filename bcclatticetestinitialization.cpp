@@ -2,7 +2,7 @@
 #include "bcclattice.h"
 #include "defs.h"
 
-using namespace CImage;
+using namespace LatticeLib;
 
 TEST(BCCLattice, initialization) {
 

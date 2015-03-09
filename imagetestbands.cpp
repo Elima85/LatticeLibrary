@@ -1,14 +1,14 @@
 #include "gtest/gtest.h"
 #include "defs.h"
-#include "cimage.h"
+#include "image.h"
 #include "cclattice.h"
 #include "exception.h"
 #include <cmath>
 #include <vector>
 
-using namespace CImage;
+using namespace LatticeLib;
 
-TEST(CImage, bands) {
+TEST(Image, bands) {
 
     int nRows = 2, nColumns = 3, nLayers = 4, nBands = 5;
     int nElements = nRows * nColumns * nLayers;
@@ -39,7 +39,7 @@ TEST(CImage, bands) {
             43, 44, 45, 46, 41, 42,
             44, 45, 46, 41, 42, 43};
 
-    CImage<double> *image = new CImage<double>(data, *lattice, nBands);// setElement
+    Image<double> *image = new Image<double>(data, *lattice, nBands);// setElement
     double intensities[] = {1.1, 2.2, 3.3, 4.4, 5.5, 6.6};
     vector<double> intensities0(nBands, 0.0);
     vector<double> intensitiesRight, intensitiesShort, intensitiesLong, originalIntensity;

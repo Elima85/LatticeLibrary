@@ -3,7 +3,7 @@
 #include <cmath> // for cbrt and round
 #include "defs.h"
 
-namespace CImage {
+namespace LatticeLib {
     Lattice::Lattice(int nr, int nc, int nl, double sf) {
         nLayers = nl;
         nColumns = nc;

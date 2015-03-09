@@ -1,26 +1,26 @@
-#ifndef DISTANCECIMAGE_H
-#define DISTANCECIMAGE_H
+#ifndef DISTANCEIMAGE_H
+#define DISTANCEIMAGE_H
 
-#include "cimage.h"
-#include "crispsegmentationcimage.h"
-#include "fuzzysegmentationcimage.h"
+#include "image.h"
+#include "crispsegmentationimage.h"
+#include "fuzzysegmentationimage.h"
 #include "seed.h"
 
-namespace CImage {
+namespace LatticeLib {
 
 /**
 * Class for distance transforms of images.
 */
-    class DistanceCImage : public CImage<double> {
+    class DistanceImage : public Image<double> {
 
     public:
-        DistanceCImage(double *d, Lattice &l, int nB);
-        ~DistanceCImage();
+        DistanceImage(double *d, Lattice &l, int nB);
+        ~DistanceImage();
 
         /**
         * Produces a crisp segmentation based on the distance transform.
         */
-        CrispSegmentationCImage crispLabel() const;
+        CrispSegmentationImage crispLabel() const;
 
         /**
         * NOT WORKING!!!! Distance 0 leads to nan membership. Don't know how to solve memberships for object "inner" spels.
@@ -32,13 +32,13 @@ namespace CImage {
         * maxValue      | value corresponding to 100% membership of a labelled class
         */
         template<class T>
-        FuzzySegmentationCImage<T> fuzzyLabel(T minValue, T maxValue) const {
+        FuzzySegmentationImage<T> fuzzyLabel(T minValue, T maxValue) const {
             int nElements = getNElements();
             T *labels = new T[nElements * nBands];
             if (labels == NULL) {
                 throw allocationException();
             }
-            FuzzySegmentationCImage<T> segmentation(labels, lattice, nBands, minValue, maxValue);
+            FuzzySegmentationImage<T> segmentation(labels, lattice, nBands, minValue, maxValue);
             T membershipRange = maxValue - minValue;
             for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
                 PNorm sum(1);

@@ -3,7 +3,7 @@
 
 #define EPSILONC 0.0000001
 
-namespace CImage {
+namespace LatticeLib {
 
 // to be tested
     double getCost(double a, double b);

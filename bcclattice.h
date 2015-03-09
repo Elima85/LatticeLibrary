@@ -3,7 +3,7 @@
 
 #include "lattice.h"
 
-namespace CImage {
+namespace LatticeLib {
 
 #define BCCOFFSET 0.629960524947437 // 1/(4^(1/3)), distance between layers in BCC
 #define BCCHEXFACEDISTANCE 1.091123635971721 // hexagonal face neighbor distance

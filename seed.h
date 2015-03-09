@@ -1,7 +1,7 @@
 #ifndef SEED_H
 #define SEED_H
 
-namespace CImage{
+namespace LatticeLib {
 
     /**
     * Class for segmentation seeds.

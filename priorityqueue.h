@@ -4,8 +4,8 @@
  * If there are several elements with the same priority value, FIFO is applied.
  */
 
-#ifndef PRIORITYQUEUE_H_
-#define PRIORITYQUEUE_H_
+#ifndef PRIORITYQUEUE_H
+#define PRIORITYQUEUE_H
 
 #include <math.h>
 #include <queue>
@@ -14,7 +14,7 @@
 #include "defs.h"
 using namespace std;
 
-namespace CImage {
+namespace LatticeLib {
 
 #define EPSILONPQ 0.0000001
 

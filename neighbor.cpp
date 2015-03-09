@@ -1,6 +1,6 @@
 #include "neighbor.h"
 
-namespace CImage {
+namespace LatticeLib {
     Neighbor::Neighbor(int l, int i) {
         positionIndex = l;
         imageIndex = i;

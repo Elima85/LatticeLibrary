@@ -1,16 +1,16 @@
 #ifndef LABEL_H
 #define LABEL_H
 
-#include "cimage.h"
-#include "crispsegmentationcimage.h"
-#include "distancecimage.h"
-#include "intensitycimage.h"
+#include "image.h"
+#include "crispsegmentationimage.h"
+#include "distanceimage.h"
+#include "intensityimage.h"
 #include "priorityqueue.h"
 #include <vector>
 #include "vectoroperators.h"
 #include <cfloat>
 
-namespace CImage {
+namespace LatticeLib {
 
 /**
  * Approximated vectorial minimum barrier distance
@@ -22,14 +22,14 @@ namespace CImage {
  * Parameter			| in/out	| Comment
  * :----------			| :-------	| :--------
  * image				|			| Input image
- * seeds				|			| Data array where seed elements contain their label and the rest are 0. !!!! CrispSegmentationCImage?
- * labels				| OUTPUT	| Segmented data array, where each element contains its label. !!!! CrispSegmentationCImage or something
+ * seeds				|			| Data array where seed elements contain their label and the rest are 0. !!!! CrispSegmentationImage?
+ * labels				| OUTPUT	| Segmented data array, where each element contains its label. !!!! CrispSegmentationImage or something
  * distanceTransform	| OUTPUT	| Distance transform of the image. !!!! "DistanceMapCImage"?
  * norm					|			| The norm used in the definition of distance.
  * neighborhoodSize		|			| #neighbors to use.
  */
 template <class T>
-void approximateMinimumBarrierBoundingBox(const IntensityCImage<T> *image, const uint8* seeds, Norm* norm, int neighborhoodSize, uint8* labels, double* distanceTransform) { // TODO: Make norm const somehow!
+void approximateMinimumBarrierBoundingBox(const IntensityImage<T> *image, const uint8* seeds, Norm* norm, int neighborhoodSize, uint8* labels, double* distanceTransform) { // TODO: Make norm const somehow!
 
 	if (!image || !seeds || !labels || !distanceTransform || !norm) {
 		throw nullPointerException();
@@ -112,7 +112,7 @@ void approximateMinimumBarrierBoundingBox(const IntensityCImage<T> *image, const
  * neighborhoodSize		|			| #neighbors to use.
  */
 template <class T>
-void fuzzyConnectedness(const IntensityCImage<T> *image, const uint8* seeds, Norm* norm, int neighborhoodSize, uint8* labels, double* distanceTransform) {
+void fuzzyConnectedness(const IntensityImage<T> *image, const uint8* seeds, Norm* norm, int neighborhoodSize, uint8* labels, double* distanceTransform) {
 
 	if (!image || !seeds || !labels || !distanceTransform) {
 		throw nullPointerException();
@@ -177,7 +177,7 @@ void fuzzyConnectedness(const IntensityCImage<T> *image, const uint8* seeds, Nor
  * neighborhoodSize		|			| #neighbors to use.
  */
 template <class T>
-void fuzzyDistance(const IntensityCImage<T> *image, const uint8* seeds, Norm* norm, int neighborhoodSize, uint8* labels, double* distanceTransform) {
+void fuzzyDistance(const IntensityImage<T> *image, const uint8* seeds, Norm* norm, int neighborhoodSize, uint8* labels, double* distanceTransform) {
 
 	if (!image || !seeds || !labels || !distanceTransform) {
 		throw nullPointerException();
@@ -245,7 +245,7 @@ void fuzzyDistance(const IntensityCImage<T> *image, const uint8* seeds, Norm* no
  * neighborhoodSize		|			| #neighbors to use.
  */
 template <class T>
-void geodesicDistance(const IntensityCImage<T> *image, const uint8* seeds, Norm* norm, int neighborhoodSize, uint8* labels, double* distanceTransform) {
+void geodesicDistance(const IntensityImage<T> *image, const uint8* seeds, Norm* norm, int neighborhoodSize, uint8* labels, double* distanceTransform) {
 
 	if (!image || !seeds || !labels || !distanceTransform) {
 		throw nullPointerException();

@@ -3,7 +3,7 @@
 
 #include "lattice.h"
 
-namespace CImage {
+namespace LatticeLib {
 
     class CCLattice : public Lattice {
 

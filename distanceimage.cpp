@@ -1,21 +1,21 @@
-#include "distancecimage.h"
-#include "crispsegmentationcimage.h"
+#include "distanceimage.h"
+#include "crispsegmentationimage.h"
 #include "exception.h"
 #include "vectoroperators.h"
 #include "norm.h"
 
-namespace CImage {
+namespace LatticeLib {
 
-    DistanceCImage::DistanceCImage(double *d, Lattice &l, int nB) : CImage<double>(d, l, nB) {};
-    DistanceCImage::~DistanceCImage() {};
+    DistanceImage::DistanceImage(double *d, Lattice &l, int nB) : Image<double>(d, l, nB) {};
+    DistanceImage::~DistanceImage() {};
 
-    CrispSegmentationCImage DistanceCImage::crispLabel() const {
+    CrispSegmentationImage DistanceImage::crispLabel() const {
         int nElements = getNElements();
         bool *labels = new bool[nElements * nBands];
         if (labels == NULL) {
             throw allocationException();
         }
-        CrispSegmentationCImage segmentation(labels, lattice, nBands);
+        CrispSegmentationImage segmentation(labels, lattice, nBands);
         for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
             int label = getIndexOfMinumumValue((*this)[elementIndex]);
             for (int bandIndex = 0; bandIndex < this->nBands; bandIndex++) {

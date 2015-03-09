@@ -1,7 +1,7 @@
 #ifndef FUZZYCONNECTEDNESS_H
 #define FUZZYCONNECTEDNESS_H
 
-namespace CImage {
+namespace LatticeLib {
 
     /**
     * Fuzzy connectedness distance transform

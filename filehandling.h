@@ -1,7 +1,7 @@
 #ifndef FILEHANDLING_H
 #define FILEHANDLING_H
 
-namespace CImage {
+namespace LatticeLib {
 
 /*
  * Allocates and returns an array with the values read from the input file.

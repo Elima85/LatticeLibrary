@@ -1,10 +1,10 @@
 #ifndef SEEDEDDISTANCETRANSFORM_H
 #define SEEDEDDISTANCETRANSFORM_H
 
-#include "cimage.h"
-#include "crispsegmentationcimage.h"
-#include "distancecimage.h"
-#include "intensitycimage.h"
+#include "image.h"
+#include "crispsegmentationimage.h"
+#include "distanceimage.h"
+#include "intensityimage.h"
 #include "seed.h"
 #include "norm.h"
 #include "priorityqueue.h"
@@ -13,7 +13,7 @@
 #include <algorithm> // find
 #include "vectoroperators.h"
 
-namespace CImage {
+namespace LatticeLib {
 
 /**
 * Approximated vectorial minimum barrier distance
@@ -30,7 +30,7 @@ namespace CImage {
 * neighborhoodSize  | #neighbors to use.
 */
     template<class T>
-    DistanceCImage approximateMinimumBarrierBoundingBox(const IntensityCImage<T> &image, const vector<Seed> seeds, Norm &norm, int neighborhoodSize) { // TODO: Make norm const somehow!
+    DistanceImage approximateMinimumBarrierBoundingBox(const IntensityImage<T> &image, const vector<Seed> seeds, Norm &norm, int neighborhoodSize) { // TODO: Make norm const somehow!
 
         // initialization
         int nElements = image.getNElements();
@@ -45,7 +45,7 @@ namespace CImage {
             }
         }
         double *distanceValues = new double[nElements * nLabels];
-        DistanceCImage distanceTransform(distanceValues, image.getLattice(), nLabels);
+        DistanceImage distanceTransform(distanceValues, image.getLattice(), nLabels);
 
         // Every layer represents the distance from seed points of one class
         vector<T> *pathMin = new vector<T>[nElements];
@@ -122,7 +122,7 @@ namespace CImage {
 * neighborhoodSize  | #neighbors to use.
 */
     template<class T>
-    DistanceCImage fuzzyConnectedness(const IntensityCImage<T> &image, const vector<Seed> seeds, Norm &norm, int neighborhoodSize) {
+    DistanceImage fuzzyConnectedness(const IntensityImage<T> &image, const vector<Seed> seeds, Norm &norm, int neighborhoodSize) {
 
         // initialization
         int nElements = image.getNElements();
@@ -137,7 +137,7 @@ namespace CImage {
             }
         }
         double *distanceValues = new double[nElements * nLabels];
-        DistanceCImage distanceTransform(distanceValues, image.getLattice(), nLabels);
+        DistanceImage distanceTransform(distanceValues, image.getLattice(), nLabels);
 
         // Every layer represents the distance from seed points of one class
         bool *inQueue = new bool[nElements];
@@ -200,7 +200,7 @@ namespace CImage {
 * neighborhoodSize  | #neighbors to use.
 */
     template<class T>
-    DistanceCImage fuzzyDistance(const IntensityCImage<T> &image, const vector<Seed> seeds, Norm &norm, int neighborhoodSize) {
+    DistanceImage fuzzyDistance(const IntensityImage<T> &image, const vector<Seed> seeds, Norm &norm, int neighborhoodSize) {
 
         // initialization
         int nElements = image.getNElements();
@@ -215,7 +215,7 @@ namespace CImage {
             }
         }
         double *distanceValues = new double[nElements * nLabels];
-        DistanceCImage distanceTransform(distanceValues, image.getLattice(), nLabels);
+        DistanceImage distanceTransform(distanceValues, image.getLattice(), nLabels);
 
         // Every layer represents the distance from seed points of one class
         bool *inQueue = new bool[nElements];
@@ -284,7 +284,7 @@ namespace CImage {
 * neighborhoodSize  | #neighbors to use.
 */
     template<class T>
-    DistanceCImage geodesicDistance(const IntensityCImage<T> &image, const vector<Seed> seeds, Norm &norm, int neighborhoodSize) {
+    DistanceImage geodesicDistance(const IntensityImage<T> &image, const vector<Seed> seeds, Norm &norm, int neighborhoodSize) {
 
         // initialization
         int nElements = image.getNElements();
@@ -299,7 +299,7 @@ namespace CImage {
             }
         }
         double *distanceValues = new double[nElements * nLabels];
-        DistanceCImage distanceTransform(distanceValues, image.getLattice(), nLabels);
+        DistanceImage distanceTransform(distanceValues, image.getLattice(), nLabels);
 
         bool *inQueue = new bool[nElements];
         for (int labelIndex = 0; labelIndex < nLabels; labelIndex++) {

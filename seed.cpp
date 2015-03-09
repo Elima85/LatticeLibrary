@@ -1,6 +1,6 @@
 #include "seed.h"
 
-namespace CImage {
+namespace LatticeLib {
     Seed::Seed(int i, int l) {
         index = i;
         label = l;

@@ -1,7 +1,7 @@
 #ifndef CIMAGEDEFS_H
 #define CIMAGEDEFS_H
 
-namespace CImage {
+namespace LatticeLib {
 
 typedef unsigned char uint8;
 

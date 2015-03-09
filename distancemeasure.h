@@ -6,7 +6,7 @@
 #include "distancecimage.h"
 #include "rootcimage.h"
 
-namespace CImage {
+namespace LatticeLib {
 
     /**
     * Abstract class for distance measures to be used in distance transforms based on wave front propagation.

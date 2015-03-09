@@ -1,11 +1,11 @@
 #include "gtest/gtest.h"
 #include "defs.h"
-#include "cimage.h"
+#include "image.h"
 #include "cclattice.h"
 #include "bcclattice.h"
 #include "fcclattice.h"
 
-using namespace CImage;
+using namespace LatticeLib;
 
 TEST(CImage, coordinates) {
 
@@ -27,12 +27,12 @@ TEST(CImage, coordinates) {
     for (int i = 0; i < nElements; i++) {
         data[i] = 0;
     }
-    CImage<uint8> *imageCC1 = new CImage<uint8>(data, *latticeCC1, nBands);
-    CImage<uint8> *imageCC2 = new CImage<uint8>(data, *latticeCC2, nBands);
-    CImage<uint8> *imageBCC1 = new CImage<uint8>(data, *latticeBCC1, nBands);
-    CImage<uint8> *imageBCC2 = new CImage<uint8>(data, *latticeBCC2, nBands);
-    CImage<uint8> *imageFCC1 = new CImage<uint8>(data, *latticeFCC1, nBands);
-    CImage<uint8> *imageFCC2 = new CImage<uint8>(data, *latticeFCC2, nBands);
+    Image<uint8> *imageCC1 = new Image<uint8>(data, *latticeCC1, nBands);
+    Image<uint8> *imageCC2 = new Image<uint8>(data, *latticeCC2, nBands);
+    Image<uint8> *imageBCC1 = new Image<uint8>(data, *latticeBCC1, nBands);
+    Image<uint8> *imageBCC2 = new Image<uint8>(data, *latticeBCC2, nBands);
+    Image<uint8> *imageFCC1 = new Image<uint8>(data, *latticeFCC1, nBands);
+    Image<uint8> *imageFCC2 = new Image<uint8>(data, *latticeFCC2, nBands);
 
     vector<double> coordinates;
 
@@ -262,7 +262,7 @@ TEST(CImage, coordinates) {
 
 }
 
-TEST(CImage, distancesCC) {
+TEST(Image, distancesCC) {
 
     int nRows = 5;
     int nColumns = 6;
@@ -277,8 +277,8 @@ TEST(CImage, distancesCC) {
     for (int i = 0; i < nElements; i++) {
         data[i] = 0;
     }
-    CImage<uint8> *imageCC1 = new CImage<uint8>(data, *latticeCC1, nBands);
-    CImage<uint8> *imageCC2 = new CImage<uint8>(data, *latticeCC2, nBands);
+    Image<uint8> *imageCC1 = new Image<uint8>(data, *latticeCC1, nBands);
+    Image<uint8> *imageCC2 = new Image<uint8>(data, *latticeCC2, nBands);
 
     // distance between spels
     EXPECT_NEAR(imageCC1->euclideanDistance(0, 0), 0, EPSILONT);
@@ -376,7 +376,7 @@ TEST(CImage, distancesCC) {
     
 }
 
-TEST(CImage, distancesBCC) {
+TEST(Image, distancesBCC) {
 
     int nRows = 5;
     int nColumns = 6;
@@ -391,8 +391,8 @@ TEST(CImage, distancesBCC) {
     for (int i = 0; i < nElements; i++) {
         data[i] = 0;
     }
-    CImage<uint8> *imageBCC1 = new CImage<uint8>(data, *latticeBCC1, nBands);
-    CImage<uint8> *imageBCC2 = new CImage<uint8>(data, *latticeBCC2, nBands);
+    Image<uint8> *imageBCC1 = new Image<uint8>(data, *latticeBCC1, nBands);
+    Image<uint8> *imageBCC2 = new Image<uint8>(data, *latticeBCC2, nBands);
 
     // distance between spels
     EXPECT_NEAR(imageBCC1->euclideanDistance(0, 0), 0, EPSILONT);
@@ -589,7 +589,7 @@ TEST(CImage, distancesBCC) {
     delete imageBCC2;
 }
 
-TEST(CImage, distancesFCC) {
+TEST(Image, distancesFCC) {
 
     int nRows = 5;
     int nColumns = 6;
@@ -604,8 +604,8 @@ TEST(CImage, distancesFCC) {
     for (int i = 0; i < nElements; i++) {
         data[i] = 0;
     }
-    CImage<uint8> *imageFCC1 = new CImage<uint8>(data, *latticeFCC1, nBands);
-    CImage<uint8> *imageFCC2 = new CImage<uint8>(data, *latticeFCC2, nBands);
+    Image<uint8> *imageFCC1 = new Image<uint8>(data, *latticeFCC1, nBands);
+    Image<uint8> *imageFCC2 = new Image<uint8>(data, *latticeFCC2, nBands);
 
     // distance between spels
     EXPECT_NEAR(imageFCC1->euclideanDistance(0, 0), 0, EPSILONT);

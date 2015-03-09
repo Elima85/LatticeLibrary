@@ -2,12 +2,12 @@
 #include "cclattice.h"
 #include "bcclattice.h"
 #include "fcclattice.h"
-#include "cimage.h"
+#include "image.h"
 #include "exception.h"
 
-using namespace CImage;
+using namespace LatticeLib;
 
-TEST(CImage, neighbors) {
+TEST(Image, neighbors) {
 
     int nRows = 5;
     int nColumns = 6;
@@ -22,9 +22,9 @@ TEST(CImage, neighbors) {
     for (int i = 0; i < nElements; i++) {
         data[i] = 0;
     }
-    CImage<uint8> *imageCC = new CImage<uint8>(data, *latticeCC, nBands);
-    CImage<uint8> *imageBCC = new CImage<uint8>(data, *latticeBCC, nBands);
-    CImage<uint8> *imageFCC = new CImage<uint8>(data, *latticeFCC, nBands);
+    Image<uint8> *imageCC = new Image<uint8>(data, *latticeCC, nBands);
+    Image<uint8> *imageBCC = new Image<uint8>(data, *latticeBCC, nBands);
+    Image<uint8> *imageFCC = new Image<uint8>(data, *latticeFCC, nBands);
 
     //{r,l,bo,t,f,ba,   bor,tr,bar,fr,bol,tl,bal,fl,boba,bof,tba,tf,   bofr,tfr,tbar,bobar,bofl,tfl,tbal,bobal}
     int CC6[6] = {171, 169, 176, 164, 140, 200};

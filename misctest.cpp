@@ -7,7 +7,7 @@
 #include "vectoroperators.h"
 #include "exception.h"
 
-using namespace CImage;
+using namespace LatticeLib;
 
 /**
 * bool IS_EVEN(int)

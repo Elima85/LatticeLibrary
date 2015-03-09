@@ -1,12 +1,12 @@
 #include "gtest/gtest.h"
 #include "defs.h"
-#include "cimage.h"
+#include "image.h"
 #include "cclattice.h"
 #include <float.h>
 
-using namespace CImage;
+using namespace LatticeLib;
 
-TEST(CImage, manipulation) {
+TEST(Image, manipulation) {
 
     int nRows = 5;
     int nColumns = 6;
@@ -20,7 +20,7 @@ TEST(CImage, manipulation) {
     for (int i = 0; i < nBands * nElements; i++) {
         data[i] = 0;
     }
-    CImage<uint8> *imageCC = new CImage<uint8>(data, latticeCC, nBands);
+    Image<uint8> *imageCC = new Image<uint8>(data, latticeCC, nBands);
 
     uint8 newValues[] = {11, 22, 33};
     vector<uint8> newIntensityValues(newValues, newValues + 3);

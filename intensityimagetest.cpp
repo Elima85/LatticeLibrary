@@ -1,11 +1,11 @@
 #include "gtest/gtest.h"
 #include "defs.h"
-#include "intensitycimage.h"
+#include "intensityimage.h"
 #include "cclattice.h"
 
-using namespace CImage;
+using namespace LatticeLib;
 
-TEST(IntensityCImage, initialization) {
+TEST(IntensityImage, initialization) {
 
     int nRows = 5;
     int nColumns = 6;
@@ -26,7 +26,7 @@ TEST(IntensityCImage, initialization) {
         dataDouble01[i] = double(i)/100.0;
         dataDouble14[i] = double(i)/100.0;
     }
-    IntensityCImage<uint8> *imageUint8Full = new IntensityCImage<uint8>(dataUint8Full, lattice, nBands,0,255);
+    IntensityImage<uint8> *imageUint8Full = new IntensityImage<uint8>(dataUint8Full, lattice, nBands,0,255);
     uint8* extractedDataUint8 = imageUint8Full->getData();
     int minValUint8 = INT_MAX, maxValUint8 = INT_MIN;
     for (int i = 0; i < nTotal; i++) {
@@ -57,7 +57,7 @@ TEST(IntensityCImage, initialization) {
     EXPECT_EQ(255, imageUint8Full->adjustIntensity(853.65));
 
 
-    IntensityCImage<uint8> *imageUint8Half = new IntensityCImage<uint8>(dataUint8Half, lattice, nBands, 63, 190);
+    IntensityImage<uint8> *imageUint8Half = new IntensityImage<uint8>(dataUint8Half, lattice, nBands, 63, 190);
     extractedDataUint8 = imageUint8Half->getData();
     minValUint8 = INT_MAX;
     maxValUint8 = INT_MIN;
@@ -90,7 +90,7 @@ TEST(IntensityCImage, initialization) {
     EXPECT_EQ(190, imageUint8Half->adjustIntensity(255));
     EXPECT_EQ(190, imageUint8Half->adjustIntensity(853.65));
 
-    IntensityCImage<double> *imageDouble01 = new IntensityCImage<double>(dataDouble01, lattice, nBands, 0, 1);
+    IntensityImage<double> *imageDouble01 = new IntensityImage<double>(dataDouble01, lattice, nBands, 0, 1);
     double *extractedDataDouble = imageDouble01->getData();
     double minValDouble = DBL_MAX, maxValDouble = DBL_MIN;
     for (int i = 0; i < nTotal; i++) {
@@ -116,7 +116,7 @@ TEST(IntensityCImage, initialization) {
     EXPECT_NEAR(1, imageDouble01->adjustIntensity(1), EPSILONT);
     EXPECT_NEAR(1, imageDouble01->adjustIntensity(853.65), EPSILONT);
 
-    IntensityCImage<double> *imageDouble14 = new IntensityCImage<double>(dataDouble14, lattice, nBands, 1, 4);
+    IntensityImage<double> *imageDouble14 = new IntensityImage<double>(dataDouble14, lattice, nBands, 1, 4);
     extractedDataDouble = imageDouble14->getData();
     minValDouble = DBL_MAX;
     maxValDouble = DBL_MIN;
@@ -154,7 +154,7 @@ TEST(IntensityCImage, initialization) {
 
 }
 
-TEST(IntensityCImage, copying) {
+TEST(IntensityImage, copying) {
 
     int nRows = 2;
     int nColumns = 3;
@@ -169,15 +169,15 @@ TEST(IntensityCImage, copying) {
         data[i] = i;
     }
 
-    IntensityCImage<uint8> original(data, lattice, nBands, 0, 255);
-    IntensityCImage<uint8> copy(original);
+    IntensityImage<uint8> original(data, lattice, nBands, 0, 255);
+    IntensityImage<uint8> copy(original);
     EXPECT_EQ(original.getNRows(), copy.getNRows());
     EXPECT_EQ(original.getNColumns(), copy.getNColumns());
     EXPECT_EQ(original.getNLayers(), copy.getNLayers());
     EXPECT_EQ(original.getNElements(), copy.getNElements());
     EXPECT_EQ(original.getScaleFactor(), copy.getScaleFactor());
     EXPECT_EQ(original.getNBands(), copy.getNBands());
-    EXPECT_NE(original.getData(), copy.getData());
+    EXPECT_EQ(original.getData(), copy.getData());
 
     uint8 *originalData = original.getData();
     uint8 *copiedData = copy.getData();
@@ -254,11 +254,9 @@ TEST(IntensityCImage, copying) {
     EXPECT_EQ(originalData[70], copiedData[70]);
     EXPECT_EQ(originalData[71], copiedData[71]);
 
-    delete copiedData;
-
 }
 
-TEST(IntensityCImage, manipulation) {
+TEST(IntensityImage, manipulation) {
 
     int nRows = 5;
     int nColumns = 6;
@@ -276,7 +274,7 @@ TEST(IntensityCImage, manipulation) {
         dataDouble[i] = 0;
     }
 
-    IntensityCImage<uint8> *imageUint8 = new IntensityCImage<uint8>(dataUint8, lattice, nBands, 0, 255);
+    IntensityImage<uint8> *imageUint8 = new IntensityImage<uint8>(dataUint8, lattice, nBands, 0, 255);
     uint8 newValuesUint8[] = {11, 22, 33};
     vector<uint8> newIntensityValuesUint8(newValuesUint8, newValuesUint8 + 3);
 
@@ -356,7 +354,7 @@ TEST(IntensityCImage, manipulation) {
 
 
 
-    IntensityCImage<double> *imageDouble = new IntensityCImage<double>(dataDouble, lattice, nBands, 0, 1);
+    IntensityImage<double> *imageDouble = new IntensityImage<double>(dataDouble, lattice, nBands, 0, 1);
     double newValuesDouble[] = {0.11, 0.22, 0.33};
     vector<double> newIntensityValuesDouble(newValuesDouble, newValuesDouble + 3);
 

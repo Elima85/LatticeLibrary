@@ -3,7 +3,7 @@
 
 #include "lattice.h"
 
-namespace CImage {
+namespace LatticeLib {
 #define FCCOFFSET 0.793700525984100 // 1/(2^(1/3)), distance between layers in FCC
 #define FCCFACEDISTANCE 1.122462048309373 // face neighbor distance
 #define FCCPOINTDISTANCE 1.587401051968199 // 2/(2^(1/3)), point neighbor distance

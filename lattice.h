@@ -6,7 +6,7 @@
 
 using namespace std;
 
-namespace CImage {
+namespace LatticeLib {
 
 /**
 * A graph-based representation of a sampling lattice.

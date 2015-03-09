@@ -1,12 +1,8 @@
-#ifndef PRIORITYQUEUETEST
-#define PRIORITYQUEUETEST
-
-
 #include "gtest/gtest.h"
 #include "priorityqueue.h"
 #include "defs.h"
 
-using namespace CImage;
+using namespace LatticeLib;
 
 TEST(PriorityQueue, Test) {
 
@@ -95,4 +91,3 @@ TEST(PriorityQueue, Test) {
 
 }
 
-#endif

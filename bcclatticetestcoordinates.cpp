@@ -3,7 +3,7 @@
 #include "bcclattice.h"
 #include <cmath>
 
-using namespace CImage;
+using namespace LatticeLib;
 
 TEST(BCCLattice,coordinates) {
 

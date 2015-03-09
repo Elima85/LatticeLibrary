@@ -2,7 +2,7 @@
 #include "fcclattice.h"
 #include "exception.h"
 
-using namespace CImage;
+using namespace LatticeLib;
 
 TEST(FCCLattice, neighbors) {
 

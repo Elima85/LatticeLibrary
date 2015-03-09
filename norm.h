@@ -8,7 +8,7 @@
 
 using namespace std;
 
-namespace CImage {
+namespace LatticeLib {
 
 class Norm {
 public:
@@ -125,6 +125,6 @@ public:
 	}
 };
 
-} // CImage
+} // Image
 
 #endif

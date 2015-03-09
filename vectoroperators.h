@@ -5,7 +5,7 @@
 #include "exception.h"
 #include "defs.h"
 
-namespace CImage {
+namespace LatticeLib {
 
     template<class T>
     vector <T> operator+(const vector <T> &v1, const vector <T> &v2) {

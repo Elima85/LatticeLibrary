@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
 #include "seededdistancetransform.h"
-#include "intensitycimage.h"
-#include "distancecimage.h"
+#include "intensityimage.h"
+#include "distanceimage.h"
 #include "filehandling.h"
 #include "seed.h"
 #include <vector>
@@ -9,7 +9,7 @@
 #include "cclattice.h"
 #include "exception.h"
 
-using namespace CImage;
+using namespace LatticeLib;
 
 TEST(SeededDistanceTransform, ApproximateMBDBBUint8) {
 
@@ -51,17 +51,17 @@ TEST(SeededDistanceTransform, ApproximateMBDBBUint8) {
     uint8* flowersGData = flowersRGBData + nElements;
     uint8* flowersBData = flowersRGBData + 2 * nElements;
 
-    IntensityCImage<uint8> flowersRGB(flowersRGBData, lattice, 3, 0, 255);
-    IntensityCImage<uint8> flowersR(flowersRData, lattice, 1, 0, 255);
-    IntensityCImage<uint8> flowersG(flowersGData, lattice, 1, 0, 255);
-    IntensityCImage<uint8> flowersB(flowersBData, lattice, 1, 0, 255);
+    IntensityImage<uint8> flowersRGB(flowersRGBData, lattice, 3, 0, 255);
+    IntensityImage<uint8> flowersR(flowersRData, lattice, 1, 0, 255);
+    IntensityImage<uint8> flowersG(flowersGData, lattice, 1, 0, 255);
+    IntensityImage<uint8> flowersB(flowersBData, lattice, 1, 0, 255);
 
     PNorm norm(2);
 
-    DistanceCImage distanceTransformRGB = approximateMinimumBarrierBoundingBox(flowersRGB, seeds, norm, 26);
-    DistanceCImage distanceTransformR = approximateMinimumBarrierBoundingBox(flowersR, seeds, norm, 26);
-    DistanceCImage distanceTransformG = approximateMinimumBarrierBoundingBox(flowersG, seeds, norm, 26);
-    DistanceCImage distanceTransformB = approximateMinimumBarrierBoundingBox(flowersB, seeds, norm, 26);
+    DistanceImage distanceTransformRGB = approximateMinimumBarrierBoundingBox(flowersRGB, seeds, norm, 26);
+    DistanceImage distanceTransformR = approximateMinimumBarrierBoundingBox(flowersR, seeds, norm, 26);
+    DistanceImage distanceTransformG = approximateMinimumBarrierBoundingBox(flowersG, seeds, norm, 26);
+    DistanceImage distanceTransformB = approximateMinimumBarrierBoundingBox(flowersB, seeds, norm, 26);
 
     char flowersRGBOut[] = "flowersRGB_AMBDBB_uint8_2norm.bin";
     char flowersROut[] = "flowersR_AMBDBB_uint8_2norm.bin";

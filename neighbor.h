@@ -1,7 +1,7 @@
 #ifndef NEIGHBOR_H
 #define NEIGHBOR_H
 
-namespace CImage {
+namespace LatticeLib {
 
 /**
  * Class for handling different types of spel neighbors.

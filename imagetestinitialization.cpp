@@ -1,11 +1,11 @@
 #include "gtest/gtest.h"
 #include "defs.h"
-#include "cimage.h"
+#include "image.h"
 #include "cclattice.h"
 #include "bcclattice.h"
 #include "fcclattice.h"
 
-using namespace CImage;
+using namespace LatticeLib;
 
 TEST(CImage,initialization) {
 
@@ -24,9 +24,9 @@ TEST(CImage,initialization) {
         data[i] = i;
     }
 
-    CImage<uint8> *imageCC = new CImage<uint8>(data, *latticeCC, nBands);
-    CImage<uint8> *imageBCC = new CImage<uint8>(data, *latticeBCC, nBands);
-    CImage<uint8> *imageFCC = new CImage<uint8>(data, *latticeFCC, nBands);
+    Image<uint8> *imageCC = new Image<uint8>(data, *latticeCC, nBands);
+    Image<uint8> *imageBCC = new Image<uint8>(data, *latticeBCC, nBands);
+    Image<uint8> *imageFCC = new Image<uint8>(data, *latticeFCC, nBands);
 
     // image parameters
     EXPECT_TRUE(imageCC);
@@ -238,7 +238,7 @@ TEST(CImage,initialization) {
 
 }
 
-TEST(CImage,copying) {
+TEST(Image,copying) {
 
     int nRows = 2;
     int nColumns = 3;
@@ -253,8 +253,8 @@ TEST(CImage,copying) {
         data[i] = i;
     }
 
-    CImage<uint8> original(data, lattice, nBands);
-    CImage<uint8> copy(original);
+    Image<uint8> original(data, lattice, nBands);
+    Image<uint8> copy(original);
     EXPECT_EQ(original.getNRows(), copy.getNRows());
     EXPECT_EQ(original.getNColumns(), copy.getNColumns());
     EXPECT_EQ(original.getNLayers(), copy.getNLayers());

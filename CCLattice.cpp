@@ -3,7 +3,7 @@
 
 using namespace std;
 
-namespace CImage {
+namespace LatticeLib {
 
     CCLattice::CCLattice(int rows, int columns, int layers, double scale) : Lattice(rows, columns, layers, scale) {};
     CCLattice::CCLattice(const CCLattice &original) : Lattice(original) {};

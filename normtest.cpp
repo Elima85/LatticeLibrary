@@ -5,7 +5,7 @@
 #include "norm.h"
 #include "defs.h"
 
-using namespace CImage;
+using namespace LatticeLib;
 
 TEST(Norm, PNorm) {
     int intVals[] = {0, 1, 2, 3, 4, 5};

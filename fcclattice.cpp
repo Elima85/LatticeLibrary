@@ -5,7 +5,7 @@
 
 using namespace std;
 
-namespace CImage {
+namespace LatticeLib {
 
     FCCLattice::FCCLattice(int rows, int columns, int layers, double scale) : Lattice(rows, columns, layers, scale) {};
     FCCLattice::FCCLattice(const FCCLattice &original) : Lattice(original) {};

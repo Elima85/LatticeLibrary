@@ -5,7 +5,7 @@
 #include "neighbor.h"
 #include "defs.h"
 
-using namespace CImage;
+using namespace LatticeLib;
 
 TEST(Neighbor, Neighbor) {
 

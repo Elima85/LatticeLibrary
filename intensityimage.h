@@ -1,33 +1,33 @@
 #ifndef INTENSITYCIMAGE_H
 #define INTENSITYCIMAGE_H
 
-#include "cimage.h"
+#include "image.h"
 
-namespace CImage {
+namespace LatticeLib {
 
 /**
 * Abstract base class for spatial domain images.
 */
     template<class T>
-    class IntensityCImage : public CImage<T> {
+    class IntensityImage : public Image<T> {
 
     protected:
         T minValue;
         T maxValue;
 
     public:
-        IntensityCImage(T *d, Lattice &l, int nB, T minVal, T maxVal) : CImage<T>(d, l, nB) {
+        IntensityImage(T *d, Lattice &l, int nB, T minVal, T maxVal) : Image<T>(d, l, nB) {
             minValue = minVal;
             maxValue = maxVal;
             for (int intensityIndex = 0; intensityIndex < this->getNElements() * nB; intensityIndex++) {
                 this->data[intensityIndex] = MIN(this->maxValue, MAX(this->minValue, this->data[intensityIndex]));
             }
         }
-        IntensityCImage(const IntensityCImage &original) : CImage<T>(original) {
+        IntensityImage(const IntensityImage &original) : Image<T>(original) {
             minValue = original.minValue;
             maxValue = original.maxValue;
         }
-        ~IntensityCImage() {};
+        ~IntensityImage() {};
 
         /**
         * Sets the intensity of element[index] to the value within the image intensity range that is closest to the specified intensity.
@@ -101,7 +101,7 @@ namespace CImage {
         }
 
         /**
-        * Truncates the intensity value to fit into the range of the IntensityCImage object.
+        * Truncates the intensity value to fit into the range of the IntensityImage object.
         *
         * Parameter     | Comment
         * :---------    | :-------

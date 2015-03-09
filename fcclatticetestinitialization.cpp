@@ -2,7 +2,7 @@
 #include "fcclattice.h"
 #include "defs.h"
 
-using namespace CImage;
+using namespace LatticeLib;
 
 TEST(FCCLattice, initialization) {
 

@@ -2,7 +2,7 @@
 #include "exception.h"
 #include <cmath>
 
-namespace CImage {
+namespace LatticeLib {
 
     double getCost(double a, double b) {
         double c = fabs(a - b) + EPSILONC;

@@ -1,6 +1,6 @@
 #include "defs.h"
 #include "string.h"
-#include "cimage.h"
+#include "image.h"
 #include "label.h"
 //#include "priorityqueue.h"
 #include <cstdlib>
@@ -10,7 +10,7 @@
 #include <string.h>
 using namespace std;
 
-using namespace CImage;
+using namespace LatticeLib;
 
 //
 //int main(int argc, char *argv[]){
@@ -71,7 +71,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	// create image object
-    ::CImage::CImage<double> *input;
+    ::Image::Image<double> *input;
 	switch(lattice) {
 	case 'c':
 		//    	cout << "CC lattice" << endl;

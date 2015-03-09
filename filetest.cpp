@@ -5,7 +5,7 @@
 #include "filehandling.h"
 #include "defs.h"
 
-using namespace CImage;
+using namespace LatticeLib;
 
 TEST(Files, readVolume) {
     int nR = 2, nC = 3, nL = 4, nB = 5;

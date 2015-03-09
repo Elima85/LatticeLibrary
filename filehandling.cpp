@@ -4,7 +4,7 @@
 #include "defs.h"
 #include <new> // nothrow
 
-namespace CImage {
+namespace LatticeLib {
 
     double *readVolume(const char *path, int nTot) {
 

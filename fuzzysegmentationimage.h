@@ -1,19 +1,19 @@
 #ifndef FUZZYSEGMENTATIONCIMAGE_H
 #define FUZZYSEGMENTATIONCIMAGE_H
 
-#include "intensitycimage.h"
+#include "intensityimage.h"
 
-namespace CImage {
+namespace LatticeLib {
 
 /**
 * Abstract base class for fuzzy segmentations. Each modality band is a fuzzy foreground/background segmentation.
 */
     template<class T>
-    class FuzzySegmentationCImage : public IntensityCImage<T> {
+    class FuzzySegmentationImage : public IntensityImage<T> {
 
     public:
-        FuzzySegmentationCImage(T *d, Lattice &l, int nB, T minVal, T maxVal) : IntensityCImage<T>(d, l, nB, minVal, maxVal) {};
-        virtual ~FuzzySegmentationCImage() {};
+        FuzzySegmentationImage(T *d, Lattice &l, int nB, T minVal, T maxVal) : IntensityImage<T>(d, l, nB, minVal, maxVal) {};
+        virtual ~FuzzySegmentationImage() {};
 
         /**
         * Uses the intensity value of a spel, regarded as a coverage value, to approximate the distance between the spel center and the surface that, supposedly, intersects the spel.

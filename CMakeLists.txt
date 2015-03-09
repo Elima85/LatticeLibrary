@@ -6,15 +6,15 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 set(GTEST_ROOT "${PROJECT_SOURCE_DIR}/googletest")
 
 set(SOURCE_FILES
-    cimage.h
-    binarycimage.h
-    binarycimage.cpp
-    crispsegmentationcimage.h
-    crispsegmentationcimage.cpp
-    intensitycimage.h
-    distancecimage.h
-    distancecimage.cpp
-    fuzzysegmentationcimage.h
+    image.h
+    binaryimage.h
+    binaryimage.cpp
+    crispsegmentationimage.h
+    crispsegmentationimage.cpp
+    intensityimage.h
+    distanceimage.h
+    distanceimage.cpp
+    fuzzysegmentationimage.h
     defs.h
     exception.h
     filehandling.cpp
@@ -63,15 +63,15 @@ set(TEST_SOURCE_FILES
     neighbortest.cpp
     normtest.cpp
     priorityqueuetest.cpp
-    cimagetestinitialization.cpp
-    cimagetestcoordinates.cpp
-    cimagetestbands.cpp
-    cimagetestneighbors.cpp
-    cimagetestmanipulation.cpp
-    intensitycimagetest.cpp
-    distancecimagetest.cpp
+    imagetestinitialization.cpp
+    imagetestcoordinates.cpp
+    imagetestbands.cpp
+    imagetestneighbors.cpp
+    imagetestmanipulation.cpp
+    intensityimagetest.cpp
+    distanceimagetest.cpp
     seededdistancetransformtest.cpp
-    test.cpp
+    latticelibtest.cpp
     )
 
 include_directories(
@@ -79,10 +79,10 @@ include_directories(
     "${GTEST_ROOT}/include"
 )
 
-add_executable(dist ${MAIN_SOURCE_FILES})
-add_executable(test ${TEST_SOURCE_FILES})
+add_executable(release ${MAIN_SOURCE_FILES})
+add_executable(testing ${TEST_SOURCE_FILES})
 
 target_link_libraries(
-    test
+    testing
     pthread
 )

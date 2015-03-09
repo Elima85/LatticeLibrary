@@ -5,7 +5,7 @@
 #include <exception>
 using namespace std;
 
-namespace CImage {
+namespace LatticeLib {
 
 /**
 * Exception thrown when trying to access a spel that is not within the image.

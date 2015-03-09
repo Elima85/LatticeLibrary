@@ -1,13 +1,13 @@
 #include "gtest/gtest.h"
 #include "cclattice.h"
-#include "distancecimage.h"
-#include "crispsegmentationcimage.h"
-#include "fuzzysegmentationcimage.h"
+#include "distanceimage.h"
+#include "crispsegmentationimage.h"
+#include "fuzzysegmentationimage.h"
 #include "defs.h"
 
-using namespace CImage;
+using namespace LatticeLib;
 
-TEST(DistanceCImage, crisplabel) {
+TEST(DistanceImage, crisplabel) {
 
     int nRows = 4;
     int nColumns = 4;
@@ -19,7 +19,7 @@ TEST(DistanceCImage, crisplabel) {
     int nBands = 3;
     double dataDouble[nElements * nBands];
 
-    DistanceCImage distanceImage(dataDouble, lattice, nBands);
+    DistanceImage distanceImage(dataDouble, lattice, nBands);
 
     //std::cout << "First band: " << std::endl;
     int band = 0;
@@ -64,7 +64,7 @@ TEST(DistanceCImage, crisplabel) {
         }
     }
 
-    CrispSegmentationCImage segmentation = distanceImage.crispLabel();
+    CrispSegmentationImage segmentation = distanceImage.crispLabel();
 
     EXPECT_EQ(distanceImage.getNRows(), segmentation.getNRows());
     EXPECT_EQ(distanceImage.getNColumns(), segmentation.getNColumns());
@@ -286,7 +286,7 @@ TEST(DistanceCImage, crisplabel) {
 
 }
 
-TEST(DistanceCImage, fuzzylabel) {
+TEST(DistanceImage, fuzzylabel) {
 
     int nRows = 4;
     int nColumns = 4;
@@ -298,7 +298,7 @@ TEST(DistanceCImage, fuzzylabel) {
     int nBands = 3;
     double dataDouble[nElements * nBands];
 
-    DistanceCImage distanceImage(dataDouble, lattice, nBands);
+    DistanceImage distanceImage(dataDouble, lattice, nBands);
 
     int band = 0;
     double xRef = 4;
@@ -337,7 +337,7 @@ TEST(DistanceCImage, fuzzylabel) {
         }
     }
 
-    FuzzySegmentationCImage<double> segmentation = distanceImage.fuzzyLabel(0.0,1.0);
+    FuzzySegmentationImage<double> segmentation = distanceImage.fuzzyLabel(0.0,1.0);
 
     EXPECT_EQ(distanceImage.getNRows(), segmentation.getNRows());
     EXPECT_EQ(distanceImage.getNColumns(), segmentation.getNColumns());
