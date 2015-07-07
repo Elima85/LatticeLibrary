@@ -5,7 +5,6 @@
 #include "valuenormalizer.h"
 #include "valuestretcher.h"
 #include "exception.h"
-#include <stdio.h>
 
 using namespace LatticeLib;
 
@@ -183,9 +182,11 @@ TEST(ValueNormalizer, valuenormalizertest) {
     double doubleTestArray1[10] = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0};
     double doubleTestArray2[10] = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0};
     double doubleTestArray3[10] = {-10.0, -9.0, -8.0, -7.0, -6.0, -5.0, -4.0, -3.0, -2.0, -1.0};
+    double doubleTestArray4[10] = {1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5};
     float floatTestArray1[10] = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0};
     float floatTestArray2[10] = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0};
     float floatTestArray3[10] = {-10.0, -9.0, -8.0, -7.0, -6.0, -5.0, -4.0, -3.0, -2.0, -1.0};
+    float floatTestArray4[10] = {1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5};
 
     ValueNormalizer normalizer;
 
@@ -259,6 +260,18 @@ TEST(ValueNormalizer, valuenormalizertest) {
     EXPECT_NEAR(0.7, doubleTestArray3[7], EPSILONT);
     EXPECT_NEAR(0.8, doubleTestArray3[8], EPSILONT);
     EXPECT_NEAR(0.9, doubleTestArray3[9], EPSILONT);
+    normalizer.apply(doubleTestArray4, size, 0.0, 10.0);
+    EXPECT_GE(doubleTestArray4[0], 0.0);
+    EXPECT_GE(doubleTestArray4[1], doubleTestArray4[0]);
+    EXPECT_GE(doubleTestArray4[2], doubleTestArray4[1]);
+    EXPECT_GE(doubleTestArray4[3], doubleTestArray4[2]);
+    EXPECT_GE(doubleTestArray4[4], doubleTestArray4[3]);
+    EXPECT_GE(doubleTestArray4[5], doubleTestArray4[4]);
+    EXPECT_GE(doubleTestArray4[6], doubleTestArray4[5]);
+    EXPECT_GE(doubleTestArray4[7], doubleTestArray4[6]);
+    EXPECT_GE(doubleTestArray4[8], doubleTestArray4[7]);
+    EXPECT_GE(doubleTestArray4[9], doubleTestArray4[8]);
+    EXPECT_GE(1, doubleTestArray4[9]);
 
     // T = float
     EXPECT_THROW(normalizer.apply(floatTestArray1, size, float(10.0), float(1.0)), incompatibleException);
@@ -306,5 +319,21 @@ TEST(ValueNormalizer, valuenormalizertest) {
     EXPECT_NEAR(0.7, floatTestArray3[7], EPSILONT);
     EXPECT_NEAR(0.8, floatTestArray3[8], EPSILONT);
     EXPECT_NEAR(0.9, floatTestArray3[9], EPSILONT);
+    normalizer.apply(floatTestArray4, size, float(0.0), float(10.0));
+    EXPECT_GE(floatTestArray4[0], 0.0);
+    EXPECT_GE(floatTestArray4[1], floatTestArray4[0]);
+    EXPECT_GE(floatTestArray4[2], floatTestArray4[1]);
+    EXPECT_GE(floatTestArray4[3], floatTestArray4[2]);
+    EXPECT_GE(floatTestArray4[4], floatTestArray4[3]);
+    EXPECT_GE(floatTestArray4[5], floatTestArray4[4]);
+    EXPECT_GE(floatTestArray4[6], floatTestArray4[5]);
+    EXPECT_GE(floatTestArray4[7], floatTestArray4[6]);
+    EXPECT_GE(floatTestArray4[8], floatTestArray4[7]);
+    EXPECT_GE(floatTestArray4[9], floatTestArray4[8]);
+    EXPECT_GE(1, floatTestArray4[9]);
+
+}
+
+TEST(ValueStretcher, valuestretchertest) {
 
 }
