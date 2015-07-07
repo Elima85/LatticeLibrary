@@ -12,8 +12,71 @@
 #include <cfloat>
 #include <algorithm> // find
 #include "vectoroperators.h"
+#include "inverseforesttransform.h"
+#include "distancemeasure.h"
 
 namespace LatticeLib {
+
+    /* typeid kollar vad det är för typ. På så sätt kan man kolla att in- och utlattice är samma om man har parametrar för resultatet, för att man ska kunna allokera allt i förväg.*/
+    template<class T>
+    InverseForestTransform<T> seededDistanceTransform(const IntensityImage<T> &image, const vector<Seed> seeds, DistanceMeasure &distanceMeasure, int neighborhoodSize) {
+
+        // initialization
+        int nElements = image.getNElements();
+        int nSeeds = seeds.size();
+        int nLabels = 0;
+        vector<int> listOfLabels;
+        for (int seedIndex = 0; seedIndex < nSeeds; seedIndex++) {
+            int label = seeds[seedIndex].getLabel();
+            if (find(listOfLabels.begin(), listOfLabels.end(), label) != listOfLabels.end()) {
+                nLabels++;
+                listOfLabels.push_back(label);
+            }
+        }
+        InverseForestTransform<T> ift(image, nLabels);
+
+        bool *inQueue = new bool[nElements]; // so that only the "best" copy of an element is popped, and all others are skipped, until a better one is pushed.
+        for (int labelIndex = 0; labelIndex < nLabels; labelIndex++) {
+            distanceMeasure.initialize(image, neighborhoodSize);
+            // initialize background
+            for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
+                ift.distanceTransform.setElement(elementIndex, labelIndex, DBL_MAX);
+                ift.roots.setElement(elementIndex, labelIndex, -1);
+                inQueue[elementIndex] = false;
+            }
+            // initialize seed points and put them on queue
+            priority_queue<PriorityQueueElement<T>, vector<PriorityQueueElement<T> >, PriorityQueueElementComparison> queue;
+            int currentLabel = listOfLabels[labelIndex];
+            for (int seedIndex = 0; seedIndex < nSeeds; seedIndex++) {
+                if (seeds[seedIndex].getLabel() == currentLabel) {
+                    int elementIndex = seeds[seedIndex].getIndex();
+                    ift.distanceTransform.setElement(elementIndex, labelIndex, 0);
+                    ift.roots.setElement(elementIndex, labelIndex, elementIndex);
+                    queue.push(PriorityQueueElement<T>(elementIndex, 0));
+                    inQueue[elementIndex] = true;
+                }
+            }
+            // wave front propagation
+            vector<Neighbor> neighbors;
+            while (!queue.empty()) {
+                PriorityQueueElement<T> topElement = queue.top();
+                queue.pop();
+                int currentIndex = topElement.getIndex();
+                if (inQueue[currentIndex]) {
+                    inQueue[currentIndex] = false; // so that old queue elements offering larger distances are skipped
+                    vector<PriorityQueueElement<T> > newQueueElements;
+                    distanceMeasure.update(ift.image, ift.distanceTransform, ift.roots, currentIndex, labelIndex, newQueueElements);
+                    int nNewQueueElements = newQueueElements.size();
+                    for (int queueElementIndex = 0; queueElementIndex < nNewQueueElements; queueElementIndex++) {
+                        queue.push(newQueueElements[queueElementIndex]);
+                        inQueue[newQueueElements[queueElementIndex].getIndex()] = true;
+                    }
+                }
+            }
+            distanceMeasure.clear();
+        }
+        return ift;
+    }
 
 /**
 * Approximated vectorial minimum barrier distance
@@ -39,13 +102,23 @@ namespace LatticeLib {
         vector<int> listOfLabels;
         for (int seedIndex = 0; seedIndex < nSeeds; seedIndex++) {
             int label = seeds[seedIndex].getLabel();
-            if (find(listOfLabels.begin(), listOfLabels.end(), label) != listOfLabels.end()) {
+            bool newLabel = true;
+            for (int labelIndex = 0; labelIndex < listOfLabels.size(); labelIndex++) {
+                if (listOfLabels[labelIndex] == label) {
+                    newLabel = false;
+                }
+            }
+            if (newLabel) {
                 nLabels++;
                 listOfLabels.push_back(label);
+                //std::cout << "label: " << label << std::endl;
             }
         }
+        //std::cout << "#labels: " << listOfLabels.size() << std::endl;
         double *distanceValues = new double[nElements * nLabels];
         DistanceImage distanceTransform(distanceValues, image.getLattice(), nLabels);
+        std::cout << "#rows: " << distanceTransform.getNRows() << "\n#columns: " << distanceTransform.getNColumns() << "\n#layers: " << distanceTransform.getNLayers() << "\n#bands: " << distanceTransform.getNBands() << std::endl;
+
 
         // Every layer represents the distance from seed points of one class
         vector<T> *pathMin = new vector<T>[nElements];
@@ -64,6 +137,7 @@ namespace LatticeLib {
             // initialize seed points and put them on queue
             priority_queue<PriorityQueueElement<T>, vector<PriorityQueueElement<T> >, PriorityQueueElementComparison> queue;
             int currentLabel = listOfLabels[labelIndex];
+            std::cout << "current label: " << currentLabel << std::endl;
             for (int seedIndex = 0; seedIndex < nSeeds; seedIndex++) {
                 if (seeds[seedIndex].getLabel() == currentLabel) {
                     int elementIndex = seeds[seedIndex].getIndex();

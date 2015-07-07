@@ -2,9 +2,9 @@
 #define DISTANCEMEASURE_H
 
 #include "priorityqueue.h"
-#include "intensitycimage.h"
-#include "distancecimage.h"
-#include "rootcimage.h"
+#include "intensityimage.h"
+#include "distanceimage.h"
+#include "rootimage.h"
 
 namespace LatticeLib {
 
@@ -17,14 +17,18 @@ namespace LatticeLib {
         int neighborhoodSize;
 
     public:
-        DistanceMeasure();
+        DistanceMeasure() {
+            neighborhoodSize = 0;
+        }
         ~DistanceMeasure();
 
         /**
         * Initializes the distance measure to fit the image of application.
         */
         template<class T>
-        void initialize(const IntensityCImage<T> &image, int neighborhoodSize) = 0;
+        void initialize(const IntensityImage<T> &image, int nS) {
+            neighborhoodSize = nS;
+        };
 
         /**
         * Propagates the wave front to the next spatial element.
@@ -40,12 +44,14 @@ namespace LatticeLib {
         *
         */
         template<class T>
-        void update(const IntensityCImage<T> &image, DistanceCImage &distanceTransform, RootCImage &roots, int elementIndex, int labelIndex, vector<PriorityQueueElement<T> > &toQueue) = 0;
+        void update(const IntensityImage<T> &image, DistanceImage &distanceTransform, RootImage &roots, int elementIndex, int labelIndex, vector<PriorityQueueElement<T> > &toQueue) {};
 
         /**
         * Clears up the remains of previous applications. Must be called after every application.
         */
-        void clear() = 0;
+        void clear(){
+            neighborhoodSize = 0;
+        };
     };
 }
 

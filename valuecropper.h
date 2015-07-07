@@ -2,6 +2,7 @@
 #define VALUECROPPER_H
 
 #include "arrayadjustment.h"
+#include "exception.h"
 
 namespace LatticeLib {
 
@@ -23,6 +24,9 @@ namespace LatticeLib {
          */
         template<class T>
         void apply(T* array, int nElements, T minValue, T maxValue) {
+            if (minValue > maxValue) {
+                throw incompatibleException();
+            }
             for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
                 array[elementIndex] = MIN(maxValue, MAX(minValue, array[elementIndex]));
             }

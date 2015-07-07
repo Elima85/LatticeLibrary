@@ -82,7 +82,7 @@ void approximateMinimumBarrierBoundingBox(const IntensityImage<T> *image, const 
 					pathMin[neighborIndex] = minIntensities;
 					pathMax[neighborIndex] = maxIntensities;
 					labels[neighborIndex] = labels[currentIndex];
-					queue.push(PriorityQueueElement<T>(neighborIndex,pathMax[neighborIndex] - pathMin[neighborIndex],norm));
+					queue.push(PriorityQueueElement<T>(neighborIndex,norm->compute(pathMax[neighborIndex] - pathMin[neighborIndex])));
 					inQueue[neighborIndex] = true;
 				}
 			}

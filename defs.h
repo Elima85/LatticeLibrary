@@ -6,6 +6,7 @@ namespace LatticeLib {
 typedef unsigned char uint8;
 
 // general definitions
+#define EPSILON 0.0000001 // tolerance
 #define EPSILONT 0.0000001 // tolerance for testing
 #define INF 10000000.0
 #define MIN(a, b) (a < b ? a : b)

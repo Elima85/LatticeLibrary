@@ -6,7 +6,8 @@
 
 namespace LatticeLib {
 
-    enum intensityAdjustmentOption {none, crop, normalize};
+    enum imageIntensityAdjustmentOption {none, crop, normalize}; // for the entire image at once
+    enum elementIntensityAdjustmentOption {none, crop}; // for a single element. Normalization is not possible.
 
 /**
  * A class for spatial domain images and fuzzy segmented images, for which it is necessary to know the possible intensity range.
@@ -27,7 +28,17 @@ namespace LatticeLib {
         T maxIntensity;
 
     public:
-
+        /**
+         * Intensity workset constructor.
+         *
+         * Parameter    | Comment
+         * :---------   | :-------
+         * d            | Image data, must be of length l->nElements or more.
+         * l            | Image sampling lattice, will not be deleted by the Image destructor.
+         * nB           | \#modality bands, >=1
+         * minVal       | Minimum intensity value.
+         * maxVal       | Maximum intensity value.
+         */
         IntensityWorkset(T *d, Lattice &l, int nB, T minVal, T maxVal) {
             minIntensity = minVal;
             maxIntensity = maxVal;
@@ -42,10 +53,12 @@ namespace LatticeLib {
 
         ~IntensityWorkset() {}; // TODO: delete data array?
 
+        /** Returns minIntensity. */
         T getMinIntensity() {
             return minIntensity;
         }
 
+        /** Returns maxIntensity. */
         T getMaxIntensity() {
             return maxIntensity;
         }
@@ -132,8 +145,8 @@ namespace LatticeLib {
          * Normalizes the specified modality band of the image, so that it's maximum intensity is maxIntensity, and
          * it's lowest intensity is minIntensity. The other modality bands are left untouched.
          *
-          * Member 		| Comment
-          * :-------		| :-------
+         * Parameter	| Comment
+         * :-------		| :-------
          * bandIndex	| Index of the band to be normalized.
          *
          */
@@ -191,7 +204,7 @@ namespace LatticeLib {
          * Sets the minimum intensity to the specified value, and optionally traverses and adjusts the data to the new
          * intensity range.
          *
-         * Member 		| Comment
+         * Parameter	| Comment
          * :-------		| :-------
          * newMinVal	| New minimum intensity
          * option       | One of the following:
@@ -222,7 +235,7 @@ namespace LatticeLib {
          * Sets the maximum intensity to the specified value, and optionally traverses and adjusts the data to the new
          * intensity range.
          *
-         * Member 		| Comment
+         * Parameter	| Comment
          * :-------		| :-------
          * newMaxVal	| New maximum intensity
          * option       | One of the following:

@@ -9,7 +9,7 @@ namespace LatticeLib {
     class RootImage : public Image<int> {
     public:
         RootImage(int *d, Lattice &l, int nB);
-        ~DistanceImage();
+        ~RootImage();
     };
 }
 

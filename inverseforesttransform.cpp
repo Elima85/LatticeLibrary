@@ -1,4 +1,12 @@
-//
-// Created by Elisabeth Schold Linnér on 15-07-06.
-//
+#include "inverseforesttransform.h"
 
+namespace LatticeLib {
+    InverseForestTransform::InverseForestTransform(DistanceImage dT, RootImage r) {
+        distanceTransform = dT;
+        roots = r;
+    }
+    InverseForestTransform::~InverseForestTransform() {
+        delete distanceTransform;
+        delete roots;
+    }
+}

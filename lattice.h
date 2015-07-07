@@ -31,9 +31,6 @@ namespace LatticeLib {
         /** \#layers */
         int nLayers;
 
-        /** \#elements */
-        int nElements;
-
         /** Determines the density of the lattice. */
         double scaleFactor;
 
@@ -180,6 +177,11 @@ namespace LatticeLib {
         *
         */
         //virtual double coverageToAverageDistance(double coverage) const = 0;
+
+        /**
+         * Compares the type and members of two Lattice objects, and returns true if all are equal.
+         */
+        bool operator==(const Lattice& rhs) const;
 
     };
 

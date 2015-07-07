@@ -39,7 +39,7 @@ namespace LatticeLib {
         return this->indexToY(0) + this->indexToY(this->rclToIndex(this->nRows - 1, 0, (this->nLayers > 1)));
     }
     double BCCLattice::getDepth() const {
-        return this->indexToZ(0) + this->indexToZ(this->nElements - 1);
+        return this->indexToZ(0) + this->indexToZ(this->getNElements() - 1);
     }
     void BCCLattice::get8Neighbors(int row, int column, int layer, vector<Neighbor> &neighbors) const {
         if (!this->isValid(row, column, layer)) {

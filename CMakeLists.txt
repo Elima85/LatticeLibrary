@@ -7,14 +7,10 @@ set(GTEST_ROOT "${PROJECT_SOURCE_DIR}/googletest")
 
 set(SOURCE_FILES
     image.h
-    binaryimage.h
-    binaryimage.cpp
-    crispsegmentationimage.h
-    crispsegmentationimage.cpp
-    intensityimage.h
-    distanceimage.h
-    distanceimage.cpp
-    fuzzysegmentationimage.h
+    arrayadjustment.h
+    valuecropper.h
+    valuenormalizer.h
+    valuestretcher.h
     defs.h
     exception.h
     filehandling.cpp
@@ -22,8 +18,7 @@ set(SOURCE_FILES
     filter.h
     seed.h
     seed.cpp
-    seededdistancetransform.h
-    label.h
+    distancemeasure.h
     miscellaneous.cpp
     miscellaneous.h
     neighbor.h
@@ -68,9 +63,7 @@ set(TEST_SOURCE_FILES
     imagetestbands.cpp
     imagetestneighbors.cpp
     imagetestmanipulation.cpp
-    intensityimagetest.cpp
-    distanceimagetest.cpp
-    seededdistancetransformtest.cpp
+    arrayadjustmenttest.cpp
     latticelibtest.cpp
     )
 
@@ -79,8 +72,8 @@ include_directories(
     "${GTEST_ROOT}/include"
 )
 
-add_executable(release ${MAIN_SOURCE_FILES})
-add_executable(testing ${TEST_SOURCE_FILES})
+add_executable(release ${MAIN_SOURCE_FILES} frequencydomainimage.h)
+add_executable(testing ${TEST_SOURCE_FILES} frequencydomainimage.h)
 
 target_link_libraries(
     testing

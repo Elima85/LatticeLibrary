@@ -6,7 +6,7 @@
 #include "neighbor.h"
 #include "vectoroperators.h"
 
-namespace CImage{
+namespace LatticeLib {
 
 /**
 * Approximated vectorial minimum barrier distance
@@ -22,20 +22,22 @@ namespace CImage{
         /** The norm used when converting a traversed intensity span to a scalar distance value. */
         Norm &norm;
 
-        /** The lowest intensities that have been traverest between a spatial element and the closest seedpoint. */
+        /** The lowest intensities that have been traversed between a spatial element and the closest seedpoint. */
         vector<T> *pathMinimumValue;
 
-        /** The highest intensities that have been traverest between a spatial element and the closest seedpoint. */
+        /** The highest intensities that have been traversed between a spatial element and the closest seedpoint. */
         vector<T> *pathMaximumValue;
 
     public:
         ApproximateMinimumBarrierBoundingBoxDistance(Norm &n) : DistanceMeasure() {
             norm = n;
+            pathMinimumValue = NULL;
+            pathMaximumValue = NULL;
         }
         ~ApproximateMinimumBarrierBoundingBoxDistance(){}
 
         template <class T>
-        void initialize(const IntensityCImage<T> &image, int nS) {
+        void initialize(const IntensityImage<T> &image, int nS) {
             neighborhoodSize = nS;
             int nElements = image.getNElements();
             int nBands = image.getNBands();
@@ -46,8 +48,9 @@ namespace CImage{
                 pathMaximumValue[elementIndex] = image[elementIndex];
             }
         }
+
         template<class T>
-        void update(DistanceCImage &distanceTransform, const IntensityCImage<T> &image, RootCImage &roots, int elementIndex, int labelIndex, vector<PriorityQueueElement<T> > &toQueue){
+        void update(DistanceImage &distanceTransform, const IntensityImage<T> &image, RootImage &roots, int elementIndex, int labelIndex, vector<PriorityQueueElement<T> > &toQueue){
             toQueue.clear();
             vector<Neighbor> neighbors;
             image.getNeighbors(elementIndex, neighborhoodSize, neighbors);
@@ -67,10 +70,13 @@ namespace CImage{
             }
 
         }
+
         void clear() {
             neighborhoodSize = 0;
             delete pathMinimumValue;
             delete pathMaximumValue;
+            pathMinimumValue = NULL;
+            pathMaximumValue = NULL;
         }
     };
 }

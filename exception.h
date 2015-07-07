@@ -88,6 +88,12 @@ namespace LatticeLib {
         }
     };
 
+    struct incompatibleException : public  exception {
+        const char* what() const throw() {
+            return "Incompatible input values.";
+        }
+    };
+
 }
 
 #endif

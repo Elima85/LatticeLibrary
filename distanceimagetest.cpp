@@ -7,6 +7,29 @@
 
 using namespace LatticeLib;
 
+TEST(DistanceImage, initialization) {
+
+    int nRows = 4;
+    int nColumns = 4;
+    int nLayers = 4;
+    int nElements = nRows * nColumns * nLayers;
+    double scaleFactor = 1.0;
+    CCLattice lattice(nRows, nColumns, nLayers, scaleFactor);
+
+    int nBands = 3;
+    double dataDouble[nElements * nBands];
+
+    DistanceImage distanceImage(dataDouble, lattice, nBands);
+
+    EXPECT_EQ(nRows, distanceImage.getNRows());
+    EXPECT_EQ(nColumns, distanceImage.getNColumns());
+    EXPECT_EQ(nLayers, distanceImage.getNLayers());
+    EXPECT_EQ(nBands, distanceImage.getNBands());
+    EXPECT_EQ(dataDouble[0], distanceImage(0, 0));
+    EXPECT_EQ(dataDouble[nBands * nElements - 1], distanceImage(nElements - 1, nBands - 1));
+
+}
+
 TEST(DistanceImage, crisplabel) {
 
     int nRows = 4;

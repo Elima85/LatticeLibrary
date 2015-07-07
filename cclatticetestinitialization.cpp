@@ -75,4 +75,8 @@ TEST(CCLattice,initialization) {
     EXPECT_EQ(lattice1.indexToC(nElements - 1), nColumns - 1);
     EXPECT_EQ(lattice1.indexToL(nElements - 1), nLayers - 1);
 
+    // operators
+    EXPECT_FALSE(lattice1 == lattice2);
+    EXPECT_TRUE(lattice2 == lattice3);
+
 }

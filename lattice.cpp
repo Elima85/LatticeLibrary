@@ -1,6 +1,7 @@
 #include "lattice.h"
 #include "exception.h"
 #include <cmath> // for cbrt and round
+#include <typeinfo> // for typeid
 #include "defs.h"
 
 namespace LatticeLib {
@@ -8,19 +9,17 @@ namespace LatticeLib {
         nLayers = nl;
         nColumns = nc;
         nRows = nr;
-        nElements = nc * nr * nl;
         scaleFactor = sf;
     }
     Lattice::Lattice(const Lattice &original) {
         nLayers = original.nLayers;
         nColumns = original.nColumns;
         nRows = original.nRows;
-        nElements = nLayers * nColumns * nRows;
         scaleFactor = original.scaleFactor;
     }
 
     int Lattice::getNElements() const {
-        return nElements;
+        return nColumns * nRows * nLayers;
     }
     int Lattice::getNColumns() const {
         return nColumns;
@@ -35,7 +34,7 @@ namespace LatticeLib {
         return scaleFactor;
     }
     bool Lattice::isValid(int index) const {
-        return ((index >= 0 && index < nElements));
+        return ((index >= 0 && index < nColumns * nRows * nLayers));
     }
     bool Lattice::isValid(int row, int column, int layer) const {
         return ((row >= 0 && row < nRows) && (column >= 0 && column < nColumns) && (layer >= 0 && layer < nLayers));
@@ -82,5 +81,8 @@ namespace LatticeLib {
         distanceVector.push_back(this->indexToX(index2) - this->indexToX(index1));
         distanceVector.push_back(this->indexToY(index2) - this->indexToY(index1));
         distanceVector.push_back(this->indexToZ(index2) - this->indexToZ(index1));
+    }
+    bool Lattice::operator==(const Lattice &rhs) const {
+        return (typeid(*this) == typeid(rhs) && nColumns == rhs.getNColumns() && nRows == rhs.getNRows() && nLayers == rhs.getNLayers() && scaleFactor == rhs.getScaleFactor());
     }
 }
