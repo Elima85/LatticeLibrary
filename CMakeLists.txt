@@ -7,6 +7,7 @@ set(GTEST_ROOT "${PROJECT_SOURCE_DIR}/googletest")
 
 set(SOURCE_FILES
     image.h
+    intensityworkset.h
     arrayadjustment.h
     valuecropper.h
     valuenormalizer.h
@@ -64,6 +65,7 @@ set(TEST_SOURCE_FILES
     imagetestneighbors.cpp
     imagetestmanipulation.cpp
     arrayadjustmenttest.cpp
+    intensityworksettest.cpp
     latticelibtest.cpp
     )
 

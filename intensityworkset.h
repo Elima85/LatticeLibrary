@@ -3,15 +3,18 @@
 
 #include "image.h"
 #include "lattice.h"
+#include "cclattice.h"
 #include "valuecropper.h"
 #include "valuenormalizer.h"
 #include "valuedenormalizer.h"
 #include <algorithm>
+#include "exception.h"
+#include <stdio.h>
 
 namespace LatticeLib {
 
     enum imageIntensityAdjustmentOption {none, crop, normalize}; // for the entire image at once
-    enum elementIntensityAdjustmentOption {none, crop}; // for a single element. Normalization is not possible.
+    //enum elementIntensityAdjustmentOption {none, crop}; // for a single element. Normalization is not possible.
 
 /**
  * A class for spatial domain images and fuzzy segmented images, for which it is necessary to know the possible intensity range.
@@ -23,7 +26,7 @@ namespace LatticeLib {
  * maxIntensity	| The highest possible intensity value.
  *
  */
-    template<class T>
+    template <class T>
     class IntensityWorkset {
 
     private:
@@ -43,39 +46,47 @@ namespace LatticeLib {
          * minVal       | Minimum intensity value.
          * maxVal       | Maximum intensity value.
          */
-        IntensityWorkset(T *d, Lattice &l, int nB, T minVal, T maxVal, imageIntensityAdjustmentOption option) {
-            switch(option) {
+        IntensityWorkset(Image<T> &im, T minVal, T maxVal, imageIntensityAdjustmentOption option) : image(im){
+            switch (option) {
                 case none:
                     break;
-                case crop:
+                case crop: {
+                    T* data = im.getData();
+                    int nElements = im.getLattice().getNElements() * im.getNBands();
                     ValueCropper cropper;
-                    int nElements = l.getNElements() * nB;
-                    cropper.apply(d, nElements, minVal, maxVal);
+                    cropper.apply(data, nElements, minVal, maxVal);
                     break;
-                case normalize:
-                    int nElements = l.getNElements() * nB;
+                }
+                case normalize:{
+                    T *data = im.getData();
+                    int nElements = im.getLattice().getNElements() * im.getNBands();
                     ValueNormalizer normalizer;
                     ValueDenormalizer denormalizer;
-                    T currentMinVal = d[std::min_element(d, d + nElements)];
-                    T currentMaxVal = d[std::max_element(d, d + nElements)];
-                    normalizer.apply(d, nElements, currentMinVal, currentMaxVal);
-                    denormalizer.apply(d, nElements, MinVal, MaxVal);
+                    T currentMinVal = *std::min_element(data, data + nElements);
+
+                    T currentMaxVal = *std::max_element(data, data + nElements);
+                    normalizer.apply(data, nElements, currentMinVal, currentMaxVal);
+                    denormalizer.apply(data, nElements, minVal, maxVal);
                     break;
+                }
                 default:
-                    //TODO: error?
+                    throw invalidArgumentException();
             }
             minIntensity = minVal;
             maxIntensity = maxVal;
-            image = Image<T>(d, l, nB);
         }
 
-        IntensityWorkset(const IntensityWorkset<T> &original) {
+        IntensityWorkset(const IntensityWorkset<T> &original) : image(original.getImage()){
             minIntensity = original.minIntensity;
             maxIntensity = original.maxIntensity;
-            image = Image<T>(original.image);
         }
 
         ~IntensityWorkset() {}; // TODO: delete data array?
+
+        /** Returns image. */
+        Image<T>& getImage() const {
+            return image;
+        }
 
         /** Returns minIntensity. */
         T getMinIntensity() const {
@@ -94,7 +105,7 @@ namespace LatticeLib {
             int nElements = image.getNElements();
             int nBands = image.getNBands();
             ValueCropper cropper;
-            cropper.apply(d, nBands * nElements, minVal, maxVal);
+            cropper.apply(image.getData(), nBands * nElements, minIntensity, maxIntensity);
         }
 
         /**
@@ -105,12 +116,14 @@ namespace LatticeLib {
             int nElements = image.getNElements();
             int nBands = image.getNBands();
             int nTotal = nBands * nElements;
+            T* data = image.getData();
             ValueNormalizer normalizer;
             ValueDenormalizer denormalizer;
-            T currentMinVal = d[std::min_element(d, d + nTotal)];
-            T currentMaxVal = d[std::max_element(d, d + nTotal)];
-            normalizer.apply(d, nTotal, currentMinVal, currentMaxVal);
-            denormalizer.apply(d, nTotal, MinVal, MaxVal);
+            T currentMinVal = *std::min_element(data, data + nTotal);
+            T currentMaxVal = *std::max_element(data, data + nTotal);
+            //std::cout << "minVal: " << currentMinVal << ", maxVal: " << currentMaxVal << std::endl;
+            normalizer.apply(data, nTotal, currentMinVal, currentMaxVal);
+            denormalizer.apply(data, nTotal, minIntensity, maxIntensity);
         }
 
         /**
@@ -126,12 +139,14 @@ namespace LatticeLib {
             int nElements = image.getNElements();
             int start = bandIndex * nElements;
             int stop = start + nElements;
+            T *data = image.getData();
             ValueNormalizer normalizer;
             ValueDenormalizer denormalizer;
-            T currentMinVal = d[std::min_element(d + start, d + stop)];
-            T currentMaxVal = d[std::max_element(d + start, d + stop)];
-            normalizer.apply(d + start, nElements, currentMinVal, currentMaxVal);
-            denormalizer.apply(d + start, nElements, MinVal, MaxVal);
+            T currentMinVal = *std::min_element(data + start, data + stop);
+            T currentMaxVal = *std::max_element(data + start, data + stop);
+            //std::cout << "minVal: " << currentMinVal << ", maxVal: " << currentMaxVal << std::endl;
+            normalizer.apply(data + start, nElements, currentMinVal, currentMaxVal);
+            denormalizer.apply(data + start, nElements, minIntensity, maxIntensity);
         }
 
         /**
@@ -147,7 +162,7 @@ namespace LatticeLib {
          *              |   normalize:    All intensity values are normalized to the new range.
          *
          */
-        void setMinIntensity(T newMinVal, intensityAdjustmentOption option) {
+        void setMinIntensity(T newMinVal, imageIntensityAdjustmentOption option) {
             switch (option) {
                 case none:
                     minIntensity = newMinVal;
@@ -161,7 +176,7 @@ namespace LatticeLib {
                     normalizeIntensities();
                     break;
                 default:
-                    // TODO: error?
+                    throw invalidArgumentException();
             }
         }
 
@@ -178,7 +193,7 @@ namespace LatticeLib {
          *              |   normalize:    All intensity values are normalized to the new range.
          *
          */
-        void setMaxIntensity(T newMaxVal, intensityAdjustmentOption option) {
+        void setMaxIntensity(T newMaxVal, imageIntensityAdjustmentOption option) {
             switch (option) {
                 case none:
                     maxIntensity = newMaxVal;
@@ -192,7 +207,7 @@ namespace LatticeLib {
                     normalizeIntensities();
                     break;
                 default:
-                    // TODO: error?
+                    throw invalidArgumentException();
             }
         }
     };

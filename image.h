@@ -74,11 +74,11 @@ namespace LatticeLib {
 		Image(const Image<T> &original) : lattice(original.getLattice()) {
 			nBands = original.nBands;
 			int nTotal = nBands * original.getNElements();
-			//data = original.data;
-			data = new T[nTotal];
-			for (int dataIndex = 0; dataIndex < nTotal; dataIndex++) {
-				data[dataIndex] = original.data[dataIndex];
-			}
+			data = original.data;
+			//data = new T[nTotal];
+			//for (int dataIndex = 0; dataIndex < nTotal; dataIndex++) {
+			//	data[dataIndex] = original.data[dataIndex];
+			//}
 		}
 		~Image() {}; // TODO: Should this delete the data array?
 

@@ -94,6 +94,12 @@ namespace LatticeLib {
         }
     };
 
+    struct invalidArgumentException : public exception {
+        const char *what() const throw() {
+            return "The given argument does not correspond to any implemented option.";
+        }
+    };
+
 }
 
 #endif

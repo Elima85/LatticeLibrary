@@ -261,9 +261,9 @@ TEST(Image,copying) {
     EXPECT_EQ(original.getNElements(), copy.getNElements());
     EXPECT_EQ(original.getScaleFactor(), copy.getScaleFactor());
     EXPECT_EQ(original.getNBands(), copy.getNBands());
-    //EXPECT_EQ(original.getData(), copy.getData());
+    EXPECT_EQ(original.getData(), copy.getData());
 
-    EXPECT_NE(original.getData(), copy.getData());
+    /*EXPECT_NE(original.getData(), copy.getData());
 
     uint8 *originalData = original.getData();
     uint8 *copiedData = copy.getData();
@@ -338,6 +338,6 @@ TEST(Image,copying) {
     EXPECT_EQ(originalData[68], copiedData[68]);
     EXPECT_EQ(originalData[69], copiedData[69]);
     EXPECT_EQ(originalData[70], copiedData[70]);
-    EXPECT_EQ(originalData[71], copiedData[71]);
+    EXPECT_EQ(originalData[71], copiedData[71]);*/
 
 }
