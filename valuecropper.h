@@ -23,7 +23,7 @@ namespace LatticeLib {
          * maxValue     | Maximum limit for the array elements.
          */
         template<class T>
-        void apply(T* array, int nElements, T minValue, T maxValue) {
+        void apply(T* array, int nElements, T minValue, T maxValue) const {
             if (minValue > maxValue) {
                 throw incompatibleException();
             }

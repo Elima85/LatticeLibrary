@@ -3,6 +3,10 @@
 
 #include "image.h"
 #include "lattice.h"
+#include "valuecropper.h"
+#include "valuenormalizer.h"
+#include "valuedenormalizer.h"
+#include <algorithm>
 
 namespace LatticeLib {
 
@@ -39,7 +43,27 @@ namespace LatticeLib {
          * minVal       | Minimum intensity value.
          * maxVal       | Maximum intensity value.
          */
-        IntensityWorkset(T *d, Lattice &l, int nB, T minVal, T maxVal) {
+        IntensityWorkset(T *d, Lattice &l, int nB, T minVal, T maxVal, imageIntensityAdjustmentOption option) {
+            switch(option) {
+                case none:
+                    break;
+                case crop:
+                    ValueCropper cropper;
+                    int nElements = l.getNElements() * nB;
+                    cropper.apply(d, nElements, minVal, maxVal);
+                    break;
+                case normalize:
+                    int nElements = l.getNElements() * nB;
+                    ValueNormalizer normalizer;
+                    ValueDenormalizer denormalizer;
+                    T currentMinVal = d[std::min_element(d, d + nElements)];
+                    T currentMaxVal = d[std::max_element(d, d + nElements)];
+                    normalizer.apply(d, nElements, currentMinVal, currentMaxVal);
+                    denormalizer.apply(d, nElements, MinVal, MaxVal);
+                    break;
+                default:
+                    //TODO: error?
+            }
             minIntensity = minVal;
             maxIntensity = maxVal;
             image = Image<T>(d, l, nB);
@@ -54,12 +78,12 @@ namespace LatticeLib {
         ~IntensityWorkset() {}; // TODO: delete data array?
 
         /** Returns minIntensity. */
-        T getMinIntensity() {
+        T getMinIntensity() const {
             return minIntensity;
         }
 
         /** Returns maxIntensity. */
-        T getMaxIntensity() {
+        T getMaxIntensity() const {
             return maxIntensity;
         }
 
@@ -69,11 +93,8 @@ namespace LatticeLib {
         void cropIntensities() {
             int nElements = image.getNElements();
             int nBands = image.getNBands();
-            for (int bandIndex = 0; bandIndex < nBands; bandIndex++) {
-                for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
-                    image.setElement(elementIndex, bandIndex, MIN(maxIntensity, MAX(minIntensity, d[intensityIndex])));
-                }
-            }
+            ValueCropper cropper;
+            cropper.apply(d, nBands * nElements, minVal, maxVal);
         }
 
         /**
@@ -81,64 +102,15 @@ namespace LatticeLib {
          * minIntensity. Preserves the intensity relationship between the modality bands.
          */
         void normalizeIntensities() {
-            T actualMinIntensity = INF;
-            T actualMaxIntensity = -INF;
             int nElements = image.getNElements();
             int nBands = image.getNBands();
-            for (int bandIndex = 0; bandIndex < nBands; bandIndex++) {
-                for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
-                    if (image(elementIndex, bandIndex) < actualMinIntensity) {
-                        actualMinIntensity = image(elementIndex, bandIndex);
-                    }
-                    if (image(elementIndex, bandIndex) >
-                        actualMaxIntensity) { // else if would leave actualMaxIntensity uninitialized if all spels are of equal intensity.
-                        actualMaxIntensity = image(elementIndex, bandIndex);
-                    }
-                }
-            }
-            T actualRange = actualMaxIntensity - actualMinIntensity; // check if actualRange > EPSILON
-            T range = maxIntensity - minIntensity;
-            if (actualRange > EPSILON) {
-                if (range > EPSILON) {
-                    for (int bandIndex = 0; bandIndex < nBands; bandIndex++) {
-                        for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
-                            image.setElement(elementIndex, bandIndex,
-                                             (((image(elementIndex, bandIndex) - actualMinIntensity) /
-                                               actualRange) * range) + minIntensity);
-                        }
-                    }
-                }
-            }
-            else { // The image is completely flat.
-                if (range > EPSILON) {
-                    if (actualMinIntensity > minIntensity) {
-                        if (actualMaxIntensity <
-                            maxIntensity) { // The image is already within the target range. Do nothing.
-                        }
-                        else { // The image is at the maximum of the target range.
-                            for (int bandIndex = 0; bandIndex < nBands; bandIndex++) {
-                                for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
-                                    image.setElement(elementIndex, bandIndex, maxIntensity);
-                                }
-                            }
-                        }
-                    }
-                    else { // The image is at the minimum of the target range.
-                        for (int bandIndex = 0; bandIndex < nBands; bandIndex++) {
-                            for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
-                                image.setElement(elementIndex, bandIndex, minIntensity);
-                            }
-                        }
-                    }
-                }
-                else { // The target range is infinitely narrow. Just assign its value to every element.
-                    for (int bandIndex = 0; bandIndex < nBands; bandIndex++) {
-                        for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
-                            image.setElement(elementIndex, bandIndex, minIntensity);
-                        }
-                    }
-                }
-            }
+            int nTotal = nBands * nElements;
+            ValueNormalizer normalizer;
+            ValueDenormalizer denormalizer;
+            T currentMinVal = d[std::min_element(d, d + nTotal)];
+            T currentMaxVal = d[std::max_element(d, d + nTotal)];
+            normalizer.apply(d, nTotal, currentMinVal, currentMaxVal);
+            denormalizer.apply(d, nTotal, MinVal, MaxVal);
         }
 
         /**
@@ -151,53 +123,15 @@ namespace LatticeLib {
          *
          */
         void normalizeBand(int bandIndex) {
-            T actualMinIntensity = INF;
-            T actualMaxIntensity = -INF;
             int nElements = image.getNElements();
-            for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
-                if (image(elementIndex, bandIndex) < actualMinIntensity) {
-                    actualMinIntensity = image(elementIndex, bandIndex);
-                }
-                if (image(elementIndex, bandIndex) >
-                    actualMaxIntensity) { // else if would leave actualMaxIntensity uninitialized if all spels are of equal intensity.
-                    actualMaxIntensity = image(elementIndex, bandIndex);
-                }
-            }
-            T actualRange = actualMaxIntensity - actualMinIntensity; // check if actualRange > EPSILON
-            T range = maxIntensity - minIntensity;
-            if (actualRange > EPSILON) {
-                if (range > EPSILON) {
-                    for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
-                        image.setElement(elementIndex, bandIndex,
-                                         (((image(elementIndex, bandIndex) - actualMinIntensity) /
-                                           actualRange) * range) + minIntensity);
-                    }
-                }
-            }
-            else { // The image is completely flat.
-                if (range > EPSILON) {
-                    if (actualMinIntensity > minIntensity) {
-                        if (actualMaxIntensity <
-                            maxIntensity) { // The image is already within the target range. Do nothing.
-                        }
-                        else { // The image is at the maximum of the target range.
-                            for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
-                                image.setElement(elementIndex, bandIndex, maxIntensity);
-                            }
-                        }
-                    }
-                    else { // The image is at the minimum of the target range.
-                        for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
-                            image.setElement(elementIndex, bandIndex, minIntensity);
-                        }
-                    }
-                }
-                else { // The target range is infinitely narrow. Just assign its value to every element.
-                    for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
-                        image.setElement(elementIndex, bandIndex, minIntensity);
-                    }
-                }
-            }
+            int start = bandIndex * nElements;
+            int stop = start + nElements;
+            ValueNormalizer normalizer;
+            ValueDenormalizer denormalizer;
+            T currentMinVal = d[std::min_element(d + start, d + stop)];
+            T currentMaxVal = d[std::max_element(d + start, d + stop)];
+            normalizer.apply(d + start, nElements, currentMinVal, currentMaxVal);
+            denormalizer.apply(d + start, nElements, MinVal, MaxVal);
         }
 
         /**
@@ -260,18 +194,6 @@ namespace LatticeLib {
                 default:
                     // TODO: error?
             }
-        }
-
-        /**
-        * Truncates the intensity value to fit into the range of the IntensityImage object.
-        *
-        * Parameter     | Comment
-        * :---------    | :-------
-        * intensity     | intensity of a spatial element
-        */
-        template<class S>
-        T adjustIntensity(S intensity) const { // TODO: Needs something for rounding S to T.
-            return MIN(maxIntensity, MAX(minIntensity, intensity));
         }
     };
 }

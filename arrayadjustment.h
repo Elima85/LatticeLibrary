@@ -23,7 +23,7 @@ namespace LatticeLib {
          * value2       | Range and distribution parameter.
          */
         template <class T>
-        void apply(T* array, int nElements, T value1, T value2) {}
+        void apply(T* array, int nElements, T value1, T value2) const {}
 
     };
 
