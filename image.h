@@ -128,7 +128,7 @@ namespace LatticeLib {
 		/**
          * Returns a pointer to the data array of the image.
          */
-		T* getData() const{
+		T* getData() const {
 			return data;
 		}
 
