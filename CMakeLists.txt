@@ -10,7 +10,7 @@ set(SOURCE_FILES
     arrayadjustment.h
     valuecropper.h
     valuenormalizer.h
-    valuestretcher.h
+    valuedenormalizer.h
     defs.h
     exception.h
     filehandling.cpp

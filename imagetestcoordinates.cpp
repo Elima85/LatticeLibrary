@@ -7,7 +7,7 @@
 
 using namespace LatticeLib;
 
-TEST(CImage, coordinates) {
+TEST(Image, coordinates) {
 
     int nRows = 5;
     int nColumns = 6;

@@ -12,7 +12,8 @@ namespace LatticeLib {
 
     public:
         /**
-         * Normalizes values in the range [minValue,maxValue] to [0,1].
+         * Normalizes values in the range [minValue,maxValue] to [0,1]. Please note that if no value in the input array
+         * equals minValue or maxValue, then none of the resulting values equals 0 or 1, respectively.
          * OBS! This does not work well for integers, as all values <maxValue are truncated to 0 after normalization.
          *
          * Parameter	| Comment
