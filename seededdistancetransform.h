@@ -17,55 +17,68 @@
 
 namespace LatticeLib {
 
-    /* typeid kollar vad det är för typ. På så sätt kan man kolla att in- och utlattice är samma om man har parametrar för resultatet, för att man ska kunna allokera allt i förväg.*/
+    /**
+     *
+     *
+     * Parameter            | in/out    | Comment
+     * :---------           | :------   | :-------
+     * input                | in        | Input image for the distance transform.
+     * seeds                | in        | Seed points for the distance transform. Contains one vector of seed points for every label.
+     * distanceMeasure      | in        | Distance measure to be used for the transform.
+     * neighborhoodSize     | in        | The number of neighbors that count as adjacent to a spel.
+     * distanceTransform    | out       | The computed distance transform. Must have the same lattice and dimensions as the input image, and one modality band for each label.
+     * roots                | out       | The roots of the distance transform. Must have the same lattice and dimensions as the input image, and one modality band for each label.
+     */
     template<class T>
-    InverseForestTransform<T> seededDistanceTransform(const IntensityImage<T> &image, const vector<Seed> seeds, DistanceMeasure &distanceMeasure, int neighborhoodSize) {
+    void seededDistanceTransform(const IntensityWorkset<T> &inputImage, const vector< vector<Seed> > seeds, DistanceMeasure &distanceMeasure, int neighborhoodSize, Image<double> distanceTransform, Image<int> roots) {
 
-        // initialization
-        int nElements = image.getNElements();
-        int nSeeds = seeds.size();
-        int nLabels = 0;
-        vector<int> listOfLabels;
-        for (int seedIndex = 0; seedIndex < nSeeds; seedIndex++) {
-            int label = seeds[seedIndex].getLabel();
-            if (find(listOfLabels.begin(), listOfLabels.end(), label) != listOfLabels.end()) {
-                nLabels++;
-                listOfLabels.push_back(label);
-            }
+        if ((inputImage.getImage().getLattice() != distanceTransform.getLattice()) || (inputImage.getImage().getLattice() != roots.getLattice())){
+            // throw exception or error
         }
-        InverseForestTransform<T> ift(image, nLabels);
+        if ((inputImage.getImage().getNRows() != distanceTransform.getNRows()) ||
+            (inputImage.getImage().getNColumns() != distanceTransform.getNColumns()) ||
+            (inputImage.getImage().getNLayers() != distanceTransform.getNLayers()) ||
+            (inputImage.getImage().getNRows() != roots.getNRows()) ||
+            (inputImage.getImage().getNColumns() != roots.getNColumns()) ||
+            (inputImage.getImage().getNLayers() != roots.getNLayers())) {
+            // throw exception or error
+            // throw dimensionMismatchException();
+        }
+        if ((distanceTransform.getNBands() != seeds.size()) || (roots.getNBands() != seeds.size())) {
+            // throw exception or error
+        }
 
+        int nElements = image.getNElements();
+        int nLabels = seeds.size();
         bool *inQueue = new bool[nElements]; // so that only the "best" copy of an element is popped, and all others are skipped, until a better one is pushed.
+        distanceMeasure.initialize(inputImage);
         for (int labelIndex = 0; labelIndex < nLabels; labelIndex++) {
-            distanceMeasure.initialize(image, neighborhoodSize);
+            distanceMeasure.reset(inputImage);
             // initialize background
             for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
-                ift.distanceTransform.setElement(elementIndex, labelIndex, DBL_MAX);
-                ift.roots.setElement(elementIndex, labelIndex, -1);
+                distanceTransform.setElement(elementIndex, labelIndex, DBL_MAX);
+                roots.setElement(elementIndex, labelIndex, -1);
                 inQueue[elementIndex] = false;
             }
             // initialize seed points and put them on queue
             priority_queue<PriorityQueueElement<T>, vector<PriorityQueueElement<T> >, PriorityQueueElementComparison> queue;
-            int currentLabel = listOfLabels[labelIndex];
+            int nSeeds = seeds[labelIndex].size();
             for (int seedIndex = 0; seedIndex < nSeeds; seedIndex++) {
-                if (seeds[seedIndex].getLabel() == currentLabel) {
-                    int elementIndex = seeds[seedIndex].getIndex();
-                    ift.distanceTransform.setElement(elementIndex, labelIndex, 0);
-                    ift.roots.setElement(elementIndex, labelIndex, elementIndex);
-                    queue.push(PriorityQueueElement<T>(elementIndex, 0));
-                    inQueue[elementIndex] = true;
-                }
+                int elementIndex = seeds[labelIndex][seedIndex].getIndex();
+                distanceTransform.setElement(elementIndex, labelIndex, 0);
+                roots.setElement(elementIndex, labelIndex, elementIndex);
+                queue.push(PriorityQueueElement<T>(elementIndex, 0));
+                inQueue[elementIndex] = true;
             }
             // wave front propagation
-            vector<Neighbor> neighbors;
             while (!queue.empty()) {
                 PriorityQueueElement<T> topElement = queue.top();
                 queue.pop();
-                int currentIndex = topElement.getIndex();
-                if (inQueue[currentIndex]) {
-                    inQueue[currentIndex] = false; // so that old queue elements offering larger distances are skipped
+                int poppedElementIndex = topElement.getIndex();
+                if (inQueue[poppedElementIndex]) {
+                    inQueue[poppedElementIndex] = false; // so that old queue elements offering larger distances are skipped
                     vector<PriorityQueueElement<T> > newQueueElements;
-                    distanceMeasure.update(ift.image, ift.distanceTransform, ift.roots, currentIndex, labelIndex, newQueueElements);
+                    distanceMeasure.update(image, neighborhoodSize, distanceTransform, roots, poppedElementIndex, labelIndex, newQueueElements);
                     int nNewQueueElements = newQueueElements.size();
                     for (int queueElementIndex = 0; queueElementIndex < nNewQueueElements; queueElementIndex++) {
                         queue.push(newQueueElements[queueElementIndex]);
@@ -73,9 +86,8 @@ namespace LatticeLib {
                     }
                 }
             }
-            distanceMeasure.clear();
         }
-        return ift;
+        distanceMeasure.clear();
     }
 
 /**

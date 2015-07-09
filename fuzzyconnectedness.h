@@ -1,6 +1,11 @@
 #ifndef FUZZYCONNECTEDNESS_H
 #define FUZZYCONNECTEDNESS_H
 
+#include "distancemeasure.h"
+#include "image.h"
+#include "norm.h"
+#include "neighbor.h"
+
 namespace LatticeLib {
 
     /**
@@ -23,14 +28,10 @@ namespace LatticeLib {
         ~FuzzyConnectedness();
 
         template<class T>
-        void initialize(const IntensityCImage <T> &image, int nS) {
-            neighborhoodSize = nS;
-        }
-
-        template<class T>
-        void update(const IntensityCImage <T> &image, DistanceCImage &distanceTransform, RootCImage &roots, int elementIndex, int labelIndex, vector <PriorityQueueElement<T>> &toQueue) {
+        void update(const Image <T> &image, int neighborhoodSize, int elementIndex, int labelIndex,
+                    Image<double> &distanceTransform, Image<int> &roots, vector <PriorityQueueElement<T> > &toQueue) {
             toQueue.clear();
-            vector <Neighbor> neighbors;
+            vector<Neighbor> neighbors;
             image.getNeighbors(elementIndex, neighborhoodSize, neighbors);
             for (int neighborIndex = 0; neighborIndex < neighbors.size(); neighborIndex++) {
                 int neighborGlobalIndex = neighbors[neighborIndex].getIndex();
@@ -42,10 +43,7 @@ namespace LatticeLib {
                 }
             }
         }
-        void clear() {
-            neighborhoodSize = 0;
-        }
-    }
+    };
 }
 
 #endif

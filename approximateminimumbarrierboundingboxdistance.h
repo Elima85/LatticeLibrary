@@ -2,6 +2,7 @@
 #define APPROXIMATEMINIMUMBARRIERBOUNDINGBOXDISTANCE_H
 
 #include "distancemeasure.h"
+#include "image.h"
 #include "norm.h"
 #include "neighbor.h"
 #include "vectoroperators.h"
@@ -37,24 +38,28 @@ namespace LatticeLib {
         ~ApproximateMinimumBarrierBoundingBoxDistance(){}
 
         template <class T>
-        void initialize(const IntensityImage<T> &image, int nS) {
-            neighborhoodSize = nS;
+        void initialize(const Image<T> &image) {
             int nElements = image.getNElements();
-            int nBands = image.getNBands();
-            vector<T> *pathMinimumValue = new vector<T>[nElements];
-            vector<T> *pathMaximumValue = new vector<T>[nElements];
+            pathMinimumValue = new vector<T>[nElements];
+            pathMaximumValue = new vector<T>[nElements];
+        }
+
+        void reset(const Image<T> &image) {
+            int nElements = image.getNElements();
             for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
                 pathMinimumValue[elementIndex] = image[elementIndex]; // the spel is always part of the path between itself and the object boundary
                 pathMaximumValue[elementIndex] = image[elementIndex];
             }
         }
 
-        template<class T>
-        void update(DistanceImage &distanceTransform, const IntensityImage<T> &image, RootImage &roots, int elementIndex, int labelIndex, vector<PriorityQueueElement<T> > &toQueue){
+        template <class T>
+        void update(const Image<T> &image, int neighborhoodSize, int elementIndex, int labelIndex,
+                    Image<double> &distanceTransform, Image<int> &roots, vector<PriorityQueueElement<T> > &toQueue) {
             toQueue.clear();
             vector<Neighbor> neighbors;
             image.getNeighbors(elementIndex, neighborhoodSize, neighbors);
-            for (int neighborIndex = 0; neighborIndex < neighbors.size(); neighborIndex++) {
+            int nNeighbors = neighbors.size();
+            for (int neighborIndex = 0; neighborIndex < nNeighbors; neighborIndex++) {
                 int neighborGlobalIndex = neighbors[neighborIndex].getIndex();
                 vector<T> minIntensities = minElements(pathMinimumValue[elementIndex], image[neighborGlobalIndex]);
                 vector<T> maxIntensities = maxElements(pathMaximumValue[elementIndex], image[neighborGlobalIndex]);
@@ -72,7 +77,6 @@ namespace LatticeLib {
         }
 
         void clear() {
-            neighborhoodSize = 0;
             delete pathMinimumValue;
             delete pathMaximumValue;
             pathMinimumValue = NULL;
