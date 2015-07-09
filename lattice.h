@@ -17,7 +17,7 @@ namespace LatticeLib {
 * nRows		    | #columns of the lattice
 * nLayers		| #layers of the lattice
 * nElements	    | total #elements of the lattice
-* scaleFactor	| Determines the scaling of the lattice. Default is one sample/unit volume.
+* scaleFactor	| Determines the scaling of the lattice. Default is one sample/unit volume. ????? Verkar inte vara det...
 */
     class Lattice {
 
