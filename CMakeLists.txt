@@ -12,6 +12,7 @@ set(SOURCE_FILES
     valuecropper.h
     valuenormalizer.h
     valuedenormalizer.h
+    segmentation.h
     defs.h
     exception.h
     filehandling.cpp
@@ -66,6 +67,7 @@ set(TEST_SOURCE_FILES
     imagetestmanipulation.cpp
     arrayadjustmenttest.cpp
     intensityworksettest.cpp
+    segmentationtest.cpp
     latticelibtest.cpp
     )
 

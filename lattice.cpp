@@ -85,4 +85,7 @@ namespace LatticeLib {
     bool Lattice::operator==(const Lattice &rhs) const {
         return (typeid(*this) == typeid(rhs) && nColumns == rhs.getNColumns() && nRows == rhs.getNRows() && nLayers == rhs.getNLayers() && scaleFactor == rhs.getScaleFactor());
     }
+    bool Lattice::operator!=(const Lattice &rhs) const {
+        return !((*this)==rhs);
+    }
 }

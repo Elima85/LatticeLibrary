@@ -183,6 +183,11 @@ namespace LatticeLib {
          */
         bool operator==(const Lattice& rhs) const;
 
+        /**
+         * Compares the type and members of two Lattice objects, and returns false if all are equal.
+         */
+        bool operator!=(const Lattice &rhs) const;
+
     };
 
 }

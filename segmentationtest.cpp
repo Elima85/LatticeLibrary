@@ -2,6 +2,7 @@
 #include "defs.h"
 #include "segmentation.h"
 #include "image.h"
+#include <stdio.h>
 
 using namespace LatticeLib;
 
@@ -16,13 +17,13 @@ TEST(Segmentation,crisp) {
 
     int nBands = 3;
     double distance[nElements * nBands];
-    bool labels[nElements * nBands];
+    bool labelValues[nElements * nBands];
     Image<double> distanceTransform(distance, lattice, nBands);
     vector<double> defaultDistances;
-    defaultDistances.push_back(0.9);
-    defaultDistances.push_back(0.8);
-    defaultDistances.push_back(0.7);
-    for (int elementIndex = 0; elementIndex < nBands; elementIndex++) {
+    defaultDistances.push_back(9.9);
+    defaultDistances.push_back(8.8);
+    defaultDistances.push_back(7.7);
+    for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
         distanceTransform.setElement(elementIndex, defaultDistances); // default: label 2
     }
     distanceTransform.setElement(2, 2, 3, 0, 0.0); // midpoint: label 0
@@ -34,22 +35,37 @@ TEST(Segmentation,crisp) {
         }
     }
 
-    Image<bool> labels(labels, lattice, nBands);
+    Image<bool> labels(labelValues, lattice, nBands);
 
     Segmentation segmentation;
-    segmentation(distanceTransform, labels);
+    segmentation.crisp(distanceTransform, labels);
+
+    int nLabels[] = {0,0,0};
+    int totalNLabels = 0;
+    for (int bandIndex = 0; bandIndex < nBands; bandIndex++) {
+        for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
+            if (labels(elementIndex, bandIndex)) {
+                nLabels[bandIndex]++;
+                totalNLabels++;
+            }
+        }
+    }
+    EXPECT_EQ(210, totalNLabels);
+    EXPECT_EQ(2, nLabels[0]);
+    EXPECT_EQ(84, nLabels[1]);
+    EXPECT_EQ(124, nLabels[2]);
 
     // only one label per element
     int incorrectLabels = 0;
     for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
-        int nLabels = 0;
+        int nCurrentLabels = 0;
         for (int bandIndex = 0; bandIndex < nBands; bandIndex++) {
             if (labels(elementIndex,bandIndex)) {
-                nLabels++;
+                nCurrentLabels++;
             }
-            if (nLabels != 1) {
-                incorrectLabels++;
-            }
+        }
+        if (nCurrentLabels != 1) {
+            incorrectLabels++;
         }
     }
     EXPECT_EQ(0, incorrectLabels);

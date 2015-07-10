@@ -2,6 +2,7 @@
 #define SEGMENTATION_H
 
 #include "image.h"
+#include "intensityworkset.h"
 #include "lattice.h"
 #include "vectoroperators.h"
 #include <cmath>
@@ -32,11 +33,10 @@ namespace LatticeLib {
             int nElements = distanceTransform.getNElements();
             int nBands = distanceTransform.getNBands();
             for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
-                vector<T> distances = distanceTransform[elementIndex];
-                for (int bandIndex = 0; bandIndex < nBands; bandIndex++) {
-                    segmentation.setElement(elementIndex, bandIndex, false);
-                }
-                segmentation.setElement(elementIndex,getIndexOfMinumumValue(distances),true);
+                vector<double> distances = distanceTransform[elementIndex];
+                vector<bool> labels(nBands, false);
+                labels.at(getIndexOfMinumumValue(distances)) = true;
+                segmentation.setElement(elementIndex,labels);
             }
         }
 
