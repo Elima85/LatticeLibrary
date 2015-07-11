@@ -2,11 +2,12 @@
 #include "defs.h"
 #include "segmentation.h"
 #include "image.h"
+#include "intensityworkset.h"
 #include <stdio.h>
 
 using namespace LatticeLib;
 
-TEST(Segmentation,crisp) {
+TEST(Segmentation, crisp) {
 
     int nRows = 5;
     int nColumns = 6;
@@ -81,5 +82,76 @@ TEST(Segmentation,crisp) {
         }
     }
     EXPECT_EQ(84, labelSum);
+}
 
+TEST(Segmentation, fuzzy) {
+
+    int nRows = 5;
+    int nColumns = 5;
+    int nLayers = 1;
+    int nElements = nRows * nColumns * nLayers;
+    double scaleFactor = 1.0;
+    CCLattice lattice(nRows, nColumns, nLayers, scaleFactor);
+
+    int nBands = 4;
+    double distance[100] = { 2,          1,          0,          1,          2,
+                             sqrt(5),    sqrt(2),    1,          sqrt(2),    sqrt(5),
+                             sqrt(8),    sqrt(5),    2,          sqrt(5),    sqrt(8),
+                             sqrt(13),   sqrt(10),   3,          sqrt(10),   sqrt(13),
+                             sqrt(20),   sqrt(17),   4,          sqrt(17),   sqrt(20),
+
+                             2,          sqrt(5),    sqrt(8),    sqrt(13),   sqrt(20),
+                             1,          sqrt(2),    sqrt(5),    sqrt(10),   sqrt(17),
+                             0,          1,          2,          3,          4,
+                             1,          sqrt(2),    sqrt(5),    sqrt(10),   sqrt(17),
+                             2,          sqrt(5),    sqrt(8),    sqrt(13),   sqrt(20),
+
+                             sqrt(20),   sqrt(17),   4,          sqrt(17),   sqrt(20),
+                             sqrt(13),   sqrt(10),   3,          sqrt(10),   sqrt(13),
+                             sqrt(8),    sqrt(5),    2,          sqrt(5),    sqrt(8),
+                             sqrt(5),    sqrt(2),    1,          sqrt(2),    sqrt(5),
+                             2,          1,          0,          1,          2,
+
+                             sqrt(20),   sqrt(13),   sqrt(8),    sqrt(5),    2,
+                             sqrt(17),   sqrt(10),   sqrt(5),    sqrt(2),    1,
+                             4,          3,          2,          1,          0,
+                             sqrt(17),   sqrt(10),   sqrt(5),    sqrt(2),    1,
+                             sqrt(20),   sqrt(13),   sqrt(8),    sqrt(5),    2};
+    Image<double> distanceTransform(distance, lattice, nBands);
+
+    uint8 uint8LabelValues[nElements * nBands];
+    int intLabelValues[nElements * nBands];
+    double doubleLabelValues[nElements * nBands];
+    Image<uint8> uint8Labels(uint8LabelValues, lattice, nBands);
+    Image<int> intLabels(intLabelValues, lattice, nBands);
+    Image<double> doubleLabels(doubleLabelValues, lattice, nBands);
+    IntensityWorkset<uint8> uint8FuzzyLabels(uint8Labels, 0, 255, none);
+    IntensityWorkset<int> intFuzzyLabels(intLabels, 14, 92, none);
+    IntensityWorkset<double> doubleFuzzyLabels(doubleLabels, 0.0, 1.0, none);
+
+
+    Segmentation segmentation;
+    segmentation.fuzzy(distanceTransform, uint8FuzzyLabels);
+    segmentation.fuzzy(distanceTransform, intFuzzyLabels);
+    segmentation.fuzzy(distanceTransform, doubleFuzzyLabels);
+
+    int uint8LabelSum = 0, intLabelSum = 0;
+    double doubleLabelSum = 0.0;
+    for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
+        std::cout << std::endl;
+        for (int bandIndex = 0; bandIndex < nBands; bandIndex++) {
+            uint8LabelSum += uint8FuzzyLabels.getImage()(elementIndex,bandIndex);
+            intLabelSum += (intFuzzyLabels.getImage()(elementIndex, bandIndex) - 14);
+            doubleLabelSum += doubleFuzzyLabels.getImage()(elementIndex, bandIndex);
+        }
+
+    }
+    EXPECT_EQ(nElements * 255, uint8LabelSum);
+    EXPECT_EQ(nElements * (92 - 14), intLabelSum);
+    EXPECT_NEAR(nElements, doubleLabelSum, EPSILONT);
+
+    EXPECT_NEAR(1, doubleFuzzyLabels.getImage()(1, 0), EPSILONT);
+    EXPECT_NEAR(1, doubleFuzzyLabels.getImage()(2, 0), EPSILONT);
+    EXPECT_NEAR(1, doubleFuzzyLabels.getImage()(3, 0), EPSILONT);
+    EXPECT_NEAR(1, doubleFuzzyLabels.getImage()(7, 0), EPSILONT);
 }
