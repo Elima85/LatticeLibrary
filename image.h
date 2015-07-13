@@ -11,6 +11,7 @@
 #include "priorityqueue.h"
 #include "neighbor.h"
 #include "lattice.h"
+#include "vectoroperators.h"
 
 namespace LatticeLib {
 
@@ -287,7 +288,7 @@ enum blendOption {min, max, mean, sum};
 				throw outsideRangeException();
 			}
 			return 0.5 - coverage;
-		}
+		} // TODO: Move to IntensityWorkset!
 		double internalDistanceLinear(uint8 coverage) const {
 			double convertedCoverage = coverage/255.0;
 			return internalDistanceLinear(convertedCoverage);
@@ -456,7 +457,7 @@ enum blendOption {min, max, mean, sum};
 		/**
          * Returns the neighbors of a spatial element.
          */
-		void getNeighbors(int row, int column, int layer, int neighborhoodSize, vector<Neighbor> &neighbors) {
+		void getNeighbors(int row, int column, int layer, int neighborhoodSize, vector<Neighbor> &neighbors) const {
 			lattice.getNeighbors(row, column, layer, neighborhoodSize, neighbors);
 		}
 
@@ -473,57 +474,168 @@ enum blendOption {min, max, mean, sum};
          * Parameter	| in/out	| Comment
          * :----------	| :-------	| :--------
          * index		|			| Index of the band to be extracted.
-         * result		| OUTPUT	| extracted values
+         * result		| OUTPUT	| Extracted values. Needs to be of length >= nElements.
          */
-		void getBand(int band, T* result) const {
+		void copyBand(int band, T *result) const {
 			if (!(band >= 0 && band < nBands)) {
 				throw outsideImageException();
 			}
 			for (int index = 0; index < lattice.getNElements(); index++) {
 				result[index] = data[band * lattice.getNElements() + index];
 			}
-		}
+		} // TODO: test!
 
 		/**
-         * Blends all modality bands into a single band.
-         * min/max
+         * Blends all modality bands into a single band, and returns it in the form of an array.
          *
          * Parameter	| in/out	| Comment
          * :----------	| :-------	| :--------
-         * flag			|			| Decides how to blend the modality bands into one
-         * 				|			| 	0: minimum val is kept
-         * 				|			| 	1: maximum val is kept
-         * result		| OUTPUT	| blended values
+         * option		|			| Decides how to blend the modality bands into one
+         * 				|			| 	min: minimum val is kept
+         * 				|			| 	max: maximum val is kept
+         * 				|			|	mean: returns the mean intensity for each element
+         * 				|			|	sum: returns the sum of the intensities for each element
+         * result		| OUTPUT	| Blended values. Needs to be of length >= nElements.
          */
-		void blend(blendOption option, T* result) const {
-			T val;
+		void blendBands(blendOption option, T* result) const {
 			switch(option) {
 				case min:
-					for (int i = 0; i < lattice.getNElements(); i++) {
-						val = T(INF);
-						for (int b = 0; b < nBands; b++) {
-							val = min(val, data[b * lattice.getNElements() + i]);
-						}
-						result[i] = val;
+					for (int elementIndex = 0; elementIndex < lattice.getNElements(); elementIndex++) {
+						vector<T> intensities = (*this)[elementIndex];
+						int minIndex = getIndexOfMinimumValue(intensities);
+						result[elementIndex] = intensities[minIndex];
 					}
 					break;
 				case max:
-					for (int i = 0; i < lattice.getNElements(); i++) {
-						val = T(-INF);
-						for (int b = 0; b < nBands; b++) {
-							val = max(val, data[b * lattice.getNElements() + i]);
-						}
-						result[i] = val;
+					for (int elementIndex = 0; elementIndex < lattice.getNElements(); elementIndex++) {
+						vector<T> intensities = (*this)[elementIndex];
+						int maxIndex = getIndexOfMaximumValue(intensities);
+						result[elementIndex] = intensities[maxIndex];
 					}
 					break;
 				case mean:
+					for (int elementIndex = 0; elementIndex < lattice.getNElements(); elementIndex++) {
+						vector<T> intensities = (*this)[elementIndex];
+						result[elementIndex] = T(meanValue(intensities));
+					}
 					break;
 				case sum:
+					for (int elementIndex = 0; elementIndex < lattice.getNElements(); elementIndex++) {
+						vector<T> intensities = (*this)[elementIndex];
+						result[elementIndex] = T(sumOfElements(intensities));
+					}
 					break;
 				default:
-					throw outsideRangeException();
+					throw invalidArgumentException();
 			}
-		}
+		} // TODO: test!
+
+		/**
+		 * Adds the intensity values of two images.
+		 *
+         * Parameter	| in/out	| Comment
+         * :----------	| :-------	| :--------
+         * other		| INPUT		| Image to be added to the first.
+         * result		| OUTPUT	| Result of addition. Needs to be of length >= nElements.
+		 */
+		template<class S>
+		void add(Image<S> other, T* result) {
+			if (getLattice() != other.getLattice()) {
+				// throw error or exception
+			}
+			if (getNBands() != other.getNBands()) {
+				// throw error or exception
+			}
+			int nTotal = getNBands() * getNElements();
+			T *thisData = getData();
+			T *otherData = other.getData();
+			for (int dataIndex = 0; dataIndex < nTotal; dataIndex++) {
+				result[dataIndex] = T(thisData[dataIndex] + otherData[dataIndex]);
+			}
+		} // TODO: test!
+
+		/**
+		 * Adds the intensity values of two bands of two images.
+		 *
+         * Parameter	| in/out	| Comment
+         * :----------	| :-------	| :--------
+         * other		| INPUT		| Image to be added to the first.
+         * thisBand		| INPUT		| Index of the desired band of the calling image.
+         * otherBand	| INPUT		| Index of the desired band of the input image.
+         * result		| OUTPUT	| Result of addition. Needs to be of length >= nElements.
+		 */
+		template<class S>
+		void addBands(Image<S> other, int thisBand, int otherBand, T* result){
+			if (getLattice() != other.getLattice()) {
+				// throw error or exception
+			}
+			int nElements = getNElements();
+			for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
+				result[elementIndex] = T((*this)(elementIndex, thisBand) + other(elementIndex, otherBand));
+			}
+		} // TODO: test!
+
+		/**
+		 * Subtracts the intensity values of the input image from the calling image.
+		 *
+         * Parameter	| in/out	| Comment
+         * :----------	| :-------	| :--------
+         * other		| INPUT		| Image to be added to the first.
+         * result		| OUTPUT	| Result of addition. Needs to be of length >= nElements.
+		 */
+		template<class S>
+		void subtract(Image<S> other, T *result) {
+			if (getLattice() != other.getLattice()) {
+				// throw error or exception
+			}
+			if (getNBands() != other.getNBands()) {
+				// throw error or exception
+			}
+			int nTotal = getNBands() * getNElements();
+			T *thisData = getData();
+			T *otherData = other.getData();
+			for (int dataIndex = 0; dataIndex < nTotal; dataIndex++) {
+				result[dataIndex] = T(thisData[dataIndex] - otherData[dataIndex]);
+			}
+		} // TODO: test!
+
+		/**
+		 * Subtracts the intensity values of two bands of two images.
+		 *
+         * Parameter	| in/out	| Comment
+         * :----------	| :-------	| :--------
+         * other		| INPUT		| Image to be added to the first.
+         * thisBand		| INPUT		| Index of the desired band of the calling image.
+         * otherBand	| INPUT		| Index of the desired band of the input image.
+         * result		| OUTPUT	| Result of subtraction. Needs to be of length >= nElements.
+		 */
+		template<class S>
+		void subtractBands(Image<S> other, int thisBand, int otherBand, T *result) {
+			if (getLattice() != other.getLattice()) {
+				// throw error or exception
+			}
+			int nElements = getNElements();
+			for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
+				result[elementIndex] = T((*this)(elementIndex, thisBand) - other(elementIndex, otherBand));
+			}
+		} // TODO: test!
+
+		/**
+		 * Scales the intensity values of the calling image by the input factor.
+		 *
+         * Parameter	| in/out	| Comment
+         * :----------	| :-------	| :--------
+         * factor		| INPUT		| Scale factor with which to multiply the intensity values.
+         * result		| OUTPUT	| Result of the multiplication. Needs to be of length >= nElements.
+		 */
+		template<class S>
+		void scale(S factor, T *result) {
+			int nTotal = getNBands() * getNElements();
+			T* data = getData();
+			for (int dataIndex = 0; dataIndex < nTotal; dataIndex++) {
+				result[dataIndex] = T(factor * data[dataIndex]);
+			}
+		} // TODO: test!
 
 		/**
          * Filters the image using the supplied filter, which may be, for example,

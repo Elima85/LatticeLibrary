@@ -81,7 +81,7 @@ namespace LatticeLib {
     }
 
     template<class T>
-    int getIndexOfMinumumValue(vector<T> v) {
+    int getIndexOfMinimumValue(vector<T> v) {
         int length = v.size();
         int index;
         double minValue = INF;
@@ -112,7 +112,7 @@ namespace LatticeLib {
     T sumOfElements(vector<T> v) {
         return std::accumulate(v.begin(), v.end(), T(0));
     }
-    
+
     template<class T>
     double meanValue(vector<T> v) {
         int length = v.size();

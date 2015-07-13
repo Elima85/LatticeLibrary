@@ -36,7 +36,7 @@ namespace LatticeLib {
             for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
                 vector<double> distances = distanceTransform[elementIndex];
                 vector<bool> labels(nBands, false);
-                labels.at(getIndexOfMinumumValue(distances)) = true;
+                labels.at(getIndexOfMinimumValue(distances)) = true;
                 segmentation.setElement(elementIndex,labels);
             }
         }
@@ -70,7 +70,7 @@ namespace LatticeLib {
             double radius = cbrt(3/(4 * PI) * segmentation.getImage().getLattice().getScaleFactor()); // approximate the spel by a sphere
             for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
                 vector<double> distances = distanceTransform[elementIndex];
-                int nearestLabel = getIndexOfMinumumValue(distances);
+                int nearestLabel = getIndexOfMinimumValue(distances);
                 double smallestDistance = distances[nearestLabel];
                 vector<int> competingLabels;
                 int nCompetingLabels = 0;

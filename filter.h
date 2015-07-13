@@ -1,180 +1,122 @@
 #ifndef FILTER_H
 #define FILTER_H
 
-#include <vector>
+#include "filtercoefficient.h
+#include "image.h"
+#include "neighbor.h"
 
-using namespace std;
-
-/**
- * Filter coefficient for template filters.
- *
- * Member 		| Comment
- * --------		| --------
- * index		| index of the corresponding neighbor (-1 for midpoint?)
- * coefficient	| filter coefficient for this neighbor
- *
- */
-template <class S>
-class FilterCoefficient{
-
-private:
-	/** index of the corresponding neighbor */
-	int index;
-
-	/** filter coefficient for this neighbor */
-	S factor;
-
-public:
-	FilterCoefficient(int i, S f) {
-		index = i;
-		factor = f;
-	}
-	FilterCoefficient() {
-		index = 0;
-		factor = 0;
-	}
-
-	double getIndex() const {
-		return index;
-	}
-
-	S getFactor() const {
-		return factor;
-	}
-
-	void setIndex(int i) {
-		index = i;
-	}
-
-	void setFactor(S f) {
-		factor = f;
-	}
-
-	void set(int i, S f) {
-		index = i;
-		factor = f;
-	}
-};
+namespace LatticeLib {
 
 /**
- * Abstract base class for template filters.
+ * Class for template filters.
  *
  * Member 			| Comment
  * --------			| --------
  * neighborhoodSize	| Size of spel neighborhood to be used for this filter.
- *
+ * coefficients		| Filter coefficients.
  */
-template <class S>
-class Filter {
+	template<class S>
+	class Filter {
 
-private:
-	/** Size of spel neighborhood to be used for this filter. */
-	int neighborhoodSize;
+	private:
+		/** Filter coefficients. */
+		vector<FilterCoefficient<S> > coefficients;
 
-	/** #coefficients in the filter */
-	int nCoeffs;
+		/** Size of spel neighborhood to be used for this filter. */
+		int neighborhoodSize;
 
-protected:
+	public:
+		Filter(vector<FilterCoefficient<S> > c, int nS) {
+			coefficients = c;
+			neighborhoodSize = nS;
+		}
 
-	/**
-	 * Sets neighborhoodSize.
-	 *
-	 * Parameter	| comment
-	 * :---------	| :-------
-	 * nS			| new neighborhoodSize
-	 */
-	void setNeighborhoodSize(int nS) {
-		neighborhoodSize = nS;
-	}
+		~Filter() {};
 
-	/**
-	 * Sets nCoeffs.
-	 *
-	 * Parameter	| comment
-	 * :---------	| :-------
-	 * nC			| new nCoeffs
-	 */
-	void setNCoeffs(int nC) {
-		nCoeffs = nC;
-	}
-
-	/**
-	 * Increases nCoeffs by 1.
-	 */
-	void incNCoeffs() {
-		nCoeffs++;
-	}
-
-	/**
-	 * Decreases nCoeffs by 1.
-	 */
-	void decNCoeffs() {
-		nCoeffs--;
-	}
-
-public:
-	Filter(int nC, int nS) {
-		nCoeffs = nC;
-		neighborhoodSize = nS;
-	}
-
-	/**
+		/**
 	 * Returns neighborhoodSize.
 	 */
-	int getNeighborhoodSize() const {
-		return neighborhoodSize;
-	}
+		int getNeighborhoodSize() const {
+			return neighborhoodSize;
+		}
 
-	/**
+		/**
+	 * Returns the number of filter coefficients.
+	 */
+		int getNCoefficients() const {
+			return coefficients.size();
+		}
+
+		/**
 	 * Returns the coefficient vector.
 	 */
-	virtual vector< FilterCoefficient<S> > getCoeffs() const = 0;
+		vector<FilterCoefficient<S> > getCoeffs() const {
+			return coefficients;
+		}
 
-	/**
+		/**
 	 * Returns i:th FilterCoefficient from the coefficient vector.
 	 *
-	 * Parameter	| comment
-	 * :---------	| :-------
-	 * i			| position in coefficient vector
+	 * Parameter		| comment
+	 * :---------		| :-------
+	 * coefficientIndex	| position in coefficient vector
 	 */
-	virtual FilterCoefficient<S> getCoeff(int i) const = 0;
+		FilterCoefficient<S> getCoefficient(int coefficientIndex) const {
+			return coefficients[coefficientIndex];
+		}
 
-	/**
+		/**
 	 * Finds the position of the coefficient corresponding to the neighbor with the input index. Returns -1 if this neighbor does not have a coefficient.
 	 *
-	 * Parameter	| comment
-	 * :---------	| :-------
-	 * index		| index of corresponding neighbor
+	 * Parameter		| comment
+	 * :---------		| :-------
+	 * positionIndex	| Position index of corresponding neighbor.
 	 */
-	virtual int findCoeff(int index) const = 0;
+		int findCoefficient(int positionIndex) const {
+			int result = -1;
+			int nCoefficients = getNCoefficients();
+			for (int coefficientIndex = 0; coefficientIndex < nCoefficients; coefficientIndex++) {
+				if (coefficients[coefficientIndex].getIndex() == positionIndex) {
+					result = coefficientIndex;
+				}
+			}
+			return result;
+		}
 
-	/**
-	 * Returns nCoeffs.
-	 */
-	int getNCoeffs() const {
-		return nCoeffs;
-	}
+		template<class T>
+		void applyToBand(Image<T> image, int bandIndex, T *result) const {
+			if ((bandIndex < 0) || (bandIndex >= image.getNBands())) {
+				// throw error or exception
+			}
 
-	/**
-	 * Adds a coefficient at the end of the coefficient vector.
-	 *
-	 * Parameter	| comment
-	 * :---------	| :-------
-	 * index		| index of corresponding neighbor
-	 * coeff		| coefficient
-	 */
-	virtual void addCoeff(int index, S coeff) = 0;
+			int nElements = image.getNElements();
+			for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
+				int neighborhoodSize = getNeighborhoodSize();
+				vector<Neighbor> neighbors;
+				T result = 0;
+				image.getNeighbors(elementIndex, neighborhoodSize, neighbors);
+				int nFoundNeighbors = neighbors.size();
+				result[elementIndex] = 0;
+				for (int neighborIndex = 0; neighborIndex < nFoundNeighbors; neighborIndex++) {
+					int coefficientIndex = findCoefficient(neighbors[neighborIndex].getPosition());
+					if (coefficientIndex > -1) {
+						result[elementIndex] += image(neighbors[neighborIndex].getIndex(), bandIndex) *
+												coefficients[coefficientIndex].getCoefficient();
+					}
+				}
+			}
+		}
 
-	/**
-	 * Removes the coefficient corresponding to a neighbor.
-	 *
-	 * Parameter	| comment
-	 * :---------	| :-------
-	 * index		| index of corresponding neigbhbor
-	 */
-	virtual void eraseCoeff(int index) = 0;
-
-	virtual ~Filter() {};
-};
+		template<class T>
+		void applyToImage(Image<T> image, T *result) const {
+			int nElements = image.getNElements();
+			int nBands = image.getNBands();
+			for (int bandIndex = 0; bandIndex < nBands; bandIndex++) {
+				int offset = bandIndex * nElements;
+				applyToBand(image, bandIndex, result[offset]);
+			}
+		}
+	};
+}
 
 #endif

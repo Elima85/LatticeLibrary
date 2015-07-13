@@ -1,6 +1,3 @@
-#ifndef MISCTEST
-#define MISCTEST
-
 #include "gtest/gtest.h"
 #include "miscellaneous.h"
 #include "defs.h"
@@ -12,7 +9,6 @@ using namespace LatticeLib;
 
 /**
 * bool IS_EVEN(int)
-* int length() (of vector)
 * int lowerBound(double*,int,double)
 * vector<T> element-wise operators, tested for int and double.
 */
@@ -126,10 +122,10 @@ TEST(Miscellaneous, vectorTOperators) {
     EXPECT_THROW(minElements(intVector1, intVector5), dimensionMismatchException);
     EXPECT_THROW(maxElements(intVector1, intVector5), dimensionMismatchException);
 
-    EXPECT_EQ(getIndexOfMinumumValue(intVector1),0);
-    EXPECT_EQ(getIndexOfMinumumValue(intNegVector), 4);
-    EXPECT_EQ(getIndexOfMinumumValue(intMinVector), 4);
-    EXPECT_EQ(getIndexOfMinumumValue(intMaxVector), 2);
+    EXPECT_EQ(getIndexOfMinimumValue(intVector1),0);
+    EXPECT_EQ(getIndexOfMinimumValue(intNegVector), 4);
+    EXPECT_EQ(getIndexOfMinimumValue(intMinVector), 4);
+    EXPECT_EQ(getIndexOfMinimumValue(intMaxVector), 2);
 
     EXPECT_EQ(getIndexOfMaximumValue(intVector1), 4);
     EXPECT_EQ(getIndexOfMaximumValue(intNegVector), 0);
@@ -226,10 +222,10 @@ TEST(Miscellaneous, vectorTOperators) {
     EXPECT_THROW(minElements(doubleVector1, doubleVector5), dimensionMismatchException);
     EXPECT_THROW(maxElements(doubleVector1, doubleVector5), dimensionMismatchException);
 
-    EXPECT_EQ(getIndexOfMinumumValue(doubleVector1), 0);
-    EXPECT_EQ(getIndexOfMinumumValue(doubleNegVector), 4);
-    EXPECT_EQ(getIndexOfMinumumValue(doubleMinVector), 4);
-    EXPECT_EQ(getIndexOfMinumumValue(doubleMaxVector), 2);
+    EXPECT_EQ(getIndexOfMinimumValue(doubleVector1), 0);
+    EXPECT_EQ(getIndexOfMinimumValue(doubleNegVector), 4);
+    EXPECT_EQ(getIndexOfMinimumValue(doubleMinVector), 4);
+    EXPECT_EQ(getIndexOfMinimumValue(doubleMaxVector), 2);
 
     EXPECT_EQ(getIndexOfMaximumValue(doubleVector1), 4);
     EXPECT_EQ(getIndexOfMaximumValue(doubleNegVector), 0);
@@ -247,5 +243,3 @@ TEST(Miscellaneous, vectorTOperators) {
     EXPECT_NEAR(meanValue(doubleMaxVector), 11.0/5.0, EPSILONT);
 
 }
-
-#endif
