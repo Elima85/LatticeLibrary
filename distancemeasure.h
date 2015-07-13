@@ -2,9 +2,8 @@
 #define DISTANCEMEASURE_H
 
 #include "priorityqueue.h"
-#include "intensityimage.h"
-#include "distanceimage.h"
-#include "rootimage.h"
+#include "image.h"
+#include "intensityworkset.h"
 
 namespace LatticeLib {
 

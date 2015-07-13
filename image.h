@@ -14,6 +14,8 @@
 
 namespace LatticeLib {
 
+enum blendOption {min, max, mean, sum};
+
 	const double subSpelDistanceBall[] = {0.620350490899400, 0.555652269755901, 0.528145846788119, 0.506733087451325, 0.488465341540168, 0.472200234189075, 0.457351805704674, 0.443573133456330, 0.430637667609462, 0.418388186452059, 0.406710310647046, 0.395517753727524, 0.384743426499272, 0.374333786228138, 0.364245771896523, 0.354443732834114, 0.344897652005037, 0.335582559204240, 0.326476583721540, 0.317561321011888, 0.308820379142558, 0.300239505316538, 0.291806237861001, 0.283509194867229, 0.275338468809351, 0.267285098580547, 0.259340853252859, 0.251498337907495, 0.243750944387129, 0.236092477215586, 0.228517246588628, 0.221020025533428, 0.213596069832290, 0.206240924436824, 0.198950416024646, 0.191720656894714, 0.184548014514595, 0.177429087540041, 0.170360715205684, 0.163339888340089, 0.156363750911780, 0.149429598983671, 0.142534866270465, 0.135677111230972, 0.128854005489208, 0.122063323408814, 0.115302932722693, 0.108570795658118, 0.101864946865430, 0.095183483049688, 0.088524564685696, 0.081886409948481, 0.075267289099859, 0.068665519274745, 0.062079459617461, 0.055507506723747, 0.048948090348974, 0.042399669346957, 0.035860727807206, 0.029329771361217, 0.022805323630816, 0.016285922793487, 0.009770118241188, 0.003256467310422, -0.003256467310422, -0.009770118241188, -0.016285922793488, -0.022805323630817, -0.029329771361217, -0.035860727807206, -0.042399669346958, -0.048948090348974, -0.055507506723748, -0.062079459617461, -0.068665519274746, -0.075267289099859, -0.081886409948482, -0.088524564685696, -0.095183483049688, -0.101864946865430, -0.108570795658118, -0.115302932722693, -0.122063323408814, -0.128854005489208, -0.135677111230972, -0.142534866270465, -0.149429598983671, -0.156363750911781, -0.163339888340089, -0.170360715205684, -0.177429087540041, -0.184548014514595, -0.191720656894715, -0.198950416024646, -0.206240924436824, -0.213596069832290, -0.221020025533428, -0.228517246588628, -0.236092477215586, -0.243750944387129, -0.251498337907496, -0.259340853252859, -0.267285098580547, -0.275338468809351, -0.283509194867229, -0.291806237861002, -0.300239505316538, -0.308820379142559, -0.317561321011888, -0.326476583721540, -0.335582559204241, -0.344897652005037, -0.354443732834115, -0.364245771896524, -0.374333786228138, -0.384743426499272, -0.395517753727525, -0.406710310647046, -0.418388186452059, -0.430637667609462, -0.443573133456331, -0.457351805704674, -0.472200234189075, -0.488465341540169, -0.506733087451326, -0.528145846788120, -0.555652269755902, -0.620350490899443};
 
 /**
@@ -466,26 +468,6 @@ namespace LatticeLib {
 		}
 
 		/**
-         * Pads the input vector with values for the missing neighbors by adding
-         * dummy neighbors. The dummy neighbor contains the index of a nearby spel
-         * (for example another neighbor) with an intensity value that may
-         * substitute the missing value, based on the input flag. Zero padding
-         * does not add any dummy neighbors, and is supported only to provide a
-         * convenient interface for the calling function.
-         *
-         * Parameter	| in/out	| Comment
-         * :----------	| :-------	| :--------
-         * i			|			| center spel index
-         * nN			| 			| neighborhood size
-         * padding		|			| Flag to determine type of padding
-         * 				|			|	0: zero padding
-         * 				|			|	1: nearest neighbor
-         * 				|			|	2: mirror
-         * neighbors	| IN/OUT	| vector of existing neighbors, to be padded
-         */
-//	virtual void padNeighborhood(int i, int nSize, int padding, vector<Neighbor> &neighbors) = 0;
-
-		/**
          * Extracts one modality band from the image.
          *
          * Parameter	| in/out	| Comment
@@ -513,10 +495,10 @@ namespace LatticeLib {
          * 				|			| 	1: maximum val is kept
          * result		| OUTPUT	| blended values
          */
-		void blend(int flag, T* result) const {
+		void blend(blendOption option, T* result) const {
 			T val;
-			switch(flag) {
-				case 0: // min
+			switch(option) {
+				case min:
 					for (int i = 0; i < lattice.getNElements(); i++) {
 						val = T(INF);
 						for (int b = 0; b < nBands; b++) {
@@ -525,7 +507,7 @@ namespace LatticeLib {
 						result[i] = val;
 					}
 					break;
-				case 1: // max
+				case max:
 					for (int i = 0; i < lattice.getNElements(); i++) {
 						val = T(-INF);
 						for (int b = 0; b < nBands; b++) {
@@ -534,38 +516,14 @@ namespace LatticeLib {
 						result[i] = val;
 					}
 					break;
+				case mean:
+					break;
+				case sum:
+					break;
 				default:
 					throw outsideRangeException();
 			}
 		}
-		/**
-         * Blends all modality bands into a single band.
-         * mean
-         *
-         * Parameter	| in/out	| Comment
-         * :----------	| :-------	| :--------
-         * flag			|			| Decides how to blend the modality bands into one
-         * 				|			| 	2: computes mean value of all color bands
-         * result		| OUTPUT	| blended values
-         */
-		/*
-        void blend(int flag, double* result) const {
-            double val;
-            switch(flag) {
-            case 2: // mean
-                for (int i = 0; i < lattice.getNElements(); i++) {
-                    val = 0.0;
-                    for (int b = 0; b < nBands; b++) {
-                        val = val + double(data[b * lattice.getNElements() + i]);
-                    }
-                    result[i] = val/double(nBands);
-                }
-                break;
-            default:
-                throw outsideRangeException();
-            }
-        }
-        */
 
 		/**
          * Filters the image using the supplied filter, which may be, for example,
@@ -582,17 +540,6 @@ namespace LatticeLib {
 //	void filter(ScalarFilter<S> filter, int nN, int padding, T* result) const {
 //
 //	}
-
-		/**
-         * Downsamples the input image using spatial elements of the specified volume. Has many imperfections.
-         *
-         * Parameter		| in/out	| Comment
-         * :----------		| :-------	| :--------
-         * original			|			| input image
-         * newSpelVolume	|			| volume of a spel in the downsampled image
-         * data				| OUTPUT	| Pointer to the data array of the resulting image, as the Image destructor does not delete it.
-         */
-		//virtual T* downsample(const Image<T>* original, double newSpelVolume) = 0;
 
 	};
 

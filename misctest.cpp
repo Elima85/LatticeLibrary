@@ -6,6 +6,7 @@
 #include "defs.h"
 #include "vectoroperators.h"
 #include "exception.h"
+#include <cmath>
 
 using namespace LatticeLib;
 
@@ -67,27 +68,53 @@ TEST(Miscellaneous, vectorTOperators) {
     EXPECT_TRUE(intVector1 != intNegVector);
     EXPECT_TRUE(-intVector1 == intNegVector);
     EXPECT_TRUE(intVector1 == -intNegVector);
+    double accumulatedError = 0.0;
     for (int i = 0; i < 5; i++) {
-        EXPECT_EQ(intVector3[i], 0);
-        EXPECT_EQ(intVector4[i], intNegVector[i]);
-        EXPECT_EQ(intVector6[i], 0);
-        EXPECT_EQ(intVector7[i], intMinVector[i]);
-        EXPECT_EQ(intVector8[i], intMaxVector[i]);
+        accumulatedError += fabs(intVector3[i]);
     }
+    EXPECT_NEAR(accumulatedError, 0.0, EPSILONT);
+    accumulatedError = 0.0;
+    for (int i = 0; i < 5; i++) {
+        accumulatedError += fabs(intVector6[i]);
+    }
+    EXPECT_NEAR(accumulatedError, 0.0, EPSILONT);
+    accumulatedError = 0.0;
+    for (int i = 0; i < 5; i++) {
+        accumulatedError += fabs(intVector4[i] - intNegVector[i]);
+    }
+    EXPECT_NEAR(accumulatedError, 0.0, EPSILONT);
+    accumulatedError = 0.0;
+    for (int i = 0; i < 5; i++) {
+        accumulatedError += fabs(intVector7[i] - intMinVector[i]);
+    }
+    EXPECT_NEAR(accumulatedError, 0.0, EPSILONT);
+    accumulatedError = 0.0;
+    for (int i = 0; i < 5; i++) {
+        accumulatedError += fabs(intVector8[i] - intMaxVector[i]);
+    }
+    EXPECT_NEAR(accumulatedError, 0.0, EPSILONT);
+
     multiplicationResult = 0 * intVector1;
-    EXPECT_NEAR(multiplicationResult[0], 0, EPSILONT);
-    EXPECT_NEAR(multiplicationResult[1], 0, EPSILONT);
-    EXPECT_NEAR(multiplicationResult[2], 0, EPSILONT);
-    EXPECT_NEAR(multiplicationResult[3], 0, EPSILONT);
-    EXPECT_NEAR(multiplicationResult[4], 0, EPSILONT);
+    accumulatedError = 0.0;
+    for (int i = 0; i < 5; i++) {
+        accumulatedError += fabs(multiplicationResult[i]);
+    }
+    EXPECT_NEAR(accumulatedError, 0, EPSILONT);
+
     multiplicationResult = 1 * intVector1;
+    accumulatedError = 0.0;
     for (int i = 0; i < 5; i++) {
-        EXPECT_NEAR(multiplicationResult[i], intVals[i], EPSILONT);
+        accumulatedError += fabs(multiplicationResult[i] - intVals[i]);
     }
+    EXPECT_NEAR(accumulatedError, 0.0, EPSILONT);
+
     multiplicationResult = -1 * intVector1;
+    accumulatedError = 0.0;
     for (int i = 0; i < 5; i++) {
-        EXPECT_NEAR(multiplicationResult[i], intNegVals[i], EPSILONT);
+        accumulatedError += fabs(multiplicationResult[i] - intNegVals[i]);
     }
+    EXPECT_NEAR(accumulatedError, 0.0, EPSILONT);
+
     multiplicationResult = 0.5 * intVector1;
     EXPECT_NEAR(multiplicationResult[0], -1, EPSILONT);
     EXPECT_NEAR(multiplicationResult[1], -0.5, EPSILONT);
@@ -104,10 +131,20 @@ TEST(Miscellaneous, vectorTOperators) {
     EXPECT_EQ(getIndexOfMinumumValue(intMinVector), 4);
     EXPECT_EQ(getIndexOfMinumumValue(intMaxVector), 2);
 
+    EXPECT_EQ(getIndexOfMaximumValue(intVector1), 4);
+    EXPECT_EQ(getIndexOfMaximumValue(intNegVector), 0);
+    EXPECT_EQ(getIndexOfMaximumValue(intMinVector), 2);
+    EXPECT_EQ(getIndexOfMaximumValue(intMaxVector), 4);
+
     EXPECT_EQ(sumOfElements(intVector1), 4);
     EXPECT_EQ(sumOfElements(intNegVector), -4);
     EXPECT_EQ(sumOfElements(intMinVector), -10);
     EXPECT_EQ(sumOfElements(intMaxVector), 10);
+
+    EXPECT_NEAR(meanValue(intVector1), 0.8, EPSILONT);
+    EXPECT_NEAR(meanValue(intNegVector), -0.8, EPSILONT);
+    EXPECT_NEAR(meanValue(intMinVector), -2, EPSILONT);
+    EXPECT_NEAR(meanValue(intMaxVector), 2, EPSILONT);
 
     // T = double
     double doubleVals[] = {-2.2, -1.1, 0, 3.3, 4.4};
@@ -130,25 +167,53 @@ TEST(Miscellaneous, vectorTOperators) {
     EXPECT_TRUE(doubleVector1 != doubleNegVector);
     EXPECT_TRUE(-doubleVector1 == doubleNegVector);
     EXPECT_TRUE(doubleVector1 == -doubleNegVector);
+    accumulatedError = 0.0;
     for (int i = 0; i < 5; i++) {
-        EXPECT_NEAR(doubleVector3[i], 0, EPSILONT);
-        EXPECT_NEAR(doubleVector4[i], doubleNegVector[i], EPSILONT);
-        EXPECT_NEAR(doubleVector6[i], 0, EPSILONT);
-        EXPECT_NEAR(doubleVector7[i], doubleMinVector[i], EPSILONT);
-        EXPECT_NEAR(doubleVector8[i], doubleMaxVector[i], EPSILONT);
+        accumulatedError += fabs(doubleVector3[i]);
     }
+    EXPECT_NEAR(accumulatedError, 0.0, EPSILONT);
+    accumulatedError = 0.0;
+    for (int i = 0; i < 5; i++) {
+        accumulatedError += fabs(doubleVector6[i]);
+    }
+    EXPECT_NEAR(accumulatedError, 0.0, EPSILONT);
+    accumulatedError = 0.0;
+    for (int i = 0; i < 5; i++) {
+        accumulatedError += fabs(doubleVector4[i] - doubleNegVector[i]);
+    }
+    EXPECT_NEAR(accumulatedError, 0.0, EPSILONT);
+    accumulatedError = 0.0;
+    for (int i = 0; i < 5; i++) {
+        accumulatedError += fabs(doubleVector7[i] - doubleMinVector[i]);
+    }
+    EXPECT_NEAR(accumulatedError, 0.0, EPSILONT);
+    accumulatedError = 0.0;
+    for (int i = 0; i < 5; i++) {
+        accumulatedError += fabs(doubleVector8[i] - doubleMaxVector[i]);
+    }
+    EXPECT_NEAR(accumulatedError, 0.0, EPSILONT);
+
     multiplicationResult = 0 * doubleVector1;
+    accumulatedError = 0.0;
     for (int i = 0; i < 5; i++) {
-        EXPECT_NEAR(multiplicationResult[i], 0, EPSILONT);
+        accumulatedError += fabs(multiplicationResult[i]);
     }
+    EXPECT_NEAR(accumulatedError, 0.0, EPSILONT);
+
     multiplicationResult = 1 * doubleVector1;
+    accumulatedError = 0.0;
     for (int i = 0; i < 5; i++) {
-        EXPECT_NEAR(multiplicationResult[i], doubleVals[i], EPSILONT);
+        accumulatedError += fabs(multiplicationResult[i] - doubleVals[i]);
     }
+    EXPECT_NEAR(accumulatedError, 0.0, EPSILONT);
+
     multiplicationResult = -1 * doubleVector1;
+    accumulatedError = 0.0;
     for (int i = 0; i < 5; i++) {
-        EXPECT_NEAR(multiplicationResult[i], doubleNegVals[i], EPSILONT);
+        accumulatedError += fabs(multiplicationResult[i] - doubleNegVals[i]);
     }
+    EXPECT_NEAR(accumulatedError, 0.0, EPSILONT);
+
     multiplicationResult = 0.5 * doubleVector1;
     EXPECT_NEAR(multiplicationResult[0], -1.1, EPSILONT);
     EXPECT_NEAR(multiplicationResult[1], -0.55, EPSILONT);
@@ -166,10 +231,20 @@ TEST(Miscellaneous, vectorTOperators) {
     EXPECT_EQ(getIndexOfMinumumValue(doubleMinVector), 4);
     EXPECT_EQ(getIndexOfMinumumValue(doubleMaxVector), 2);
 
+    EXPECT_EQ(getIndexOfMaximumValue(doubleVector1), 4);
+    EXPECT_EQ(getIndexOfMaximumValue(doubleNegVector), 0);
+    EXPECT_EQ(getIndexOfMaximumValue(doubleMinVector), 2);
+    EXPECT_EQ(getIndexOfMaximumValue(doubleMaxVector), 4);
+
     EXPECT_NEAR(sumOfElements(doubleVector1), 4.4, EPSILONT);
     EXPECT_NEAR(sumOfElements(doubleNegVector), -4.4, EPSILONT);
     EXPECT_NEAR(sumOfElements(doubleMinVector), -11, EPSILONT);
     EXPECT_NEAR(sumOfElements(doubleMaxVector), 11, EPSILONT);
+
+    EXPECT_NEAR(meanValue(doubleVector1), 4.4/5, EPSILONT);
+    EXPECT_NEAR(meanValue(doubleNegVector), -4.4/5, EPSILONT);
+    EXPECT_NEAR(meanValue(doubleMinVector), -11.0/5.0, EPSILONT);
+    EXPECT_NEAR(meanValue(doubleMaxVector), 11.0/5.0, EPSILONT);
 
 }
 

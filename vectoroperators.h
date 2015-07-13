@@ -4,6 +4,7 @@
 #include <vector>
 #include "exception.h"
 #include "defs.h"
+#include <numeric> // accumulate
 
 namespace LatticeLib {
 
@@ -94,13 +95,28 @@ namespace LatticeLib {
     }
 
     template<class T>
-    T sumOfElements(vector<T> v) {
+    int getIndexOfMaximumValue(vector<T> v) {
         int length = v.size();
-        T sum = 0;
+        int index;
+        double maxValue = -INF;
         for (int i = 0; i < length; i++) {
-            sum += v[i];
+            if (v[i] > maxValue) {
+                maxValue = v[i];
+                index = i;
+            }
         }
-        return sum;
+        return index;
+    }
+
+    template<class T>
+    T sumOfElements(vector<T> v) {
+        return std::accumulate(v.begin(), v.end(), T(0));
+    }
+    
+    template<class T>
+    double meanValue(vector<T> v) {
+        int length = v.size();
+        return double(sumOfElements(v))/double(length);
     }
 
     template<class T>
