@@ -76,8 +76,8 @@ include_directories(
     "${GTEST_ROOT}/include"
 )
 
-add_executable(release ${MAIN_SOURCE_FILES} frequencydomainimage.h)
-add_executable(testing ${TEST_SOURCE_FILES} frequencydomainimage.h)
+add_executable(release ${MAIN_SOURCE_FILES})
+add_executable(testing ${TEST_SOURCE_FILES})
 
 target_link_libraries(
     testing

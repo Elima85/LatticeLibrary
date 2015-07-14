@@ -13,6 +13,45 @@
 
 namespace LatticeLib {
 
+    const double subSpelDistanceBall[] = {0.620350490899400, 0.555652269755901, 0.528145846788119, 0.506733087451325,
+                                          0.488465341540168, 0.472200234189075, 0.457351805704674, 0.443573133456330,
+                                          0.430637667609462, 0.418388186452059, 0.406710310647046, 0.395517753727524,
+                                          0.384743426499272, 0.374333786228138, 0.364245771896523, 0.354443732834114,
+                                          0.344897652005037, 0.335582559204240, 0.326476583721540, 0.317561321011888,
+                                          0.308820379142558, 0.300239505316538, 0.291806237861001, 0.283509194867229,
+                                          0.275338468809351, 0.267285098580547, 0.259340853252859, 0.251498337907495,
+                                          0.243750944387129, 0.236092477215586, 0.228517246588628, 0.221020025533428,
+                                          0.213596069832290, 0.206240924436824, 0.198950416024646, 0.191720656894714,
+                                          0.184548014514595, 0.177429087540041, 0.170360715205684, 0.163339888340089,
+                                          0.156363750911780, 0.149429598983671, 0.142534866270465, 0.135677111230972,
+                                          0.128854005489208, 0.122063323408814, 0.115302932722693, 0.108570795658118,
+                                          0.101864946865430, 0.095183483049688, 0.088524564685696, 0.081886409948481,
+                                          0.075267289099859, 0.068665519274745, 0.062079459617461, 0.055507506723747,
+                                          0.048948090348974, 0.042399669346957, 0.035860727807206, 0.029329771361217,
+                                          0.022805323630816, 0.016285922793487, 0.009770118241188, 0.003256467310422,
+                                          -0.003256467310422, -0.009770118241188, -0.016285922793488,
+                                          -0.022805323630817, -0.029329771361217, -0.035860727807206,
+                                          -0.042399669346958, -0.048948090348974, -0.055507506723748,
+                                          -0.062079459617461, -0.068665519274746, -0.075267289099859,
+                                          -0.081886409948482, -0.088524564685696, -0.095183483049688,
+                                          -0.101864946865430, -0.108570795658118, -0.115302932722693,
+                                          -0.122063323408814, -0.128854005489208, -0.135677111230972,
+                                          -0.142534866270465, -0.149429598983671, -0.156363750911781,
+                                          -0.163339888340089, -0.170360715205684, -0.177429087540041,
+                                          -0.184548014514595, -0.191720656894715, -0.198950416024646,
+                                          -0.206240924436824, -0.213596069832290, -0.221020025533428,
+                                          -0.228517246588628, -0.236092477215586, -0.243750944387129,
+                                          -0.251498337907496, -0.259340853252859, -0.267285098580547,
+                                          -0.275338468809351, -0.283509194867229, -0.291806237861002,
+                                          -0.300239505316538, -0.308820379142559, -0.317561321011888,
+                                          -0.326476583721540, -0.335582559204241, -0.344897652005037,
+                                          -0.354443732834115, -0.364245771896524, -0.374333786228138,
+                                          -0.384743426499272, -0.395517753727525, -0.406710310647046,
+                                          -0.418388186452059, -0.430637667609462, -0.443573133456331,
+                                          -0.457351805704674, -0.472200234189075, -0.488465341540169,
+                                          -0.506733087451326, -0.528145846788120, -0.555652269755902,
+                                          -0.620350490899443};
+
     enum imageIntensityAdjustmentOption {none, crop, normalize}; // for the entire image at once
     //enum elementIntensityAdjustmentOption {none, crop}; // for a single element. Normalization is not possible.
 
@@ -210,6 +249,90 @@ namespace LatticeLib {
                     throw invalidArgumentException();
             }
         }
+
+        /**
+         * Approximates the distance, in the range \f$[-0.5,0.5]\f$, between the spel center and an intersecting surface using
+         * \f$ distance = 0.5 - coverage\f$.
+         *
+         * Parameter	| Comment
+         * :----------	| :--------
+         * coverage		| 1 means total coverage, 0 means no coverage.
+         */
+        double internalDistanceLinear(double coverage) const {
+            if (coverage < 0 || coverage > 1) {
+                throw outsideRangeException();
+            }
+            return 0.5 - coverage;
+        } // TODO: Move to IntensityWorkset!
+        double internalDistanceLinear(uint8 coverage) const {
+            double convertedCoverage = coverage / 255.0;
+            return internalDistanceLinear(convertedCoverage);
+        }
+
+        /**
+         * Approximates the distance, in the range \f$[-0.620,0.620]\f$, between the spel center and an intersecting surface by assuming a spherical spel.
+         *
+         * Parameter	| Comment
+         * :----------	| :--------
+         * coverage		| 1 means total coverage, 0 means no coverage.
+         */
+        double internalDistanceBall(uint8 coverage) const {
+            cout << "coverage and index: " << int(coverage) << endl;
+            return subSpelDistanceBall[coverage];
+        }
+
+        double internalDistanceBall(double coverage) const {
+            if (coverage < 0 || coverage > 1) {
+                throw outsideRangeException();
+            }
+            uint8 convertedCoverage = round(
+                    coverage * 255); // should be 127 or something, or we need to remake the arrays.
+            return internalDistanceBall(convertedCoverage);
+        }
+
+        /**
+         * Approximates the distance using the average of the Voronoi cell.
+         *
+         * Parameter	| Comment
+         * :----------	| :--------
+         * coverage		| 1 means total coverage, 0 means no coverage.
+         */
+        //virtual double internalDistanceVoronoiAverage(uint8 coverage) const = 0;
+        //virtual double internalDistanceVoronoiAverage(double coverage) const = 0;
+
+        /*
+         * Uses the intensity value of a spel, regarded as a coverage value, to approximate the distance between the spel center and the surface that, supposedly, intersects the spel.
+         *
+         * Parameter	| Comment
+         * :----------	| :--------
+         * i			| spel index
+         * b			| modality band index
+         * method		| Approximation method:
+         * 				|	0: linear
+         * 				|	1: ball
+         * 				|	2: Voronoi cell average
+         */
+        /*double approximatedInternalDistance(int index, int band, int method) const {
+
+            if (!isValid(index, band)) {
+                throw outsideImageException();
+            }
+
+            T intensity = (*this)(index, band);
+            switch(method) {
+            case 0:
+                return internalDistanceLinear(intensity);
+                break;
+            case 1:
+                return internalDistanceBall(intensity);
+                break;
+            case 2:
+                return internalDistanceVoronoiAverage(intensity);
+                break;
+            default:
+                throw outsideRangeException();
+            }
+        }*/
     };
 }
 
