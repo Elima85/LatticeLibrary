@@ -9,35 +9,59 @@ using namespace std;
 namespace LatticeLib {
 
 /**
-* A graph-based representation of a sampling lattice.
+* A graph-based representation of a sampling lattice, to be used as a foundation for different applications.
 *
 * Member 		| Comment
 * :-------		| :-------
-* nColumns		| #rows of the lattice
-* nRows		    | #columns of the lattice
-* nLayers		| #layers of the lattice
-* nElements	    | total #elements of the lattice
-* scaleFactor	| Determines the scaling of the lattice. Default is one sample/unit volume. ????? Verkar inte vara det...
+* nColumns		| Number of rows of the lattice.
+* nRows		    | Number of columns of the lattice.
+* nLayers		| Number of layers of the lattice.
+* nElements	    | total number of elements of the lattice.
+* scaleFactor	| Determines the scaling of the lattice. Default is one sample/unit volume. TODO: Doesn't seem right... Figure out how it works!
 */
     class Lattice {
 
     protected:
-        /** \#columns */
+        /** Number of columns. */
         int nColumns;
 
-        /** \#rows */
+        /** Number of rows. */
         int nRows;
 
-        /** \#layers */
+        /** Number of layers. */
         int nLayers;
 
-        /** Determines the density of the lattice. */
+        /** Determines the density of the lattice. // TODO: Figure out and explain more. */
         double scaleFactor;
 
     public:
-        Lattice(int nr, int nc, int nl, double sf);
+
+        /**
+         * Constructor for Lattice objects.
+         *
+         * Parameter    | in/out	| Comment
+         * :----------  | :-------	| :--------
+         * rows         | INPUT     | Number of rows.
+         * columns      | INPUT     | Number of columns.
+         * layers       | INPUT     | Number of layers.
+         * scale        | INPUT     | Distance scale factor. TODO: Figure out how this works!!
+         */
+        Lattice(int rows, int columns, int layers, double scale);
+
+
+        /**
+         * Copy constructor for Lattice objects.
+         *
+         * Parameter    | in/out	| Comment
+         * :----------  | :-------	| :--------
+         * original     | INPUT     | Object to be copied.
+         */
         Lattice(const Lattice &original);
-        virtual ~Lattice() {}; // is this a definition that should be in the cpp-file instead?
+
+        /**
+         * Destructor for Lattice objects.
+         */
+        virtual ~Lattice();
 
         /**
         * Returns the number of spatial elements of the lattice.
@@ -80,52 +104,92 @@ namespace LatticeLib {
         virtual double getDepth() const = 0;
 
         /**
-        * Checks whether an element is inside the lattice.
+        * Checks whether an element is within the span of the lattice.
+         *
+         * Parameter    | in/out	| Comment
+         * :----------  | :-------	| :--------
+         * index        | INPUT     | Element index.
         */
         bool isValid(int index) const;
 
         /**
-        * Checks whether an element is inside the lattice.
+        * Checks whether an element is within the span of the lattice.
+         *
+         * Parameter    | in/out	| Comment
+         * :----------  | :-------	| :--------
+         * row          | INPUT     | Row index.
+         * column       | INPUT     | Column index.
+         * layer        | INPUT     | Layer index.
         */
         bool isValid(int row, int column, int layer) const;
 
         /**
-        * Converts the row-, column-, and layer indices of an element to its index in the data array.
-        */
+         * Converts the row-, column-, and layer indices of an element to its element index.
+         *
+         * Parameter    | in/out	| Comment
+         * :----------  | :-------	| :--------
+         * row          | INPUT     | Row index.
+         * column       | INPUT     | Column index.
+         * layer        | INPUT     | Layer index.
+         */
         int rclToIndex(int row, int column, int layer) const;
 
         /**
         * Converts the index of an element to its column index.
+         *
+         * Parameter    | in/out	| Comment
+         * :----------  | :-------	| :--------
+         * index        | INPUT     | Element index.
         */
         int indexToC(int index) const;
 
         /**
         * Converts the index of an element to its row index.
+         *
+         * Parameter    | in/out	| Comment
+         * :----------  | :-------	| :--------
+         * index        | INPUT     | Element index.
         */
         int indexToR(int index) const;
 
         /**
         * Converts the index of an element to its layer index.
+         *
+         * Parameter    | in/out	| Comment
+         * :----------  | :-------	| :--------
+         * index        | INPUT     | Element index.
         */
         int indexToL(int index) const;
 
         /**
         * Converts the index of an element to its x-coordinate.
+         *
+         * Parameter    | in/out	| Comment
+         * :----------  | :-------	| :--------
+         * index        | INPUT     | Element index.
         */
         virtual double indexToX(int index) const = 0;
 
         /**
         * Converts the index of an element to its y-coordinate.
+         *
+         * Parameter    | in/out	| Comment
+         * :----------  | :-------	| :--------
+         * index        | INPUT     | Element index.
         */
         virtual double indexToY(int index) const = 0;
 
         /**
         * Converts the index of an element to its z-coordinate.
+         *
+         * Parameter    | in/out	| Comment
+         * :----------  | :-------	| :--------
+         * index        | INPUT     | Element index.
         */
         virtual double indexToZ(int index) const = 0;
 
         /**
-        * Uses indexTo[X,Y,Z](i) to compute the coordinates of the element with index i.
+        * Uses indexTo[X,Y,Z](i) to compute the coordinates of an element based on its index.
         *
         * Parameter	    | in/out	| Comment
         * :----------	| :-------	| :--------
@@ -136,15 +200,26 @@ namespace LatticeLib {
 
         /**
         * Computes the Euclidean distance between two elements.
+         *
+         * Parameter    | in/out	| Comment
+         * :----------  | :-------	| :--------
+         * index1       | INPUT     | First element index.
+         * index2       | INPUT     | Second element index.
         */
         double euclideanDistance(int index1, int index2) const;
 
         /**
-        * Computes the Euclidean distance vector pointing from element i to element j.
+        * Computes the Euclidean distance vector from element index1 to element index2.
+         *
+         * Parameter        | in/out	| Comment
+         * :----------      | :-------	| :--------
+         * index1           | INPUT     | First element index.
+         * index2           | INPUT     | Second element index.
+         * distanceVector   | OUTPUT    | Vector pointing from element index1 to element index2.
         */
         void euclideanDistanceVector(int index1, int index2, vector<double> &distanceVector) const;
 
-        /**
+        /*
          * Approximates the distance from the spel center to an edge within the spel based on the coverage value of the spel.
          */
         // TODO: virtual double coverageToInternalDistance(double coverage) const = 0;
@@ -172,16 +247,6 @@ namespace LatticeLib {
         * neighbors         | OUTPUT    | vector of neighbor objects, containing the global and local index of each neighbor.
         */
         virtual void getNeighbors(int index, int neighborhoodSize, vector<Neighbor> &neighbors) const = 0;
-
-        /**
-        *
-        */
-        //virtual double coverageToAverageDistance(uint8 coverage) const = 0;
-
-        /**
-        *
-        */
-        //virtual double coverageToAverageDistance(double coverage) const = 0;
 
         /**
          * Compares the type and members of two Lattice objects, and returns true if all are equal.

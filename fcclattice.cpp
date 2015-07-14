@@ -2,6 +2,7 @@
 #include "defs.h"
 #include "miscellaneous.h"
 #include "exception.h"
+#include <cmath>
 
 using namespace std;
 
@@ -41,6 +42,10 @@ namespace LatticeLib {
     double FCCLattice::getDepth() const {
         return this->indexToZ(0) + indexToZ(this->rclToIndex(0, 0, this->nLayers - 1));
     }
+    /* TODO: double coverageToInternalDistance(double coverage) const {
+        coverageIndex = round(coverage * 255);
+        return subSpelDistanceVoronoiFCC[coverageIndex] * [function of scaleFactor];
+    }*/
     void FCCLattice::get12Neighbors(int row, int column, int layer, vector<Neighbor> &neighbors) const {
         if (!this->isValid(row, column, layer)) {
             throw outsideRangeException();

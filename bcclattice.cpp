@@ -2,6 +2,7 @@
 #include "defs.h"
 #include "miscellaneous.h"
 #include "exception.h"
+#include <cmath>
 
 using namespace std;
 
@@ -41,6 +42,10 @@ namespace LatticeLib {
     double BCCLattice::getDepth() const {
         return this->indexToZ(0) + this->indexToZ(this->getNElements() - 1);
     }
+    /* TODO: double coverageToInternalDistance(double coverage) const {
+        coverageIndex = round(coverage * 255);
+        return subSpelDistanceVoronoiBCC[coverageIndex] * [function of scaleFactor];
+    }*/
     void BCCLattice::get8Neighbors(int row, int column, int layer, vector<Neighbor> &neighbors) const {
         if (!this->isValid(row, column, layer)) {
             throw outsideRangeException();

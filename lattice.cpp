@@ -5,11 +5,11 @@
 #include "defs.h"
 
 namespace LatticeLib {
-    Lattice::Lattice(int nr, int nc, int nl, double sf) {
-        nLayers = nl;
-        nColumns = nc;
-        nRows = nr;
-        scaleFactor = sf;
+    Lattice::Lattice(int rows, int columns, int layers, double scale) {
+        nLayers = layers;
+        nColumns = columns;
+        nRows = rows;
+        scaleFactor = scale;
     }
     Lattice::Lattice(const Lattice &original) {
         nLayers = original.nLayers;
@@ -17,6 +17,7 @@ namespace LatticeLib {
         nRows = original.nRows;
         scaleFactor = original.scaleFactor;
     }
+    Lattice::~Lattice() {}
 
     int Lattice::getNElements() const {
         return nColumns * nRows * nLayers;
