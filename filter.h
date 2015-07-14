@@ -34,44 +34,44 @@ namespace LatticeLib {
 		~Filter() {};
 
 		/**
-	 * Returns neighborhoodSize.
-	 */
+	 	 * Returns neighborhoodSize.
+	 	 */
 		int getNeighborhoodSize() const {
 			return neighborhoodSize;
 		}
 
 		/**
-	 * Returns the number of filter coefficients.
-	 */
+	 	 * Returns the number of filter coefficients.
+		 */
 		int getNCoefficients() const {
 			return coefficients.size();
 		}
 
 		/**
-	 * Returns the coefficient vector.
-	 */
+		 * Returns the coefficient vector.
+		 */
 		vector<FilterCoefficient<S> > getCoeffs() const {
 			return coefficients;
 		}
 
 		/**
-	 * Returns i:th FilterCoefficient from the coefficient vector.
-	 *
-	 * Parameter		| comment
-	 * :---------		| :-------
-	 * coefficientIndex	| position in coefficient vector
-	 */
+		 * Returns i:th FilterCoefficient from the coefficient vector.
+		 *
+		 * Parameter		| comment
+		 * :---------		| :-------
+		 * coefficientIndex	| position in coefficient vector
+		 */
 		FilterCoefficient<S> getCoefficient(int coefficientIndex) const {
 			return coefficients[coefficientIndex];
 		}
 
 		/**
-	 * Finds the position of the coefficient corresponding to the neighbor with the input index. Returns -1 if this neighbor does not have a coefficient.
-	 *
-	 * Parameter		| comment
-	 * :---------		| :-------
-	 * positionIndex	| Position index of corresponding neighbor.
-	 */
+		 * Finds the position of the coefficient corresponding to the neighbor with the input index. Returns -1 if this neighbor does not have a coefficient.
+		 *
+		 * Parameter		| comment
+		 * :---------		| :-------
+		 * positionIndex	| Position index of corresponding neighbor.
+		 */
 		int findCoefficient(int positionIndex) const {
 			int result = -1;
 			int nCoefficients = getNCoefficients();

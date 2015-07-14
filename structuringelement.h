@@ -1,64 +1,42 @@
 #ifndef STRUCTURINGELEMENT_H
 #define STRUCTURINGELEMENT_H
 
-#include "filter.h"
-#include "cimage.h"
+#include "filtercoefficient.h"
+#include "image.h"
 
 /**
  * Structuring element for morphological operations.
  *
- * Member 		| Comment
- * --------		| --------
- * coefficients	| filter coefficients
+ * Member 			| Comment
+ * --------			| --------
+ * coefficients		| filter coefficients
+ * neighborhoodSize	| Size of spel neighborhood to be used for this filter.
  */
-class StructuringElement : public Filter<bool> {
+class StructuringElement {
 
 private:
-	/** filter coefficients */
+	/**
+	 * Filter coefficients.
+	 *
+	 * coefficient	| meaning
+	 * :-----------	| :-------
+	 * true			| required to be >0
+	 * false		| required to be ==0, to a precision defined in defs.h.
+	 * not defined	| no requirements
+	 */
 	vector< FilterCoefficient<bool> > coefficients;
+
+	/** Size of spel neighborhood to be used for this filter. */
+	int neighborhoodSize;
 
 
 public:
-	// Constructor
-	StructuringElement(vector< FilterCoefficient<bool> > c, int n) : Filter<bool>(c.size(),n) {
+	StructuringElement(vector<FilterCoefficient<S> > c, int nS) {
 		coefficients = c;
+		neighborhoodSize = nS;
 	}
 
-	vector< FilterCoefficient<bool> > getCoeffs() const {
-		return coefficients;
-	}
-
-	FilterCoefficient<bool> getCoeff(int i) const{
-		return coefficients[i];
-	}
-
-	int findCoeff(int index) const {
-		int result = -1;
-		int nC = this->getNCoeffs();
-		for (int i = 0; i < nC; i++) {
-			if (coefficients[i].getIndex() == index) {
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	void addCoeff(int index, bool coeff) {
-		coefficients.push_back(FilterCoefficient<bool>(index,coeff));
-		this->incNCoeffs();
-	}
-
-	void eraseCoeff(int index) {
-		int nC = this->getNCoeffs();
-		for (int i = 0; i < nC; i++) {
-			if (coefficients[i].getIndex() == index) {
-				coefficients.erase(coefficients.begin() + i);
-				this->decNCoeffs();
-			}
-		}
-	}
-
-	~StructuringElement() {}
+	~StructuringElement() {};
 
 	/**
 	 * NOT TESTED!!!
@@ -68,7 +46,7 @@ public:
 	 *
 	 * coefficient	| meaning
 	 * :-----------	| :-------
-	 * true			|Êrequired to be >0
+	 * true			| required to be >0
 	 * false		| required to be ==0
 	 * not defined	| no requirements
 	 *
@@ -78,7 +56,7 @@ public:
 	 * result		| OUTPUT	| Values of eroded image, nBands*nElements elements.
 	 */
 	template <class T>
-	void binaryErode(CImage<T> image, T* result) const {
+	void binaryErode(Image<T> image, T* result) const {
 
 		int nNeighbors = getNeighborhoodSize();
 		vector<Neighbor> neighbors;
@@ -132,9 +110,9 @@ public:
 	 *
 	 * coefficient	| index		| meaning
 	 * :-----------	| :--------	| :-------
-	 * true			|Êcenter	| required to be >0
+	 * true			|ï¿½center	| required to be >0
 	 * false		| center	| required to be ==0
-	 * true			|Êother		| set to 1 if center element fits
+	 * true			|ï¿½other		| set to 1 if center element fits
 	 * false		| other		| no effect
 	 * not defined	| other		| no effect
 	 *
@@ -143,7 +121,8 @@ public:
 	 * filter		|			| Structuring element.
 	 * result		| OUTPUT	| Values of dilated image.
 	 */
-	void binaryDilate(StructuringElement filter, T* result) const {
+	template<class T>
+	void binaryDilate(Image <T> image, T* result) const {
 
 		// Memset result to 0!!!
 		int nNeighbors = filter.getNeighborhoodSize();
@@ -191,7 +170,8 @@ public:
 	 * filter		|			| Structuring element.
 	 * result		| OUTPUT	| Values of opened image.
 	 */
-	void binaryOpen(StructuringElement filter, T* result) const {
+	template<class T>
+	void binaryOpen(Image <T> image, T* result) const {
 
 		// erosion
 		T erosion[this->getNElements()*this->getNBands()];
@@ -245,7 +225,8 @@ public:
 	 * nN			|			| #neighbors to use.
 	 * result		| OUTPUT	| Values of closed image.
 	 */
-	void binaryClose(StructuringElement filter, int nN, T* result) const {
+	template<class T>
+	void binaryClose(Image <T> image, T* result) const {
 
 		// dilation
 		T dilation[this->getNElements()*this->getNBands()];
