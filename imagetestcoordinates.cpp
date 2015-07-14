@@ -4,6 +4,7 @@
 #include "cclattice.h"
 #include "bcclattice.h"
 #include "fcclattice.h"
+#include <cmath>
 
 using namespace LatticeLib;
 

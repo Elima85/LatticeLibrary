@@ -3,13 +3,13 @@
 
 #include "image.h"
 #include "lattice.h"
-#include "cclattice.h"
 #include "valuecropper.h"
 #include "valuenormalizer.h"
 #include "valuedenormalizer.h"
 #include <algorithm>
 #include "exception.h"
 #include <stdio.h>
+#include <cmath>
 
 namespace LatticeLib {
 
@@ -50,10 +50,10 @@ namespace LatticeLib {
                                           -0.418388186452059, -0.430637667609462, -0.443573133456331,
                                           -0.457351805704674, -0.472200234189075, -0.488465341540169,
                                           -0.506733087451326, -0.528145846788120, -0.555652269755902,
-                                          -0.620350490899443};
+                                          -0.620350490899443}; // TODO: 255 elements or interpolation
 
     enum imageIntensityAdjustmentOption {none, crop, normalize}; // for the entire image at once
-    //enum elementIntensityAdjustmentOption {none, crop}; // for a single element. Normalization is not possible.
+    enum distanceApproximationOption {linear, ball, voronoi};
 
 /**
  * A class for spatial domain images and fuzzy segmented images, for which it is necessary to know the possible intensity range.
@@ -137,6 +137,11 @@ namespace LatticeLib {
             return maxIntensity;
         }
 
+        /** Returns the length of the intensity range. */
+        T getRange() const {
+            return maxIntensity - minIntensity;
+        }
+
         /**
          * Crops the intensity values, so that all values fit in the specified intensity range.
          */
@@ -215,7 +220,7 @@ namespace LatticeLib {
                     normalizeIntensities();
                     break;
                 default:
-                    throw invalidArgumentException();
+                    throw invalidArgumentException(); // TODO: other exception?
             }
         }
 
@@ -256,83 +261,34 @@ namespace LatticeLib {
          *
          * Parameter	| Comment
          * :----------	| :--------
-         * coverage		| 1 means total coverage, 0 means no coverage.
+         * intensity	|
+         * option       |
          */
-        double internalDistanceLinear(double coverage) const {
-            if (coverage < 0 || coverage > 1) {
-                throw outsideRangeException();
+        double intensityToInternalDistance(T intensity, distanceApproximationOption option){
+            intensity = MIN(maxIntensity, MAX(minIntensity, intensity));
+            double minValue = minIntensity;
+            double range = maxIntensity - minIntensity;
+            double coverage = (double(intensity) - minValue)/range;
+            double result;
+            switch (option) {
+                case linear:
+                    result = 0.5 - coverage; // TODO: * scaleFactor
+                    break;
+                case ball: {
+                    int coverageIndex = round(coverage * 255);
+                    result = subSpelDistanceBall[coverageIndex]; // TODO: * scaleFactor
+                    break;
+                }
+                case voronoi: {
+                    // TODO: result = image.getLattice().coverageToInternalDistance(coverage);
+                    break;
+                }
+                default:
+                    // TODO: throw error or exception
+                    result = 0;
             }
-            return 0.5 - coverage;
-        } // TODO: Move to IntensityWorkset!
-        double internalDistanceLinear(uint8 coverage) const {
-            double convertedCoverage = coverage / 255.0;
-            return internalDistanceLinear(convertedCoverage);
+            return result;
         }
-
-        /**
-         * Approximates the distance, in the range \f$[-0.620,0.620]\f$, between the spel center and an intersecting surface by assuming a spherical spel.
-         *
-         * Parameter	| Comment
-         * :----------	| :--------
-         * coverage		| 1 means total coverage, 0 means no coverage.
-         */
-        double internalDistanceBall(uint8 coverage) const {
-            cout << "coverage and index: " << int(coverage) << endl;
-            return subSpelDistanceBall[coverage];
-        }
-
-        double internalDistanceBall(double coverage) const {
-            if (coverage < 0 || coverage > 1) {
-                throw outsideRangeException();
-            }
-            uint8 convertedCoverage = round(
-                    coverage * 255); // should be 127 or something, or we need to remake the arrays.
-            return internalDistanceBall(convertedCoverage);
-        }
-
-        /**
-         * Approximates the distance using the average of the Voronoi cell.
-         *
-         * Parameter	| Comment
-         * :----------	| :--------
-         * coverage		| 1 means total coverage, 0 means no coverage.
-         */
-        //virtual double internalDistanceVoronoiAverage(uint8 coverage) const = 0;
-        //virtual double internalDistanceVoronoiAverage(double coverage) const = 0;
-
-        /*
-         * Uses the intensity value of a spel, regarded as a coverage value, to approximate the distance between the spel center and the surface that, supposedly, intersects the spel.
-         *
-         * Parameter	| Comment
-         * :----------	| :--------
-         * i			| spel index
-         * b			| modality band index
-         * method		| Approximation method:
-         * 				|	0: linear
-         * 				|	1: ball
-         * 				|	2: Voronoi cell average
-         */
-        /*double approximatedInternalDistance(int index, int band, int method) const {
-
-            if (!isValid(index, band)) {
-                throw outsideImageException();
-            }
-
-            T intensity = (*this)(index, band);
-            switch(method) {
-            case 0:
-                return internalDistanceLinear(intensity);
-                break;
-            case 1:
-                return internalDistanceBall(intensity);
-                break;
-            case 2:
-                return internalDistanceVoronoiAverage(intensity);
-                break;
-            default:
-                throw outsideRangeException();
-            }
-        }*/
     };
 }
 

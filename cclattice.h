@@ -4,6 +4,7 @@
 #include "lattice.h"
 
 namespace LatticeLib {
+    // TODO: const double subSpelDistanceVoronoiCC[] = {[255 elements]};
 
     class CCLattice : public Lattice {
 

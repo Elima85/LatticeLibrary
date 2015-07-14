@@ -8,6 +8,7 @@ namespace LatticeLib {
 #define BCCOFFSET 0.629960524947437 // 1/(4^(1/3)), distance between layers in BCC
 #define BCCHEXFACEDISTANCE 1.091123635971721 // hexagonal face neighbor distance
 #define BCCSQFACEDISTANCE 1.259921049894873 // square face neighbor distance
+    // TODO: const double subSpelDistanceVoronoiBCC[] = {[255 elements]};
 
     class BCCLattice : public Lattice {
 

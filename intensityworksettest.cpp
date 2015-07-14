@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include "intensityworkset.h"
 #include "defs.h"
+#include "cclattice.h"
 
 using namespace LatticeLib;
 

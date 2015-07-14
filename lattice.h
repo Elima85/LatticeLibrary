@@ -129,7 +129,7 @@ namespace LatticeLib {
         *
         * Parameter	    | in/out	| Comment
         * :----------	| :-------	| :--------
-        * index		    | 			| index of element
+        * index		    | INPUT 	| index of element
         * coordinates	| OUTPUT	| coordinates of the spatial elements
         */
         void getCoordinates(int index, vector<double> &coordinates) const;
@@ -145,14 +145,19 @@ namespace LatticeLib {
         void euclideanDistanceVector(int index1, int index2, vector<double> &distanceVector) const;
 
         /**
+         * Approximates the distance from the spel center to an edge within the spel based on the coverage value of the spel.
+         */
+        // TODO: virtual double coverageToInternalDistance(double coverage) const = 0;
+
+        /**
         * Returns the neighbors of an element.
         *
         * Parameter	        | in/out	| Comment
         * :----------	    | :-------	| :--------
-        * row		        | 			| row of the element
-        * column	        |           | column of the element
-        * layer             |           | layer of the element
-        * neighborhoodSize  |           | requested neighborhood size
+        * row		        | INPUT		| row of the element
+        * column	        | INPUT     | column of the element
+        * layer             | INPUT     | layer of the element
+        * neighborhoodSize  | INPUT     | requested neighborhood size
         * neighbors         | OUTPUT    | vector of neighbor objects, containing the global and local index of each neighbor.
         */
         virtual void getNeighbors(int row, int column, int layer, int neighborhoodSize, vector<Neighbor> &neighbors) const = 0;
@@ -162,8 +167,8 @@ namespace LatticeLib {
         *
         * Parameter	        | in/out	| Comment
         * :----------	    | :-------	| :--------
-        * index		        | 			| index of the element
-        * neighborhoodSize  |           | requested neighborhood size
+        * index		        | INPUT		| index of the element
+        * neighborhoodSize  | INPUT     | requested neighborhood size
         * neighbors         | OUTPUT    | vector of neighbor objects, containing the global and local index of each neighbor.
         */
         virtual void getNeighbors(int index, int neighborhoodSize, vector<Neighbor> &neighbors) const = 0;
