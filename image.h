@@ -12,15 +12,15 @@
 namespace LatticeLib {
 
 /**
- * A class for handling color image data represented as a 1D array of template T.
- *
- * The modality bands are stored one after another, in accordance with the file format used.
+ * A class for handling multimodal image data of up to three dimensions represented as a row-major array, with modality
+ * bands stored consecutively. Because of the template implementation, the image intensity values may be of
+ * any type.
  *
  * Member 		| Comment
  * :-------		| :-------
- * data			| 1D array of spel values
- * lattice      | specifies the sampling lattice of the image
- * nBands		| \#modality bands
+ * data			| Array of intensity values.
+ * lattice      | Specifies the sampling lattice of the image, and contains its dimensions.
+ * nBands		| Number of modality bands.
  *
  * Elements are accessed starting from 0, using \f$(r,c,l)\f$, or by a single index \f$i = \#rows\times\#cols\times l + \#cols\times r + c\f$.
  *//*
@@ -39,24 +39,24 @@ namespace LatticeLib {
 	template <class T>
 	class Image {
 	protected:
-		/** pixel values in a 1D array */
+		/** Array of intensity values. */
 		T *data;
 
-		/** sampling lattice of the image, containing its dimensions */
+		/** Specifies the sampling lattice of the image, and contains its dimensions. */
 		Lattice &lattice;
 
-		/** \#modality bands */
+		/** Number of modality bands. */
 		int nBands;
 
 	public:
 		/**
-         * Color image constructor.
+         * Constructor for Image objects.
          *
-         * Parameter     | Comment
-         * :---------    | :-------
-         * d             | Image data, must be of length l->nElements or more.
-         * l             | Image sampling lattice, will not be deleted by the Image destructor.
-         * nB            | \#modality bands, >=1
+         * Parameter	| in/out	| Comment
+         * :---------	| :------	|:-------
+         * d			| INPUT		| %Image data, must be of length lattice.nElements or more.
+         * l			| INPUT		| %Image sampling lattice.
+         * nB			| INPUT		| Number of modality bands, must be at least 1.
          */
 		Image(T *d, Lattice &l, int nB) : lattice(l) {
 			data = d;
@@ -64,7 +64,11 @@ namespace LatticeLib {
 		}
 
 		/**
-         * Color image copy constructor. The copy receives its own data array.
+         * Copy constructor for Image objects. The resulting object shares the data array of the input object.
+         *
+         * Parameter     | in/out	| Comment
+         * :---------    | :------	| :-------
+         * original      | INPUT	| Image object to be copied.
          */
 		Image(const Image<T> &original) : lattice(original.getLattice()) {
 			nBands = original.nBands;
@@ -78,13 +82,17 @@ namespace LatticeLib {
 		~Image() {}; // TODO: Should this delete the data array?
 
 		/**
+         * Wrapper for Lattice::getNElements();
+         *
          * Returns the number of spatial elements in the image.
          */
 		int getNElements() const{
 			return lattice.getNElements();
 		}
 
-		/*
+		/**
+         * Wrapper for Lattice::getNRows();
+         *
          * Returns the number of rows in the image.
          */
 		int getNColumns() const{
@@ -92,6 +100,8 @@ namespace LatticeLib {
 		}
 
 		/**
+         * Wrapper for Lattice::getNColumns();
+         *
          * Returns the number of columns in the image.
          */
 		int getNRows() const{
@@ -99,6 +109,8 @@ namespace LatticeLib {
 		}
 
 		/**
+         * Wrapper for Lattice::getNLayers();
+         *
          * Returns the number of layers in a 3D image.
          */
 		int getNLayers() const{
@@ -113,6 +125,8 @@ namespace LatticeLib {
 		}
 
 		/**
+         * Wrapper for Lattice::getScaleFactor();
+         *
          * Returns the lattice scale factor.
          */
 		double getScaleFactor() const {
@@ -128,6 +142,10 @@ namespace LatticeLib {
 
 		/**
 		 * Returns a pointer to the beginning of the requested band of in the data array of the image.
+         *
+         * Parameter	| in/out	| Comment
+         * :---------	| :------	| :-------
+         * bandIndex	| INPUT		| Index of the requested band.
 		 */
 		T* getBand(int bandIndex) const {
 			return data + bandIndex * getNElements();
@@ -174,220 +192,286 @@ namespace LatticeLib {
 		}
 
 		/**
-         * Checks whether a spel is inside the image.
+         * Checks whether a spatial element is part of the image.
+         *
+         * Parameter	| in/out	| Comment
+         * :---------	| :------	| :-------
+         * elementIndex	| INPUT		| Index of the element of interest.
+         * bandIndex	| INPUT		| Index of the band of interest.
          */
-		bool isValid(int index, int band = 0) const{
-			return (lattice.isValid(index) && (band >= 0 && band < nBands));
+		bool isValid(int elementIndex, int bandIndex = 0) const{
+			return (lattice.isValid(elementIndex) && (bandIndex >= 0 && bandIndex < nBands));
 		}
 
 		/**
          * Checks whether a spel is inside the image.
+         *
+         * Parameter	| in/out	| Comment
+         * :---------	| :------	| :-------
+         * rowIndex		| INPUT		| Row index of the element of interest.
+         * columnIndex	| INPUT		| Column index of the element of interest.
+         * layerIndex	| INPUT		| Layer index of the element of interest.
+         * bandIndex	| INPUT		| Index of the band of interest.
          */
-		bool isValid(int row, int column, int layer, int band = 0) const{
-			return (lattice.isValid(row, column, layer) && (band >= 0 && band < nBands));
+		bool isValid(int rowIndex, int columnIndex, int layerIndex, int bandIndex = 0) const{
+			return (lattice.isValid(rowIndex, columnIndex, layerIndex) && (bandIndex >= 0 && bandIndex < nBands));
 		}
 
 		/**
          * Wrapper for Lattice::rclToIndex(int row, int column, int layer).
          */
-		int rclToIndex(int row, int column, int layer) const{
-			return lattice.rclToIndex(row, column, layer);
+		int rclToIndex(int rowIndex, int columnIndex, int layerIndex) const{
+			return lattice.rclToIndex(rowIndex, columnIndex, layerIndex);
 		}
 
 		/**
-         * Wrapper for Lattice::indexToC(int index).
-         */
-		int indexToC(int index) const{
-			return lattice.indexToC(index);
-		}
-
-		/**
-         * Wrapper for Lattice::indexToR(int index).
-         */
-		int indexToR(int index) const{
-			return lattice.indexToR(index);
-		}
-
-		/**
-         * Wrapper for Lattice::indexToL(int index).
-         */
-		int indexToL(int index) const{
-			return lattice.indexToL(index);
-		}
-
-		/**
-         * Wrapper for Lattice::indexToX(int index).
-         */
-		double indexToX(int index) const {
-			return lattice.indexToX(index);
-		}
-
-		/**
-         * Wrapper for Lattice::indexToY(int index).
-         */
-		double indexToY(int index) const {
-			return lattice.indexToY(index);
-		}
-
-		/**
-         * Wrapper for Lattice::indexToZ(int index).
-         */
-		double indexToZ(int index) const {
-			return lattice.indexToZ(index);
-		}
-
-		/**
-         * Wrapper for Lattice::getCoordinates(int index, vector<double> &coordinates).
-         */
-		void getCoordinates(int index, vector<double> &coordinates) const {
-			lattice.getCoordinates(index,coordinates);
-		}
-
-		/**
-         * Wrapper for Lattice::euclideanDistance(int index1, int index2).
-         */
-		double euclideanDistance(int index1, int index2) const {
-			return lattice.euclideanDistance(index1, index2);
-		}
-
-		/**
-         * Wrapper for Lattice::euclideanDistanceVector(int index1, int index2, vector<double> &distanceVector).
-         */
-		void euclideanDistanceVector(int index1, int index2, vector<double> &distanceVector) const {
-			lattice.euclideanDistanceVector(index1, index2, distanceVector);
-		}
-
-		/**
-         * Sets the intensity of element [index] to the specified intensity.
+         * Wrapper for Lattice::indexToC().
          *
-         * Parameter		| Comment
-         * :----------   | :--------
-         * index			| element index
-         * band			| band index
-         * intensity		| new intensity valuse
+         * Parameter	| in/out	| Comment
+         * :---------	| :------	| :-------
+         * elementIndex	| INPUT		| Index of the element of interest.
+         */
+		int indexToC(int elementIndex) const{
+			return lattice.indexToC(elementIndex);
+		}
+
+		/**
+         * Wrapper for Lattice::indexToR().
+         *
+         * Parameter	| in/out	| Comment
+         * :---------	| :------	| :-------
+         * elementIndex	| INPUT		| Index of the element of interest.
+         */
+		int indexToR(int elementIndex) const{
+			return lattice.indexToR(elementIndex);
+		}
+
+		/**
+         * Wrapper for Lattice::indexToL().
+         *
+         * Parameter	| in/out	| Comment
+         * :---------	| :------	| :-------
+         * elementIndex	| INPUT		| Index of the element of interest.
+         */
+		int indexToL(int elementIndex) const{
+			return lattice.indexToL(elementIndex);
+		}
+
+		/**
+         * Wrapper for Lattice::indexToX().
+         *
+         * Parameter	| in/out	| Comment
+         * :---------	| :------	| :-------
+         * elementIndex	| INPUT		| Index of the element of interest.
+         */
+		double indexToX(int elementIndex) const {
+			return lattice.indexToX(elementIndex);
+		}
+
+		/**
+         * Wrapper for Lattice::indexToY().
+         *
+         * Parameter	| in/out	| Comment
+         * :---------	| :------	| :-------
+         * elementIndex	| INPUT		| Index of the element of interest.
+         */
+		double indexToY(int elementIndex) const {
+			return lattice.indexToY(elementIndex);
+		}
+
+		/**
+         * Wrapper for Lattice::indexToZ().
+         *
+         * Parameter	| in/out	| Comment
+         * :---------	| :------	| :-------
+         * elementIndex	| INPUT		| Index of the element of interest.
+         */
+		double indexToZ(int elementIndex) const {
+			return lattice.indexToZ(elementIndex);
+		}
+
+		/**
+         * Wrapper for Lattice::getCoordinates().
+         *
+         * Parameter	| in/out	| Comment
+         * :---------	| :------	| :-------
+         * elementIndex	| INPUT		| Index of the element of interest.
+         * coordinates	| OUTPUT	| Coordinates of the element.
+         */
+		void getCoordinates(int elementIndex, vector<double> &coordinates) const {
+			lattice.getCoordinates(elementIndex,coordinates);
+		}
+
+		/**
+         * Wrapper for Lattice::euclideanDistance().
+         *
+         * Parameter		| in/out	| Comment
+         * :---------		| :------	| :-------
+         * elementIndex1	| INPUT		| Index of the first element of interest.
+         * elementIndex2	| INPUT		| Index of the second element of interest.
+         */
+		double euclideanDistance(int elementIndex1, int elementIndex2) const {
+			return lattice.euclideanDistance(elementIndex1, elementIndex2);
+		}
+
+		/**
+         * Wrapper for Lattice::euclideanDistanceVector().
+         *
+         * Parameter		| in/out	| Comment
+         * :---------		| :------	| :-------
+         * elementIndex1	| INPUT		| Index of the first element of interest.
+         * elementIndex2	| INPUT		| Index of the second element of interest.
+         * distanceVector	| OUTPUT	| Vector representing the distance and direction from the first element to the second.
+         */
+		void euclideanDistanceVector(int elementIndex1, int elementIndex2, vector<double> &distanceVector) const {
+			lattice.euclideanDistanceVector(elementIndex1, elementIndex2, distanceVector);
+		}
+
+		/**
+         * Sets the intensity of the specified to the specified intensity.
+         *
+         * Parameter	| in/out	| Comment
+         * :---------	| :------	| :-------
+         * elementIndex	| INPUT		| Index of the element of interest.
+         * bandIndex	| INPUT		| Index of the band of interest.
+         * intensity	| INPUT		| New intensity value.
          */
 		template<class S>
-		void setElement(int index, int band, S intensity) {
-			if (!this->isValid(index, band)) {
+		void setElement(int elementIndex, int bandIndex, S intensity) {
+			if (!this->isValid(elementIndex, bandIndex)) {
 				throw outsideImageException();
 			}
-			data[band * lattice.getNElements() + index] = T(intensity);
+			data[bandIndex * lattice.getNElements() + elementIndex] = T(intensity);
 		}
 
 		/**
-         * Sets the intensity of element (r,c,l) to the specified intensity.
+         * Sets the intensity of the specified to the specified intensity.
          *
-         * Parameter		| Comment
-         * :----------	| :--------
-         * row			| row index
-         * column		| column index
-         * layer			| layer index
-         * band			| band index
-         * intensity		| new intensity valuse
+         * Parameter	| in/out	| Comment
+         * :---------	| :------	| :-------
+         * rowIndex		| INPUT		| Row index of the element of interest.
+         * columnIndex	| INPUT		| Column index of the element of interest.
+         * layerIndex	| INPUT		| Layer index of the element of interest.
+         * bandIndex	| INPUT		| Index of the band of interest.
+         * intensity	| INPUT		| New intensity value.
          */
 		template<class S>
-		void setElement(int row, int column, int layer, int band, S intensity) {
-			int index = rclToIndex(row, column, layer);
-			this->setElement(index, band, intensity);
+		void setElement(int rowIndex, int columnIndex, int layerIndex, int bandIndex, S intensity) {
+			int index = rclToIndex(rowIndex, columnIndex, layerIndex);
+			this->setElement(index, bandIndex, intensity);
 		}
 
 		/**
-         * Sets the intensity of element [index] to the specified intensity.
+         * Sets the intensity of the specified to the specified intensity.
          *
-         * Parameter		    | Comment
-         * :----------   	| :--------
-         * index			    | element index
-         * intensityValues	| intensity values for each band
+         * Parameter		| in/out	| Comment
+         * :---------		| :------	| :-------
+         * elementIndex		| INPUT		| Index of the element of interest.
+         * intensityValues	| OUTPUT	| New intensity values for each modality band.
          */
 		template<class S>
-		void setElement(int index, vector<S> intensityValues) {
-			if (!this->isValid(index)) {
+		void setElement(int elementIndex, vector<S> intensityValues) {
+			if (!this->isValid(elementIndex)) {
 				throw outsideImageException();
 			}
 			if (intensityValues.size() != nBands) {
 				throw dimensionMismatchException();
 			}
 			for (int band = 0; band < this->nBands; band++) {
-				data[band * lattice.getNElements() + index] = T(intensityValues[band]);
+				data[band * lattice.getNElements() + elementIndex] = T(intensityValues[band]);
 			}
 		}
 
 		/**
-         * Sets the intensity of element (r,c,l) to the specified intensity.
+         * Sets the intensity of the specified to the specified intensity.
          *
-         * Parameter		| Comment
-         * :----------		| :--------
-         * row				| row index
-         * column			| column index
-         * layer			| layer index
-         * intensityValues	| intensity values for each band
+         * Parameter		| in/out	| Comment
+         * :---------		| :------	| :-------
+         * rowIndex			| INPUT		| Row index of the element of interest.
+         * columnIndex		| INPUT		| Column index of the element of interest.
+         * layerIndex		| INPUT		| Layer index of the element of interest.
+         * intensityValues	| OUTPUT	| New intensity values for each modality band.
          */
 		template<class S>
-		void setElement(int row, int column, int layer, vector<S> intensityValues) {
-			int index = rclToIndex(row, column, layer);
+		void setElement(int rowIndex, int columnIndex, int layerIndex, vector<S> intensityValues) {
+			int index = rclToIndex(rowIndex, columnIndex, layerIndex);
 			this->setElement(index, intensityValues);
 		}
 
 		/**
-         * Wrapper for Lattice::getNeighbors(int row, int column, int layer, int neighborhoodSize, vector<Neighbor> &neighbors).
+         * Wrapper for Lattice::getNeighbors().
+         *
+         * Parameter		| in/out	| Comment
+         * :---------		| :------	| :-------
+         * rowIndex			| INPUT		| Row index of the element of interest.
+         * columnIndex		| INPUT		| Column index of the element of interest.
+         * layerIndex		| INPUT		| Layer index of the element of interest.
+         * neighborhoodSize	| INPUT		| Size of the requested neighborhood.
+         * neighbors		| OUTPUT	| Extracted neighbors.
          */
-		void getNeighbors(int row, int column, int layer, int neighborhoodSize, vector<Neighbor> &neighbors) const {
-			lattice.getNeighbors(row, column, layer, neighborhoodSize, neighbors);
+		void getNeighbors(int rowIndex, int columnIndex, int layerIndex, int neighborhoodSize, vector<Neighbor> &neighbors) const {
+			lattice.getNeighbors(rowIndex, columnIndex, layerIndex, neighborhoodSize, neighbors);
 		}
 
 		/**
-         * Wrapper for Lattice::getNeighbors(int index, int neighborhoodSize, vector<Neighbor> &neighbors).
+         * Wrapper for Lattice::getNeighbors().
+         *
+         * Parameter		| in/out	| Comment
+         * :---------		| :------	| :-------
+         * elementIndex		| INPUT		| Index of the element of interest.
+         * neighborhoodSize	| INPUT		| Size of the requested neighborhood.
+         * neighbors		| OUTPUT	| Extracted neighbors.
          */
-		void getNeighbors(int index, int neighborhoodSize, vector<Neighbor> &neighbors) const  {
-			lattice.getNeighbors(index, neighborhoodSize, neighbors);
+		void getNeighbors(int elementIndex, int neighborhoodSize, vector<Neighbor> &neighbors) const  {
+			lattice.getNeighbors(elementIndex, neighborhoodSize, neighbors);
 		}
 
 		/**
 		 * Returns the value of the requested spel in the requested band.
          *
-         * Parameter	| Comment
-         * :----------	| :--------
-         * row			| row index
-         * column		| column index
-         * layer		| layer index
-         * band			| band index
+         * Parameter	| in/out	| Comment
+         * :---------	| :------	| :-------
+         * rowIndex		| INPUT		| Row index of the element of interest.
+         * columnIndex	| INPUT		| Column index of the element of interest.
+         * layerIndex	| INPUT		| Layer index of the element of interest.
+         * bandIndex	| INPUT		| Index of the band of interest.
 		 */
-		T &operator()(int row, int column, int layer, int band = 0) const {
-			if (!this->isValid(row, column, layer, band)) {
+		T &operator()(int rowIndex, int columnIndex, int layerIndex, int bandIndex = 0) const {
+			if (!this->isValid(rowIndex, columnIndex, layerIndex, bandIndex)) {
 				throw outsideImageException();
 			}
-			return this->data[band * this->lattice.getNElements() + this->rclToIndex(row, column, layer)];
+			return this->data[bandIndex * this->lattice.getNElements() + this->rclToIndex(rowIndex, columnIndex, layerIndex)];
 		}
 
 		/**
 		 * Returns the value of the requested spel in the requested band.
          *
-         * Parameter	| Comment
-         * :----------	| :--------
-         * index		| element index
-         * band			| band index
+         * Parameter	| in/out	| Comment
+         * :---------	| :------	| :-------
+         * elementIndex	| INPUT		| Index of the element of interest.
+         * bandIndex	| INPUT		| Index of the band of interest.
 		 */
-		T &operator()(int index, int band) const {
-			if (!this->isValid(index, band)) {
+		T &operator()(int elementIndex, int bandIndex) const {
+			if (!this->isValid(elementIndex, bandIndex)) {
 				throw outsideImageException();
 			}
-			return this->data[band * lattice.getNElements() + index];
+			return this->data[bandIndex * lattice.getNElements() + elementIndex];
 		}
 
 		/**
 		 * Returns the value in each band of the requested spel.
          *
-         * Parameter	| Comment
-         * :----------	| :--------
-         * index		| element index
+         * Parameter	| in/out	| Comment
+         * :---------	| :------	| :-------
+         * elementIndex	| INPUT		| Index of the element of interest.
 		 */
-		vector<T> operator[](int index) const {
-			if (!this->isValid(index)) {
+		vector<T> operator[](int elementIndex) const {
+			if (!this->isValid(elementIndex)) {
 				throw outsideImageException();
 			}
 			vector<T> intensityValues;
 			for (int band = 0; band < this->nBands; band++) {
-				intensityValues.push_back(this->data[band * this->lattice.getNElements() + index]);
+				intensityValues.push_back(this->data[band * this->lattice.getNElements() + elementIndex]);
 			}
 			return intensityValues;
 		}

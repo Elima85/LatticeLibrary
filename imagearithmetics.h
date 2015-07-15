@@ -15,8 +15,8 @@ namespace LatticeLib {
          * Parameter	| in/out	| Comment
          * :----------	| :-------	| :--------
          * image1		| INPUT		| First term of the addition.
-         * image2		| INPUT		| Second term of the addition.
-         * result		| OUTPUT	| Result of addition. Needs to be of length >= nElements.
+         * image2		| INPUT		| Second term of the addition. Needs to have a Lattice identical to that of image1.
+         * result		| OUTPUT	| Result of addition. Needs to hava e length of at least image1.nElements.
          */
         template<class T, class S>
         void add(Image<T> image1, Image <S> image2, T *result) {
@@ -41,9 +41,9 @@ namespace LatticeLib {
          * :----------	| :-------	| :--------
          * image1		| INPUT		| First term of the addition.
          * bandIndex1	| INPUT		| Index of the desired band of the first image.
-         * image2		| INPUT		| Second term of the addition.
+         * image2		| INPUT		| Second term of the addition. Needs to have a Lattice identical to that of image1.
          * bandIndex2	| INPUT		| Index of the desired band of the second image.
-         * result		| OUTPUT	| Result of addition. Needs to be of length >= nElements.
+         * result		| OUTPUT	| Result of addition. Needs to hava e length of at least image1.nElements.
          */
         template<class T, class S>
         void addBands(Image<T> image1, int bandIndex1, Image <S> image2, int bandIndex2, T *result) {
@@ -62,8 +62,8 @@ namespace LatticeLib {
          * Parameter	| in/out	| Comment
          * :----------	| :-------	| :--------
          * image1		| INPUT		| First term of the subtraction.
-         * image2		| INPUT		| Second term of the subtraction.
-         * result		| OUTPUT	| Result of addition. Needs to be of length >= nElements.
+         * image2		| INPUT		| Second term of the subtraction. Needs to have a Lattice identical to that of image1.
+         * result		| OUTPUT	| Result of addition. Needs to hava e length of at least image1.nElements.
          */
         template<class T, class S>
         void subtract(Image <T> image1, Image <S> image2, T *result) {
@@ -88,9 +88,9 @@ namespace LatticeLib {
          * :----------	| :-------	| :--------
          * image1		| INPUT		| First term of the subtraction.
          * bandIndex1	| INPUT		| Index of the desired band of the first image.
-         * image2		| INPUT		| Second term of the subtraction.
+         * image2		| INPUT		| Second term of the subtraction. Needs to have a Lattice identical to that of image1.
          * bandIndex2	| INPUT		| Index of the desired band of the second image.
-         * result		| OUTPUT	| Result of subtraction. Needs to be of length >= nElements.
+         * result		| OUTPUT	| Result of subtraction. Needs to hava e length of at least image1.nElements.
          */
         template<class T, class S>
         void subtractBands(Image <T> image1, int bandIndex1, Image <S> image2, int bandIndex2, T *result) {
@@ -110,7 +110,7 @@ namespace LatticeLib {
          * :----------	| :-------	| :--------
          * image        | INPUT     | Image to be scaled.
          * factor		| INPUT		| Scale factor with which to multiply the intensity values.
-         * result		| OUTPUT	| Result of the multiplication. Needs to be of length >= nElements.
+         * result		| OUTPUT	| Result of the multiplication. Needs to hava e length of at least image.nElements.
          */
         template<class T, class S>
         void scale(Image<T> image, S factor, T *result) {

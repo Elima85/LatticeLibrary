@@ -63,27 +63,30 @@ namespace LatticeLib {
  * image		| Spatial domain image or fuzzy segmentation.
  * minIntensity | The lowest possible intensity value.
  * maxIntensity	| The highest possible intensity value.
- *
  */
     template <class T>
     class IntensityWorkset {
 
     private:
+        /** %Image dimensions and data. */
         Image<T> &image;
+
+        /** Minimum intensity value. */
         T minIntensity;
+
+        /** Maximum intensity value. */
         T maxIntensity;
 
     public:
         /**
-         * Intensity workset constructor.
+         * Constructor for IntensityWorkset objects.
          *
-         * Parameter    | Comment
-         * :---------   | :-------
-         * d            | Image data, must be of length l->nElements or more.
-         * l            | Image sampling lattice, will not be deleted by the Image destructor.
-         * nB           | \#modality bands, >=1
-         * minVal       | Minimum intensity value.
-         * maxVal       | Maximum intensity value.
+         * Parameter    | in/out    |Comment
+         * :---------   | :------   |:-------
+         * image        | INPUT     | %Image dimensions and data.
+         * minVal       | INPUT     | Minimum intensity value.
+         * maxVal       | INPUT     | Maximum intensity value.
+         * option       | INPUT     | Intensity adjustment of the input data.<br> none: No adjustment. <br> crop: Crop all values outside of the specified range. <br> normalize: Stretch or compress the image data to the specified range. _This does not work well for integer intensities. Please see ValueNormalizer::apply()._
          */
         IntensityWorkset(Image<T> &im, T minVal, T maxVal, imageIntensityAdjustmentOption option) : image(im){
             switch (option) {
@@ -115,6 +118,13 @@ namespace LatticeLib {
             maxIntensity = maxVal;
         }
 
+        /**
+         * Copy constructor for IntensityWorkset objects.
+         *
+         * Parameter    | in/out    |Comment
+         * :---------   | :------   |:-------
+         * original     | INPUT     | IntensityWorkset object to be copied.
+         */
         IntensityWorkset(const IntensityWorkset<T> &original) : image(original.getImage()){
             minIntensity = original.minIntensity;
             maxIntensity = original.maxIntensity;
@@ -155,6 +165,7 @@ namespace LatticeLib {
         /**
          * Normalizes the image, so that it's maximum intensity is maxIntensity, and it's lowest intensity is
          * minIntensity. Preserves the intensity relationship between the modality bands.
+         * _This does not work well for integer intensities. Please see ValueNormalizer::apply()._
          */
         void normalizeIntensities() {
             int nElements = image.getNElements();
@@ -173,11 +184,11 @@ namespace LatticeLib {
         /**
          * Normalizes the specified modality band of the image, so that it's maximum intensity is maxIntensity, and
          * it's lowest intensity is minIntensity. The other modality bands are left untouched.
+         * _This does not work well for integer intensities. Please see ValueNormalizer::apply()._
          *
-         * Parameter	| Comment
-         * :-------		| :-------
-         * bandIndex	| Index of the band to be normalized.
-         *
+         * Parameter	| in/out    | Comment
+         * :-------		| :------   | :-------
+         * bandIndex	| INPUT     | Index of the band to be normalized.
          */
         void normalizeBand(int bandIndex) {
             int nElements = image.getNElements();
@@ -197,14 +208,10 @@ namespace LatticeLib {
          * Sets the minimum intensity to the specified value, and optionally traverses and adjusts the data to the new
          * intensity range.
          *
-         * Parameter	| Comment
-         * :-------		| :-------
-         * newMinVal	| New minimum intensity
-         * option       | One of the following:
-         *              |   none:         Do nothing. The user is responsible for all intensity values being within range.
-         *              |   crop:         Values outside of the range are cropped to the range limits.
-         *              |   normalize:    All intensity values are normalized to the new range.
-         *
+         * Parameter	| in/out    | Comment
+         * :-------		| :------   | :-------
+         * newMinVal	| INPUT     | New minimum intensity
+         * option       | INPUT     | Intensity adjustment of the input data.<br> none: No adjustment. <br> crop: Crop all values outside of the specified range. <br> normalize: Stretch or compress the image data to the specified range. _This does not work well for integer intensities. Please see ValueNormalizer::apply()._
          */
         void setMinIntensity(T newMinVal, imageIntensityAdjustmentOption option) {
             switch (option) {
@@ -228,14 +235,10 @@ namespace LatticeLib {
          * Sets the maximum intensity to the specified value, and optionally traverses and adjusts the data to the new
          * intensity range.
          *
-         * Parameter	| Comment
-         * :-------		| :-------
-         * newMaxVal	| New maximum intensity
-         * option       | One of the following:
-         *              |   none:         Do nothing. The user is responsible for all intensity values being within range.
-         *              |   crop:         Values outside of the range are cropped to the range limits.
-         *              |   normalize:    All intensity values are normalized to the new range.
-         *
+         * Parameter	| in/out    | Comment
+         * :-------		| :------   | :-------
+         * newMaxVal	| INPUT     | New maximum intensity
+         * option       | INPUT     | Intensity adjustment of the input data.<br> none: No adjustment. <br> crop: Crop all values outside of the specified range. <br> normalize: Stretch or compress the image data to the specified range. _This does not work well for integer intensities. Please see ValueNormalizer::apply()._
          */
         void setMaxIntensity(T newMaxVal, imageIntensityAdjustmentOption option) {
             switch (option) {
@@ -256,13 +259,12 @@ namespace LatticeLib {
         }
 
         /**
-         * Approximates the distance, in the range \f$[-0.5,0.5]\f$, between the spel center and an intersecting surface using
-         * \f$ distance = 0.5 - coverage\f$.
+         * Approximates the distance, in the range \f$[-0.5,0.5]\f$, between the spel center and an intersecting surface.
          *
-         * Parameter	| Comment
-         * :----------	| :--------
-         * intensity	|
-         * option       |
+         * Parameter	| in/out    | Comment
+         * :-------		| :------   | :-------
+         * intensity	| INPUT     | Coverage value of the spatial element.
+         * option       | INPUT     | Method of approximation. <br> linear: \f$distance = 0.5 - coverage\f$ <br> ball: The spatial element is approximated by a ball. <br> voronoi: The average relationship between distance and coverage for the particular lattice is used.
          */
         double intensityToInternalDistance(T intensity, distanceApproximationOption option){
             intensity = MIN(maxIntensity, MAX(minIntensity, intensity));
