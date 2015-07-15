@@ -47,14 +47,6 @@ namespace LatticeLib {
             index = i;
         }
 
-        /**
-        * Sets value to the input norm of the input vector.
-        */
-        PriorityQueueElement(long i, const vector<T> &v, const Norm &n) {
-            value = n.compute(v);
-            index = i;
-        }
-
         T getValue() const {
             return value;
         }

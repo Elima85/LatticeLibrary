@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 #include "priorityqueue.h"
+#include "pnorm.h"
 #include "defs.h"
 
 using namespace LatticeLib;
@@ -19,10 +20,10 @@ TEST(PriorityQueue, Test) {
     PriorityQueueElement<double> doubleElement1(0, 2 - 1.1);
     PriorityQueueElement<double> doubleElement2(1, 4.1 - 3);
     PriorityQueueElement<double> doubleElement3(1, 4.1 - 3);
-    PriorityQueueElement<double> vectorElement1(0, vector1, norm1);
-    PriorityQueueElement<double> vectorElement2(1, vector2, norm1);
-    PriorityQueueElement<double> vectorElement3(1, vector2, norm1);
-    PriorityQueueElement<double> vectorElement4(1, vector2, norm2);
+    PriorityQueueElement<double> vectorElement1(0, norm1.compute(vector1));
+    PriorityQueueElement<double> vectorElement2(1, norm1.compute(vector2));
+    PriorityQueueElement<double> vectorElement3(1, norm1.compute(vector2));
+    PriorityQueueElement<double> vectorElement4(1, norm2.compute(vector2));
 
     // == operator
     EXPECT_TRUE(!(singleElement1 == singleElement2));

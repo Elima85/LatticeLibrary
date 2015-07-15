@@ -11,7 +11,7 @@ namespace LatticeLib {
     //TODO: index -> elementIndex, row -> rowIndex, etc...
 
 /**
-* A graph-based representation of a sampling lattice, to be used as a foundation for different applications.
+* Base class for a graph-based representation of a sampling lattice, to be used as a foundation for different applications.
 *
 * Member 		| Comment
 * :-------		| :-------

@@ -4,6 +4,9 @@
 #include "gtest/gtest.h"
 #include "norm.h"
 #include "defs.h"
+#include "pnorm.h"
+#include "productnorm.h"
+#include "maximumnorm.h"
 
 using namespace LatticeLib;
 
@@ -22,8 +25,8 @@ TEST(Norm, PNorm) {
     PNorm norm1(1);
     PNorm norm2(2);
     PNorm norm5(5);
-    PNorm norm1Copy(&norm1);
-    PNorm norm5Copy(&norm5);
+    PNorm norm1Copy(norm1);
+    PNorm norm5Copy(norm5);
 
     // constructor and getter
     EXPECT_EQ(norm1.getP(), 1);
@@ -66,7 +69,7 @@ TEST(Norm, ProductNorm) {
     zeroVector.assign(3, 0.0);
 
     ProductNorm norm;
-    ProductNorm normCopy(&norm);
+    ProductNorm normCopy(norm);
 
     // compute
     EXPECT_NEAR(norm.compute(zeroVector), 0.0, EPSILONT);
@@ -93,7 +96,7 @@ TEST(Norm, MaximumNorm) {
     zeroVector.assign(3, 0.0);
 
     MaximumNorm norm;
-    MaximumNorm normCopy(&norm);
+    MaximumNorm normCopy(norm);
 
     // compute
     EXPECT_NEAR(norm.compute(zeroVector), 0.0, EPSILONT);
