@@ -6,20 +6,22 @@
 namespace LatticeLib {
 
     /**
-     * Class for stretching (or compressing) array values in the range [0,1] to the given range.
+     * Class for stretching or compressing array values in the range [0,1] to the given range.
      */
     class ValueDenormalizer : public ArrayAdjustment {
 
     public:
         /**
-         * Stretches (or compresses) the range of the array values from [0,1] to [minValue,maxValue]. Please note that
+         * Overloads ArrayAdjustment::apply().
+         *
+         * Stretches or compresses the range of the array values from [0,1] to [minValue,maxValue]. Please note that
          * if no value in the input array equals 0 or 1, then none of the resulting values equals minValue or maxValue,
          * respectively.
          *
          * Parameter	| Comment
          * :-------		| :-------
          * array        | Array to be modified.
-         * nElements    | \#elements in the array.
+         * nElements    | Number of elements in the array.
          * minValue     | Minimum value of output range.
          * maxValue     | Maximum value of output range.
          */

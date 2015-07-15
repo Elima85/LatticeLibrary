@@ -12,14 +12,17 @@ namespace LatticeLib {
 
     public:
         /**
+         * Overloads ArrayAdjustment::apply().
+         *
          * Normalizes values in the range [minValue,maxValue] to [0,1]. Please note that if no value in the input array
          * equals minValue or maxValue, then none of the resulting values equals 0 or 1, respectively.
-         * OBS! This does not work well for integers, as all values <maxValue are truncated to 0 after normalization.
+         * *This implementation does not work well for integers, as all values below maxValue are truncated to 0 after
+         * normalization.*
          *
          * Parameter	| Comment
          * :-------		| :-------
          * array        | Array to be modified.
-         * nElements    | \#elements in the array.
+         * nElements    | Number of elements in the array.
          * minValue     | Minimum value of input range.
          * maxValue     | Maximum value of input range.
          */

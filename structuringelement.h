@@ -7,56 +7,70 @@
 namespace LatticeLib {
 
 /**
+ * Structuring Element
+ * ====================
  * Structuring element for morphological operations.
+ * TODO: Should there be a parent class for Filter and StructuringElement?
  *
  * Member 			| Comment
  * --------			| --------
- * coefficients		| filter coefficients
- * neighborhoodSize	| Size of spel neighborhood to be used for this filter.
+ * neighborhoodSize	| Element neighborhood size to be used for this filter.
+ * coefficients		| Template coefficients.
  */
 	class StructuringElement {
 
 	private:
 		/**
-	 * Filter coefficients.
-	 *
-	 * coefficient	| meaning
-	 * :-----------	| :-------
-	 * true			| required to be >0
-	 * false		| required to be ==0, to a precision defined in defs.h.
-	 * not defined	| no requirements
-	 */
+	 	 * Template coefficients.
+		 *
+		 * value		| meaning
+		 * :-----------	| :-------
+		 * true			| Required to be >0.
+		 * false		| Required to be ==0, to a precision defined in defs.h.
+		 * not defined	| No requirements.
+		 */
 		vector<FilterCoefficient<bool> > coefficients;
 
-		/** Size of spel neighborhood to be used for this filter. */
+		/** Element neighborhood size to be used for this structuring element. */
 		int neighborhoodSize;
 
 
 	public:
+		/**
+		 * Constructor for StructuringElement objects.
+		 *
+		 * Parameter	| in/out	| comment
+		 * :---------	| :------	| :-------
+		 * c			| INPUT		| Vector containing the template coefficients.
+		 * nS			| INPUT		| Neighborhood size.
+		 */
 		StructuringElement(vector<FilterCoefficient<S> > c, int nS) {
 			coefficients = c;
 			neighborhoodSize = nS;
 		}
 
+		/**
+		 * Destructor for StructuringElement objects.
+		 */
 		~StructuringElement() { };
 
+		//TODO: binaryErodeBand, binaryDilateBand, binaryOpenBand, binaryCloseBand
+
 		/**
-	 * NOT TESTED!!!
-	 * Erodes a binary image (treats >0 as 1) using the provided structuring element.
-	 *
-	 * Template fitting:
-	 *
-	 * coefficient	| meaning
-	 * :-----------	| :-------
-	 * true			| required to be >0
-	 * false		| required to be ==0
-	 * not defined	| no requirements
-	 *
-	 * Parameter	| in/out	| Comment
-	 * :----------	| :-------	| :--------
-	 * image		|			| image to be eroded
-	 * result		| OUTPUT	| Values of eroded image, nBands*nElements elements.
-	 */
+		 * Erodes a binary image, one band at a time, (treating intensity values greater than 0 as 1) using the
+		 * provided structuring element.
+		 *
+		 * coefficient value	| meaning
+		 * :-----------------	| :-------
+		 * true					| Required to be >0.
+		 * false				| Required to be ==0, to a precision defined in defs.h.
+		 * not defined			| No requirements.
+		 *
+		 * Parameter	| in/out	| Comment
+		 * :----------	| :-------	| :--------
+		 * image		| INPUT		| Image to be eroded.
+	 	 * result		| OUTPUT	| Intensity values after erosion. Needs to be of a length of at least image.nElements * image.nBands.
+		 */
 		template<class T>
 		void binaryErode(Image<T> image, T *result) const {
 
@@ -105,24 +119,24 @@ namespace LatticeLib {
 		}
 
 		/**
-	 * NOT TESTED!!!
-	 * Dilates a binary image (treats >0 as 1) using the provided structuring element.
-	 *
-	 * Template fitting:
-	 *
-	 * coefficient	| index		| meaning
-	 * :-----------	| :--------	| :-------
-	 * true			|�center	| required to be >0
-	 * false		| center	| required to be ==0
-	 * true			|�other		| set to 1 if center element fits
-	 * false		| other		| no effect
-	 * not defined	| other		| no effect
-	 *
-	 * Parameter	| in/out	| Comment
-	 * :----------	| :-------	| :--------
-	 * filter		|			| Structuring element.
-	 * result		| OUTPUT	| Values of dilated image.
-	 */
+		 * Dilates a binary image, one band at a time, (treating intensity values greater than 0 as 1) using the
+		 * provided structuring element.
+		 *
+		 * Template fitting:
+		 *
+		 * coefficient value	| location	| meaning
+		 * :-----------------	| :--------	| :-------
+		 * true					| main		| Required to be >0.
+		 * false				| main		| Required to be ==0.
+		 * true					| other		| Set to 1 if main element fits.
+		 * false				| other		| No effect.
+		 * not defined			| other		| No effect.
+		 *
+		 * Parameter	| in/out	| Comment
+		 * :----------	| :-------	| :--------
+		 * filter		| INPUT		| Structuring element.
+		 * result		| OUTPUT	| Intensity values after dilation. Needs to be of a length of at least image.nElements * image.nBands.
+		 */
 		template<class T>
 		void binaryDilate(Image<T> image, T *result) const {
 
@@ -164,14 +178,14 @@ namespace LatticeLib {
 		}
 
 		/**
-	 * NOT TESTED!!!
-	 * Opens the image using the provided structuring element. (erosion, dilation)
-	 *
-	 * Parameter	| in/out	| Comment
-	 * :----------	| :-------	| :--------
-	 * filter		|			| Structuring element.
-	 * result		| OUTPUT	| Values of opened image.
-	 */
+		 * Opens the image, one band at a time, using the provided structuring element, by applying erosion followed by
+		 * dilation.
+		 *
+		 * Parameter	| in/out	| Comment
+		 * :----------	| :-------	| :--------
+		 * filter		| INPUT		| Structuring element.
+		 * result		| OUTPUT	| Intensity values after opening. Needs to be of a length of at least image.nElements * image.nBands.
+		 */
 		template<class T>
 		void binaryOpen(Image<T> image, T *result) const {
 
@@ -218,15 +232,14 @@ namespace LatticeLib {
 		}
 
 		/**
-	 * NOT TESTED!!!
-	 * Closes the image using the provided structuring element.
-	 *
-	 * Parameter	| in/out	| Comment
-	 * :----------	| :-------	| :--------
-	 * filter		|			| Structuring element.
-	 * nN			|			| #neighbors to use.
-	 * result		| OUTPUT	| Values of closed image.
-	 */
+		 * Closes the image, one band at a time, using the provided structuring element, by applying dilation followed
+		 * by erosion.
+		 *
+		 * Parameter	| in/out	| Comment
+		 * :----------	| :-------	| :--------
+		 * filter		| INPUT		| Structuring element.
+		 * result		| OUTPUT	| Intensity values after closing. Needs to be of a length of at least image.nElements * image.nBands.
+		 */
 		template<class T>
 		void binaryClose(Image<T> image, T *result) const {
 
@@ -274,7 +287,7 @@ namespace LatticeLib {
 				}
 			}
 		}
-	};
+	};// TODO: Test!
 
 }
 

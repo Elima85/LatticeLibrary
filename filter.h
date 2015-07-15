@@ -8,29 +8,43 @@
 namespace LatticeLib {
 
 /**
- * Class for template filters.
+ * Spatial Template Filter
+ * ========================
+ * Class for template filters for image processing.
+ * TODO: Should there be a parent class for Filter and StructuringElement?
  *
  * Member 			| Comment
  * --------			| --------
- * neighborhoodSize	| Size of spel neighborhood to be used for this filter.
- * coefficients		| Filter coefficients.
+ * neighborhoodSize	| Element neighborhood size to be used for this filter.
+ * coefficients		| Template coefficients.
  */
 	template<class S>
 	class Filter {
 
 	private:
-		/** Filter coefficients. */
+		/** Template coefficients. */
 		vector<FilterCoefficient<S> > coefficients;
 
-		/** Size of spel neighborhood to be used for this filter. */
+		/** Element neighborhood size to be used for this filter. */
 		int neighborhoodSize;
 
 	public:
+		/**
+		 * Constructor for Filter objects.
+		 *
+		 * Parameter	| in/out	| comment
+		 * :---------	| :------	| :-------
+		 * c			| INPUT		| Vector containing the template coefficients.
+		 * nS			| INPUT		| Neighborhood size.
+		 */
 		Filter(vector<FilterCoefficient<S> > c, int nS) {
 			coefficients = c;
 			neighborhoodSize = nS;
 		}
 
+		/**
+		 * Destructor for Filter objects.
+		 */
 		~Filter() {};
 
 		/**
@@ -41,36 +55,39 @@ namespace LatticeLib {
 		}
 
 		/**
-	 	 * Returns the number of filter coefficients.
+	 	 * Returns the number of template coefficients.
 		 */
 		int getNCoefficients() const {
 			return coefficients.size();
 		}
 
 		/**
-		 * Returns the coefficient vector.
+		 * Returns the template coefficient vector.
 		 */
 		vector<FilterCoefficient<S> > getCoeffs() const {
 			return coefficients;
 		}
 
 		/**
-		 * Returns i:th FilterCoefficient from the coefficient vector.
+		 * Returns the requested FilterCoefficient object from the coefficient vector.
 		 *
-		 * Parameter		| comment
-		 * :---------		| :-------
-		 * coefficientIndex	| position in coefficient vector
+		 *
+		 * Parameter		| in/out	| comment
+		 * :---------		| :------	| :-------
+		 * coefficientIndex	| INPUT		| Position in the template coefficient vector.
 		 */
 		FilterCoefficient<S> getCoefficient(int coefficientIndex) const {
 			return coefficients[coefficientIndex];
 		}
 
 		/**
-		 * Finds the position of the coefficient corresponding to the neighbor with the input index. Returns -1 if this neighbor does not have a coefficient.
+		 * Finds the position of the FilterCoefficient object, corresponding to the neighbor with the input position
+		 * index, in the template coefficient vector. Returns -1 if this neighbor does not have a coefficient.
 		 *
-		 * Parameter		| comment
-		 * :---------		| :-------
-		 * positionIndex	| Position index of corresponding neighbor.
+		 *
+		 * Parameter		| in/out	| comment
+		 * :---------		| :------	| :-------
+		 * positionIndex	| INPUT		| Position index of corresponding neighbor.
 		 */
 		int findCoefficient(int positionIndex) const {
 			int result = -1;
@@ -83,6 +100,15 @@ namespace LatticeLib {
 			return result;
 		}
 
+		/**
+		 * Applies the filter to the specified modality band of the input image.
+		 *
+		 * Parameter	| in/out	| comment
+		 * :---------	| :------	| :-------
+		 * image		| INPUT		| Input image.
+		 * bandIndex	| INPUT		| Index of the band to be filtered.
+		 * result		| OUTPUT	| Filtered intensity values. Needs to be of a length of at least image.nElements.
+		 */
 		template<class T>
 		void applyToBand(Image<T> image, int bandIndex, T *result) const {
 			if ((bandIndex < 0) || (bandIndex >= image.getNBands())) {
@@ -107,6 +133,14 @@ namespace LatticeLib {
 			}
 		}
 
+		/**
+		 * Applies the filter to all modality bands of the input image.
+		 *
+		 * Parameter	| in/out	| comment
+		 * :---------	| :------	| :-------
+		 * image		| INPUT		| Input image.
+		 * result		| OUTPUT	| Filtered intensity values. Needs to be of a length of at least image.nElements * image.nBands.
+		 */
 		template<class T>
 		void applyToImage(Image<T> image, T *result) const {
 			int nElements = image.getNElements();

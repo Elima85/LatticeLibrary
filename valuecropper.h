@@ -13,12 +13,14 @@ namespace LatticeLib {
 
     public:
         /**
+         * Overloads ArrayAdjustment::apply().
+         *
          * Crops the values of the array entries, so that they are in the range [minValue,maxValue].
          *
          * Parameter	| Comment
          * :-------		| :-------
          * array        | Array to be modified.
-         * nElements    | \#elements in the array.
+         * nElements    | Number of elements in the array.
          * minValue     | Minimum limit for the array elements.
          * maxValue     | Maximum limit for the array elements.
          */
