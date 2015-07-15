@@ -10,19 +10,20 @@
 
 namespace LatticeLib {
 
-    class Segmentation {
-
     /**
-     * Crisp segmentation, based on a distance transform. Each modality band in the output image corresponds to a label.
-     * Each spel belongs to exactly one layer, in which its value is 'true'.
-     *
-     * Parameter            | in/out    | Comment
-     * :---------           | :-----    |:-------
-     * distanceTransform    | in        | Distance transform on which to base the segmentation.
-     * segmentation         | out       | Resulting segmentation. Must have the same lattice and number of modality
-     *                      |           | bands as distanceTransform.
+     * Class for segmenting Image data based on the result of a SeededDistanceTransform.
      */
+    class Segmentation {
     public:
+        /**
+         * Crisp segmentation, based on a distance transform. Each modality band in the output image corresponds to a label.
+         * Each spel belongs to exactly one layer, in which its value is 'true'.
+         *
+         * Parameter            | in/out    | Comment
+         * :---------           | :-----    |:-------
+         * distanceTransform    | INPUT     | Distance transform on which to base the segmentation.
+         * segmentation         | OUTPUT    | Resulting segmentation. Must have the same lattice and number of modality bands as distanceTransform.
+         */
         void crisp(Image<double> distanceTransform, Image<bool> segmentation) {
             if (distanceTransform.getLattice() != segmentation.getLattice()) {
                 // throw error
@@ -49,9 +50,8 @@ namespace LatticeLib {
          *
          * Parameter            | in/out    | Comment
          * :---------           | :-----    |:-------
-         * distanceTransform    | in        | Distance transform on which to base the segmentation.
-         * segmentation         | out       | Resulting segmentation. Must have the same lattice and number of modality
-         *                      |           | bands as distanceTransform.
+         * distanceTransform    | INPUT     | Distance transform on which to base the segmentation.
+         * segmentation         | OUTPUT    | Resulting segmentation. Must have the same lattice and number of modality bands as distanceTransform.
          */
         template <class T>
         void fuzzy(Image<double> distanceTransform, IntensityWorkset<T> segmentation) {

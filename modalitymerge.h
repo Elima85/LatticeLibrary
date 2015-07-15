@@ -8,12 +8,15 @@ namespace LatticeLib {
 
     enum blendOption {min, max, mean, sum};
 
+    /**
+     * Class for merging image modality bands.
+     */
     class ModalityMerge { // TODO: Test!
 
     public:
 
         /**
-         * Blends all modality bands into a single band, and returns it in the form of an array.
+         * Blends all modality bands into a single band, and returns the result in the form of an array.
          *
          * Parameter	| in/out	| Comment
          * :----------	| :-------	| :--------
@@ -60,7 +63,7 @@ namespace LatticeLib {
         }
 
         /**
-         * Blends all modality bands into a single band, and returns it in the form of an array.
+         * Blends all modality bands into a single band, and returns the result in the form of an array.
          *
          * Parameter	| in/out	| Comment
          * :----------	| :-------	| :--------

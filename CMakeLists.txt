@@ -21,8 +21,6 @@ set(SOURCE_FILES
     seed.h
     seed.cpp
     distancemeasure.h
-    miscellaneous.cpp
-    miscellaneous.h
     neighbor.h
     neighbor.cpp
     norm.h
@@ -56,7 +54,6 @@ set(TEST_SOURCE_FILES
     fcclatticetestinitialization.cpp
     fcclatticetestcoordinates.cpp
     fcclatticetestneighbors.cpp
-    misctest.cpp
     neighbortest.cpp
     normtest.cpp
     priorityqueuetest.cpp

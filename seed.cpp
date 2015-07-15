@@ -2,12 +2,12 @@
 
 namespace LatticeLib {
     Seed::Seed(int i, int l) {
-        index = i;
+        elementIndex = i;
         label = l;
     }
     Seed::~Seed() {}
     int Seed::getIndex() const {
-        return index;
+        return elementIndex;
     }
     int Seed::getLabel() const {
         return label;

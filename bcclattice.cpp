@@ -1,6 +1,5 @@
 #include "bcclattice.h"
 #include "defs.h"
-#include "miscellaneous.h"
 #include "exception.h"
 #include <cmath>
 

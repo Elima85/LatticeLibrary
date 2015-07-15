@@ -1,16 +1,8 @@
-/*
- * typedef of a priority queue suited for our needs, borrowed from Filip Malm. Should be changed to using templates or type aliases or something, to match the CImage class.
- *
- * If there are several elements with the same priority value, FIFO is applied.
- */
-
 #ifndef PRIORITYQUEUE_H
 #define PRIORITYQUEUE_H
 
-#include <math.h>
+#include <cmath>
 #include <queue>
-#include <vector>
-#include "norm.h"
 #include "defs.h"
 using namespace std;
 
@@ -19,20 +11,25 @@ namespace LatticeLib {
 #define EPSILONPQ 0.0000001
 
 /**
-* Queue element containing one value.
-*/
+ * Class for a priority queue element.
+ *
+ * Member 	| Comment
+ * :-------	| :-------
+ * value    | Value of the element.
+ * index    | Element identifier.
+ */
     template <class T>
     class PriorityQueueElement{
     private:
-        /** element value */
+        /** Value of the element. */
         T value;
 
-        /** element identifier*/
+        /** Element identifier.*/
         long index;
 
     public:
         /**
-        * Empty element
+        * Constructor for empty PriorityQueueElement objects.
         */
         PriorityQueueElement() {
             value = 0.0;
@@ -40,39 +37,53 @@ namespace LatticeLib {
         }
 
         /**
-        * Sets value to input value.
-        */
+         * Constructor for PriorityQueueElement objects.
+         *
+         * Parameter    | in/out	| Comment
+         * :----------  | :-------	| :--------
+         * i            | INPUT     | Value of the element.
+         * v            | INPUT     | Element identifier.
+         */
         PriorityQueueElement(long i, T v) {
             value = v;
             index = i;
         }
 
+        /** Returns value. */
         T getValue() const {
             return value;
         }
 
+        /** Returns index. */
         long getIndex() const {
             return index;
         }
 
+        /**
+         * Returns true if the difference in value between the two elements is less than the tolerance specified by EPSILONPQ.
+         */
         bool operator== (const PriorityQueueElement& rhs) const {
             return fabs(this->value - rhs.value) < EPSILONPQ;
         }
 
+        /**
+         * Returns true if the difference in value between the two elements is greater than the tolerance specified by EPSILONPQ.
+         */
         bool operator!= (const PriorityQueueElement& rhs) const {
             return fabs(this->value - rhs.value) > EPSILONPQ;
         }
     };
 
     /**
-    * Comparison of two queue elements.
+    * Class for comparing two PriorityQueueElements.
     */
     class PriorityQueueElementComparison{
     public:
+        /**
+         * Returns true if the first specified PriorityQueueElement has a larger value than the second one.
+         */
         template <class T>
-        bool operator() (const
-        PriorityQueueElement<T>& lhs, const
-        PriorityQueueElement<T>&rhs) const{
+        bool operator() (const PriorityQueueElement<T>& lhs, const PriorityQueueElement<T>&rhs) const{
             return lhs.getValue() > rhs.getValue();
         }
     };

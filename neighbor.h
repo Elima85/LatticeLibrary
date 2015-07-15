@@ -3,27 +3,46 @@
 
 namespace LatticeLib {
 
+	// TODO: Neighborhood class? Would facilitate padding.
+
 /**
- * Class for handling different types of spel neighbors.
+ * Class for representing neighbors of lattice elements.
+ *
+ * Member			| Comment
+ * :-------			| :-------
+ * positionIndex	| Location relative to the middle spel.
+ * elementIndex		| Global index of the element.
  */
-class Neighbor {
-private:
-	/** Location relative to the middle spel. */
-	int positionIndex;
+	class Neighbor {
+	private:
+		/** Location relative to the middle spel. */
+		int positionIndex;
 
-	/** Index of the neighbor in the image data array. */
-	int imageIndex;
+		/** Global index of the element. */
+		int elementIndex;
 
-public:
-	Neighbor(int l, int i);
-	~Neighbor();
+	public:
+		/**
+         * Constructor for Neighbor objects.
+         *
+         * Parameter    | in/out	| Comment
+         * :----------  | :-------	| :--------
+         * position		| INPUT		| Location relative to the middle spel.
+         * index		| INPUT		| Global index of the element.
+         */
+		Neighbor(int position, int index);
 
-	/** Returns positionIndex, indicating the position of the neighbor relative to the middle spel. */
-	int getPosition() const;
+		/**
+         * Destructor for Neighbor objects.
+         */
+		~Neighbor();
 
-	/** Returns imageIndex, the index of the middle spel in the image data array. */
-	int getIndex() const;
-};
+		/** Returns positionIndex. */
+		int getPosition() const;
+
+		/** Returns elementIndex. */
+		int getIndex() const;
+	};
 
 }
 

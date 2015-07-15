@@ -18,79 +18,89 @@
 namespace LatticeLib {
 
     /**
-     *
-     *
-     * Parameter            | in/out    | Comment
-     * :---------           | :------   | :-------
-     * input                | in        | Input image for the distance transform.
-     * seeds                | in        | Seed points for the distance transform. Contains one vector of seed points for every label.
-     * distanceMeasure      | in        | Distance measure to be used for the transform.
-     * neighborhoodSize     | in        | The number of neighbors that count as adjacent to a spel.
-     * distanceTransform    | out       | The computed distance transform. Must have the same lattice and dimensions as the input image, and one modality band for each label.
-     * roots                | out       | The roots of the distance transform. Must have the same lattice and dimensions as the input image, and one modality band for each label.
+     * Class for computing seeded distance transforms of Image objects.
      */
-    template<class T>
-    void seededDistanceTransform(const IntensityWorkset<T> &inputImage, const vector< vector<Seed> > seeds, DistanceMeasure &distanceMeasure, int neighborhoodSize, Image<double> distanceTransform, Image<int> roots) {
+    class SeededDistanceTransform {
 
-        if ((inputImage.getImage().getLattice() != distanceTransform.getLattice()) || (inputImage.getImage().getLattice() != roots.getLattice())){
-            // throw exception or error
-        }
-        if ((inputImage.getImage().getNRows() != distanceTransform.getNRows()) ||
-            (inputImage.getImage().getNColumns() != distanceTransform.getNColumns()) ||
-            (inputImage.getImage().getNLayers() != distanceTransform.getNLayers()) ||
-            (inputImage.getImage().getNRows() != roots.getNRows()) ||
-            (inputImage.getImage().getNColumns() != roots.getNColumns()) ||
-            (inputImage.getImage().getNLayers() != roots.getNLayers())) {
-            // throw exception or error
-            // throw dimensionMismatchException();
-        }
-        if ((distanceTransform.getNBands() != seeds.size()) || (roots.getNBands() != seeds.size())) {
-            // throw exception or error
-        }
+        /**
+         * Applies the specified distance measure to the input image, and computes the distance transform and the roots of its inverse forest.
+         *
+         * Parameter            | in/out    | Comment
+         * :---------           | :------   | :-------
+         * inputImage           | INPUT     | Input image for the distance transform.
+         * seeds                | INPUT     | %Seed points for the distance transform. Contains one vector of seed points for every label.
+         * distanceMeasure      | INPUT     | Distance measure to be used for the transform.
+         * neighborhoodSize     | INPUT     | The number of neighbors that count as adjacent to a spel.
+         * distanceTransform    | OUTPUT    | The computed distance transform. Must have the same lattice and dimensions as the input image, and one modality band for each label.
+         * roots                | OUTPUT    | The roots of the distance transform. Must have the same lattice and dimensions as the input image, and one modality band for each label.
+         */
+        template<class T>
+        void apply(const IntensityWorkset<T> &inputImage, const vector<vector<Seed> > seeds,
+                   DistanceMeasure &distanceMeasure, int neighborhoodSize,
+                   Image<double> distanceTransform, Image<int> roots) {
 
-        int nElements = image.getNElements();
-        int nLabels = seeds.size();
-        bool *inQueue = new bool[nElements]; // so that only the "best" copy of an element is popped, and all others are skipped, until a better one is pushed.
-        distanceMeasure.initialize(inputImage);
-        for (int labelIndex = 0; labelIndex < nLabels; labelIndex++) {
-            distanceMeasure.reset(inputImage);
-            // initialize background
-            for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
-                distanceTransform.setElement(elementIndex, labelIndex, DBL_MAX);
-                roots.setElement(elementIndex, labelIndex, -1);
-                inQueue[elementIndex] = false;
+            if ((inputImage.getImage().getLattice() != distanceTransform.getLattice()) ||
+                (inputImage.getImage().getLattice() != roots.getLattice())) {
+                // throw exception or error
             }
-            // initialize seed points and put them on queue
-            priority_queue<PriorityQueueElement<T>, vector<PriorityQueueElement<T> >, PriorityQueueElementComparison> queue;
-            int nSeeds = seeds[labelIndex].size();
-            for (int seedIndex = 0; seedIndex < nSeeds; seedIndex++) {
-                int elementIndex = seeds[labelIndex][seedIndex].getIndex();
-                distanceTransform.setElement(elementIndex, labelIndex, 0);
-                roots.setElement(elementIndex, labelIndex, elementIndex);
-                queue.push(PriorityQueueElement<T>(elementIndex, 0));
-                inQueue[elementIndex] = true;
+            if ((inputImage.getImage().getNRows() != distanceTransform.getNRows()) ||
+                (inputImage.getImage().getNColumns() != distanceTransform.getNColumns()) ||
+                (inputImage.getImage().getNLayers() != distanceTransform.getNLayers()) ||
+                (inputImage.getImage().getNRows() != roots.getNRows()) ||
+                (inputImage.getImage().getNColumns() != roots.getNColumns()) ||
+                (inputImage.getImage().getNLayers() != roots.getNLayers())) {
+                // throw exception or error
+                // throw dimensionMismatchException();
             }
-            // wave front propagation
-            while (!queue.empty()) {
-                PriorityQueueElement<T> topElement = queue.top();
-                queue.pop();
-                int poppedElementIndex = topElement.getIndex();
-                if (inQueue[poppedElementIndex]) {
-                    inQueue[poppedElementIndex] = false; // so that old queue elements offering larger distances are skipped
-                    vector<PriorityQueueElement<T> > newQueueElements;
-                    distanceMeasure.update(image, neighborhoodSize, distanceTransform, roots, poppedElementIndex, labelIndex, newQueueElements);
-                    int nNewQueueElements = newQueueElements.size();
-                    for (int queueElementIndex = 0; queueElementIndex < nNewQueueElements; queueElementIndex++) {
-                        queue.push(newQueueElements[queueElementIndex]);
-                        inQueue[newQueueElements[queueElementIndex].getIndex()] = true;
+            if ((distanceTransform.getNBands() != seeds.size()) || (roots.getNBands() != seeds.size())) {
+                // throw exception or error
+            }
+
+            int nElements = image.getNElements();
+            int nLabels = seeds.size();
+            bool *inQueue = new bool[nElements]; // so that only the "best" copy of an element is popped, and all others are skipped, until a better one is pushed.
+            distanceMeasure.initialize(inputImage);
+            for (int labelIndex = 0; labelIndex < nLabels; labelIndex++) {
+                distanceMeasure.reset(inputImage);
+                // initialize background
+                for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
+                    distanceTransform.setElement(elementIndex, labelIndex, DBL_MAX);
+                    roots.setElement(elementIndex, labelIndex, -1);
+                    inQueue[elementIndex] = false;
+                }
+                // initialize seed points and put them on queue
+                priority_queue<PriorityQueueElement<T>, vector<PriorityQueueElement<T> >, PriorityQueueElementComparison> queue;
+                int nSeeds = seeds[labelIndex].size();
+                for (int seedIndex = 0; seedIndex < nSeeds; seedIndex++) {
+                    int elementIndex = seeds[labelIndex][seedIndex].getIndex();
+                    distanceTransform.setElement(elementIndex, labelIndex, 0);
+                    roots.setElement(elementIndex, labelIndex, elementIndex);
+                    queue.push(PriorityQueueElement<T>(elementIndex, 0));
+                    inQueue[elementIndex] = true;
+                }
+                // wave front propagation
+                while (!queue.empty()) {
+                    PriorityQueueElement<T> topElement = queue.top();
+                    queue.pop();
+                    int poppedElementIndex = topElement.getIndex();
+                    if (inQueue[poppedElementIndex]) {
+                        inQueue[poppedElementIndex] = false; // so that old queue elements offering larger distances are skipped
+                        vector<PriorityQueueElement<T> > newQueueElements;
+                        distanceMeasure.update(image, neighborhoodSize, distanceTransform, roots, poppedElementIndex,
+                                               labelIndex, newQueueElements);
+                        int nNewQueueElements = newQueueElements.size();
+                        for (int queueElementIndex = 0; queueElementIndex < nNewQueueElements; queueElementIndex++) {
+                            queue.push(newQueueElements[queueElementIndex]);
+                            inQueue[newQueueElements[queueElementIndex].getIndex()] = true;
+                        }
                     }
                 }
             }
+            distanceMeasure.clear();
         }
-        distanceMeasure.clear();
-    }
 
-/**
+    };
+/*
 * Approximated vectorial minimum barrier distance
 * Strand et al. 2012, Kårsnäs and Strand 2012
 *
@@ -193,7 +203,7 @@ namespace LatticeLib {
         return distanceTransform;
     }
 
-/**
+/*
 * Fuzzy connectedness distance transform
 * Udupa 1996, Udupa 2003
 *
@@ -272,7 +282,7 @@ namespace LatticeLib {
         return distanceTransform;
     }
 
-/**
+/*
 * Fuzzy distance
 * Saha 2002, (Svensson 2008)
 *
@@ -353,7 +363,7 @@ namespace LatticeLib {
     }
 
 
-/**
+/*
 * Geodesic distance
 * Toivanen 1996, Ikonen 2005, Criminisi 2008
 *
