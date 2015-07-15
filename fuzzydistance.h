@@ -9,11 +9,16 @@
 namespace LatticeLib {
 
 /**
-* Fuzzy distance
-* Saha 2002, (Svensson 2008)
-*
-* The distance between two neighbors is the average of their intensity values multiplied with the Euclidean distance between them. OBS!!! Only takes the first band into account! Use norm of average color vector?
-*/
+ * Fuzzy Distance
+ * ===============
+ * The distance between two neighbors is the average of their intensity values multiplied with the Euclidean distance
+ * between them. *Only takes the first modality band into account!*
+ *
+ * References
+ * -----------
+ * [Saha et al. 2002](http://www.sciencedirect.com/science/article/pii/S1077314202909744) <br>
+ * [Svensson 2008](http://www.sciencedirect.com/science/article/pii/S0167865508000226)
+ */
     class FuzzyDistance : public DistanceMeasure {
 
     protected:
@@ -21,11 +26,35 @@ namespace LatticeLib {
         Norm &norm;
 
     public:
+        /**
+         * Constructor for FuzzyDistance objects.
+         *
+         * Parameter    | in/out	| Comment
+         * :----------  | :-------	| :--------
+         * n            | INPUT     | The norm used in the definition of distance.
+         */
         FuzzyDistance(Norm &n) : DistanceMeasure() {
             norm = n;
         }
+
+        /**
+         * Destructor for FuzzyDistance objects.
+         */
         ~FuzzyDistance();
 
+        /**
+         * Overloads DistanceMeasure::update().
+         *
+         * Parameter            | in/out        | Comment
+         * :---------           | :------       | :-------
+         * image                | INPUT         | Input image for the distance transform.
+         * neighborhoodSize     | INPUT         | The maximum number of neighbors that count as adjacent to a spel.
+         * elementIndex         | INPUT         | Index of the spatial element being processed.
+         * labelIndex           | INPUT         | Index of the label of the set of seed points being processed.
+         * distanceTransform    | INPUT/OUTPUT  | Distance transform of the image.
+         * roots                | OUTPUT        | Source spels of the propagated distance values.
+         * toQueue              | OUTPUT        | Spatial elements to be put on the priority queue.
+         */
         template<class T>
         void update(const Image <T> &image, int neighborhoodSize, int elementIndex, int labelIndex,
                     Image <double> &distanceTransform, Image <int> &roots, vector <PriorityQueueElement<T>> &toQueue) {

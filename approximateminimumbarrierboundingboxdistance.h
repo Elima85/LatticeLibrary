@@ -10,12 +10,15 @@
 namespace LatticeLib {
 
 /**
-* Approximated vectorial minimum barrier distance
-* Strand et al. 2012, Kårsnäs and Strand 2012
-*
-* Approximates the minimum of the difference between the maximum and minimum values along a path, based on the locally optimal path ("greedy" algorithm).
-* Is the other approximation (min(max)-max(min)) valid for VMBD? Can min(max) and max(min) be computed for each band by itself? (probably not)
-*/
+ * Vectorial Approximated Minimum Barrier Distance
+ * ================================================
+ * Approximates the minimum of the difference between the maximum and minimum values along a path, based on the locally optimal path ("greedy" algorithm). Uses a bounding box for handling the vectorial intensity values.
+ *
+ * References
+ * -----------
+ * [Strand et al. 2012](http://www.sciencedirect.com/science/article/pii/S1077314212001750) <br>
+ * [Kårsnäs and Strand 2012](http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=6460253&url=http%3A%2F%2Fieeexplore.ieee.org%2Fxpls%2Fabs_all.jsp%3Farnumber%3D6460253)
+ */
     template<class T>
     class ApproximateMinimumBarrierBoundingBoxDistance : public DistanceMeasure {
 
@@ -23,27 +26,52 @@ namespace LatticeLib {
         /** The norm used when converting a traversed intensity span to a scalar distance value. */
         Norm &norm;
 
-        /** The lowest intensities that have been traversed between a spatial element and the closest seedpoint. */
+        /** The lowest intensities that have been traversed between a spatial element and the closest seed point. */
         vector<T> *pathMinimumValue;
 
-        /** The highest intensities that have been traversed between a spatial element and the closest seedpoint. */
+        /** The highest intensities that have been traversed between a spatial element and the closest seed point. */
         vector<T> *pathMaximumValue;
 
     public:
+        /**
+         * Constructor for ApproximateMinimumBarrierBoundingBoxDistance objects.
+         *
+         * Parameter    | in/out	| Comment
+         * :----------  | :-------	| :--------
+         * n            | INPUT     | The norm used when converting a traversed intensity span to a scalar distance value.
+         */
         ApproximateMinimumBarrierBoundingBoxDistance(Norm &n) : DistanceMeasure() {
             norm = n;
             pathMinimumValue = NULL;
             pathMaximumValue = NULL;
         }
+
+        /**
+         * Destructor for ApproximateMinimumBarrierBoundingBoxDistance objects.
+         */
         ~ApproximateMinimumBarrierBoundingBoxDistance(){}
 
-        template <class T>
+        /**
+         * Overloads DistanceMeasure::initialize().
+         *
+         * Parameter    | in/out    | Comment
+         * :---------   | :------   | :-------
+         * image        | INPUT     | Input image for the distance transform.
+         * TODO: Should seeds be added here? Would it make exact MBD work?
+         */
         void initialize(const Image<T> &image) {
             int nElements = image.getNElements();
             pathMinimumValue = new vector<T>[nElements];
             pathMaximumValue = new vector<T>[nElements];
         }
 
+        /**
+         * Overloads DistanceMeasure::reset().
+         *
+         * Parameter    | in/out    | Comment
+         * :---------   | :------   | :-------
+         * image        | INPUT     | Input image for the distance transform.
+         */
         void reset(const Image<T> &image) {
             int nElements = image.getNElements();
             for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
@@ -52,7 +80,19 @@ namespace LatticeLib {
             }
         }
 
-        template <class T>
+        /**
+         * Overloads DistanceMeasure::update().
+         *
+         * Parameter            | in/out        | Comment
+         * :---------           | :------       | :-------
+         * image                | INPUT         | Input image for the distance transform.
+         * neighborhoodSize     | INPUT         | The maximum number of neighbors that count as adjacent to a spel.
+         * elementIndex         | INPUT         | Index of the spatial element being processed.
+         * labelIndex           | INPUT         | Index of the label of the set of seed points being processed.
+         * distanceTransform    | INPUT/OUTPUT  | Distance transform of the image.
+         * roots                | OUTPUT        | Source spels of the propagated distance values.
+         * toQueue              | OUTPUT        | Spatial elements to be put on the priority queue.
+         */
         void update(const Image<T> &image, int neighborhoodSize, int elementIndex, int labelIndex,
                     Image<double> &distanceTransform, Image<int> &roots, vector<PriorityQueueElement<T> > &toQueue) {
             toQueue.clear();
@@ -76,6 +116,9 @@ namespace LatticeLib {
 
         }
 
+        /**
+         * Overloads DistanceMeasure::clear().
+         */
         void clear() {
             delete pathMinimumValue;
             delete pathMaximumValue;

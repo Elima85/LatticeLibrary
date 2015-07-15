@@ -9,24 +9,52 @@
 namespace LatticeLib {
 
     /**
-    * Fuzzy connectedness distance transform
-    * Udupa 1996, Udupa 2003
-    *
-    * Maximizes the weakest link, defined as the difference in value between two neighbors along the path. OBS!!! Only takes the first band into account! Use norm of color difference vector?
-    * Should an inter-neighbor Euclidian distance be used a factor, to consider different kinds of neighbors and lattices? Ask Punam Saha about fuzzy adjacency.
-    */
+     * Fuzzy connectedness
+     * ====================
+     * Maximizes the weakest link, defined as the difference in value between two neighbors along the path. *Only takes the first modality band into account!*
+     * TODO: Should an inter-neighbor Euclidean distance be used a factor, to consider different kinds of neighbors and lattices? Ask Punam Saha about fuzzy adjacency.
+     *
+     * References
+     * ------------
+     * [Udupa and Samarasekera 1996](http://www.sciencedirect.com/science/article/pii/S1077316996900210) <br>
+     * [Udupa and Saha 2003](http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=1232198&url=http%3A%2F%2Fieeexplore.ieee.org%2Fxpls%2Fabs_all.jsp%3Farnumber%3D1232198)
+     */
     class FuzzyConnectedness : public DistanceMeasure {
 
     protected:
-        /** The norm used when converting a traversed intensity span to a scalar distance value. */
+        /** The norm used in the definition of distance. */
         Norm &norm;
 
     public:
+        /**
+         * Constructor for FuzzyConnectedness objects.
+         *
+         * Parameter    | in/out	| Comment
+         * :----------  | :-------	| :--------
+         * n            | INPUT     | The norm used in the definition of distance.
+         */
         FuzzyConnectedness(Norm &n) : DistanceMeasure() {
             norm = n;
         }
+
+        /**
+         * Destructor for FuzzyConnectedness objects.
+         */
         ~FuzzyConnectedness();
 
+        /**
+         * Overloads DistanceMeasure::update().
+         *
+         * Parameter            | in/out        | Comment
+         * :---------           | :------       | :-------
+         * image                | INPUT         | Input image for the distance transform.
+         * neighborhoodSize     | INPUT         | The maximum number of neighbors that count as adjacent to a spel.
+         * elementIndex         | INPUT         | Index of the spatial element being processed.
+         * labelIndex           | INPUT         | Index of the label of the set of seed points being processed.
+         * distanceTransform    | INPUT/OUTPUT  | Distance transform of the image.
+         * roots                | OUTPUT        | Source spels of the propagated distance values.
+         * toQueue              | OUTPUT        | Spatial elements to be put on the priority queue.
+         */
         template<class T>
         void update(const Image <T> &image, int neighborhoodSize, int elementIndex, int labelIndex,
                     Image<double> &distanceTransform, Image<int> &roots, vector <PriorityQueueElement<T> > &toQueue) {
