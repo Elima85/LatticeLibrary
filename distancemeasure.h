@@ -4,6 +4,7 @@
 #include "priorityqueue.h"
 #include "image.h"
 #include "intensityworkset.h"
+#include "seed.h"
 
 namespace LatticeLib {
 
@@ -19,7 +20,6 @@ namespace LatticeLib {
          * Parameter    | in/out    | Comment
          * :---------   | :------   | :-------
          * image        | INPUT     | Input image for the distance transform.
-         * TODO: Should seeds be added here? Would it make exact MBD work?
          */
         template <class T>
         void initialize(Image<T> &image) {}
@@ -32,7 +32,7 @@ namespace LatticeLib {
          * image        | INPUT     | Input image for the distance transform.
          */
         template<class T>
-        void reset(const Image<T> &image) { };
+        void reset(const Image<T> &image, vector<Seed> seeds) { };
 
         /**
          * Propagates the wave front to the next spatial element.

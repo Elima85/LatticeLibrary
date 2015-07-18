@@ -1,5 +1,5 @@
-#ifndef APPROXIMATEMINIMUMBARRIERBOUNDINGBOXDISTANCE_H
-#define APPROXIMATEMINIMUMBARRIERBOUNDINGBOXDISTANCE_H
+#ifndef MINIMUMBARRIERDISTANCE_H
+#define MINIMUMBARRIERDISTANCE_H
 
 #include "distancemeasure.h"
 #include "image.h"
@@ -11,27 +11,28 @@
 namespace LatticeLib {
 
 /**
- * Vectorial Approximated Minimum Barrier Distance
- * ================================================
- * Approximates the minimum of the difference between the maximum and minimum values along a path, based on the locally optimal path ("greedy" algorithm). Uses a bounding box for handling the vectorial intensity values.
+ * Minimum Barrier Distance
+ * ==========================
+ * Computes the minimum barrier distance, defined as the difference between the highest and lowest intensity value along a path. *Only takes the first modality band into account!*
  *
  * References
  * -----------
- * [Strand et al. 2012](http://www.sciencedirect.com/science/article/pii/S1077314212001750) <br>
- * [Kårsnäs and Strand 2012](http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=6460253&url=http%3A%2F%2Fieeexplore.ieee.org%2Fxpls%2Fabs_all.jsp%3Farnumber%3D6460253)
+ * [Ciesielski et al. 2014] (http://www.math.wvu.edu/~kcies/Other/ElectronicReprints/116MBD2repr.pdf) TODO: Link to Elsevier instead.
  */
     template<class T>
-    class ApproximateMinimumBarrierBoundingBoxDistance : public DistanceMeasure {
+    class MinimumBarrierDistance : public DistanceMeasure {
 
     protected:
         /** The norm used when converting a traversed intensity span to a scalar distance value. */
         Norm &norm;
 
         /** The lowest intensities that have been traversed between a spatial element and the closest seed point. */
-        vector<T> *pathMinimumValue;
+        T *pathMinimumValue;
 
         /** The highest intensities that have been traversed between a spatial element and the closest seed point. */
-        vector<T> *pathMaximumValue;
+        T *pathMaximumValue;
+
+        int *preliminaryRoots; // ?
 
     public:
         /**
@@ -41,16 +42,17 @@ namespace LatticeLib {
          * :----------  | :-------	| :--------
          * n            | INPUT     | The norm used when converting a traversed intensity span to a scalar distance value.
          */
-        ApproximateMinimumBarrierBoundingBoxDistance(Norm &n) : DistanceMeasure() {
+        MinimumBarrierDistance(Norm &n) : DistanceMeasure() {
             norm = n;
             pathMinimumValue = NULL;
             pathMaximumValue = NULL;
+            preliminaryRoots = NULL;
         }
 
         /**
          * Destructor for ApproximateMinimumBarrierBoundingBoxDistance objects.
          */
-        ~ApproximateMinimumBarrierBoundingBoxDistance(){}
+        ~MinimumBarrierDistance() { }
 
         /**
          * Overloads DistanceMeasure::initialize().
@@ -60,12 +62,13 @@ namespace LatticeLib {
          * image        | INPUT     | Input image for the distance transform.
          */
         void initialize(const Image<T> &image) {
-            if ((pathMaximumValue != NULL) || (pathMinimumValue != NULL)) {
+            if ((pathMaximumValue != NULL) || (pathMinimumValue != NULL) || (preliminaryRoots != NULL)) {
                 // TODO: Throw error or exception
             }
             int nElements = image.getNElements();
-            pathMinimumValue = new vector<T>[nElements];
-            pathMaximumValue = new vector<T>[nElements];
+            pathMinimumValue = new T[nElements];
+            pathMaximumValue = new T[nElements];
+            preliminaryRoots = new int[nElements];
         }
 
         /**
@@ -76,13 +79,20 @@ namespace LatticeLib {
          * image        | INPUT     | Input image for the distance transform.
          */
         void reset(const Image<T> &image, vector<Seed> seeds) {
-            if ((pathMaximumValue == NULL) || (pathMinimumValue == NULL)) {
+            if ((pathMaximumValue == NULL) || (pathMinimumValue == NULL) || (preliminaryRoots = NULL)) {
                 // TODO: Throw error or exception
             }
             int nElements = image.getNElements();
             for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
-                pathMinimumValue[elementIndex] = image[elementIndex]; // the spel is always part of the path between itself and the object boundary
-                pathMaximumValue[elementIndex] = image[elementIndex];
+                pathMinimumValue[elementIndex] = -INF;
+                pathMaximumValue[elementIndex] = INF;
+                preliminaryRoots[elementIndex] = -1;
+            }
+            int nSeeds = seeds.size();
+            for (int seedIndex = 0; seedIndex < nSeeds; seedIndex++) {
+                pathMinimumValue[elementIndex] = image(seeds[seedIndex].getIndex(), 0); // the spel is always part of the path between itself and the object boundary
+                pathMaximumValue[elementIndex] = image(seeds[seedIndex].getIndex(), 0);;
+                preliminaryRoots[elementIndex] = seeds[seedIndex].getIndex();
             }
         }
 
@@ -107,16 +117,19 @@ namespace LatticeLib {
             int nNeighbors = neighbors.size();
             for (int neighborIndex = 0; neighborIndex < nNeighbors; neighborIndex++) {
                 int neighborGlobalIndex = neighbors[neighborIndex].getIndex();
-                vector<T> minIntensities = minElements(pathMinimumValue[elementIndex], image[neighborGlobalIndex]);
-                vector<T> maxIntensities = maxElements(pathMaximumValue[elementIndex], image[neighborGlobalIndex]);
-                vector<T> intensitySpans = maxIntensities - minIntensities;
-                double distance = norm.compute(intensitySpans);
-                if (distance < distanceTransform(neighborGlobalIndex, labelIndex)) {
-                    distanceTransform.setElement(neighborGlobalIndex, labelIndex, distance);
-                    roots.setElement(neighborGlobalIndex, labelIndex, elementIndex);
-                    pathMinimumValue[neighborGlobalIndex] = minIntensities;
-                    pathMaximumValue[neighborGlobalIndex] = maxIntensities;
-                    toQueue.push_back(PriorityQueueElement<T>(neighborGlobalIndex, distance));
+                T minIntensity = MIN(pathMinimumValue[elementIndex], image(neighborGlobalIndex, 0));
+                T maxIntensity = MAX(pathMaximumValue[elementIndex], image(neighborGlobalIndex, 0));
+                T intensitySpan = maxIntensity - minIntensity;
+                if (minIntensity > pathMinimumValue[neighborGlobalIndex]) {
+                    pathMinimumValue[neighborGlobalIndex] = minIntensity;
+                    pathMaximumValue[neighborGlobalIndex] = maxIntensity;
+                    preliminaryRoots[neighborGlobalIndex] = elementIndex;
+                    double distance = maxIntensity - minIntensity;
+                    if (distance < distanceTransform[neighborGlobalIndex]) {
+                        distanceTransform.setElement(neighborGlobalIndex, labelIndex, distance);
+                        roots.setElement(neighborGlobalIndex, labelIndex, elementIndex);
+                        toQueue.push_back(PriorityQueueElement<T>(neighborGlobalIndex, distance));
+                    }
                 }
             }
 
@@ -128,10 +141,12 @@ namespace LatticeLib {
         void clear() {
             delete pathMinimumValue;
             delete pathMaximumValue;
+            delete preliminaryRoots;
             pathMinimumValue = NULL;
             pathMaximumValue = NULL;
+            preliminaryRoots = NULL;
         }
     };
 }
 
-#endif
+#endif //MINIMUMBARRIERDISTANCE_H

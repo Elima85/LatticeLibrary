@@ -43,15 +43,6 @@ namespace LatticeLib {
                 (inputImage.getImage().getLattice() != roots.getLattice())) {
                 // throw exception or error
             }
-            if ((inputImage.getImage().getNRows() != distanceTransform.getNRows()) ||
-                (inputImage.getImage().getNColumns() != distanceTransform.getNColumns()) ||
-                (inputImage.getImage().getNLayers() != distanceTransform.getNLayers()) ||
-                (inputImage.getImage().getNRows() != roots.getNRows()) ||
-                (inputImage.getImage().getNColumns() != roots.getNColumns()) ||
-                (inputImage.getImage().getNLayers() != roots.getNLayers())) {
-                // throw exception or error
-                // throw dimensionMismatchException();
-            }
             if ((distanceTransform.getNBands() != seeds.size()) || (roots.getNBands() != seeds.size())) {
                 // throw exception or error
             }

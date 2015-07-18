@@ -31,7 +31,7 @@ namespace LatticeLib {
         Seed(int i, int l);
         ~Seed();
 
-        /** Returns the index of the seed spel. */
+        /** Returns the index of the seed spel. */ // TODO: Rename to getElementIndex()
         int getIndex() const;
 
         /** Returns the label of the seed spel. */
