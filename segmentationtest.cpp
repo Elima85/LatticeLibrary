@@ -130,7 +130,6 @@ TEST(Segmentation, fuzzy) {
     IntensityWorkset<int> intFuzzyLabels(intLabels, 14, 92, none);
     IntensityWorkset<double> doubleFuzzyLabels(doubleLabels, 0.0, 1.0, none);
 
-
     Segmentation segmentation;
     segmentation.fuzzy(distanceTransform, uint8FuzzyLabels);
     segmentation.fuzzy(distanceTransform, intFuzzyLabels);
@@ -145,7 +144,6 @@ TEST(Segmentation, fuzzy) {
             intLabelSum += (intFuzzyLabels.getImage()(elementIndex, bandIndex) - 14);
             doubleLabelSum += doubleFuzzyLabels.getImage()(elementIndex, bandIndex);
         }
-
     }
     EXPECT_EQ(nElements * 255, uint8LabelSum);
     EXPECT_EQ(nElements * (92 - 14), intLabelSum);

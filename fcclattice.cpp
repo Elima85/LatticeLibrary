@@ -7,29 +7,32 @@ using namespace std;
 
 namespace LatticeLib {
 
-    FCCLattice::FCCLattice(int rows, int columns, int layers, double scale) : Lattice(rows, columns, layers, scale) {};
+    FCCLattice::FCCLattice(int rows, int columns, int layers, double density) : Lattice(rows, columns, layers, density) {};
     FCCLattice::FCCLattice(const FCCLattice &original) : Lattice(original) {};
     FCCLattice::~FCCLattice() {};
 
     double FCCLattice::indexToX(int index) const {
         int row, column, layer;
         double x;
+        double scaleFactor = cbrt(1 / this->latticeDensity);
         row = this->indexToR(index);
         column = this->indexToC(index);
         layer = this->indexToL(index);
-        x = this->scaleFactor * ((1 + !IS_EVEN(layer + row)) * FCCOFFSET + column * FCCPOINTDISTANCE);
+        x = scaleFactor * ((1 + !IS_EVEN(layer + row)) * FCCOFFSET + column * FCCPOINTDISTANCE);
         return x;
     }
     double FCCLattice::indexToY(int index) const {
         int row;
         double y;
+        double scaleFactor = cbrt(1 / this->latticeDensity);
         row = this->indexToR(index);
-        y = this->scaleFactor * ((row + 1) * FCCOFFSET);
+        y = scaleFactor * ((row + 1) * FCCOFFSET);
         return y;
     }
     double FCCLattice::indexToZ(int index) const {
         int layer = this->indexToL(index);
-        double z = this->scaleFactor * ((layer + 1) * FCCOFFSET);
+        double scaleFactor = cbrt(1 / this->latticeDensity);
+        double z = scaleFactor * ((layer + 1) * FCCOFFSET);
         return z;
     }
     double FCCLattice::getWidth() const {
@@ -41,8 +44,10 @@ namespace LatticeLib {
     double FCCLattice::getDepth() const {
         return this->indexToZ(0) + indexToZ(this->rclToIndex(0, 0, this->nLayers - 1));
     }
+
     /* TODO: double coverageToInternalDistance(double coverage) const {
         coverageIndex = round(coverage * 255);
+        double scaleFactor = cbrt(1/ this->latticeDensity);
         return subSpelDistanceVoronoiFCC[coverageIndex] * [function of scaleFactor];
     }*/
     void FCCLattice::get12Neighbors(int row, int column, int layer, vector<Neighbor> &neighbors) const {

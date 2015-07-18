@@ -9,13 +9,13 @@ namespace LatticeLib {
         nLayers = layers;
         nColumns = columns;
         nRows = rows;
-        scaleFactor = scale;
+        latticeDensity = scale;
     }
     Lattice::Lattice(const Lattice &original) {
         nLayers = original.nLayers;
         nColumns = original.nColumns;
         nRows = original.nRows;
-        scaleFactor = original.scaleFactor;
+        latticeDensity = original.latticeDensity;
     }
     Lattice::~Lattice() {}
 
@@ -31,8 +31,8 @@ namespace LatticeLib {
     int Lattice::getNLayers() const {
         return nLayers;
     }
-    double Lattice::getScaleFactor() const {
-        return scaleFactor;
+    double Lattice::getDensity() const {
+        return latticeDensity;
     }
     bool Lattice::isValid(int index) const {
         return ((index >= 0 && index < nColumns * nRows * nLayers));
@@ -84,7 +84,8 @@ namespace LatticeLib {
         distanceVector.push_back(this->indexToZ(index2) - this->indexToZ(index1));
     }
     bool Lattice::operator==(const Lattice &rhs) const {
-        return (typeid(*this) == typeid(rhs) && nColumns == rhs.getNColumns() && nRows == rhs.getNRows() && nLayers == rhs.getNLayers() && scaleFactor == rhs.getScaleFactor());
+        return (typeid(*this) == typeid(rhs) && nColumns == rhs.getNColumns() && nRows == rhs.getNRows() && nLayers == rhs.getNLayers() && latticeDensity ==
+                                                                                                                                           rhs.getDensity());
     }
     bool Lattice::operator!=(const Lattice &rhs) const {
         return !((*this)==rhs);

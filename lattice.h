@@ -19,7 +19,7 @@ namespace LatticeLib {
 * nRows		    | Number of columns of the lattice.
 * nLayers		| Number of layers of the lattice.
 * nElements	    | total number of elements of the lattice.
-* scaleFactor	| Determines the scaling of the lattice. Default is one sample/unit volume. TODO: Doesn't seem right... Figure out how it works!
+* scaleFactor	| Determines the scaling of the lattice. Default is one sample/unit volume. TODO: Doesn't seem right... Seems to be what Leo calls "lattice length".
 */
     class Lattice {
 
@@ -33,8 +33,8 @@ namespace LatticeLib {
         /** Number of layers. */
         int nLayers;
 
-        /** Determines the density of the lattice. // TODO: Figure out and explain more. */
-        double scaleFactor;
+        /** The number of lattice points per unit volume. */
+        double latticeDensity;
 
     public:
 
@@ -86,9 +86,9 @@ namespace LatticeLib {
         int getNLayers() const;
 
         /**
-        * Returns the lattice scale factor.
+        * Returns the lattice density.
         */
-        double getScaleFactor() const;
+        double getDensity() const;
 
         /**
         * Returns the width of the lattice in distance units.

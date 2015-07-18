@@ -130,7 +130,7 @@ namespace LatticeLib {
          * Returns the lattice scale factor.
          */
 		double getScaleFactor() const {
-			return lattice.getScaleFactor();
+			return lattice.getDensity();
 		}
 
 		/**
@@ -187,7 +187,7 @@ namespace LatticeLib {
 			cout << "#columns: " << lattice.getNColumns() << endl;
 			cout << "#layers: " << lattice.getNLayers() << endl;
 			cout << "#modality bands: " << nBands << endl;
-			cout << "scale factor: " << lattice.getScaleFactor() << endl;
+			cout << "scale factor: " << lattice.getDensity() << endl;
 			cout << "data array: " << data << endl;
 		}
 

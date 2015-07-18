@@ -11,13 +11,16 @@ namespace LatticeLib {
     CCLattice::~CCLattice() {};
 
     double CCLattice::indexToX(int index) const {
-        return this->scaleFactor * (this->indexToC(index) + 0.5);
+        double scaleFactor = cbrt(1 / this->latticeDensity);
+        return scaleFactor * (this->indexToC(index) + 0.5); // scaleFactor är sidan på kuben
     }
     double CCLattice::indexToY(int index) const {
-        return this->scaleFactor * (this->indexToR(index) + 0.5);
+        double scaleFactor = cbrt(1 / this->latticeDensity);
+        return scaleFactor * (this->indexToR(index) + 0.5);
     }
     double CCLattice::indexToZ(int index) const {
-        return this->scaleFactor * (this->indexToL(index) + 0.5);
+        double scaleFactor = cbrt(1 / this->latticeDensity);
+        return scaleFactor * (this->indexToL(index) + 0.5);
     }
     double CCLattice::getWidth() const {
         return this->indexToX(0) + this->indexToX(this->rclToIndex(0, this->nColumns - 1, 0));
@@ -28,8 +31,10 @@ namespace LatticeLib {
     double CCLattice::getDepth() const {
         return this->indexToZ(0) + this->indexToZ(this->rclToIndex(0, 0, this->nLayers - 1));
     }
+
     /* TODO: double coverageToInternalDistance(double coverage) const {
         coverageIndex = round(coverage * 255);
+        double scaleFactor = this->latticeDensity; // TODO: Find correct scaleFactor!
         return subSpelDistanceVoronoiCC[coverageIndex] * [function of scaleFactor];
     }*/
     void CCLattice::get6Neighbors(int row, int column, int layer, vector<Neighbor> &neighbors) const {

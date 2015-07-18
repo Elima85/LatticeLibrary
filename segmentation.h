@@ -67,7 +67,7 @@ namespace LatticeLib {
             T minCoverage = segmentation.getMinIntensity();
             T maxCoverage = segmentation.getMaxIntensity();
             T coverageRange = maxCoverage - minCoverage;
-            double radius = cbrt(3/(4 * PI) * segmentation.getImage().getLattice().getScaleFactor()); // approximate the spel by a sphere
+            double radius = cbrt(3/(4 * PI) * segmentation.getImage().getLattice().getDensity()); // approximate the spel by a sphere
             for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
                 vector<double> distances = distanceTransform[elementIndex];
                 int nearestLabel = getIndexOfMinimumValue(distances);

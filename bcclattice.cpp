@@ -7,29 +7,32 @@ using namespace std;
 
 namespace LatticeLib {
 
-    BCCLattice::BCCLattice(int rows, int columns, int layers, double scale) : Lattice(rows, columns, layers, scale) {};
+    BCCLattice::BCCLattice(int rows, int columns, int layers, double density) : Lattice(rows, columns, layers, density) {};
     BCCLattice::BCCLattice(const BCCLattice &original) : Lattice(original) {};
     BCCLattice::~BCCLattice() {};
 
     double BCCLattice::indexToX(int index) const {
         int c, l;
         double x;
+        double scaleFactor = cbrt(1 / this->latticeDensity);
         c = this->indexToC(index);
         l = this->indexToL(index);
-        x = this->scaleFactor * ((1 + !IS_EVEN(l)) * BCCOFFSET + c * BCCSQFACEDISTANCE);
+        x = scaleFactor * ((1 + !IS_EVEN(l)) * BCCOFFSET + c * BCCSQFACEDISTANCE);
         return x;
     }
     double BCCLattice::indexToY(int index) const {
         int r, l;
         double y;
+        double scaleFactor = cbrt(1 / this->latticeDensity);
         r = this->indexToR(index);
         l = this->indexToL(index);
-        y = this->scaleFactor * ((1 + !IS_EVEN(l)) * BCCOFFSET + r * BCCSQFACEDISTANCE);
+        y = scaleFactor * ((1 + !IS_EVEN(l)) * BCCOFFSET + r * BCCSQFACEDISTANCE);
         return y;
     }
     double BCCLattice::indexToZ(int index) const {
         int l = this->indexToL(index);
-        double z = this->scaleFactor * (1 + l) * BCCOFFSET;
+        double scaleFactor = cbrt(1 / this->latticeDensity);
+        double z = scaleFactor * (1 + l) * BCCOFFSET;
         return z;
     }
     double BCCLattice::getWidth() const {
@@ -41,8 +44,10 @@ namespace LatticeLib {
     double BCCLattice::getDepth() const {
         return this->indexToZ(0) + this->indexToZ(this->getNElements() - 1);
     }
+
     /* TODO: double coverageToInternalDistance(double coverage) const {
         coverageIndex = round(coverage * 255);
+        double scaleFactor = this->latticeDensity; // TODO: Find correct scaleFactor!
         return subSpelDistanceVoronoiBCC[coverageIndex] * [function of scaleFactor];
     }*/
     void BCCLattice::get8Neighbors(int row, int column, int layer, vector<Neighbor> &neighbors) const {

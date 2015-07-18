@@ -11,23 +11,24 @@ TEST(FCCLattice,coordinates) {
     int nColumns = 6;
     int nLayers = 7;
     int nElements = nRows * nColumns * nLayers;
-    double scaleFactor1 = 1.0;
-    double scaleFactor2 = cbrt(2.5);
+    double density1 = 1.0;
+    double density2 = 2.5;
+    double scaleFactor2 = cbrt(1 / density2);
 
-    FCCLattice lattice1(nRows, nColumns, nLayers, scaleFactor1);
-    FCCLattice lattice2(nRows, nColumns, nLayers, scaleFactor2);
+    FCCLattice lattice1(nRows, nColumns, nLayers, density1);
+    FCCLattice lattice2(nRows, nColumns, nLayers, density2);
 
     // "1D" lattices
-    FCCLattice lattice1Column1Layer(nElements, 1, 1, scaleFactor1);
-    FCCLattice lattice1Row1Layer(1, nElements, 1, scaleFactor1);
-    FCCLattice lattice1Row1Column(1, 1, nElements, scaleFactor1);
+    FCCLattice lattice1Column1Layer(nElements, 1, 1, density1);
+    FCCLattice lattice1Row1Layer(1, nElements, 1, density1);
+    FCCLattice lattice1Row1Column(1, 1, nElements, density1);
 
     // "2D" lattices
     int n1 = 15;
     int n2 = 14;
-    FCCLattice lattice1Layer(n1, n2, 1, scaleFactor1);
-    FCCLattice lattice1Column(n1, 1, n2, scaleFactor1);
-    FCCLattice lattice1Row(1, n1, n2, scaleFactor1);
+    FCCLattice lattice1Layer(n1, n2, 1, density1);
+    FCCLattice lattice1Column(n1, 1, n2, density1);
+    FCCLattice lattice1Row(1, n1, n2, density1);
 
     vector<double> coordinates;
 
@@ -119,10 +120,11 @@ TEST(FCCLattice,distances) {
     int nColumns = 6;
     int nLayers = 7;
     int nElements = nRows * nColumns * nLayers;
-    double scaleFactor1 = 1.0;
-    double scaleFactor2 = cbrt(2.5);
-    FCCLattice lattice1(nRows, nColumns, nLayers, scaleFactor1);
-    FCCLattice lattice2(nRows, nColumns, nLayers, scaleFactor2);
+    double density1 = 1.0;
+    double density2 = 2.5;
+    double scaleFactor2 = cbrt(1 / density2);
+    FCCLattice lattice1(nRows, nColumns, nLayers, density1);
+    FCCLattice lattice2(nRows, nColumns, nLayers, density2);
 
     // distance between spels
     EXPECT_NEAR(lattice1.euclideanDistance(0, 0), 0, EPSILONT);

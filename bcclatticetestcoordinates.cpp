@@ -11,22 +11,23 @@ TEST(BCCLattice,coordinates) {
     int nColumns = 6;
     int nLayers = 7;
     int nElements = nRows * nColumns * nLayers;
-    double scaleFactor1 = 1.0;
-    double scaleFactor2 = 2.5;
-    BCCLattice lattice1(nRows, nColumns, nLayers, scaleFactor1);
-    BCCLattice lattice2(nRows, nColumns, nLayers, scaleFactor2);
+    double density1 = 1.0;
+    double density2 = 2.5;
+    double scaleFactor2 = cbrt(1 / density2);
+    BCCLattice lattice1(nRows, nColumns, nLayers, density1);
+    BCCLattice lattice2(nRows, nColumns, nLayers, density2);
 
     // "1D" lattices
-    BCCLattice lattice1Column1Layer(nElements, 1, 1, scaleFactor1);
-    BCCLattice lattice1Row1Layer(1, nElements, 1, scaleFactor1);
-    BCCLattice lattice1Row1Column(1, 1, nElements, scaleFactor1);
+    BCCLattice lattice1Column1Layer(nElements, 1, 1, density1);
+    BCCLattice lattice1Row1Layer(1, nElements, 1, density1);
+    BCCLattice lattice1Row1Column(1, 1, nElements, density1);
 
     // "2D" lattices
     int n1 = 15;
     int n2 = 14;
-    BCCLattice lattice1Layer(n1, n2, 1, scaleFactor1);
-    BCCLattice lattice1Column(n1, 1, n2, scaleFactor1);
-    BCCLattice lattice1Row(1, n1, n2, scaleFactor1);
+    BCCLattice lattice1Layer(n1, n2, 1, density1);
+    BCCLattice lattice1Column(n1, 1, n2, density1);
+    BCCLattice lattice1Row(1, n1, n2, density1);
 
     vector<double> coordinates;
 
@@ -75,15 +76,15 @@ TEST(BCCLattice,coordinates) {
     EXPECT_NEAR(lattice2.indexToY(209), scaleFactor2 * (BCCOFFSET + 4 * BCCSQFACEDISTANCE), EPSILONT); // !!!!!!
     EXPECT_NEAR(lattice2.indexToZ(209), scaleFactor2 * (BCCOFFSET + 3 * BCCSQFACEDISTANCE), EPSILONT);
 
-    EXPECT_GT(lattice2.indexToX(170) - lattice1.indexToX(170), EPSILONT);
-    EXPECT_GT(lattice2.indexToY(170) - lattice1.indexToY(170), EPSILONT);
-    EXPECT_GT(lattice2.indexToZ(170) - lattice1.indexToZ(170), EPSILONT);
-    EXPECT_GT(lattice2.indexToX(209) - lattice1.indexToX(209), EPSILONT);
-    EXPECT_GT(lattice2.indexToY(209) - lattice1.indexToY(209), EPSILONT);
-    EXPECT_GT(lattice2.indexToZ(209) - lattice1.indexToZ(209), EPSILONT);
-    EXPECT_GT(lattice2.indexToX(nElements - 1) - lattice1.indexToX(nElements - 1), EPSILONT);
-    EXPECT_GT(lattice2.indexToY(nElements - 1) - lattice1.indexToY(nElements - 1), EPSILONT);
-    EXPECT_GT(lattice2.indexToZ(nElements - 1) - lattice1.indexToZ(nElements - 1), EPSILONT);
+    EXPECT_GT(lattice1.indexToX(170) - lattice2.indexToX(170), EPSILONT);
+    EXPECT_GT(lattice1.indexToY(170) - lattice2.indexToY(170), EPSILONT);
+    EXPECT_GT(lattice1.indexToZ(170) - lattice2.indexToZ(170), EPSILONT);
+    EXPECT_GT(lattice1.indexToX(209) - lattice2.indexToX(209), EPSILONT);
+    EXPECT_GT(lattice1.indexToY(209) - lattice2.indexToY(209), EPSILONT);
+    EXPECT_GT(lattice1.indexToZ(209) - lattice2.indexToZ(209), EPSILONT);
+    EXPECT_GT(lattice1.indexToX(nElements - 1) - lattice2.indexToX(nElements - 1), EPSILONT);
+    EXPECT_GT(lattice1.indexToY(nElements - 1) - lattice2.indexToY(nElements - 1), EPSILONT);
+    EXPECT_GT(lattice1.indexToZ(nElements - 1) - lattice2.indexToZ(nElements - 1), EPSILONT);
 
     // width, height and depth
     EXPECT_NEAR(lattice1.getWidth(), 6.5 * BCCSQFACEDISTANCE, EPSILONT);
@@ -123,10 +124,11 @@ TEST(BCCLattice,distances) {
     int nColumns = 6;
     int nLayers = 7;
     int nElements = nRows * nColumns * nLayers;
-    double scaleFactor1 = 1.0;
-    double scaleFactor2 = cbrt(2.5);
-    BCCLattice lattice1(nRows, nColumns, nLayers, scaleFactor1);
-    BCCLattice lattice2(nRows, nColumns, nLayers, scaleFactor2);
+    double density1 = 1.0;
+    double density2 = 2.5;
+    double scaleFactor2 = cbrt(1 / density2);
+    BCCLattice lattice1(nRows, nColumns, nLayers, density1);
+    BCCLattice lattice2(nRows, nColumns, nLayers, density2);
 
     // distance between spels
     EXPECT_NEAR(lattice1.euclideanDistance(0, 0), 0, EPSILONT);

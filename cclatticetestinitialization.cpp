@@ -25,7 +25,7 @@ TEST(CCLattice,initialization) {
     EXPECT_NE(lattice1.getNLayers(), nLayers + 1);
     EXPECT_EQ(lattice1.getNElements(), nElements);
     EXPECT_NE(lattice1.getNElements(), nElements + 1);
-    EXPECT_NEAR(lattice1.getScaleFactor(), scaleFactor1, EPSILONT);
+    EXPECT_NEAR(lattice1.getDensity(), scaleFactor1, EPSILONT);
 
     EXPECT_EQ(lattice2.getNRows(), nRows);
     EXPECT_NE(lattice2.getNRows(), nRows + 1);
@@ -35,15 +35,15 @@ TEST(CCLattice,initialization) {
     EXPECT_NE(lattice2.getNLayers(), nLayers + 1);
     EXPECT_EQ(lattice2.getNElements(), nElements);
     EXPECT_NE(lattice2.getNElements(), nElements + 1);
-    EXPECT_NEAR(lattice2.getScaleFactor(), scaleFactor2, EPSILONT);
+    EXPECT_NEAR(lattice2.getDensity(), scaleFactor2, EPSILONT);
 
     // copy constructor
     EXPECT_EQ(lattice2.getNRows(), lattice3.getNRows());
     EXPECT_EQ(lattice2.getNColumns(), lattice3.getNColumns());
     EXPECT_EQ(lattice2.getNLayers(), lattice3.getNLayers());
     EXPECT_EQ(lattice2.getNElements(), lattice3.getNElements());
-    EXPECT_EQ(lattice2.getScaleFactor(), lattice3.getScaleFactor());
-    EXPECT_NE(lattice1.getScaleFactor(), lattice3.getScaleFactor());
+    EXPECT_EQ(lattice2.getDensity(), lattice3.getDensity());
+    EXPECT_NE(lattice1.getDensity(), lattice3.getDensity());
 
     // validity of elements
     EXPECT_FALSE(lattice1.isValid(-1));

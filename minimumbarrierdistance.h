@@ -17,7 +17,7 @@ namespace LatticeLib {
  *
  * References
  * -----------
- * [Ciesielski et al. 2014] (http://www.math.wvu.edu/~kcies/Other/ElectronicReprints/116MBD2repr.pdf) TODO: Link to Elsevier instead.
+ * [Ciesielski et al. 2014] (http://www.sciencedirect.com/science/article/pii/S107731421400068X)
  */
     template<class T>
     class MinimumBarrierDistance : public DistanceMeasure {
@@ -32,7 +32,8 @@ namespace LatticeLib {
         /** The highest intensities that have been traversed between a spatial element and the closest seed point. */
         T *pathMaximumValue;
 
-        int *preliminaryRoots; // ?
+        /** Preliminary path to each element. */
+        int *preliminaryRoots;
 
     public:
         /**
@@ -46,7 +47,6 @@ namespace LatticeLib {
             norm = n;
             pathMinimumValue = NULL;
             pathMaximumValue = NULL;
-            preliminaryRoots = NULL;
         }
 
         /**
@@ -62,13 +62,12 @@ namespace LatticeLib {
          * image        | INPUT     | Input image for the distance transform.
          */
         void initialize(const Image<T> &image) {
-            if ((pathMaximumValue != NULL) || (pathMinimumValue != NULL) || (preliminaryRoots != NULL)) {
+            if ((pathMaximumValue != NULL) || (pathMinimumValue != NULL)) {
                 // TODO: Throw error or exception
             }
             int nElements = image.getNElements();
             pathMinimumValue = new T[nElements];
             pathMaximumValue = new T[nElements];
-            preliminaryRoots = new int[nElements];
         }
 
         /**
@@ -79,20 +78,18 @@ namespace LatticeLib {
          * image        | INPUT     | Input image for the distance transform.
          */
         void reset(const Image<T> &image, vector<Seed> seeds) {
-            if ((pathMaximumValue == NULL) || (pathMinimumValue == NULL) || (preliminaryRoots = NULL)) {
+            if ((pathMaximumValue == NULL) || (pathMinimumValue == NULL)) {
                 // TODO: Throw error or exception
             }
             int nElements = image.getNElements();
             for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
                 pathMinimumValue[elementIndex] = -INF;
                 pathMaximumValue[elementIndex] = INF;
-                preliminaryRoots[elementIndex] = -1;
             }
             int nSeeds = seeds.size();
             for (int seedIndex = 0; seedIndex < nSeeds; seedIndex++) {
                 pathMinimumValue[elementIndex] = image(seeds[seedIndex].getIndex(), 0); // the spel is always part of the path between itself and the object boundary
-                pathMaximumValue[elementIndex] = image(seeds[seedIndex].getIndex(), 0);;
-                preliminaryRoots[elementIndex] = seeds[seedIndex].getIndex();
+                pathMaximumValue[elementIndex] = image(seeds[seedIndex].getIndex(), 0);
             }
         }
 
@@ -123,7 +120,6 @@ namespace LatticeLib {
                 if (minIntensity > pathMinimumValue[neighborGlobalIndex]) {
                     pathMinimumValue[neighborGlobalIndex] = minIntensity;
                     pathMaximumValue[neighborGlobalIndex] = maxIntensity;
-                    preliminaryRoots[neighborGlobalIndex] = elementIndex;
                     double distance = maxIntensity - minIntensity;
                     if (distance < distanceTransform[neighborGlobalIndex]) {
                         distanceTransform.setElement(neighborGlobalIndex, labelIndex, distance);
@@ -141,10 +137,8 @@ namespace LatticeLib {
         void clear() {
             delete pathMinimumValue;
             delete pathMaximumValue;
-            delete preliminaryRoots;
             pathMinimumValue = NULL;
             pathMaximumValue = NULL;
-            preliminaryRoots = NULL;
         }
     };
 }

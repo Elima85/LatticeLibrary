@@ -21,9 +21,9 @@ namespace LatticeLib {
          * rows         | INPUT     | Number of rows.
          * columns      | INPUT     | Number of columns.
          * layers       | INPUT     | Number of layers.
-         * scale        | INPUT     | Distance scale factor. TODO: Figure out how this works!!
+         * scale        | INPUT     | The number of lattice points per unit volume.
          */
-        FCCLattice(int rows, int columns, int layers, double scale);
+        FCCLattice(int rows, int columns, int layers, double density);
 
         /**
          * Copy constructor for FCCLattice objects.
