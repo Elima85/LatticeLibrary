@@ -22,7 +22,7 @@ namespace LatticeLib {
          * image        | INPUT     | Input image for the distance transform.
          */
         template <class T>
-        void initialize(Image<T> &image) {}
+        void setup(Image<T> &image) {}
 
         /**
          * Resets all parameters before traversing the image.
@@ -32,7 +32,7 @@ namespace LatticeLib {
          * image        | INPUT     | Input image for the distance transform.
          */
         template<class T>
-        void reset(const Image<T> &image, vector<Seed> seeds) { };
+        void initialize(const Image<T> &image, vector<Seed> seeds) { };
 
         /**
          * Propagates the wave front to the next spatial element.

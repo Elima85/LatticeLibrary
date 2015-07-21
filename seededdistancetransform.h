@@ -50,9 +50,9 @@ namespace LatticeLib {
             int nElements = image.getNElements();
             int nLabels = seeds.size();
             bool *inQueue = new bool[nElements]; // so that only the "best" copy of an element is popped, and all others are skipped, until a better one is pushed.
-            distanceMeasure.initialize(inputImage);
+            distanceMeasure.setup(inputImage);
             for (int labelIndex = 0; labelIndex < nLabels; labelIndex++) {
-                distanceMeasure.reset(inputImage);
+                distanceMeasure.initialize(inputImage, seeds);
                 // initialize background
                 for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
                     distanceTransform.setElement(elementIndex, labelIndex, DBL_MAX);

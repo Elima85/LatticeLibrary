@@ -61,7 +61,7 @@ namespace LatticeLib {
          * :---------   | :------   | :-------
          * image        | INPUT     | Input image for the distance transform.
          */
-        void initialize(const Image<T> &image) {
+        void setup(const Image<T> &image) {
             if ((pathMaximumValue != NULL) || (pathMinimumValue != NULL)) {
                 // TODO: Throw error or exception
             }
@@ -77,7 +77,7 @@ namespace LatticeLib {
          * :---------   | :------   | :-------
          * image        | INPUT     | Input image for the distance transform.
          */
-        void reset(const Image<T> &image, vector<Seed> seeds) {
+        void initialize(const Image<T> &image, vector<Seed> seeds) {
             if ((pathMaximumValue == NULL) || (pathMinimumValue == NULL)) {
                 // TODO: Throw error or exception
             }
