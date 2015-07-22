@@ -6,34 +6,38 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 set(GTEST_ROOT "${PROJECT_SOURCE_DIR}/googletest")
 
 set(SOURCE_FILES
-    image.h
-    intensityworkset.h
+    approximateminimumbarrierdistance.h
     arrayadjustment.h
-    valuecropper.h
-    valuenormalizer.h
-    valuedenormalizer.h
-    segmentation.h
+    bcclattice.cpp
+    bcclattice.h
+    cclattice.cpp
+    cclattice.h
     defs.h
     exception.h
+    fcclattice.cpp
+    fcclattice.h
     filehandling.cpp
     filehandling.h
     filter.h
-    seed.h
-    seed.cpp
-    distancemeasure.h
-    neighbor.h
+    filtercoefficient.h
+    fuzzyconnectedness.h
+    image.h
+    intensityworkset.h
+    lattice.cpp
+    lattice.h
     neighbor.cpp
+    neighbor.h
     norm.h
     priorityqueue.h
+    seed.cpp
+    seed.h
+    seededdistancemeasure.h
+    seededdistancetransform.h
+    segmentation.h
+    valuecropper.h
+    valuenormalizer.h
+    valuedenormalizer.h
     vectoroperators.h
-    lattice.h
-    lattice.cpp
-    cclattice.h
-    cclattice.cpp
-    bcclattice.h
-    bcclattice.cpp
-    fcclattice.h
-    fcclattice.cpp
     )
 
 set(MAIN_SOURCE_FILES
@@ -44,26 +48,28 @@ set(MAIN_SOURCE_FILES
 set(TEST_SOURCE_FILES
     ${SOURCE_FILES}
     ${GTEST_ROOT}/src/gtest-all.cc
-    filetest.cpp
-    cclatticetestinitialization.cpp
-    cclatticetestcoordinates.cpp
-    cclatticetestneighbors.cpp
+    arrayadjustmenttest.cpp
     bcclatticetestinitialization.cpp
     bcclatticetestcoordinates.cpp
     bcclatticetestneighbors.cpp
+    cclatticetestinitialization.cpp
+    cclatticetestcoordinates.cpp
+    cclatticetestneighbors.cpp
     fcclatticetestinitialization.cpp
     fcclatticetestcoordinates.cpp
     fcclatticetestneighbors.cpp
-    neighbortest.cpp
-    normtest.cpp
-    priorityqueuetest.cpp
+    filetest.cpp
+    filtertest.cpp
     imagetestinitialization.cpp
     imagetestcoordinates.cpp
     imagetestbands.cpp
     imagetestneighbors.cpp
     imagetestmanipulation.cpp
-    arrayadjustmenttest.cpp
     intensityworksettest.cpp
+    neighbortest.cpp
+    normtest.cpp
+    priorityqueuetest.cpp
+    seededdistancetransformtest.cpp
     segmentationtest.cpp
     latticelibtest.cpp
     )

@@ -10,12 +10,13 @@ namespace LatticeLib {
 /**
  * Class for computing the product of all vector elements. *This is not a norm accordning to the mathematical definition.*
  */
-    class ProductNorm : public Norm {
+    template<class T>
+    class ProductNorm : public Norm<T> {
     public:
         /**
          * Constructor for ProductNorm objects.
          */
-        ProductNorm() : Norm() { }
+        ProductNorm() : Norm<T>() { }
 
         /**
          * Copy constructor for ProductNorm objects.
@@ -24,7 +25,7 @@ namespace LatticeLib {
          * :---------- 	| :-------	| :--------
          * n			| INPUT		| ProductNorm object to be copied.
          */
-        ProductNorm(const ProductNorm &n) : Norm(n) { }
+        ProductNorm(const ProductNorm &n) : Norm<T>(n) { }
 
         /**
          * Destructor for ProductNorm objects.
@@ -36,7 +37,6 @@ namespace LatticeLib {
          *
          * Computes the product of all vector elements.
          */
-        template<class T>
         double compute(vector<T> v) const {
             double product = 1.0;
             int N = v.size();

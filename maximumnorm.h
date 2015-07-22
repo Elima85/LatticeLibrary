@@ -9,12 +9,13 @@ namespace LatticeLib {
 /**
  * Class for computing the maximum norm of a vector.
  */
-    class MaximumNorm : public Norm {
+    template<class T>
+    class MaximumNorm : public Norm<T> {
     public:
         /**
          * Constructor for MaximumNorm objects.
          */
-        MaximumNorm() : Norm() { }
+        MaximumNorm() : Norm<T>() { }
 
         /**
          * Copy constructor for MaximumNorm objects.
@@ -23,7 +24,7 @@ namespace LatticeLib {
          * :---------- 	| :-------	| :--------
          * n			| INPUT		| MaximumNorm object to be copied.
          */
-        MaximumNorm(const MaximumNorm &n) : Norm(n) { }
+        MaximumNorm(const MaximumNorm &n) : Norm<T>(n) { }
 
         /**
          * Destructor for MaximumNorm objects.
@@ -35,7 +36,6 @@ namespace LatticeLib {
          *
          * Computes the maximum norm of the input vector.
          */
-        template<class T>
         double compute(vector <T> v) const {
             double maximum = -1.0;
             int N = v.size();

@@ -5,6 +5,7 @@
 #include "image.h"
 #include "norm.h"
 #include "neighbor.h"
+#include <cfloat> // DBL_MAX
 
 namespace LatticeLib {
 
@@ -19,11 +20,12 @@ namespace LatticeLib {
      * [Udupa and Samarasekera 1996](http://www.sciencedirect.com/science/article/pii/S1077316996900210) <br>
      * [Udupa and Saha 2003](http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=1232198&url=http%3A%2F%2Fieeexplore.ieee.org%2Fxpls%2Fabs_all.jsp%3Farnumber%3D1232198)
      */
-    class FuzzyConnectedness : public DistanceMeasure {
+    template<class T>
+    class FuzzyConnectedness : public SeededDistanceMeasure<T> {
 
     protected:
         /** The norm used in the definition of distance. */
-        Norm &norm;
+        Norm<T> &norm;
 
     public:
         /**
@@ -33,17 +35,15 @@ namespace LatticeLib {
          * :----------  | :-------	| :--------
          * n            | INPUT     | The norm used in the definition of distance.
          */
-        FuzzyConnectedness(Norm &n) : DistanceMeasure() {
-            norm = n;
-        }
+        FuzzyConnectedness(Norm<T> &n) : SeededDistanceMeasure<T>(), norm(n) {}
 
         /**
          * Destructor for FuzzyConnectedness objects.
          */
-        ~FuzzyConnectedness();
+        ~FuzzyConnectedness() {};
 
         /**
-         * Overloads DistanceMeasure::update().
+         * Overloads SeededDistanceMeasure::update().
          *
          * Parameter            | in/out        | Comment
          * :---------           | :------       | :-------
@@ -55,7 +55,6 @@ namespace LatticeLib {
          * roots                | OUTPUT        | Source spels of the propagated distance values.
          * toQueue              | OUTPUT        | Spatial elements to be put on the priority queue.
          */
-        template<class T>
         void update(const Image <T> &image, int neighborhoodSize, int elementIndex, int labelIndex,
                     Image<double> &distanceTransform, Image<int> &roots, vector <PriorityQueueElement<T> > &toQueue) {
             toQueue.clear();

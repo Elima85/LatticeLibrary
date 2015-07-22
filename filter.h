@@ -1,9 +1,10 @@
 #ifndef FILTER_H
 #define FILTER_H
 
-#include "filtercoefficient.h
+#include "filtercoefficient.h"
 #include "image.h"
 #include "neighbor.h"
+#include <vector>
 
 namespace LatticeLib {
 
@@ -12,6 +13,7 @@ namespace LatticeLib {
  * ========================
  * Class for template filters for image processing.
  * TODO: Should there be a parent class for Filter and StructuringElement?
+ * TODO: Child classes for median, min, and max filtering, etc? Or common parent class?
  *
  * Member 			| Comment
  * --------			| --------
@@ -64,7 +66,7 @@ namespace LatticeLib {
 		/**
 		 * Returns the template coefficient vector.
 		 */
-		vector<FilterCoefficient<S> > getCoeffs() const {
+		vector<FilterCoefficient<S> > getCoefficients() const {
 			return coefficients;
 		}
 
@@ -82,7 +84,7 @@ namespace LatticeLib {
 
 		/**
 		 * Finds the position of the FilterCoefficient object, corresponding to the neighbor with the input position
-		 * index, in the template coefficient vector. Returns -1 if this neighbor does not have a coefficient.
+		 * index, in the template coefficient vector. Returns -2 if this neighbor does not have a coefficient.
 		 *
 		 *
 		 * Parameter		| in/out	| comment
@@ -90,10 +92,10 @@ namespace LatticeLib {
 		 * positionIndex	| INPUT		| Position index of corresponding neighbor.
 		 */
 		int findCoefficient(int positionIndex) const {
-			int result = -1;
+			int result = -2;
 			int nCoefficients = getNCoefficients();
 			for (int coefficientIndex = 0; coefficientIndex < nCoefficients; coefficientIndex++) {
-				if (coefficients[coefficientIndex].getIndex() == positionIndex) {
+				if (coefficients[coefficientIndex].getPositionIndex() == positionIndex) {
 					result = coefficientIndex;
 				}
 			}

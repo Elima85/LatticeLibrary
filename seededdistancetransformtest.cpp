@@ -1,19 +1,60 @@
 #include "gtest/gtest.h"
+#include "image.h"
+#include "intensityworkset.h"
+#include "seededdistancemeasure.h"
 #include "seededdistancetransform.h"
-#include "intensityimage.h"
-#include "distanceimage.h"
-#include "filehandling.h"
+#include "approximateminimumbarrierdistance.h"
+#include "fuzzyconnectedness.h"
+#include "fuzzydistance.h"
+#include "geodesicdistance.h"
+#include "minimumbarrierdistance.h"
 #include "seed.h"
 #include <vector>
 #include "defs.h"
-#include "cclattice.h"
-#include "exception.h"
-#include "label.h"
 
 using namespace LatticeLib;
 
-TEST(SeededDistanceTransform, ApproximateMBDBBUint8) {
+TEST(SeededDistanceTransform, ApproximateMinimumBarrierDistance) {
 
+    SeededDistanceTransform seededDistanceTransform;
+    PNorm<double> norm(2);
+    ApproximateMinimumBarrierDistance<double> distanceMeasure(norm);
+
+}
+
+TEST(SeededDistanceTransform, FuzzyConnectedness) {
+
+    SeededDistanceTransform seededDistanceTransform;
+    PNorm<double> norm(2);
+    FuzzyConnectedness<double> distanceMeasure(norm);
+
+}
+
+TEST(SeededDistanceTransform, FuzzyDistance) {
+
+    SeededDistanceTransform seededDistanceTransform;
+    PNorm<double> norm(2);
+    FuzzyDistance<double> distanceMeasure(norm);
+
+}
+
+TEST(SeededDistanceTransform, GeodesicDistance) {
+
+    SeededDistanceTransform seededDistanceTransform;
+    GeodesicDistance<double> distanceMeasure;
+
+}
+
+TEST(SeededDistanceTransform, MinimumBarrierDistance) {
+
+    SeededDistanceTransform seededDistanceTransform;
+    MinimumBarrierDistance<double> distanceMeasure;
+
+}
+
+//TEST(SeededDistanceTransform, ApproximateMBDBBUint8) {
+
+/*
     int nRows = 321, nColumns = 481, nLayers = 1;
     int nElements = nRows * nColumns * nLayers;
 
@@ -54,7 +95,7 @@ TEST(SeededDistanceTransform, ApproximateMBDBBUint8) {
     IntensityImage<uint8> flowersB(flowersBData, lattice, 1, 0, 255);
 
     PNorm norm(2);
-    PNorm *normPointer = new PNorm(2);
+    PNorm *normPointer = new PNorm(2);*/
 
     // Old method
 /*    uint8 *segmentationRGB = new uint8[3 * nElements];
@@ -110,7 +151,7 @@ TEST(SeededDistanceTransform, ApproximateMBDBBUint8) {
     delete normPointer;*/
 
     // New method
-    DistanceImage distanceTransformRGB = approximateMinimumBarrierBoundingBox(flowersRGB, seeds, norm, 26);
+    /*DistanceImage distanceTransformRGB = approximateMinimumBarrierBoundingBox(flowersRGB, seeds, norm, 26);
     DistanceImage distanceTransformR = approximateMinimumBarrierBoundingBox(flowersR, seeds, norm, 26);
     DistanceImage distanceTransformG = approximateMinimumBarrierBoundingBox(flowersG, seeds, norm, 26);
     DistanceImage distanceTransformB = approximateMinimumBarrierBoundingBox(flowersB, seeds, norm, 26);
@@ -127,6 +168,6 @@ TEST(SeededDistanceTransform, ApproximateMBDBBUint8) {
 
     delete seedData;
     delete flowersRGBDoubleData;
-    delete flowersRGBData;
-}
+    delete flowersRGBData;*/
+//}
 

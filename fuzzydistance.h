@@ -5,6 +5,7 @@
 #include "image.h"
 #include "norm.h"
 #include "neighbor.h"
+#include <cfloat> // DBL_MAX
 
 namespace LatticeLib {
 
@@ -19,11 +20,12 @@ namespace LatticeLib {
  * [Saha et al. 2002](http://www.sciencedirect.com/science/article/pii/S1077314202909744) <br>
  * [Svensson 2008](http://www.sciencedirect.com/science/article/pii/S0167865508000226)
  */
-    class FuzzyDistance : public DistanceMeasure {
+    template<class T>
+    class FuzzyDistance : public SeededDistanceMeasure<T> {
 
     protected:
         /** The norm used in the definition of distance. */
-        Norm &norm;
+        Norm<T> &norm;
 
     public:
         /**
@@ -33,17 +35,17 @@ namespace LatticeLib {
          * :----------  | :-------	| :--------
          * n            | INPUT     | The norm used in the definition of distance.
          */
-        FuzzyDistance(Norm &n) : DistanceMeasure() {
+        FuzzyDistance(Norm<T> &n) : SeededDistanceMeasure<T>(), norm(n) {
             norm = n;
         }
 
         /**
          * Destructor for FuzzyDistance objects.
          */
-        ~FuzzyDistance();
+        ~FuzzyDistance() {}
 
         /**
-         * Overloads DistanceMeasure::update().
+         * Overloads SeededDistanceMeasure::update().
          *
          * Parameter            | in/out        | Comment
          * :---------           | :------       | :-------
@@ -55,7 +57,6 @@ namespace LatticeLib {
          * roots                | OUTPUT        | Source spels of the propagated distance values.
          * toQueue              | OUTPUT        | Spatial elements to be put on the priority queue.
          */
-        template<class T>
         void update(const Image <T> &image, int neighborhoodSize, int elementIndex, int labelIndex,
                     Image <double> &distanceTransform, Image <int> &roots, vector <PriorityQueueElement<T>> &toQueue) {
             toQueue.clear();
@@ -64,7 +65,7 @@ namespace LatticeLib {
             for (int neighborIndex = 0; neighborIndex < neighbors.size(); neighborIndex++) {
                 int neighborGlobalIndex = neighbors[neighborIndex].getIndex();
                 double distanceToNeighbor = image.euclideanDistance(elementIndex, neighborGlobalIndex);
-                double distance = distanceTransform(elementIndex, nLabels) +
+                double distance = distanceTransform(elementIndex, labelIndex) +
                                   0.5 * norm.compute(image[neighborGlobalIndex] + image[elementIndex]) * distanceToNeighbor;
                 if (distance < distanceTransform(neighborGlobalIndex, labelIndex)) {
                     distanceTransform.setElement(neighborGlobalIndex, labelIndex, distance);
@@ -72,7 +73,7 @@ namespace LatticeLib {
                     toQueue.push_back(PriorityQueueElement<T>(neighborGlobalIndex, distance));
                 }
             }
-        };
+        }
 
     };
 }

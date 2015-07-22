@@ -14,7 +14,8 @@ namespace LatticeLib {
  * :-------	| :-------
  * p		| Defines the order of the norm.
  */
-    class PNorm : public Norm {
+    template<class T>
+    class PNorm : public Norm<T> {
     private:
         /** Defines the order of the norm. */
         double p;
@@ -27,7 +28,7 @@ namespace LatticeLib {
          * :---------- 	| :-------	| :--------
          * p			| INPUT		| Defines the order of the norm.
          */
-        PNorm(double pval) : Norm() {
+        PNorm(double pval) : Norm<T>() {
             p = pval;
         }
 
@@ -38,7 +39,7 @@ namespace LatticeLib {
          * :---------- 	| :-------	| :--------
          * n			| INPUT		| PNorm object to be copied.
          */
-        PNorm(const PNorm &n) : Norm(n) {
+        PNorm(const PNorm &n) : Norm<T>(n) {
             p = n.getP();
         }
 
@@ -63,7 +64,6 @@ namespace LatticeLib {
          * :---------- 	| :-------	| :--------
          * v			| INPUT		| Vector for which to compute the norm.
          */
-        template<class T>
         double compute(vector<T> v) const {
             double sum = 0.0;
             int N = v.size();

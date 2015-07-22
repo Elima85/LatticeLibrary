@@ -1,12 +1,14 @@
-#ifndef APPROXIMATEMINIMUMBARRIERBOUNDINGBOXDISTANCE_H
-#define APPROXIMATEMINIMUMBARRIERBOUNDINGBOXDISTANCE_H
+#ifndef APPROXIMATEMINIMUMBARRIERDISTANCE_H
+#define APPROXIMATEMINIMUMBARRIERDISTANCE_H
 
-#include "distancemeasure.h"
+#include "seededdistancemeasure.h"
 #include "image.h"
-#include "norm.h"
+#include "pnorm.h"
 #include "neighbor.h"
 #include "vectoroperators.h"
 #include "seed.h"
+#include <cfloat> // DBL_MAX
+#include <vector>
 
 namespace LatticeLib {
 
@@ -21,11 +23,11 @@ namespace LatticeLib {
  * [Kårsnäs and Strand 2012](http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=6460253&url=http%3A%2F%2Fieeexplore.ieee.org%2Fxpls%2Fabs_all.jsp%3Farnumber%3D6460253)
  */
     template<class T>
-    class ApproximateMinimumBarrierBoundingBoxDistance : public DistanceMeasure {
+    class ApproximateMinimumBarrierDistance : public SeededDistanceMeasure<T> {
 
     protected:
         /** The norm used when converting a traversed intensity span to a scalar distance value. */
-        Norm &norm;
+        Norm<T> &norm;
 
         /** The lowest intensities that have been traversed between a spatial element and the closest seed point. */
         vector<T> *pathMinimumValue;
@@ -41,8 +43,7 @@ namespace LatticeLib {
          * :----------  | :-------	| :--------
          * n            | INPUT     | The norm used when converting a traversed intensity span to a scalar distance value.
          */
-        ApproximateMinimumBarrierBoundingBoxDistance(Norm &n) : DistanceMeasure() {
-            norm = n;
+        ApproximateMinimumBarrierDistance(Norm<T> &n) : SeededDistanceMeasure<T>(), norm(n) {
             pathMinimumValue = NULL;
             pathMaximumValue = NULL;
         }
@@ -50,16 +51,16 @@ namespace LatticeLib {
         /**
          * Destructor for ApproximateMinimumBarrierBoundingBoxDistance objects.
          */
-        ~ApproximateMinimumBarrierBoundingBoxDistance(){}
+        ~ApproximateMinimumBarrierDistance(){}
 
         /**
-         * Overloads DistanceMeasure::initialize().
+         * Overloads SeededDistanceMeasure::initialize().
          *
          * Parameter    | in/out    | Comment
          * :---------   | :------   | :-------
          * image        | INPUT     | Input image for the distance transform.
          */
-        void setup(const Image<T> &image) {
+        void setup(Image<T> &image) {
             if ((pathMaximumValue != NULL) || (pathMinimumValue != NULL)) {
                 // TODO: Throw error or exception
             }
@@ -69,13 +70,19 @@ namespace LatticeLib {
         }
 
         /**
-         * Overloads DistanceMeasure::reset().
+         * Overloads SeededDistanceMeasure::initialize().
          *
-         * Parameter    | in/out    | Comment
-         * :---------   | :------   | :-------
-         * image        | INPUT     | Input image for the distance transform.
+         * Parameter            | in/out  | Comment
+         * :---------           | :------ | :-------
+         * image                | INPUT   | Input image for the distance transform.
+         * seeds                | INPUT   | Vector of seeds associated to the label that is being processed.
+         * labelIndex           | INPUT   | Index of the label of the set of seed points being processed.
+         * distanceTransform    | OUTPUT  | Distance transform of the image band.
+         * roots                | OUTPUT  | Source elements of the propagated distance values.
+         * toQueue              | OUTPUT  | Spatial elements to be put on the priority queue.
          */
-        void initialize(const Image<T> &image, vector<Seed> seeds) {
+        void initialize(const Image<T> &image, const vector<vector<Seed> > &seeds, int labelIndex,
+                        Image<double> &distanceTransform, Image<int> &roots, vector<PriorityQueueElement<T> > &toQueue) {
             if ((pathMaximumValue == NULL) || (pathMinimumValue == NULL)) {
                 // TODO: Throw error or exception
             }
@@ -83,11 +90,22 @@ namespace LatticeLib {
             for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
                 pathMinimumValue[elementIndex] = image[elementIndex]; // the spel is always part of the path between itself and the object boundary
                 pathMaximumValue[elementIndex] = image[elementIndex];
+                // initialize background
+                distanceTransform.setElement(elementIndex, labelIndex, DBL_MAX);
+                roots.setElement(elementIndex, labelIndex, -1);
             }
-        }
+            toQueue.clear();
+            int nSeeds = seeds[labelIndex].size();
+            for (int seedIndex = 0; seedIndex < nSeeds; seedIndex++) {
+                int elementIndex = seeds[labelIndex][seedIndex].getIndex();
+                distanceTransform.setElement(elementIndex, labelIndex, 0);
+                roots.setElement(elementIndex, labelIndex, elementIndex);
+                toQueue.push_back(PriorityQueueElement<T>(elementIndex, 0));
+            }
+        };
 
         /**
-         * Overloads DistanceMeasure::update().
+         * Overloads SeededDistanceMeasure::update().
          *
          * Parameter            | in/out        | Comment
          * :---------           | :------       | :-------
@@ -119,11 +137,10 @@ namespace LatticeLib {
                     toQueue.push_back(PriorityQueueElement<T>(neighborGlobalIndex, distance));
                 }
             }
-
         }
 
         /**
-         * Overloads DistanceMeasure::clear().
+         * Overloads SeededDistanceMeasure::clear().
          */
         void clear() {
             delete pathMinimumValue;

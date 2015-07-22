@@ -46,7 +46,7 @@ namespace LatticeLib {
         /**
          * Returns positionIndex.
          */
-        double getIndex() const {
+        double getPositionIndex() const {
             return positionIndex;
         }
 

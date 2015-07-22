@@ -12,6 +12,7 @@ namespace LatticeLib {
 	/**
 	 * Base class for vector norms.
 	 */
+	template<class T>
 	class Norm {
 	public:
 		/**
@@ -31,7 +32,7 @@ namespace LatticeLib {
 		/**
 		 * Destructor for Norm objects.
 		 */
-		~Norm() {};
+		virtual ~Norm() {};
 
 		/**
 		 * Computes a norm of the input vector. The implementation in the base class returns -1.0.
@@ -40,11 +41,7 @@ namespace LatticeLib {
          * :---------- 	| :-------	| :--------
          * v			| INPUT		| Vector for which to compute a norm.
 		 */
-		template <class T>
-		double compute(vector<T> v) const {
-			return -1.0;
-		}
-
+		virtual double compute(vector<T> v) const = 0;
 	};
 }
 

@@ -2,9 +2,6 @@
 #define SEEDEDDISTANCETRANSFORM_H
 
 #include "image.h"
-#include "crispsegmentationimage.h"
-#include "distanceimage.h"
-#include "intensityimage.h"
 #include "seed.h"
 #include "norm.h"
 #include "priorityqueue.h"
@@ -12,8 +9,7 @@
 #include <cfloat>
 #include <algorithm> // find
 #include "vectoroperators.h"
-#include "inverseforesttransform.h"
-#include "distancemeasure.h"
+#include "seededdistancemeasure.h"
 
 namespace LatticeLib {
 
@@ -35,39 +31,35 @@ namespace LatticeLib {
          * roots                | OUTPUT    | The roots of the distance transform. Must have the same lattice and dimensions as the input image, and one modality band for each label.
          */
         template<class T>
-        void apply(const IntensityWorkset<T> &inputImage, const vector<vector<Seed> > seeds,
-                   DistanceMeasure &distanceMeasure, int neighborhoodSize,
-                   Image<double> distanceTransform, Image<int> roots) {
+        void apply(const Image<T> &inputImage, const vector<vector<Seed> > &seeds,
+                   SeededDistanceMeasure<T> &distanceMeasure, int neighborhoodSize,
+                   Image<double> distanceTransform, Image<int> roots) const {
 
-            if ((inputImage.getImage().getLattice() != distanceTransform.getLattice()) ||
-                (inputImage.getImage().getLattice() != roots.getLattice())) {
+            if ((inputImage.getLattice() != distanceTransform.getLattice()) ||
+                (inputImage.getLattice() != roots.getLattice())) {
                 // throw exception or error
             }
             if ((distanceTransform.getNBands() != seeds.size()) || (roots.getNBands() != seeds.size())) {
                 // throw exception or error
             }
 
-            int nElements = image.getNElements();
+            // setup
+            int nElements = inputImage.getNElements();
             int nLabels = seeds.size();
             bool *inQueue = new bool[nElements]; // so that only the "best" copy of an element is popped, and all others are skipped, until a better one is pushed.
             distanceMeasure.setup(inputImage);
             for (int labelIndex = 0; labelIndex < nLabels; labelIndex++) {
-                distanceMeasure.initialize(inputImage, seeds);
-                // initialize background
+                // initialization
                 for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
-                    distanceTransform.setElement(elementIndex, labelIndex, DBL_MAX);
-                    roots.setElement(elementIndex, labelIndex, -1);
                     inQueue[elementIndex] = false;
                 }
-                // initialize seed points and put them on queue
                 priority_queue<PriorityQueueElement<T>, vector<PriorityQueueElement<T> >, PriorityQueueElementComparison> queue;
-                int nSeeds = seeds[labelIndex].size();
-                for (int seedIndex = 0; seedIndex < nSeeds; seedIndex++) {
-                    int elementIndex = seeds[labelIndex][seedIndex].getIndex();
-                    distanceTransform.setElement(elementIndex, labelIndex, 0);
-                    roots.setElement(elementIndex, labelIndex, elementIndex);
-                    queue.push(PriorityQueueElement<T>(elementIndex, 0));
-                    inQueue[elementIndex] = true;
+                vector<PriorityQueueElement<T> > newQueueElements;
+                distanceMeasure.initialize(inputImage, seeds, labelIndex, distanceTransform, roots, newQueueElements);
+                int nNewQueueElements = newQueueElements.size();
+                for (int newQueueElementIndex = 0; newQueueElementIndex < nNewQueueElements; newQueueElementIndex++) {
+                    queue.push(newQueueElements[newQueueElementIndex]);
+                    inQueue[newQueueElements[newQueueElementIndex].getIndex()] = true;
                 }
                 // wave front propagation
                 while (!queue.empty()) {
@@ -76,10 +68,9 @@ namespace LatticeLib {
                     int poppedElementIndex = topElement.getIndex();
                     if (inQueue[poppedElementIndex]) {
                         inQueue[poppedElementIndex] = false; // so that old queue elements offering larger distances are skipped
-                        vector<PriorityQueueElement<T> > newQueueElements;
-                        distanceMeasure.update(image, neighborhoodSize, distanceTransform, roots, poppedElementIndex,
+                        distanceMeasure.update(inputImage, neighborhoodSize, distanceTransform, roots, poppedElementIndex,
                                                labelIndex, newQueueElements);
-                        int nNewQueueElements = newQueueElements.size();
+                        nNewQueueElements = newQueueElements.size();
                         for (int queueElementIndex = 0; queueElementIndex < nNewQueueElements; queueElementIndex++) {
                             queue.push(newQueueElements[queueElementIndex]);
                             inQueue[newQueueElements[queueElementIndex].getIndex()] = true;
@@ -87,6 +78,7 @@ namespace LatticeLib {
                     }
                 }
             }
+            // cleanup
             distanceMeasure.clear();
         }
 
@@ -105,7 +97,7 @@ namespace LatticeLib {
 * norm				| The norm used in the definition of distance.
 * neighborhoodSize  | #neighbors to use.
 */
-    template<class T>
+/*    template<class T>
     DistanceImage approximateMinimumBarrierBoundingBox(const IntensityImage<T> &image, const vector<Seed> seeds, Norm &norm, int neighborhoodSize) { // TODO: Make norm const somehow!
 
         // initialization
@@ -192,7 +184,7 @@ namespace LatticeLib {
         delete[] pathMax;
 
         return distanceTransform;
-    }
+    }*/
 
 /*
 * Fuzzy connectedness distance transform
@@ -208,7 +200,7 @@ namespace LatticeLib {
 * norm				| The norm used in the definition of distance.
 * neighborhoodSize  | #neighbors to use.
 */
-    template<class T>
+/*    template<class T>
     DistanceImage fuzzyConnectedness(const IntensityImage<T> &image, const vector<Seed> seeds, Norm &norm, int neighborhoodSize) {
 
         // initialization
@@ -271,7 +263,7 @@ namespace LatticeLib {
         }
         delete[] inQueue;
         return distanceTransform;
-    }
+    }*/
 
 /*
 * Fuzzy distance
@@ -286,7 +278,7 @@ namespace LatticeLib {
 * norm				| The norm used in the definition of distance.
 * neighborhoodSize  | #neighbors to use.
 */
-    template<class T>
+/*    template<class T>
     DistanceImage fuzzyDistance(const IntensityImage<T> &image, const vector<Seed> seeds, Norm &norm, int neighborhoodSize) {
 
         // initialization
@@ -351,7 +343,7 @@ namespace LatticeLib {
         }
         delete[] inQueue;
         return distanceTransform;
-    }
+    }*/
 
 
 /*
@@ -370,7 +362,7 @@ namespace LatticeLib {
 * norm				| The norm used in the definition of distance.
 * neighborhoodSize  | #neighbors to use.
 */
-    template<class T>
+/*    template<class T>
     DistanceImage geodesicDistance(const IntensityImage<T> &image, const vector<Seed> seeds, Norm &norm, int neighborhoodSize) {
 
         // initialization
@@ -438,7 +430,7 @@ namespace LatticeLib {
         }
         delete[] inQueue;
         return distanceTransform;
-    }
+    }*/
 
 }
 

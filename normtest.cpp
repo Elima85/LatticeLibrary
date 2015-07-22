@@ -22,36 +22,39 @@ TEST(Norm, PNorm) {
     vector<double> zeroVector;
     zeroVector.assign(3, 0.0);
 
-    PNorm norm1(1);
-    PNorm norm2(2);
-    PNorm norm5(5);
-    PNorm norm1Copy(norm1);
-    PNorm norm5Copy(norm5);
+    PNorm<double> doubleNorm1(1);
+    PNorm<double> doubleNorm2(2);
+    PNorm<double> doubleNorm5(5);
+    PNorm<double> doubleNorm1Copy(doubleNorm1);
+    PNorm<double> doubleNorm5Copy(doubleNorm5);
+    PNorm<int> intNorm1(1);
+    PNorm<int> intNorm2(2);
+    PNorm<int> intNorm5(5);
 
     // constructor and getter
-    EXPECT_EQ(norm1.getP(), 1);
-    EXPECT_EQ(norm2.getP(), 2);
-    EXPECT_EQ(norm5.getP(), 5);
-    EXPECT_NE(norm1.getP(), 2);
-    EXPECT_NE(norm2.getP(), 3);
-    EXPECT_NE(norm5.getP(), 1);
-    EXPECT_EQ(norm1Copy.getP(), 1);
-    EXPECT_EQ(norm5Copy.getP(), 5);
-    EXPECT_NE(norm1Copy.getP(), 2);
-    EXPECT_NE(norm5Copy.getP(), 1);
+    EXPECT_EQ(doubleNorm1.getP(), 1);
+    EXPECT_EQ(doubleNorm2.getP(), 2);
+    EXPECT_EQ(doubleNorm5.getP(), 5);
+    EXPECT_NE(doubleNorm1.getP(), 2);
+    EXPECT_NE(doubleNorm2.getP(), 3);
+    EXPECT_NE(doubleNorm5.getP(), 1);
+    EXPECT_EQ(doubleNorm1Copy.getP(), 1);
+    EXPECT_EQ(doubleNorm5Copy.getP(), 5);
+    EXPECT_NE(doubleNorm1Copy.getP(), 2);
+    EXPECT_NE(doubleNorm5Copy.getP(), 1);
 
     // compute
-    EXPECT_NEAR(norm1.compute(zeroVector), 0.0, EPSILONT);
-    EXPECT_NEAR(norm1.compute(intVector), 15.0, EPSILONT);
-    EXPECT_NEAR(norm1.compute(doubleVector), 11.0, EPSILONT);
+    EXPECT_NEAR(doubleNorm1.compute(zeroVector), 0.0, EPSILONT);
+    EXPECT_NEAR(intNorm1.compute(intVector), 15.0, EPSILONT);
+    EXPECT_NEAR(doubleNorm1.compute(doubleVector), 11.0, EPSILONT);
 
-    EXPECT_NEAR(norm2.compute(zeroVector), 0.0, EPSILONT);
-    EXPECT_NEAR(norm2.compute(intVector), 7.4161984871, EPSILONT);
-    EXPECT_NEAR(norm2.compute(doubleVector), 6.02494813256, EPSILONT);
+    EXPECT_NEAR(doubleNorm2.compute(zeroVector), 0.0, EPSILONT);
+    EXPECT_NEAR(intNorm2.compute(intVector), 7.4161984871, EPSILONT);
+    EXPECT_NEAR(doubleNorm2.compute(doubleVector), 6.02494813256, EPSILONT);
 
-    EXPECT_NEAR(norm5.compute(zeroVector), 0.0, EPSILONT);
-    EXPECT_NEAR(norm5.compute(intVector), 5.36022049567, EPSILONT);
-    EXPECT_NEAR(norm5.compute(doubleVector), 4.61510254893, EPSILONT);
+    EXPECT_NEAR(doubleNorm5.compute(zeroVector), 0.0, EPSILONT);
+    EXPECT_NEAR(intNorm5.compute(intVector), 5.36022049567, EPSILONT);
+    EXPECT_NEAR(doubleNorm5.compute(doubleVector), 4.61510254893, EPSILONT);
 }
 
 TEST(Norm, ProductNorm) {
@@ -68,17 +71,19 @@ TEST(Norm, ProductNorm) {
     vector<double> zeroVector;
     zeroVector.assign(3, 0.0);
 
-    ProductNorm norm;
-    ProductNorm normCopy(norm);
+    ProductNorm<double> doubleNorm;
+    ProductNorm<double> doubleNormCopy(doubleNorm);
+    ProductNorm<int> intNorm;
+    ProductNorm<int> intNormCopy(intNorm);
 
     // compute
-    EXPECT_NEAR(norm.compute(zeroVector), 0.0, EPSILONT);
-    EXPECT_NEAR(norm.compute(intVector1), 0.0, EPSILONT);
-    EXPECT_NEAR(norm.compute(intVector2), 120.0, EPSILONT);
-    EXPECT_NEAR(norm.compute(doubleVector1), 0.0, EPSILONT);
-    EXPECT_NEAR(norm.compute(doubleVector2), 35.1384, EPSILONT);
-    EXPECT_NEAR(norm.compute(intVector1), normCopy.compute(intVector1), EPSILONT);
-    EXPECT_NEAR(norm.compute(doubleVector1), normCopy.compute(doubleVector1), EPSILONT);
+    EXPECT_NEAR(doubleNorm.compute(zeroVector), 0.0, EPSILONT);
+    EXPECT_NEAR(intNorm.compute(intVector1), 0.0, EPSILONT);
+    EXPECT_NEAR(intNorm.compute(intVector2), 120.0, EPSILONT);
+    EXPECT_NEAR(doubleNorm.compute(doubleVector1), 0.0, EPSILONT);
+    EXPECT_NEAR(doubleNorm.compute(doubleVector2), 35.1384, EPSILONT);
+    EXPECT_NEAR(intNorm.compute(intVector1), intNorm.compute(intVector1), EPSILONT);
+    EXPECT_NEAR(doubleNorm.compute(doubleVector1), doubleNormCopy.compute(doubleVector1), EPSILONT);
 
 }
 
@@ -95,15 +100,17 @@ TEST(Norm, MaximumNorm) {
     vector<double> zeroVector;
     zeroVector.assign(3, 0.0);
 
-    MaximumNorm norm;
-    MaximumNorm normCopy(norm);
+    MaximumNorm<double> doubleNorm;
+    MaximumNorm<double> doubleNormCopy(doubleNorm);
+    MaximumNorm<int> intNorm;
+    MaximumNorm<int> intNormCopy(intNorm);
 
     // compute
-    EXPECT_NEAR(norm.compute(zeroVector), 0.0, EPSILONT);
-    EXPECT_NEAR(norm.compute(intVector), 5.0, EPSILONT);
-    EXPECT_NEAR(norm.compute(doubleVector), 4.4, EPSILONT);
-    EXPECT_NEAR(norm.compute(intVector), normCopy.compute(intVector), EPSILONT);
-    EXPECT_NEAR(norm.compute(doubleVector), normCopy.compute(doubleVector), EPSILONT);
+    EXPECT_NEAR(doubleNorm.compute(zeroVector), 0.0, EPSILONT);
+    EXPECT_NEAR(intNorm.compute(intVector), 5.0, EPSILONT);
+    EXPECT_NEAR(doubleNorm.compute(doubleVector), 4.4, EPSILONT);
+    EXPECT_NEAR(intNorm.compute(intVector), intNorm.compute(intVector), EPSILONT);
+    EXPECT_NEAR(doubleNorm.compute(doubleVector), doubleNormCopy.compute(doubleVector), EPSILONT);
 
 }
 

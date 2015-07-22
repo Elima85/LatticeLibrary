@@ -3,7 +3,6 @@
 #include "segmentation.h"
 #include "image.h"
 #include "intensityworkset.h"
-#include <stdio.h>
 #include "cclattice.h"
 
 using namespace LatticeLib;
