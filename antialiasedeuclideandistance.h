@@ -25,7 +25,8 @@ namespace LatticeLib {
 	 * [Gustavson and Strand 2011] (http://www.sciencedirect.com/science/article/pii/S0167865510002953)<br>
 	 * [Linnér and Strand 2014] (http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=6976896&url=http%3A%2F%2Fieeexplore.ieee.org%2Fxpls%2Fabs_all.jsp%3Farnumber%3D6976896)
 	 */
-	class AntiAliasedEuclideanDistance : public DistanceMeasure { // TODO: Implement Lattice::coverageToInternalDistance()! Test!
+	template<class T>
+	class AntiAliasedEuclideanDistance : public DistanceMeasure<T> { // TODO: Implement Lattice::coverageToInternalDistance()! Test!
 
 	private:
 		/** Index of the closest edge element to each spatial element in the image. */
@@ -33,7 +34,7 @@ namespace LatticeLib {
 
 	public:
 
-		AntiAliasedEuclideanDistance() : DistanceMeasure() {
+		AntiAliasedEuclideanDistance() : DistanceMeasure<T>() {
 			originalRoots = NULL;
 		}
 
@@ -42,7 +43,6 @@ namespace LatticeLib {
 		/**
 		 * Overloads DistanceMeasure::setup().
 		 */
-		template <class T>
 		void setup(IntensityWorkset<T> &input) {
 			originalRoots = new int[input.getImage().getNElements()];
 		}
@@ -50,7 +50,6 @@ namespace LatticeLib {
 		/**
 		 * Overloads DistanceMeasure::initialize().
 		 */
-		template <class T>
 		void initialize(const IntensityWorkset<T> &input, int bandIndex, int neighborhoodSize,
 						Image<double> &distanceTransform, Image<int> &roots, vector<PriorityQueueElement<T> > &toQueue) {
 			toQueue.clear();
@@ -97,7 +96,6 @@ namespace LatticeLib {
 		/**
 		 * Overloads DistanceMeasure::update().
 		 */
-		template<class T>
 		void update(const IntensityWorkset<T> &input, int bandIndex, int neighborhoodSize, int elementIndex,
 					Image<double> &distanceTransform, Image<int> &roots,
 					vector<PriorityQueueElement<T> > &toQueue) {

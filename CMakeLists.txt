@@ -49,20 +49,20 @@ set(TEST_SOURCE_FILES
     ${SOURCE_FILES}
     ${GTEST_ROOT}/src/gtest-all.cc
     arrayadjustmenttest.cpp
-    bcclatticetestinitialization.cpp
     bcclatticetestcoordinates.cpp
+    bcclatticetestinitialization.cpp
     bcclatticetestneighbors.cpp
-    cclatticetestinitialization.cpp
     cclatticetestcoordinates.cpp
+    cclatticetestinitialization.cpp
     cclatticetestneighbors.cpp
-    fcclatticetestinitialization.cpp
     fcclatticetestcoordinates.cpp
+    fcclatticetestinitialization.cpp
     fcclatticetestneighbors.cpp
     filetest.cpp
     filtertest.cpp
-    imagetestinitialization.cpp
-    imagetestcoordinates.cpp
     imagetestbands.cpp
+    imagetestcoordinates.cpp
+    imagetestinitialization.cpp
     imagetestneighbors.cpp
     imagetestmanipulation.cpp
     intensityworksettest.cpp

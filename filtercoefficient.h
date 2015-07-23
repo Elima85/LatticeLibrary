@@ -9,7 +9,7 @@ namespace LatticeLib {
  * Member 		| Comment
  * --------		| --------
  * index		| Position index of the element in a neighborhood. The midpoint element has index -1.
- * coefficient	| %Filter coefficient for the specified element.
+ * coefficient	| %WeightedAverageFilter coefficient for the specified element.
  */
     template<class S>
     class FilterCoefficient {
@@ -18,7 +18,7 @@ namespace LatticeLib {
         /** Position index of the element in a neighborhood. The midpoint element has index -1. */
         int positionIndex;
 
-        /** %Filter coefficient for the specified element. */
+        /** %WeightedAverageFilter coefficient for the specified element. */
         S coefficient;
 
     public:

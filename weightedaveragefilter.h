@@ -5,14 +5,15 @@
 #include "image.h"
 #include "neighbor.h"
 #include <vector>
+#include <stdio.h>
 
 namespace LatticeLib {
 
 /**
- * Spatial Template Filter
- * ========================
- * Class for template filters for image processing.
- * TODO: Should there be a parent class for Filter and StructuringElement?
+ * Spatial weighted average filter
+ * ================================
+ * Class for spatial weighted average filters for image processing, such as mean filters, Laplace filters, etc.
+ * TODO: Should there be a parent class for WeightedAverageFilter and StructuringElement?
  * TODO: Child classes for median, min, and max filtering, etc? Or common parent class?
  *
  * Member 			| Comment
@@ -21,7 +22,7 @@ namespace LatticeLib {
  * coefficients		| Template coefficients.
  */
 	template<class S>
-	class Filter {
+	class WeightedAverageFilter {
 
 	private:
 		/** Template coefficients. */
@@ -32,22 +33,22 @@ namespace LatticeLib {
 
 	public:
 		/**
-		 * Constructor for Filter objects.
+		 * Constructor for WeightedAverageFilter objects.
 		 *
 		 * Parameter	| in/out	| comment
 		 * :---------	| :------	| :-------
 		 * c			| INPUT		| Vector containing the template coefficients.
 		 * nS			| INPUT		| Neighborhood size.
 		 */
-		Filter(vector<FilterCoefficient<S> > c, int nS) {
+		WeightedAverageFilter(vector<FilterCoefficient<S> > c, int nS) {
 			coefficients = c;
 			neighborhoodSize = nS;
 		}
 
 		/**
-		 * Destructor for Filter objects.
+		 * Destructor for WeightedAverageFilter objects.
 		 */
-		~Filter() {};
+		~WeightedAverageFilter() {};
 
 		/**
 	 	 * Returns neighborhoodSize.
@@ -92,7 +93,7 @@ namespace LatticeLib {
 		 * positionIndex	| INPUT		| Position index of corresponding neighbor.
 		 */
 		int findCoefficient(int positionIndex) const {
-			int result = -2;
+			int result = -1;
 			int nCoefficients = getNCoefficients();
 			for (int coefficientIndex = 0; coefficientIndex < nCoefficients; coefficientIndex++) {
 				if (coefficients[coefficientIndex].getPositionIndex() == positionIndex) {
@@ -112,26 +113,35 @@ namespace LatticeLib {
 		 * result		| OUTPUT	| Filtered intensity values. Needs to be of a length of at least image.nElements.
 		 */
 		template<class T>
-		void applyToBand(Image<T> image, int bandIndex, T *result) const {
+		void applyToBand(Image<T> image, int bandIndex, double *result) const {
 			if ((bandIndex < 0) || (bandIndex >= image.getNBands())) {
 				// throw error or exception
 			}
 
 			int nElements = image.getNElements();
 			for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
+				double filterCoefficientSum = 0;
+				// center element
+				int coefficientIndex = findCoefficient(-1);
+				if (coefficientIndex > -1) {
+					result[elementIndex] = image(elementIndex, bandIndex) * coefficients[coefficientIndex].getCoefficient();
+					filterCoefficientSum += coefficients[coefficientIndex].getCoefficient();
+				}
+				// neighbors
 				int neighborhoodSize = getNeighborhoodSize();
 				vector<Neighbor> neighbors;
-				T result = 0;
 				image.getNeighbors(elementIndex, neighborhoodSize, neighbors);
 				int nFoundNeighbors = neighbors.size();
-				result[elementIndex] = 0;
 				for (int neighborIndex = 0; neighborIndex < nFoundNeighbors; neighborIndex++) {
-					int coefficientIndex = findCoefficient(neighbors[neighborIndex].getPosition());
+					coefficientIndex = findCoefficient(neighbors[neighborIndex].getPosition());
 					if (coefficientIndex > -1) {
 						result[elementIndex] += image(neighbors[neighborIndex].getIndex(), bandIndex) *
 												coefficients[coefficientIndex].getCoefficient();
+						filterCoefficientSum += coefficients[coefficientIndex].getCoefficient();
 					}
 				}
+				// normalization
+				result[elementIndex] = result[elementIndex] / filterCoefficientSum;
 			}
 		}
 
@@ -144,12 +154,12 @@ namespace LatticeLib {
 		 * result		| OUTPUT	| Filtered intensity values. Needs to be of a length of at least image.nElements * image.nBands.
 		 */
 		template<class T>
-		void applyToImage(Image<T> image, T *result) const {
+		void applyToImage(Image<T> image, double *result) const {
 			int nElements = image.getNElements();
 			int nBands = image.getNBands();
 			for (int bandIndex = 0; bandIndex < nBands; bandIndex++) {
 				int offset = bandIndex * nElements;
-				applyToBand(image, bandIndex, result[offset]);
+				applyToBand(image, bandIndex, result + offset);
 			}
 		}
 	};
