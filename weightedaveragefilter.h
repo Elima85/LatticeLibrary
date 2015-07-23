@@ -85,7 +85,7 @@ namespace LatticeLib {
 
 		/**
 		 * Finds the position of the FilterCoefficient object, corresponding to the neighbor with the input position
-		 * index, in the template coefficient vector. Returns -2 if this neighbor does not have a coefficient.
+		 * index, in the template coefficient vector. Returns -1 if this neighbor does not have a coefficient.
 		 *
 		 *
 		 * Parameter		| in/out	| comment

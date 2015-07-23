@@ -15,10 +15,11 @@ TEST(ValueCropper, valuecroppertest) {
     int intTestArray[10] = {0,1,2,3,4,5,6,7,8,9};
     double doubleTestArray[10] = {0.0,1.1,2.2,3.3,4.4,5.5,6.6,7.7,8.8,9.9};
 
-    ValueCropper cropper;
+    ValueCropper<double> doubleCropper;
+    ValueCropper<int> intCropper;
 
     // T = int
-    EXPECT_THROW(cropper.apply(intTestArray, size,5,4), incompatibleException);
+    EXPECT_THROW(intCropper.apply(intTestArray, size,5,4), incompatibleException);
     EXPECT_EQ(0, intTestArray[0]);
     EXPECT_EQ(1, intTestArray[1]);
     EXPECT_EQ(2, intTestArray[2]);
@@ -29,7 +30,7 @@ TEST(ValueCropper, valuecroppertest) {
     EXPECT_EQ(7, intTestArray[7]);
     EXPECT_EQ(8, intTestArray[8]);
     EXPECT_EQ(9, intTestArray[9]);
-    cropper.apply(intTestArray, size,-1,10);
+    intCropper.apply(intTestArray, size,-1,10);
     EXPECT_EQ(0,intTestArray[0]);
     EXPECT_EQ(1, intTestArray[1]);
     EXPECT_EQ(2, intTestArray[2]);
@@ -40,7 +41,7 @@ TEST(ValueCropper, valuecroppertest) {
     EXPECT_EQ(7, intTestArray[7]);
     EXPECT_EQ(8, intTestArray[8]);
     EXPECT_EQ(9, intTestArray[9]);
-    cropper.apply(intTestArray, size, 0, 9);
+    intCropper.apply(intTestArray, size, 0, 9);
     EXPECT_EQ(0, intTestArray[0]);
     EXPECT_EQ(1, intTestArray[1]);
     EXPECT_EQ(2, intTestArray[2]);
@@ -51,7 +52,7 @@ TEST(ValueCropper, valuecroppertest) {
     EXPECT_EQ(7, intTestArray[7]);
     EXPECT_EQ(8, intTestArray[8]);
     EXPECT_EQ(9, intTestArray[9]);
-    cropper.apply(intTestArray, size, 2, 7);
+    intCropper.apply(intTestArray, size, 2, 7);
     EXPECT_EQ(2, intTestArray[0]);
     EXPECT_EQ(2, intTestArray[1]);
     EXPECT_EQ(2, intTestArray[2]);
@@ -62,7 +63,7 @@ TEST(ValueCropper, valuecroppertest) {
     EXPECT_EQ(7, intTestArray[7]);
     EXPECT_EQ(7, intTestArray[8]);
     EXPECT_EQ(7, intTestArray[9]);
-    cropper.apply(intTestArray, size, 5, 5);
+    intCropper.apply(intTestArray, size, 5, 5);
     EXPECT_EQ(5, intTestArray[0]);
     EXPECT_EQ(5, intTestArray[1]);
     EXPECT_EQ(5, intTestArray[2]);
@@ -73,7 +74,7 @@ TEST(ValueCropper, valuecroppertest) {
     EXPECT_EQ(5, intTestArray[7]);
     EXPECT_EQ(5, intTestArray[8]);
     EXPECT_EQ(5, intTestArray[9]);
-    cropper.apply(intTestArray, size, 9, 10);
+    intCropper.apply(intTestArray, size, 9, 10);
     EXPECT_EQ(9, intTestArray[0]);
     EXPECT_EQ(9, intTestArray[1]);
     EXPECT_EQ(9, intTestArray[2]);
@@ -84,7 +85,7 @@ TEST(ValueCropper, valuecroppertest) {
     EXPECT_EQ(9, intTestArray[7]);
     EXPECT_EQ(9, intTestArray[8]);
     EXPECT_EQ(9, intTestArray[9]);
-    cropper.apply(intTestArray, size, 1, 2);
+    intCropper.apply(intTestArray, size, 1, 2);
     EXPECT_EQ(2, intTestArray[0]);
     EXPECT_EQ(2, intTestArray[1]);
     EXPECT_EQ(2, intTestArray[2]);
@@ -97,7 +98,7 @@ TEST(ValueCropper, valuecroppertest) {
     EXPECT_EQ(2, intTestArray[9]);
 
     // T = double
-    EXPECT_THROW(cropper.apply(doubleTestArray, size, 5.0, 4.0), incompatibleException);
+    EXPECT_THROW(doubleCropper.apply(doubleTestArray, size, 5.0, 4.0), incompatibleException);
     EXPECT_NEAR(0.0, doubleTestArray[0], EPSILONT);
     EXPECT_NEAR(1.1, doubleTestArray[1], EPSILONT);
     EXPECT_NEAR(2.2, doubleTestArray[2], EPSILONT);
@@ -108,7 +109,7 @@ TEST(ValueCropper, valuecroppertest) {
     EXPECT_NEAR(7.7, doubleTestArray[7], EPSILONT);
     EXPECT_NEAR(8.8, doubleTestArray[8], EPSILONT);
     EXPECT_NEAR(9.9, doubleTestArray[9], EPSILONT);
-    cropper.apply(doubleTestArray, size, -1.1, 10.1);
+    doubleCropper.apply(doubleTestArray, size, -1.1, 10.1);
     EXPECT_NEAR(0.0, doubleTestArray[0], EPSILONT);
     EXPECT_NEAR(1.1, doubleTestArray[1], EPSILONT);
     EXPECT_NEAR(2.2, doubleTestArray[2], EPSILONT);
@@ -119,7 +120,7 @@ TEST(ValueCropper, valuecroppertest) {
     EXPECT_NEAR(7.7, doubleTestArray[7], EPSILONT);
     EXPECT_NEAR(8.8, doubleTestArray[8], EPSILONT);
     EXPECT_NEAR(9.9, doubleTestArray[9], EPSILONT);
-    cropper.apply(doubleTestArray, size, 0.0 - 0.5*EPSILONT, 9.9 + 0.5 *EPSILONT);
+    doubleCropper.apply(doubleTestArray, size, 0.0 - 0.5*EPSILONT, 9.9 + 0.5 *EPSILONT);
     EXPECT_NEAR(0.0, doubleTestArray[0], EPSILONT);
     EXPECT_NEAR(1.1, doubleTestArray[1], EPSILONT);
     EXPECT_NEAR(2.2, doubleTestArray[2], EPSILONT);
@@ -130,7 +131,7 @@ TEST(ValueCropper, valuecroppertest) {
     EXPECT_NEAR(7.7, doubleTestArray[7], EPSILONT);
     EXPECT_NEAR(8.8, doubleTestArray[8], EPSILONT);
     EXPECT_NEAR(9.9, doubleTestArray[9], EPSILONT);
-    cropper.apply(doubleTestArray, size, 2.1, 7.8);
+    doubleCropper.apply(doubleTestArray, size, 2.1, 7.8);
     EXPECT_NEAR(2.1, doubleTestArray[0], EPSILONT);
     EXPECT_NEAR(2.1, doubleTestArray[1], EPSILONT);
     EXPECT_NEAR(2.2, doubleTestArray[2], EPSILONT);
@@ -141,7 +142,7 @@ TEST(ValueCropper, valuecroppertest) {
     EXPECT_NEAR(7.7, doubleTestArray[7], EPSILONT);
     EXPECT_NEAR(7.8, doubleTestArray[8], EPSILONT);
     EXPECT_NEAR(7.8, doubleTestArray[9], EPSILONT);
-    cropper.apply(doubleTestArray, size, 5.5, 5.5 + 0.5*EPSILONT);
+    doubleCropper.apply(doubleTestArray, size, 5.5, 5.5 + 0.5*EPSILONT);
     EXPECT_NEAR(5.5, doubleTestArray[0], EPSILONT);
     EXPECT_NEAR(5.5, doubleTestArray[1], EPSILONT);
     EXPECT_NEAR(5.5, doubleTestArray[2], EPSILONT);
@@ -152,7 +153,7 @@ TEST(ValueCropper, valuecroppertest) {
     EXPECT_NEAR(5.5, doubleTestArray[7], EPSILONT);
     EXPECT_NEAR(5.5, doubleTestArray[8], EPSILONT);
     EXPECT_NEAR(5.5, doubleTestArray[9], EPSILONT);
-    cropper.apply(doubleTestArray, size, 9.9, 10.1);
+    doubleCropper.apply(doubleTestArray, size, 9.9, 10.1);
     EXPECT_NEAR(9.9, doubleTestArray[0], EPSILONT);
     EXPECT_NEAR(9.9, doubleTestArray[1], EPSILONT);
     EXPECT_NEAR(9.9, doubleTestArray[2], EPSILONT);
@@ -163,7 +164,7 @@ TEST(ValueCropper, valuecroppertest) {
     EXPECT_NEAR(9.9, doubleTestArray[7], EPSILONT);
     EXPECT_NEAR(9.9, doubleTestArray[8], EPSILONT);
     EXPECT_NEAR(9.9, doubleTestArray[9], EPSILONT);
-    cropper.apply(doubleTestArray, size, 1.1, 2.2);
+    doubleCropper.apply(doubleTestArray, size, 1.1, 2.2);
     EXPECT_NEAR(2.2, doubleTestArray[0], EPSILONT);
     EXPECT_NEAR(2.2, doubleTestArray[1], EPSILONT);
     EXPECT_NEAR(2.2, doubleTestArray[2], EPSILONT);
@@ -189,10 +190,12 @@ TEST(ValueNormalizer, valuenormalizertest) {
     float floatTestArray3[10] = {-10.0, -9.0, -8.0, -7.0, -6.0, -5.0, -4.0, -3.0, -2.0, -1.0};
     float floatTestArray4[10] = {1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5};
 
-    ValueNormalizer normalizer;
+    ValueNormalizer<double> doubleNormalizer;
+    ValueNormalizer<float> floatNormalizer;
+    ValueNormalizer<int> intNormalizer;
 
     // T = int
-    EXPECT_THROW(normalizer.apply(intTestArray, size, 10, 1), incompatibleException);
+    EXPECT_THROW(intNormalizer.apply(intTestArray, size, 10, 1), incompatibleException);
     EXPECT_EQ(1, intTestArray[0]);
     EXPECT_EQ(2, intTestArray[1]);
     EXPECT_EQ(3, intTestArray[2]);
@@ -203,7 +206,7 @@ TEST(ValueNormalizer, valuenormalizertest) {
     EXPECT_EQ(8, intTestArray[7]);
     EXPECT_EQ(9, intTestArray[8]);
     EXPECT_EQ(10, intTestArray[9]);
-    normalizer.apply(intTestArray, size, 0, 10);
+    intNormalizer.apply(intTestArray, size, 0, 10);
     EXPECT_EQ(0, intTestArray[0]);
     EXPECT_EQ(0, intTestArray[1]);
     EXPECT_EQ(0, intTestArray[2]);
@@ -216,7 +219,7 @@ TEST(ValueNormalizer, valuenormalizertest) {
     EXPECT_EQ(1, intTestArray[9]);
 
     // T = double
-    EXPECT_THROW(normalizer.apply(doubleTestArray1, size, 10.0, 1.0), incompatibleException);
+    EXPECT_THROW(doubleNormalizer.apply(doubleTestArray1, size, 10.0, 1.0), incompatibleException);
     EXPECT_NEAR(1.0, doubleTestArray1[0], EPSILONT);
     EXPECT_NEAR(2.0, doubleTestArray1[1], EPSILONT);
     EXPECT_NEAR(3.0, doubleTestArray1[2], EPSILONT);
@@ -227,7 +230,7 @@ TEST(ValueNormalizer, valuenormalizertest) {
     EXPECT_NEAR(8.0, doubleTestArray1[7], EPSILONT);
     EXPECT_NEAR(9.0, doubleTestArray1[8], EPSILONT);
     EXPECT_NEAR(10.0, doubleTestArray1[9], EPSILONT);
-    normalizer.apply(doubleTestArray1, size, 0.0, 10.0);
+    doubleNormalizer.apply(doubleTestArray1, size, 0.0, 10.0);
     EXPECT_NEAR(0.1, doubleTestArray1[0], EPSILONT);
     EXPECT_NEAR(0.2, doubleTestArray1[1], EPSILONT);
     EXPECT_NEAR(0.3, doubleTestArray1[2], EPSILONT);
@@ -238,7 +241,7 @@ TEST(ValueNormalizer, valuenormalizertest) {
     EXPECT_NEAR(0.8, doubleTestArray1[7], EPSILONT);
     EXPECT_NEAR(0.9, doubleTestArray1[8], EPSILONT);
     EXPECT_NEAR(1.0, doubleTestArray1[9], EPSILONT);
-    normalizer.apply(doubleTestArray2, size, 1.0, 15.0);
+    doubleNormalizer.apply(doubleTestArray2, size, 1.0, 15.0);
     EXPECT_NEAR(0.0, doubleTestArray2[0], EPSILONT);
     EXPECT_GT(doubleTestArray2[1], doubleTestArray2[0]);
     EXPECT_GT(doubleTestArray2[2], doubleTestArray2[1]);
@@ -250,7 +253,7 @@ TEST(ValueNormalizer, valuenormalizertest) {
     EXPECT_GT(doubleTestArray2[8], doubleTestArray2[7]);
     EXPECT_GT(doubleTestArray2[9], doubleTestArray2[8]);
     EXPECT_GT(1, doubleTestArray2[9]);
-    normalizer.apply(doubleTestArray3, size, -10.0, 0.0);
+    doubleNormalizer.apply(doubleTestArray3, size, -10.0, 0.0);
     EXPECT_NEAR(0.0, doubleTestArray3[0], EPSILONT);
     EXPECT_NEAR(0.1, doubleTestArray3[1], EPSILONT);
     EXPECT_NEAR(0.2, doubleTestArray3[2], EPSILONT);
@@ -261,7 +264,7 @@ TEST(ValueNormalizer, valuenormalizertest) {
     EXPECT_NEAR(0.7, doubleTestArray3[7], EPSILONT);
     EXPECT_NEAR(0.8, doubleTestArray3[8], EPSILONT);
     EXPECT_NEAR(0.9, doubleTestArray3[9], EPSILONT);
-    normalizer.apply(doubleTestArray4, size, 0.0, 10.0);
+    doubleNormalizer.apply(doubleTestArray4, size, 0.0, 10.0);
     EXPECT_GT(doubleTestArray4[0], 0.0);
     EXPECT_GT(doubleTestArray4[1], doubleTestArray4[0]);
     EXPECT_GT(doubleTestArray4[2], doubleTestArray4[1]);
@@ -284,7 +287,7 @@ TEST(ValueNormalizer, valuenormalizertest) {
     EXPECT_NEAR(doubleTestArray4[9] / doubleTestArray4[8], 5.5 / 5, EPSILONT);
 
     // T = float
-    EXPECT_THROW(normalizer.apply(floatTestArray1, size, float(10.0), float(1.0)), incompatibleException);
+    EXPECT_THROW(floatNormalizer.apply(floatTestArray1, size, float(10.0), float(1.0)), incompatibleException);
     EXPECT_NEAR(1.0, floatTestArray1[0], EPSILONT);
     EXPECT_NEAR(2.0, floatTestArray1[1], EPSILONT);
     EXPECT_NEAR(3.0, floatTestArray1[2], EPSILONT);
@@ -295,7 +298,7 @@ TEST(ValueNormalizer, valuenormalizertest) {
     EXPECT_NEAR(8.0, floatTestArray1[7], EPSILONT);
     EXPECT_NEAR(9.0, floatTestArray1[8], EPSILONT);
     EXPECT_NEAR(10.0, floatTestArray1[9], EPSILONT);
-    normalizer.apply(floatTestArray1, size, float(0.0), float(10.0));
+    floatNormalizer.apply(floatTestArray1, size, float(0.0), float(10.0));
     EXPECT_NEAR(0.1, floatTestArray1[0], EPSILONT);
     EXPECT_NEAR(0.2, floatTestArray1[1], EPSILONT);
     EXPECT_NEAR(0.3, floatTestArray1[2], EPSILONT);
@@ -306,7 +309,7 @@ TEST(ValueNormalizer, valuenormalizertest) {
     EXPECT_NEAR(0.8, floatTestArray1[7], EPSILONT);
     EXPECT_NEAR(0.9, floatTestArray1[8], EPSILONT);
     EXPECT_NEAR(1.0, floatTestArray1[9], EPSILONT);
-    normalizer.apply(floatTestArray2, size, float(1.0), float(15.0));
+    floatNormalizer.apply(floatTestArray2, size, float(1.0), float(15.0));
     EXPECT_NEAR(0.0, floatTestArray2[0], EPSILONT);
     EXPECT_GT(floatTestArray2[1], floatTestArray2[0]);
     EXPECT_GT(floatTestArray2[2], floatTestArray2[1]);
@@ -318,7 +321,7 @@ TEST(ValueNormalizer, valuenormalizertest) {
     EXPECT_GT(floatTestArray2[8], floatTestArray2[7]);
     EXPECT_GT(floatTestArray2[9], floatTestArray2[8]);
     EXPECT_GT(1, floatTestArray2[9]);
-    normalizer.apply(floatTestArray3, size, float(-10.0), float(0.0));
+    floatNormalizer.apply(floatTestArray3, size, float(-10.0), float(0.0));
     EXPECT_NEAR(0.0, floatTestArray3[0], EPSILONT);
     EXPECT_NEAR(0.1, floatTestArray3[1], EPSILONT);
     EXPECT_NEAR(0.2, floatTestArray3[2], EPSILONT);
@@ -329,7 +332,7 @@ TEST(ValueNormalizer, valuenormalizertest) {
     EXPECT_NEAR(0.7, floatTestArray3[7], EPSILONT);
     EXPECT_NEAR(0.8, floatTestArray3[8], EPSILONT);
     EXPECT_NEAR(0.9, floatTestArray3[9], EPSILONT);
-    normalizer.apply(floatTestArray4, size, float(0.0), float(10.0));
+    floatNormalizer.apply(floatTestArray4, size, float(0.0), float(10.0));
     EXPECT_GT(floatTestArray4[0], 0.0);
     EXPECT_GT(floatTestArray4[1], floatTestArray4[0]);
     EXPECT_GT(floatTestArray4[2], floatTestArray4[1]);
@@ -363,11 +366,13 @@ TEST(ValueDenormalizer, valuedenormalizertest) {
     float floatTestArray2[10] = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0};
     float floatTestArray3[10] = {-10.0, -9.0, -8.0, -7.0, -6.0, -5.0, -4.0, -3.0, -2.0, -1.0};
 
-    ValueNormalizer normalizer;
-    ValueDenormalizer denormalizer;
+    ValueNormalizer<double> doubleNormalizer;
+    ValueDenormalizer<double> doubleDenormalizer;
+    ValueNormalizer<float> floatNormalizer;
+    ValueDenormalizer<float> floatDenormalizer;
 
     // T = double
-    EXPECT_THROW(denormalizer.apply(doubleTestArray1, size, 10.0, 1.0), incompatibleException);
+    EXPECT_THROW(doubleDenormalizer.apply(doubleTestArray1, size, 10.0, 1.0), incompatibleException);
     EXPECT_NEAR(doubleTestArray1[0], 0.0, EPSILONT);
     EXPECT_NEAR(doubleTestArray1[1], 0.1, EPSILONT);
     EXPECT_NEAR(doubleTestArray1[2], 0.2, EPSILONT);
@@ -378,7 +383,7 @@ TEST(ValueDenormalizer, valuedenormalizertest) {
     EXPECT_NEAR(doubleTestArray1[7], 0.7, EPSILONT);
     EXPECT_NEAR(doubleTestArray1[8], 0.8, EPSILONT);
     EXPECT_NEAR(doubleTestArray1[9], 0.9, EPSILONT);
-    normalizer.apply(doubleTestArray2, size, -3.0, 14.0);
+    doubleNormalizer.apply(doubleTestArray2, size, -3.0, 14.0);
     EXPECT_GE(fabs(doubleTestArray2[0] - 1.0), EPSILONT);
     EXPECT_GE(fabs(doubleTestArray2[1] - 2.0), EPSILONT);
     EXPECT_GE(fabs(doubleTestArray2[2] - 3.0), EPSILONT);
@@ -389,7 +394,7 @@ TEST(ValueDenormalizer, valuedenormalizertest) {
     EXPECT_GE(fabs(doubleTestArray2[7] - 7.0), EPSILONT);
     EXPECT_GE(fabs(doubleTestArray2[8] - 8.0), EPSILONT);
     EXPECT_GE(fabs(doubleTestArray2[9] - 9.0), EPSILONT);
-    denormalizer.apply(doubleTestArray2, size, -3.0, 14.0);
+    doubleDenormalizer.apply(doubleTestArray2, size, -3.0, 14.0);
     EXPECT_NEAR(doubleTestArray2[0], 1.0, EPSILONT);
     EXPECT_NEAR(doubleTestArray2[1], 2.0, EPSILONT);
     EXPECT_NEAR(doubleTestArray2[2], 3.0, EPSILONT);
@@ -400,7 +405,7 @@ TEST(ValueDenormalizer, valuedenormalizertest) {
     EXPECT_NEAR(doubleTestArray2[7], 8.0, EPSILONT);
     EXPECT_NEAR(doubleTestArray2[8], 9.0, EPSILONT);
     EXPECT_NEAR(doubleTestArray2[9], 10.0, EPSILONT);
-    normalizer.apply(doubleTestArray3, size, -3.0, 14.0);
+    doubleNormalizer.apply(doubleTestArray3, size, -3.0, 14.0);
     EXPECT_GE(fabs(doubleTestArray3[0] + 10.0), EPSILONT);
     EXPECT_GE(fabs(doubleTestArray3[1] + 9.0), EPSILONT);
     EXPECT_GE(fabs(doubleTestArray3[2] + 8.0), EPSILONT);
@@ -411,7 +416,7 @@ TEST(ValueDenormalizer, valuedenormalizertest) {
     EXPECT_GE(fabs(doubleTestArray3[7] + 3.0), EPSILONT);
     EXPECT_GE(fabs(doubleTestArray3[8] + 2.0), EPSILONT);
     EXPECT_GE(fabs(doubleTestArray3[9] + 1.0), EPSILONT);
-    denormalizer.apply(doubleTestArray3, size, -3.0, 14.0);
+    doubleDenormalizer.apply(doubleTestArray3, size, -3.0, 14.0);
     EXPECT_NEAR(doubleTestArray3[0], -10.0, EPSILONT);
     EXPECT_NEAR(doubleTestArray3[1], -9.0, EPSILONT);
     EXPECT_NEAR(doubleTestArray3[2], -8.0, EPSILONT);
@@ -424,7 +429,7 @@ TEST(ValueDenormalizer, valuedenormalizertest) {
     EXPECT_NEAR(doubleTestArray3[9], -1.0, EPSILONT);
 
     // T = float
-    EXPECT_THROW(denormalizer.apply(floatTestArray1, size, float(10.0), float(1.0)), incompatibleException);
+    EXPECT_THROW(floatDenormalizer.apply(floatTestArray1, size, float(10.0), float(1.0)), incompatibleException);
     EXPECT_NEAR(floatTestArray1[0], 0.0, EPSILONT);
     EXPECT_NEAR(floatTestArray1[1], 0.1, EPSILONT);
     EXPECT_NEAR(floatTestArray1[2], 0.2, EPSILONT);
@@ -435,7 +440,7 @@ TEST(ValueDenormalizer, valuedenormalizertest) {
     EXPECT_NEAR(floatTestArray1[7], 0.7, EPSILONT);
     EXPECT_NEAR(floatTestArray1[8], 0.8, EPSILONT);
     EXPECT_NEAR(floatTestArray1[9], 0.9, EPSILONT);
-    normalizer.apply(floatTestArray2, size, float(-3.0), float(14.0));
+    floatNormalizer.apply(floatTestArray2, size, float(-3.0), float(14.0));
     EXPECT_GE(fabs(floatTestArray2[0] - 1.0), EPSILONT);
     EXPECT_GE(fabs(floatTestArray2[1] - 2.0), EPSILONT);
     EXPECT_GE(fabs(floatTestArray2[2] - 3.0), EPSILONT);
@@ -446,7 +451,7 @@ TEST(ValueDenormalizer, valuedenormalizertest) {
     EXPECT_GE(fabs(floatTestArray2[7] - 7.0), EPSILONT);
     EXPECT_GE(fabs(floatTestArray2[8] - 8.0), EPSILONT);
     EXPECT_GE(fabs(floatTestArray2[9] - 9.0), EPSILONT);
-    denormalizer.apply(floatTestArray2, size, float(-3.0), float(14.0));
+    floatDenormalizer.apply(floatTestArray2, size, float(-3.0), float(14.0));
     EXPECT_NEAR(floatTestArray2[0], 1.0, EPSILONT);
     EXPECT_NEAR(floatTestArray2[1], 2.0, EPSILONT);
     EXPECT_NEAR(floatTestArray2[2], 3.0, EPSILONT);
@@ -457,7 +462,7 @@ TEST(ValueDenormalizer, valuedenormalizertest) {
     EXPECT_NEAR(floatTestArray2[7], 8.0, EPSILONT);
     EXPECT_NEAR(floatTestArray2[8], 9.0, EPSILONT);
     EXPECT_NEAR(floatTestArray2[9], 10.0, EPSILONT);
-    normalizer.apply(floatTestArray3, size, float(-3.0), float(14.0));
+    floatNormalizer.apply(floatTestArray3, size, float(-3.0), float(14.0));
     EXPECT_GE(fabs(floatTestArray3[0] + 10.0), EPSILONT);
     EXPECT_GE(fabs(floatTestArray3[1] + 9.0), EPSILONT);
     EXPECT_GE(fabs(floatTestArray3[2] + 8.0), EPSILONT);
@@ -468,7 +473,7 @@ TEST(ValueDenormalizer, valuedenormalizertest) {
     EXPECT_GE(fabs(floatTestArray3[7] + 3.0), EPSILONT);
     EXPECT_GE(fabs(floatTestArray3[8] + 2.0), EPSILONT);
     EXPECT_GE(fabs(floatTestArray3[9] + 1.0), EPSILONT);
-    denormalizer.apply(floatTestArray3, size, float(-3.0), float(14.0));
+    floatDenormalizer.apply(floatTestArray3, size, float(-3.0), float(14.0));
     EXPECT_NEAR(floatTestArray3[0], -10.0, EPSILONT);
     EXPECT_NEAR(floatTestArray3[1], -9.0, EPSILONT);
     EXPECT_NEAR(floatTestArray3[2], -8.0, EPSILONT);

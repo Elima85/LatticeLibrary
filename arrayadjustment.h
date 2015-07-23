@@ -6,6 +6,7 @@ namespace LatticeLib {
     /**
      * Base class for adjusting the range and distribution of array values.
      */
+    template<class T>
     class ArrayAdjustment {
 
     public:
@@ -20,8 +21,7 @@ namespace LatticeLib {
          * value1       | Range and distribution parameter.
          * value2       | Range and distribution parameter.
          */
-        template <class T>
-        void apply(T* array, int nElements, T value1, T value2) const {}
+        virtual void apply(T* array, int nElements, T value1, T value2) const {}
 
     };
 

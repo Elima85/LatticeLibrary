@@ -8,7 +8,8 @@ namespace LatticeLib {
     /**
      * Class for normalizing values in a given range to [0,1].
      */
-    class ValueNormalizer : public ArrayAdjustment {
+    template<class T>
+    class ValueNormalizer : public ArrayAdjustment<T> {
 
     public:
         /**
@@ -26,7 +27,6 @@ namespace LatticeLib {
          * minValue     | Minimum value of input range.
          * maxValue     | Maximum value of input range.
          */
-        template<class T>
         void apply(T *array, int nElements, T minValue, T maxValue) const {
             if (minValue > maxValue) {
                 throw incompatibleException();

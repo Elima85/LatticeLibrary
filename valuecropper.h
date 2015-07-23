@@ -9,7 +9,8 @@ namespace LatticeLib {
     /**
      * Class for cropping the values of array entries, so that they fit into a defined range.
      */
-    class ValueCropper : public ArrayAdjustment {
+    template<class T>
+    class ValueCropper : public ArrayAdjustment<T> {
 
     public:
         /**
@@ -24,7 +25,6 @@ namespace LatticeLib {
          * minValue     | Minimum limit for the array elements.
          * maxValue     | Maximum limit for the array elements.
          */
-        template<class T>
         void apply(T* array, int nElements, T minValue, T maxValue) const {
             if (minValue > maxValue) {
                 throw incompatibleException();

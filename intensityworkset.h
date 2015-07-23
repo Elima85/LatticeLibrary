@@ -95,15 +95,15 @@ namespace LatticeLib {
                 case crop: {
                     T* data = im.getData();
                     int nElements = im.getLattice().getNElements() * im.getNBands();
-                    ValueCropper cropper;
+                    ValueCropper<T> cropper;
                     cropper.apply(data, nElements, minVal, maxVal);
                     break;
                 }
                 case normalize:{
                     T *data = im.getData();
                     int nElements = im.getLattice().getNElements() * im.getNBands();
-                    ValueNormalizer normalizer;
-                    ValueDenormalizer denormalizer;
+                    ValueNormalizer<T> normalizer;
+                    ValueDenormalizer<T> denormalizer;
                     T currentMinVal = *std::min_element(data, data + nElements);
 
                     T currentMaxVal = *std::max_element(data, data + nElements);
@@ -158,7 +158,7 @@ namespace LatticeLib {
         void cropIntensities() {
             int nElements = image.getNElements();
             int nBands = image.getNBands();
-            ValueCropper cropper;
+            ValueCropper<T> cropper;
             cropper.apply(image.getData(), nBands * nElements, minIntensity, maxIntensity);
         }
 
@@ -172,8 +172,8 @@ namespace LatticeLib {
             int nBands = image.getNBands();
             int nTotal = nBands * nElements;
             T* data = image.getData();
-            ValueNormalizer normalizer;
-            ValueDenormalizer denormalizer;
+            ValueNormalizer<T> normalizer;
+            ValueDenormalizer<T> denormalizer;
             T currentMinVal = *std::min_element(data, data + nTotal);
             T currentMaxVal = *std::max_element(data, data + nTotal);
             //std::cout << "minVal: " << currentMinVal << ", maxVal: " << currentMaxVal << std::endl;
@@ -195,8 +195,8 @@ namespace LatticeLib {
             int start = bandIndex * nElements;
             int stop = start + nElements;
             T *data = image.getData();
-            ValueNormalizer normalizer;
-            ValueDenormalizer denormalizer;
+            ValueNormalizer<T> normalizer;
+            ValueDenormalizer<T> denormalizer;
             T currentMinVal = *std::min_element(data + start, data + stop);
             T currentMaxVal = *std::max_element(data + start, data + stop);
             //std::cout << "minVal: " << currentMinVal << ", maxVal: " << currentMaxVal << std::endl;
