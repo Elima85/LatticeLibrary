@@ -97,7 +97,7 @@ namespace LatticeLib {
             toQueue.clear();
             int nSeeds = seeds[labelIndex].size();
             for (int seedIndex = 0; seedIndex < nSeeds; seedIndex++) {
-                int elementIndex = seeds[labelIndex][seedIndex].getIndex();
+                int elementIndex = seeds[labelIndex][seedIndex].getElementIndex();
                 distanceTransform.setElement(elementIndex, labelIndex, 0);
                 roots.setElement(elementIndex, labelIndex, elementIndex);
                 toQueue.push_back(PriorityQueueElement<T>(elementIndex, 0));

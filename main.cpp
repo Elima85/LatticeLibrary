@@ -1,7 +1,7 @@
 #include "defs.h"
 #include "string.h"
 #include "image.h"
-#include "label.h"
+//#include "label.h"
 //#include "priorityqueue.h"
 #include <cstdlib>
 #include <cstdio>

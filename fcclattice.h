@@ -57,17 +57,17 @@ namespace LatticeLib {
         /**
         * Implements Lattice::indexToX().
         */
-        double indexToX(int index) const;
+        double indexToX(int elementIndex) const;
 
         /**
         * Implements Lattice::indexToY().
         */
-        double indexToY(int index) const;
+        double indexToY(int elementIndex) const;
 
         /**
         * Implements Lattice::indexToZ().
         */
-        double indexToZ(int index) const;
+        double indexToZ(int elementIndex) const;
 
         /*
          * Implements Lattice::coverageToInternalDistance().
@@ -77,70 +77,70 @@ namespace LatticeLib {
         /**
          * Returns the face neighbors of the element at \f$(row,column,layer)\f$.
          *
-         * Parameter	    | in/out	| Comment
-         * :----------	    | :-------	| :--------
-         * row              | INPUT     | Row index.
-         * column           | INPUT     | Column index.
-         * layer            | INPUT     | Layer index.
-         * neighbors        | OUTPUT    | Extracted neighbors.
+         * Parameter    | in/out	| Comment
+         * :----------  | :-------	| :--------
+         * rowIndex     | INPUT     | Row index.
+         * columnIndex  | INPUT     | Column index.
+         * layerIndex   | INPUT     | Layer index.
+         * neighbors    | OUTPUT    | Extracted neighbors.
          */
-        void get12Neighbors(int row, int column, int layer, vector<Neighbor> &neighbors) const;
+        void get12Neighbors(int rowIndex, int columnIndex, int layerIndex, vector<Neighbor> &neighbors) const;
 
         /**
          * Returns the face neighbors of the element with index \f$(index)\f$.
          *
-         * Parameter	    | in/out	| Comment
-         * :----------	    | :-------	| :--------
-         * index            | INPUT     | Element index.
-         * neighbors        | OUTPUT    | Extracted neighbors.
+         * Parameter	| in/out	| Comment
+         * :----------	| :-------	| :--------
+         * elementindex | INPUT     | Element index.
+         * neighbors    | OUTPUT    | Extracted neighbors.
          */
-        void get12Neighbors(int index, vector<Neighbor> &neighbors) const;
+        void get12Neighbors(int elementIndex, vector<Neighbor> &neighbors) const;
 
         /**
          * Returns the face- and edge neighbors of the element at \f$(row,column,layer)\f$.
          *
-         * Parameter	    | in/out	| Comment
-         * :----------	    | :-------	| :--------
-         * row              | INPUT     | Row index.
-         * column           | INPUT     | Column index.
-         * layer            | INPUT     | Layer index.
-         * neighbors        | OUTPUT    | Extracted neighbors.
+         * Parameter    | in/out	| Comment
+         * :----------  | :-------	| :--------
+         * rowIndex     | INPUT     | Row index.
+         * columnIndex  | INPUT     | Column index.
+         * layerIndex   | INPUT     | Layer index.
+         * neighbors    | OUTPUT    | Extracted neighbors.
          */
-        void get18Neighbors(int row, int column, int layer, vector<Neighbor> &neighbors) const;
+        void get18Neighbors(int rowIndex, int columnIndex, int layerIndex, vector<Neighbor> &neighbors) const;
 
         /**
          * Returns the face- and edge neighbors of the element with index \f$(index)\f$.
          *
-         * Parameter	    | in/out	| Comment
-         * :----------	    | :-------	| :--------
-         * index            | INPUT     | Element index.
-         * neighbors        | OUTPUT    | Extracted neighbors.
+         * Parameter	| in/out	| Comment
+         * :----------	| :-------	| :--------
+         * elementindex | INPUT     | Element index.
+         * neighbors    | OUTPUT    | Extracted neighbors.
          */
-        void get18Neighbors(int index, vector<Neighbor> &neighbors) const;
+        void get18Neighbors(int elementIndex, vector<Neighbor> &neighbors) const;
 
         /**
          * Implements Lattice::getNeighbors().
          *
          * Parameter	    | in/out	| Comment
          * :----------	    | :-------	| :--------
-         * row              | INPUT     | Row index.
-         * column           | INPUT     | Column index.
-         * layer            | INPUT     | Layer index.
+         * rowIndex         | INPUT     | Row index.
+         * columnIndex      | INPUT     | Column index.
+         * layerIndex       | INPUT     | Layer index.
          * neighborhoodSize | INPUT     | Requested neighborhood size. <br> 12: face neighbors <br> 18: face- and point neighbors
          * neighbors        | OUTPUT    | Extracted neighbors.
          */
-        void getNeighbors(int row, int column, int layer, int neighborhoodSize, vector<Neighbor> &neighbors) const;
+        void getNeighbors(int rowIndex, int columnIndex, int layerIndex, int neighborhoodSize, vector<Neighbor> &neighbors) const;
 
         /**
          * Implements Lattice::getNeighbors().
          *
          * Parameter	    | in/out	| Comment
          * :----------	    | :-------	| :--------
-         * index            | INPUT     | Element index.
+         * elementindex     | INPUT     | Element index.
          * neighborhoodSize | INPUT     | Requested neighborhood size. <br> 12: face neighbors <br> 18: face- and point neighbors
          * neighbors        | OUTPUT    | Extracted neighbors.
          */
-        void getNeighbors(int index, int neighborhoodSize, vector<Neighbor> &neighbors) const;
+        void getNeighbors(int elementIndex, int neighborhoodSize, vector<Neighbor> &neighbors) const;
     };
 
 }

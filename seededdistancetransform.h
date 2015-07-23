@@ -68,8 +68,8 @@ namespace LatticeLib {
                     int poppedElementIndex = topElement.getIndex();
                     if (inQueue[poppedElementIndex]) {
                         inQueue[poppedElementIndex] = false; // so that old queue elements offering larger distances are skipped
-                        distanceMeasure.update(inputImage, neighborhoodSize, distanceTransform, roots, poppedElementIndex,
-                                               labelIndex, newQueueElements);
+                        distanceMeasure.update(inputImage, neighborhoodSize, poppedElementIndex, labelIndex,
+                                               distanceTransform, roots, newQueueElements);
                         nNewQueueElements = newQueueElements.size();
                         for (int queueElementIndex = 0; queueElementIndex < nNewQueueElements; queueElementIndex++) {
                             queue.push(newQueueElements[queueElementIndex]);

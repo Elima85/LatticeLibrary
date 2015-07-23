@@ -11,26 +11,26 @@ namespace LatticeLib {
     BCCLattice::BCCLattice(const BCCLattice &original) : Lattice(original) {};
     BCCLattice::~BCCLattice() {};
 
-    double BCCLattice::indexToX(int index) const {
+    double BCCLattice::indexToX(int elementIndex) const {
         int c, l;
         double x;
         double scaleFactor = cbrt(1 / this->latticeDensity);
-        c = this->indexToC(index);
-        l = this->indexToL(index);
+        c = this->indexToC(elementIndex);
+        l = this->indexToL(elementIndex);
         x = scaleFactor * ((1 + !IS_EVEN(l)) * BCCOFFSET + c * BCCSQFACEDISTANCE);
         return x;
     }
-    double BCCLattice::indexToY(int index) const {
+    double BCCLattice::indexToY(int elementIndex) const {
         int r, l;
         double y;
         double scaleFactor = cbrt(1 / this->latticeDensity);
-        r = this->indexToR(index);
-        l = this->indexToL(index);
+        r = this->indexToR(elementIndex);
+        l = this->indexToL(elementIndex);
         y = scaleFactor * ((1 + !IS_EVEN(l)) * BCCOFFSET + r * BCCSQFACEDISTANCE);
         return y;
     }
-    double BCCLattice::indexToZ(int index) const {
-        int l = this->indexToL(index);
+    double BCCLattice::indexToZ(int elementIndex) const {
+        int l = this->indexToL(elementIndex);
         double scaleFactor = cbrt(1 / this->latticeDensity);
         double z = scaleFactor * (1 + l) * BCCOFFSET;
         return z;
@@ -47,117 +47,117 @@ namespace LatticeLib {
 
     /* TODO: double coverageToInternalDistance(double coverage) const {
         coverageIndex = round(coverage * 255);
-        double scaleFactor = this->latticeDensity; // TODO: Find correct scaleFactor!
+        double scaleFactor = cbrt(1 / this->latticeDensity);
         return subSpelDistanceVoronoiBCC[coverageIndex] * [function of scaleFactor];
     }*/
-    void BCCLattice::get8Neighbors(int row, int column, int layer, vector<Neighbor> &neighbors) const {
-        if (!this->isValid(row, column, layer)) {
+    void BCCLattice::get8Neighbors(int rowIndex, int columnIndex, int layerIndex, vector<Neighbor> &neighbors) const {
+        if (!this->isValid(rowIndex, columnIndex, layerIndex)) {
             throw outsideRangeException();
         }
         neighbors.clear();
-        if (IS_EVEN(layer)) {
-            if (this->isValid(row - 1, column - 1, layer - 1)) {
-                neighbors.push_back(Neighbor(0, this->rclToIndex(row - 1, column - 1, layer - 1))); // top left front
+        if (IS_EVEN(layerIndex)) {
+            if (this->isValid(rowIndex - 1, columnIndex - 1, layerIndex - 1)) {
+                neighbors.push_back(Neighbor(0, this->rclToIndex(rowIndex - 1, columnIndex - 1, layerIndex - 1))); // top left front
             }
-            if (this->isValid(row - 1, column, layer - 1)) {
-                neighbors.push_back(Neighbor(1, this->rclToIndex(row - 1, column, layer - 1))); // top right front
+            if (this->isValid(rowIndex - 1, columnIndex, layerIndex - 1)) {
+                neighbors.push_back(Neighbor(1, this->rclToIndex(rowIndex - 1, columnIndex, layerIndex - 1))); // top right front
             }
-            if (this->isValid(row, column - 1, layer - 1)) {
-                neighbors.push_back(Neighbor(2, this->rclToIndex(row, column - 1, layer - 1))); // bottom left front
+            if (this->isValid(rowIndex, columnIndex - 1, layerIndex - 1)) {
+                neighbors.push_back(Neighbor(2, this->rclToIndex(rowIndex, columnIndex - 1, layerIndex - 1))); // bottom left front
             }
-            if (this->isValid(row, column, layer - 1)) {
-                neighbors.push_back(Neighbor(3, this->rclToIndex(row, column, layer - 1))); // bottom right front
+            if (this->isValid(rowIndex, columnIndex, layerIndex - 1)) {
+                neighbors.push_back(Neighbor(3, this->rclToIndex(rowIndex, columnIndex, layerIndex - 1))); // bottom right front
             }
-            if (this->isValid(row - 1, column - 1, layer + 1)) {
-                neighbors.push_back(Neighbor(4, this->rclToIndex(row - 1, column - 1, layer + 1))); // top left back
+            if (this->isValid(rowIndex - 1, columnIndex - 1, layerIndex + 1)) {
+                neighbors.push_back(Neighbor(4, this->rclToIndex(rowIndex - 1, columnIndex - 1, layerIndex + 1))); // top left back
             }
-            if (this->isValid(row - 1, column, layer + 1)) {
-                neighbors.push_back(Neighbor(5, this->rclToIndex(row - 1, column, layer + 1))); // top right back
+            if (this->isValid(rowIndex - 1, columnIndex, layerIndex + 1)) {
+                neighbors.push_back(Neighbor(5, this->rclToIndex(rowIndex - 1, columnIndex, layerIndex + 1))); // top right back
             }
-            if (this->isValid(row, column - 1, layer + 1)) {
-                neighbors.push_back(Neighbor(6, this->rclToIndex(row, column - 1, layer + 1))); // bottom left back
+            if (this->isValid(rowIndex, columnIndex - 1, layerIndex + 1)) {
+                neighbors.push_back(Neighbor(6, this->rclToIndex(rowIndex, columnIndex - 1, layerIndex + 1))); // bottom left back
             }
-            if (this->isValid(row, column, layer + 1)) {
-                neighbors.push_back(Neighbor(7, this->rclToIndex(row, column, layer + 1))); // bottom right back
+            if (this->isValid(rowIndex, columnIndex, layerIndex + 1)) {
+                neighbors.push_back(Neighbor(7, this->rclToIndex(rowIndex, columnIndex, layerIndex + 1))); // bottom right back
             }
         }
         else { // offset layers
-            if (this->isValid(row, column, layer - 1)) {
-                neighbors.push_back(Neighbor(0, this->rclToIndex(row, column, layer - 1))); // top left front
+            if (this->isValid(rowIndex, columnIndex, layerIndex - 1)) {
+                neighbors.push_back(Neighbor(0, this->rclToIndex(rowIndex, columnIndex, layerIndex - 1))); // top left front
             }
-            if (this->isValid(row, column + 1, layer - 1)) {
-                neighbors.push_back(Neighbor(1, this->rclToIndex(row, column + 1, layer - 1))); // top right front
+            if (this->isValid(rowIndex, columnIndex + 1, layerIndex - 1)) {
+                neighbors.push_back(Neighbor(1, this->rclToIndex(rowIndex, columnIndex + 1, layerIndex - 1))); // top right front
             }
-            if (this->isValid(row + 1, column, layer - 1)) {
-                neighbors.push_back(Neighbor(2, this->rclToIndex(row + 1, column, layer - 1))); // bottom left front
+            if (this->isValid(rowIndex + 1, columnIndex, layerIndex - 1)) {
+                neighbors.push_back(Neighbor(2, this->rclToIndex(rowIndex + 1, columnIndex, layerIndex - 1))); // bottom left front
             }
-            if (this->isValid(row + 1, column + 1, layer - 1)) {
-                neighbors.push_back(Neighbor(3, this->rclToIndex(row + 1, column + 1, layer - 1))); // bottom right front
+            if (this->isValid(rowIndex + 1, columnIndex + 1, layerIndex - 1)) {
+                neighbors.push_back(Neighbor(3, this->rclToIndex(rowIndex + 1, columnIndex + 1, layerIndex - 1))); // bottom right front
             }
-            if (this->isValid(row, column, layer + 1)) {
-                neighbors.push_back(Neighbor(4, this->rclToIndex(row, column, layer + 1))); // top left back
+            if (this->isValid(rowIndex, columnIndex, layerIndex + 1)) {
+                neighbors.push_back(Neighbor(4, this->rclToIndex(rowIndex, columnIndex, layerIndex + 1))); // top left back
             }
-            if (this->isValid(row, column + 1, layer + 1)) {
-                neighbors.push_back(Neighbor(5, this->rclToIndex(row, column + 1, layer + 1))); // top right back
+            if (this->isValid(rowIndex, columnIndex + 1, layerIndex + 1)) {
+                neighbors.push_back(Neighbor(5, this->rclToIndex(rowIndex, columnIndex + 1, layerIndex + 1))); // top right back
             }
-            if (this->isValid(row + 1, column, layer + 1)) {
-                neighbors.push_back(Neighbor(6, this->rclToIndex(row + 1, column, layer + 1))); // bottom left back
+            if (this->isValid(rowIndex + 1, columnIndex, layerIndex + 1)) {
+                neighbors.push_back(Neighbor(6, this->rclToIndex(rowIndex + 1, columnIndex, layerIndex + 1))); // bottom left back
             }
-            if (this->isValid(row + 1, column + 1, layer + 1)) {
-                neighbors.push_back(Neighbor(7, this->rclToIndex(row + 1, column + 1, layer + 1))); // bottom right back
+            if (this->isValid(rowIndex + 1, columnIndex + 1, layerIndex + 1)) {
+                neighbors.push_back(Neighbor(7, this->rclToIndex(rowIndex + 1, columnIndex + 1, layerIndex + 1))); // bottom right back
             }
         }
     }
-    void BCCLattice::get8Neighbors(int index, vector<Neighbor> &neighbors) const {
-        get8Neighbors(this->indexToR(index), this->indexToC(index), this->indexToL(index), neighbors);
+    void BCCLattice::get8Neighbors(int elementIndex, vector<Neighbor> &neighbors) const {
+        get8Neighbors(this->indexToR(elementIndex), this->indexToC(elementIndex), this->indexToL(elementIndex), neighbors);
     }
-    void BCCLattice::get14Neighbors(int row, int column, int layer, vector<Neighbor> &neighbors) const {
-        if (!this->isValid(row, column, layer)) {
+    void BCCLattice::get14Neighbors(int rowIndex, int columnIndex, int layerIndex, vector<Neighbor> &neighbors) const {
+        if (!this->isValid(rowIndex, columnIndex, layerIndex)) {
             throw outsideRangeException();
         }
         neighbors.clear();
-        get8Neighbors(row, column, layer, neighbors);
-        if (this->isValid(row - 1, column, layer)) {
-            neighbors.push_back(Neighbor(8, this->rclToIndex(row - 1, column, layer))); // top
+        get8Neighbors(rowIndex, columnIndex, layerIndex, neighbors);
+        if (this->isValid(rowIndex - 1, columnIndex, layerIndex)) {
+            neighbors.push_back(Neighbor(8, this->rclToIndex(rowIndex - 1, columnIndex, layerIndex))); // top
         }
-        if (this->isValid(row, column, layer - 2)) {
-            neighbors.push_back(Neighbor(9, this->rclToIndex(row, column, layer - 2))); // front
+        if (this->isValid(rowIndex, columnIndex, layerIndex - 2)) {
+            neighbors.push_back(Neighbor(9, this->rclToIndex(rowIndex, columnIndex, layerIndex - 2))); // front
         }
-        if (this->isValid(row, column - 1, layer)) {
-            neighbors.push_back(Neighbor(10, this->rclToIndex(row, column - 1, layer))); // left
+        if (this->isValid(rowIndex, columnIndex - 1, layerIndex)) {
+            neighbors.push_back(Neighbor(10, this->rclToIndex(rowIndex, columnIndex - 1, layerIndex))); // left
         }
-        if (this->isValid(row, column, layer + 2)) {
-            neighbors.push_back(Neighbor(11, this->rclToIndex(row, column, layer + 2))); // back
+        if (this->isValid(rowIndex, columnIndex, layerIndex + 2)) {
+            neighbors.push_back(Neighbor(11, this->rclToIndex(rowIndex, columnIndex, layerIndex + 2))); // back
         }
-        if (this->isValid(row, column + 1, layer)) {
-            neighbors.push_back(Neighbor(12, this->rclToIndex(row, column + 1, layer))); // right
+        if (this->isValid(rowIndex, columnIndex + 1, layerIndex)) {
+            neighbors.push_back(Neighbor(12, this->rclToIndex(rowIndex, columnIndex + 1, layerIndex))); // right
         }
-        if (this->isValid(row + 1, column, layer)) {
-            neighbors.push_back(Neighbor(13, this->rclToIndex(row + 1, column, layer))); // bottom
+        if (this->isValid(rowIndex + 1, columnIndex, layerIndex)) {
+            neighbors.push_back(Neighbor(13, this->rclToIndex(rowIndex + 1, columnIndex, layerIndex))); // bottom
         }
     }
-    void BCCLattice::get14Neighbors(int index, vector<Neighbor> &neighbors) const {
-        get14Neighbors(this->indexToR(index), this->indexToC(index), this->indexToL(index), neighbors);
+    void BCCLattice::get14Neighbors(int elementIndex, vector<Neighbor> &neighbors) const {
+        get14Neighbors(this->indexToR(elementIndex), this->indexToC(elementIndex), this->indexToL(elementIndex), neighbors);
     }
-    void BCCLattice::getNeighbors(int row, int column, int layer, int neighborhoodSize, vector <Neighbor> &neighbors) const {
+    void BCCLattice::getNeighbors(int rowIndex, int columnIndex, int layerIndex, int neighborhoodSize, vector <Neighbor> &neighbors) const {
         switch (neighborhoodSize) {
             case 8:
-                get8Neighbors(row, column, layer, neighbors);
+                get8Neighbors(rowIndex, columnIndex, layerIndex, neighbors);
                 break;
             case 14:
-                get14Neighbors(row, column, layer, neighbors);
+                get14Neighbors(rowIndex, columnIndex, layerIndex, neighbors);
                 break;
             default:
                 throw neighborhoodSizeException();
         }
     }
-    void BCCLattice::getNeighbors(int index, int neighborhoodSize, vector <Neighbor> &neighbors) const {
+    void BCCLattice::getNeighbors(int elementIndex, int neighborhoodSize, vector <Neighbor> &neighbors) const {
         switch (neighborhoodSize) {
             case 8:
-                get8Neighbors(index, neighbors);
+                get8Neighbors(elementIndex, neighbors);
                 break;
             case 14:
-                get14Neighbors(index, neighbors);
+                get14Neighbors(elementIndex, neighbors);
                 break;
             default:
                 throw neighborhoodSizeException();

@@ -18,7 +18,6 @@ set(SOURCE_FILES
     fcclattice.h
     filehandling.cpp
     filehandling.h
-    filter.h
     filtercoefficient.h
     fuzzyconnectedness.h
     image.h
@@ -38,6 +37,7 @@ set(SOURCE_FILES
     valuenormalizer.h
     valuedenormalizer.h
     vectoroperators.h
+    weightedaveragefilter.h
     )
 
 set(MAIN_SOURCE_FILES

@@ -5,11 +5,11 @@
 #include "defs.h"
 
 namespace LatticeLib {
-    Lattice::Lattice(int rows, int columns, int layers, double scale) {
+    Lattice::Lattice(int rows, int columns, int layers, double density) {
         nLayers = layers;
         nColumns = columns;
         nRows = rows;
-        latticeDensity = scale;
+        latticeDensity = density;
     }
     Lattice::Lattice(const Lattice &original) {
         nLayers = original.nLayers;
@@ -34,54 +34,54 @@ namespace LatticeLib {
     double Lattice::getDensity() const {
         return latticeDensity;
     }
-    bool Lattice::isValid(int index) const {
-        return ((index >= 0 && index < nColumns * nRows * nLayers));
+    bool Lattice::isValid(int elementIndex) const {
+        return ((elementIndex >= 0 && elementIndex < nColumns * nRows * nLayers));
     }
-    bool Lattice::isValid(int row, int column, int layer) const {
-        return ((row >= 0 && row < nRows) && (column >= 0 && column < nColumns) && (layer >= 0 && layer < nLayers));
+    bool Lattice::isValid(int rowIndex, int columnIndex, int layerIndex) const {
+        return ((rowIndex >= 0 && rowIndex < nRows) && (columnIndex >= 0 && columnIndex < nColumns) && (layerIndex >= 0 && layerIndex < nLayers));
     }
-    int Lattice::rclToIndex(int row, int column, int layer) const {
-        if (!this->isValid(row, column, layer)) {
+    int Lattice::rclToIndex(int rowIndex, int columnIndex, int layerIndex) const {
+        if (!this->isValid(rowIndex, columnIndex, layerIndex)) {
             throw outsideImageException();
         }
-        return (nRows * nColumns * layer + nColumns * row + column);
+        return (nRows * nColumns * layerIndex + nColumns * rowIndex + columnIndex);
     }
-    int Lattice::indexToC(int index) const {
-        if (!this->isValid(index)) {
+    int Lattice::indexToC(int elementIndex) const {
+        if (!this->isValid(elementIndex)) {
             throw outsideImageException();
         }
-        return (index % (nRows * nColumns)) % nColumns;
+        return (elementIndex % (nRows * nColumns)) % nColumns;
     }
-    int Lattice::indexToR(int index) const {
-        if (!this->isValid(index)) {
+    int Lattice::indexToR(int elementIndex) const {
+        if (!this->isValid(elementIndex)) {
             throw outsideImageException();
         }
-        return (index % (nRows * nColumns)) / nColumns;
+        return (elementIndex % (nRows * nColumns)) / nColumns;
     }
-    int Lattice::indexToL(int index) const {
-        if (!this->isValid(index)) {
+    int Lattice::indexToL(int elementIndex) const {
+        if (!this->isValid(elementIndex)) {
             throw outsideImageException();
         }
-        return index / (nRows * nColumns);
+        return elementIndex / (nRows * nColumns);
     }
-    void Lattice::getCoordinates(int index, vector<double> &coordinates) const {
+    void Lattice::getCoordinates(int elementIndex, vector<double> &coordinates) const {
         coordinates.clear();
-        coordinates.push_back(this->indexToX(index));
-        coordinates.push_back(this->indexToY(index));
-        coordinates.push_back(this->indexToZ(index));
+        coordinates.push_back(this->indexToX(elementIndex));
+        coordinates.push_back(this->indexToY(elementIndex));
+        coordinates.push_back(this->indexToZ(elementIndex));
     }
-    double Lattice::euclideanDistance(int index1, int index2) const {
+    double Lattice::euclideanDistance(int elementIndex1, int elementIndex2) const {
         double xDistance, yDistance, zDistance;
-        xDistance = this->indexToX(index1) - this->indexToX(index2);
-        yDistance = this->indexToY(index1) - this->indexToY(index2);
-        zDistance = this->indexToZ(index1) - this->indexToZ(index2);
+        xDistance = this->indexToX(elementIndex1) - this->indexToX(elementIndex2);
+        yDistance = this->indexToY(elementIndex1) - this->indexToY(elementIndex2);
+        zDistance = this->indexToZ(elementIndex1) - this->indexToZ(elementIndex2);
         return sqrt(xDistance * xDistance + yDistance * yDistance + zDistance * zDistance);
     }
-    void Lattice::euclideanDistanceVector(int index1, int index2, vector<double> &distanceVector) const {
+    void Lattice::euclideanDistanceVector(int elementIndex1, int elementIndex2, vector<double> &distanceVector) const {
         distanceVector.clear();
-        distanceVector.push_back(this->indexToX(index2) - this->indexToX(index1));
-        distanceVector.push_back(this->indexToY(index2) - this->indexToY(index1));
-        distanceVector.push_back(this->indexToZ(index2) - this->indexToZ(index1));
+        distanceVector.push_back(this->indexToX(elementIndex2) - this->indexToX(elementIndex1));
+        distanceVector.push_back(this->indexToY(elementIndex2) - this->indexToY(elementIndex1));
+        distanceVector.push_back(this->indexToZ(elementIndex2) - this->indexToZ(elementIndex1));
     }
     bool Lattice::operator==(const Lattice &rhs) const {
         return (typeid(*this) == typeid(rhs) && nColumns == rhs.getNColumns() && nRows == rhs.getNRows() && nLayers == rhs.getNLayers() && latticeDensity ==

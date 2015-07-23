@@ -6,7 +6,7 @@ namespace LatticeLib {
         label = l;
     }
     Seed::~Seed() {}
-    int Seed::getIndex() const {
+    int Seed::getElementIndex() const {
         return elementIndex;
     }
     int Seed::getLabel() const {

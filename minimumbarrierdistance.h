@@ -91,7 +91,7 @@ namespace LatticeLib {
             toQueue.clear();
             int nSeeds = seeds[labelIndex].size();
             for (int seedIndex = 0; seedIndex < nSeeds; seedIndex++) {
-                int elementIndex = seeds[labelIndex][seedIndex].getIndex();
+                int elementIndex = seeds[labelIndex][seedIndex].getElementIndex();
                 pathMinimumValue[elementIndex] = image(elementIndex, 0); // the spel is always part of the path between itself and the object boundary
                 pathMaximumValue[elementIndex] = image(elementIndex, 0);
                 distanceTransform.setElement(elementIndex, labelIndex, 0);
