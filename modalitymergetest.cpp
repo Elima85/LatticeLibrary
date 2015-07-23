@@ -2,7 +2,6 @@
 #include "defs.h"
 #include "image.h"
 #include "cclattice.h"
-#include <cmath>
 #include "modalitymerge.h"
 
 using namespace LatticeLib;

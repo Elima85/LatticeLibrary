@@ -61,7 +61,7 @@ set(TEST_SOURCE_FILES
     fcclatticetestinitialization.cpp
     fcclatticetestneighbors.cpp
     filetest.cpp
-    filtertest.cpp
+    filtercoefficienttest.cpp
     imagearithmetictest.cpp
     imagetestbands.cpp
     imagetestcoordinates.cpp
@@ -75,6 +75,8 @@ set(TEST_SOURCE_FILES
     priorityqueuetest.cpp
     seededdistancetransformtest.cpp
     segmentationtest.cpp
+    sequencefiltertest.cpp
+    spatialtemplatetest.cpp
     latticelibtest.cpp
     )
 

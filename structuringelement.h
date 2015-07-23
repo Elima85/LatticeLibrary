@@ -1,7 +1,8 @@
-#ifndef STRUCTURINGELEMENT_H
-#define STRUCTURINGELEMENT_H
+#ifndef LATTICELIBRARY_STRUCTURINGELEMENT_H
+#define LATTICELIBRARY_STRUCTURINGELEMENT_H
 
 #include "filtercoefficient.h"
+#include "spatialtemplate.h"
 #include "image.h"
 
 namespace LatticeLib {
@@ -10,30 +11,13 @@ namespace LatticeLib {
  * Structuring Element
  * ====================
  * Structuring element for morphological operations.
- * TODO: Should there be a parent class for Filter and StructuringElement?
  *
  * Member 			| Comment
  * --------			| --------
  * neighborhoodSize	| Element neighborhood size to be used for this filter.
  * coefficients		| Template coefficients.
  */
-	class StructuringElement {
-
-	private:
-		/**
-	 	 * Template coefficients.
-		 *
-		 * value		| meaning
-		 * :-----------	| :-------
-		 * true			| Required to be >0.
-		 * false		| Required to be ==0, to a precision defined in defs.h.
-		 * not defined	| No requirements.
-		 */
-		vector<FilterCoefficient<bool> > coefficients;
-
-		/** Element neighborhood size to be used for this structuring element. */
-		int neighborhoodSize;
-
+	class StructuringElement : public SpatialTemplate<bool> {
 
 	public:
 		/**
@@ -44,10 +28,7 @@ namespace LatticeLib {
 		 * c			| INPUT		| Vector containing the template coefficients.
 		 * nS			| INPUT		| Neighborhood size.
 		 */
-		StructuringElement(vector<FilterCoefficient<S> > c, int nS) {
-			coefficients = c;
-			neighborhoodSize = nS;
-		}
+		StructuringElement(vector<FilterCoefficient<bool> > c, int nS) : SpatialTemplate<bool> (c, nS) {}
 
 		/**
 		 * Destructor for StructuringElement objects.
@@ -72,7 +53,7 @@ namespace LatticeLib {
 	 	 * result		| OUTPUT	| Intensity values after erosion. Needs to be of a length of at least image.nElements * image.nBands.
 		 */
 		template<class T>
-		void binaryErode(Image<T> image, T *result) const {
+		void binaryErode(Image<intensityTemplate> image, intensityTemplate *result) const {
 
 			int nNeighbors = getNeighborhoodSize();
 			vector<Neighbor> neighbors;
@@ -138,7 +119,7 @@ namespace LatticeLib {
 		 * result		| OUTPUT	| Intensity values after dilation. Needs to be of a length of at least image.nElements * image.nBands.
 		 */
 		template<class T>
-		void binaryDilate(Image<T> image, T *result) const {
+		void binaryDilate(Image<intensityTemplate> image, intensityTemplate *result) const {
 
 			// Memset result to 0!!!
 			int nNeighbors = filter.getNeighborhoodSize();
@@ -187,7 +168,7 @@ namespace LatticeLib {
 		 * result		| OUTPUT	| Intensity values after opening. Needs to be of a length of at least image.nElements * image.nBands.
 		 */
 		template<class T>
-		void binaryOpen(Image<T> image, T *result) const {
+		void binaryOpen(Image<intensityTemplate> image, intensityTemplate *result) const {
 
 			// erosion
 			T erosion[this->getNElements() * this->getNBands()];
@@ -241,7 +222,7 @@ namespace LatticeLib {
 		 * result		| OUTPUT	| Intensity values after closing. Needs to be of a length of at least image.nElements * image.nBands.
 		 */
 		template<class T>
-		void binaryClose(Image<T> image, T *result) const {
+		void binaryClose(Image<intensityTemplate> image, intensityTemplate *result) const {
 
 			// dilation
 			T dilation[this->getNElements() * this->getNBands()];
@@ -290,6 +271,5 @@ namespace LatticeLib {
 	};// TODO: Test!
 
 }
-
 
 #endif

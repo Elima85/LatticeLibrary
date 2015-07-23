@@ -1,9 +1,11 @@
-#ifndef FILTER_H
-#define FILTER_H
+#ifndef LATTICELIBRARY_WEIGHTEDAVERAGEFILTER_H
+#define LATTICELIBRARY_WEIGHTEDAVERAGEFILTER_H
 
 #include "filtercoefficient.h"
 #include "image.h"
 #include "neighbor.h"
+#include "templatefilter.h"
+#include "spatialtemplate.h"
 #include <vector>
 #include <stdio.h>
 
@@ -13,23 +15,14 @@ namespace LatticeLib {
  * Spatial weighted average filter
  * ================================
  * Class for spatial weighted average filters for image processing, such as mean filters, Laplace filters, etc.
- * TODO: Should there be a parent class for WeightedAverageFilter and StructuringElement?
- * TODO: Child classes for median, min, and max filtering, etc? Or common parent class?
  *
  * Member 			| Comment
  * --------			| --------
  * neighborhoodSize	| Element neighborhood size to be used for this filter.
  * coefficients		| Template coefficients.
  */
-	template<class S>
-	class WeightedAverageFilter {
-
-	private:
-		/** Template coefficients. */
-		vector<FilterCoefficient<S> > coefficients;
-
-		/** Element neighborhood size to be used for this filter. */
-		int neighborhoodSize;
+	template<class coefficientTemplate, class intensityTemplate>
+	class WeightedAverageFilter : public TemplateFilter<coefficientTemplate, intensityTemplate> {
 
 	public:
 		/**
@@ -40,10 +33,7 @@ namespace LatticeLib {
 		 * c			| INPUT		| Vector containing the template coefficients.
 		 * nS			| INPUT		| Neighborhood size.
 		 */
-		WeightedAverageFilter(vector<FilterCoefficient<S> > c, int nS) {
-			coefficients = c;
-			neighborhoodSize = nS;
-		}
+		WeightedAverageFilter(vector<FilterCoefficient<coefficientTemplate> > c, int nS) : TemplateFilter<coefficientTemplate,intensityTemplate>(c, nS) {}
 
 		/**
 		 * Destructor for WeightedAverageFilter objects.
@@ -51,60 +41,51 @@ namespace LatticeLib {
 		~WeightedAverageFilter() {};
 
 		/**
-	 	 * Returns neighborhoodSize.
+	 	 * Gives access to SpatialTemplate::getNeighborhoodSize().
 	 	 */
 		int getNeighborhoodSize() const {
-			return neighborhoodSize;
+			return SpatialTemplate<coefficientTemplate>::getNeighborhoodSize();
 		}
 
 		/**
-	 	 * Returns the number of template coefficients.
+	 	 * Gives access to SpatialTemplate::getNCoefficients().
 		 */
 		int getNCoefficients() const {
-			return coefficients.size();
+			return SpatialTemplate<coefficientTemplate>::getNCoefficients();
 		}
 
 		/**
-		 * Returns the template coefficient vector.
+	 	 * Gives access to SpatialTemplate::getCoefficients().
 		 */
-		vector<FilterCoefficient<S> > getCoefficients() const {
-			return coefficients;
+		vector<FilterCoefficient<coefficientTemplate> > getCoefficients() const {
+			return SpatialTemplate<coefficientTemplate>::getCoefficients();
 		}
 
 		/**
-		 * Returns the requested FilterCoefficient object from the coefficient vector.
+	 	 * Gives access to SpatialTemplate::getCoefficient().
 		 *
 		 *
 		 * Parameter		| in/out	| comment
 		 * :---------		| :------	| :-------
 		 * coefficientIndex	| INPUT		| Position in the template coefficient vector.
 		 */
-		FilterCoefficient<S> getCoefficient(int coefficientIndex) const {
-			return coefficients[coefficientIndex];
+		FilterCoefficient<coefficientTemplate> getCoefficient(int coefficientIndex) const {
+			return SpatialTemplate<coefficientTemplate>::getCoefficient(coefficientIndex);
 		}
 
 		/**
-		 * Finds the position of the FilterCoefficient object, corresponding to the neighbor with the input position
-		 * index, in the template coefficient vector. Returns -1 if this neighbor does not have a coefficient.
-		 *
+	 	 * Gives access to SpatialTemplate::findCoefficient().
 		 *
 		 * Parameter		| in/out	| comment
 		 * :---------		| :------	| :-------
 		 * positionIndex	| INPUT		| Position index of corresponding neighbor.
 		 */
 		int findCoefficient(int positionIndex) const {
-			int result = -1;
-			int nCoefficients = getNCoefficients();
-			for (int coefficientIndex = 0; coefficientIndex < nCoefficients; coefficientIndex++) {
-				if (coefficients[coefficientIndex].getPositionIndex() == positionIndex) {
-					result = coefficientIndex;
-				}
-			}
-			return result;
+			return SpatialTemplate<coefficientTemplate>::findCoefficient(positionIndex);
 		}
 
 		/**
-		 * Applies the filter to the specified modality band of the input image.
+		 * Implements TemplateFilter::applyToBand().
 		 *
 		 * Parameter	| in/out	| comment
 		 * :---------	| :------	| :-------
@@ -112,13 +93,13 @@ namespace LatticeLib {
 		 * bandIndex	| INPUT		| Index of the band to be filtered.
 		 * result		| OUTPUT	| Filtered intensity values. Needs to be of a length of at least image.nElements.
 		 */
-		template<class T>
-		void applyToBand(Image<T> image, int bandIndex, double *result) const {
+		void applyToBand(Image<intensityTemplate> image, int bandIndex, double *result) const {
 			if ((bandIndex < 0) || (bandIndex >= image.getNBands())) {
 				// throw error or exception
 			}
 
 			int nElements = image.getNElements();
+			vector<FilterCoefficient<coefficientTemplate> > coefficients = getCoefficients();
 			for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
 				double filterCoefficientSum = 0;
 				// center element
@@ -146,15 +127,14 @@ namespace LatticeLib {
 		}
 
 		/**
-		 * Applies the filter to all modality bands of the input image.
+		 * Implements TemplateFilter::applyToImage().
 		 *
 		 * Parameter	| in/out	| comment
 		 * :---------	| :------	| :-------
 		 * image		| INPUT		| Input image.
 		 * result		| OUTPUT	| Filtered intensity values. Needs to be of a length of at least image.nElements * image.nBands.
 		 */
-		template<class T>
-		void applyToImage(Image<T> image, double *result) const {
+		void applyToImage(Image<intensityTemplate> image, double *result) const {
 			int nElements = image.getNElements();
 			int nBands = image.getNBands();
 			for (int bandIndex = 0; bandIndex < nBands; bandIndex++) {
