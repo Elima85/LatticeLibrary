@@ -21,6 +21,7 @@ set(SOURCE_FILES
     filtercoefficient.h
     fuzzyconnectedness.h
     image.h
+    imagearithmetic.h
     intensityworkset.h
     lattice.cpp
     lattice.h
@@ -60,6 +61,7 @@ set(TEST_SOURCE_FILES
     fcclatticetestneighbors.cpp
     filetest.cpp
     filtertest.cpp
+    imagearithmetictest.cpp
     imagetestbands.cpp
     imagetestcoordinates.cpp
     imagetestinitialization.cpp

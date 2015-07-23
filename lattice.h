@@ -8,8 +8,6 @@ using namespace std;
 
 namespace LatticeLib {
 
-    //TODO: index -> elementIndex, row -> rowIndex, etc...
-
 /**
  * Base class for a graph-based representation of a sampling lattice, to be used as a foundation for different applications.
  *

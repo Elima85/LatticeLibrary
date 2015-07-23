@@ -8,28 +8,22 @@
 
 namespace LatticeLib {
 
-    template<class T>
-    vector <T> operator+(const vector <T> &v1, const vector <T> &v2) {
+    template<class T, class S>
+    vector <T> operator+(const vector <T> &v1, const vector <S> &v2) {
         int length = v1.size();
-        if (length != v2.size()) {
-            throw dimensionMismatchException();
-        }
         vector <T> result;
         for (int i = 0; i < length; i++) {
-            result.push_back(v1[i] + v2[i]);
+            result.push_back(v1[i] + T(v2[i]));
         }
         return result;
     }
 
-    template<class T>
-    vector <T> operator-(const vector <T> &v1, const vector <T> &v2) {
+    template<class T, class S>
+    vector <T> operator-(const vector <T> &v1, const vector <S> &v2) {
         int length = v1.size();
-        if (length != v2.size()) {
-            throw dimensionMismatchException();
-        }
         vector <T> result;
         for (int i = 0; i < length; i++) {
-            result.push_back(v1[i] - v2[i]);
+            result.push_back(v1[i] - T(v2[i]));
         }
         return result;
     }
