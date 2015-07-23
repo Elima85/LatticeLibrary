@@ -27,18 +27,6 @@ namespace LatticeLib {
         int neighborhoodSize;
 
     public:
-
-        /**
-         * Constructor for WeightedAverageFilter objects. The FilterCoefficient vector is left empty.
-         *
-         * Parameter	| in/out	| comment
-         * :---------	| :------	| :-------
-         * nS			| INPUT		| Neighborhood size.
-         */
-        SpatialTemplate(int nS) {
-            neighborhoodSize = nS;
-        }
-
         /**
          * Constructor for WeightedAverageFilter objects.
          *

@@ -3,26 +3,28 @@
 
 #include "templatefilter.h"
 #include "spatialtemplate.h"
+#include "vectorindexpicker.h"
 
 namespace LatticeLib {
 
     /**
      * Class for sequence filters
      * ===========================
-     * Objects of this class act as spatial filters based on sorting the spatial elements according to intensity value.
+     * Objects of this class act as spatial filters, picking a specific intensity from the neighborhood of a spatial
+     * element. The filter coefficients specify which elements of the neighborhood are included in the selection.
      *
-     * Member 	| Comment
-     * --------	| --------
-     * sequence | Defines which intensity value to pick, after sorting the spatial elements according to intensity. <br> sequenceOption::min: Lowest intensity. <br> sequenceOption::max: Highest intensity. <br> sequenceOption::median: Median intensity.
+     * Member 	        | Comment
+     * --------	        | --------
+     * neighborhoodSize	| Element neighborhood size to be used for this filter.
+     * coefficients		| Template coefficients. True for the elements that are included in the selection. False or undefined for elements that are not included.
+     * indexPicker      | Defines which intensity value to pick from the neighborhood of an element.
      */
-    enum sequenceOption {min, max, median};
-
     template<class intensityTemplate>
     class SequenceFilter : public TemplateFilter<bool, intensityTemplate> {
 
     private:
-        /** Defines the filter functionality*/
-        sequenceOption sequence; // TODO: Or should this be an ElementPicker object or something? A class for choosing an element from a vector?
+        /** Defines which intensity value to pick from the neighborhood of an element. */
+        VectorIndexPicker<intensityTemplate> &indexPicker;
 
     public:
         /**
@@ -30,18 +32,16 @@ namespace LatticeLib {
          *
          * Parameter    | in/out    | Comment
          * :---------   | :------   | :-------
-         * sequence     | INPUT     | Defines which intensity value to pick, after sorting the spatial elements according to intensity. <br> sequenceOption::min: Lowest intensity. <br> sequenceOption::max: Highest intensity. <br> sequenceOption::median: Median intensity.
+         * indexPicker  | INPUT     | Defines which intensity value to pick from the neighborhood of an element.
          */
-        SequenceFilter(sequenceOption s, int nS) : TemplateFilter<bool, intensityTemplate> (nS) {
-            sequence = s;
-        }
+        SequenceFilter(vector<FilterCoefficient<bool> > c, int nS, VectorIndexPicker<intensityTemplate> &picker) : TemplateFilter<bool, intensityTemplate> (c, nS), indexPicker(picker){ }
         ~SequenceFilter() {}
 
         /**
-         * Returns the sequence option of the filter.
+         * Returns indexPicker.
          */
-        sequenceOption getSequenceOption() const {
-            return sequence;
+        VectorIndexPicker<intensityTemplate> &getIndexPicker() const {
+            return indexPicker;
         }
 
         /**

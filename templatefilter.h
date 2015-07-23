@@ -21,7 +21,6 @@ namespace LatticeLib {
     class TemplateFilter : public SpatialTemplate <coefficientTemplate> {
 
     public:
-        TemplateFilter(int nS) : SpatialTemplate<coefficientTemplate>(nS) { }
         TemplateFilter(vector<FilterCoefficient<coefficientTemplate> > c, int nS) : SpatialTemplate<coefficientTemplate>(c, nS) {}
         virtual ~TemplateFilter() {}
         virtual void applyToBand(Image<intensityTemplate> image, int bandIndex, double *result) const = 0;
