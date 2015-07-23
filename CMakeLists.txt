@@ -25,6 +25,7 @@ set(SOURCE_FILES
     intensityworkset.h
     lattice.cpp
     lattice.h
+    modalitymerge.h
     neighbor.cpp
     neighbor.h
     norm.h
@@ -68,6 +69,7 @@ set(TEST_SOURCE_FILES
     imagetestneighbors.cpp
     imagetestmanipulation.cpp
     intensityworksettest.cpp
+    modalitymergetest.cpp
     neighbortest.cpp
     normtest.cpp
     priorityqueuetest.cpp

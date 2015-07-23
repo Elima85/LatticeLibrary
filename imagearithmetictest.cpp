@@ -188,5 +188,4 @@ TEST(ImageArithmetic, scaling) {
         SCOPED_TRACE(message + to_string(dataIndex));
         EXPECT_EQ(0, intResultData[dataIndex]);
     }
-
 }

@@ -40,7 +40,7 @@ namespace LatticeLib {
          * :----------	| :-------	| :--------
          * image1		| INPUT		| First term of the subtraction.
          * image2		| INPUT		| Second term of the subtraction. Needs to have a Lattice identical to that of image1.
-         * result		| OUTPUT	| Result of addition. Needs to hava e length of at least image1.nElements.
+         * result		| OUTPUT	| Result of addition. Needs to have a Lattice identical to that of image1.
          */
         template<class T, class S>
         void subtract(Image<T> image1, Image<S> image2, Image<T> result) {
@@ -63,7 +63,7 @@ namespace LatticeLib {
          * :----------	| :-------	| :--------
          * image        | INPUT     | Image to be scaled.
          * factor		| INPUT		| Scale factor with which to multiply the intensity values.
-         * result		| OUTPUT	| Result of the multiplication. Needs to hava e length of at least image.nElements.
+         * result		| OUTPUT	| Result of the multiplication. Needs to have a Lattice identical to that of image1.
          */
         template<class T, class S>
         void scale(Image<T> image, S factor, Image<T> result) {
