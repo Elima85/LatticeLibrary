@@ -200,39 +200,39 @@ TEST(CCLattice, neighbors) {
 
     // Exceptions
     neighborhoodSize = 6;
-    EXPECT_THROW(lattice->getNeighbors(nRows, 0, 0, neighborhoodSize, neighbors), outsideRangeException);
-    EXPECT_THROW(lattice->getNeighbors(-1, 0, 0, neighborhoodSize, neighbors), outsideRangeException);
-    EXPECT_THROW(lattice->getNeighbors(0, nColumns, 0, neighborhoodSize, neighbors), outsideRangeException);
-    EXPECT_THROW(lattice->getNeighbors(0, -1, 0, neighborhoodSize, neighbors), outsideRangeException);
-    EXPECT_THROW(lattice->getNeighbors(0, 0, nLayers, neighborhoodSize, neighbors), outsideRangeException);
-    EXPECT_THROW(lattice->getNeighbors(0, 0, -1, neighborhoodSize, neighbors), outsideRangeException);
+    EXPECT_THROW(lattice->getNeighbors(nRows, 0, 0, neighborhoodSize, neighbors), outOfRangeException);
+    EXPECT_THROW(lattice->getNeighbors(-1, 0, 0, neighborhoodSize, neighbors), outOfRangeException);
+    EXPECT_THROW(lattice->getNeighbors(0, nColumns, 0, neighborhoodSize, neighbors), outOfRangeException);
+    EXPECT_THROW(lattice->getNeighbors(0, -1, 0, neighborhoodSize, neighbors), outOfRangeException);
+    EXPECT_THROW(lattice->getNeighbors(0, 0, nLayers, neighborhoodSize, neighbors), outOfRangeException);
+    EXPECT_THROW(lattice->getNeighbors(0, 0, -1, neighborhoodSize, neighbors), outOfRangeException);
     neighborhoodSize = 18;
-    EXPECT_THROW(lattice->getNeighbors(nRows, 0, 0, neighborhoodSize, neighbors), outsideRangeException);
-    EXPECT_THROW(lattice->getNeighbors(-1, 0, 0, neighborhoodSize, neighbors), outsideRangeException);
-    EXPECT_THROW(lattice->getNeighbors(0, nColumns, 0, neighborhoodSize, neighbors), outsideRangeException);
-    EXPECT_THROW(lattice->getNeighbors(0, -1, 0, neighborhoodSize, neighbors), outsideRangeException);
-    EXPECT_THROW(lattice->getNeighbors(0, 0, nLayers, neighborhoodSize, neighbors), outsideRangeException);
-    EXPECT_THROW(lattice->getNeighbors(0, 0, -1, neighborhoodSize, neighbors), outsideRangeException);
+    EXPECT_THROW(lattice->getNeighbors(nRows, 0, 0, neighborhoodSize, neighbors), outOfRangeException);
+    EXPECT_THROW(lattice->getNeighbors(-1, 0, 0, neighborhoodSize, neighbors), outOfRangeException);
+    EXPECT_THROW(lattice->getNeighbors(0, nColumns, 0, neighborhoodSize, neighbors), outOfRangeException);
+    EXPECT_THROW(lattice->getNeighbors(0, -1, 0, neighborhoodSize, neighbors), outOfRangeException);
+    EXPECT_THROW(lattice->getNeighbors(0, 0, nLayers, neighborhoodSize, neighbors), outOfRangeException);
+    EXPECT_THROW(lattice->getNeighbors(0, 0, -1, neighborhoodSize, neighbors), outOfRangeException);
     neighborhoodSize = 26;
-    EXPECT_THROW(lattice->getNeighbors(nRows, 0, 0, neighborhoodSize, neighbors), outsideRangeException);
-    EXPECT_THROW(lattice->getNeighbors(-1, 0, 0, neighborhoodSize, neighbors), outsideRangeException);
-    EXPECT_THROW(lattice->getNeighbors(0, nColumns, 0, neighborhoodSize, neighbors), outsideRangeException);
-    EXPECT_THROW(lattice->getNeighbors(0, -1, 0, neighborhoodSize, neighbors), outsideRangeException);
-    EXPECT_THROW(lattice->getNeighbors(0, 0, nLayers, neighborhoodSize, neighbors), outsideRangeException);
-    EXPECT_THROW(lattice->getNeighbors(0, 0, -1, neighborhoodSize, neighbors), outsideRangeException);
+    EXPECT_THROW(lattice->getNeighbors(nRows, 0, 0, neighborhoodSize, neighbors), outOfRangeException);
+    EXPECT_THROW(lattice->getNeighbors(-1, 0, 0, neighborhoodSize, neighbors), outOfRangeException);
+    EXPECT_THROW(lattice->getNeighbors(0, nColumns, 0, neighborhoodSize, neighbors), outOfRangeException);
+    EXPECT_THROW(lattice->getNeighbors(0, -1, 0, neighborhoodSize, neighbors), outOfRangeException);
+    EXPECT_THROW(lattice->getNeighbors(0, 0, nLayers, neighborhoodSize, neighbors), outOfRangeException);
+    EXPECT_THROW(lattice->getNeighbors(0, 0, -1, neighborhoodSize, neighbors), outOfRangeException);
     neighborhoodSize = 8;
-    EXPECT_THROW(lattice->getNeighbors(0, 0, 0, neighborhoodSize, neighbors), neighborhoodSizeException);
+    EXPECT_THROW(lattice->getNeighbors(0, 0, 0, neighborhoodSize, neighbors), incompatibleParametersException);
     neighborhoodSize = 12;
-    EXPECT_THROW(lattice->getNeighbors(0, 0, 0, neighborhoodSize, neighbors), neighborhoodSizeException);
+    EXPECT_THROW(lattice->getNeighbors(0, 0, 0, neighborhoodSize, neighbors), incompatibleParametersException);
     neighborhoodSize = 14;
-    EXPECT_THROW(lattice->getNeighbors(0, 0, 0, neighborhoodSize, neighbors), neighborhoodSizeException);
+    EXPECT_THROW(lattice->getNeighbors(0, 0, 0, neighborhoodSize, neighbors), incompatibleParametersException);
     // neighborhoodSize = 18 is valid for both CC and FCC.
     neighborhoodSize = -6;
-    EXPECT_THROW(lattice->getNeighbors(0, 0, 0, neighborhoodSize, neighbors), neighborhoodSizeException);
+    EXPECT_THROW(lattice->getNeighbors(0, 0, 0, neighborhoodSize, neighbors), incompatibleParametersException);
     neighborhoodSize = 0;
-    EXPECT_THROW(lattice->getNeighbors(0, 0, 0, neighborhoodSize, neighbors), neighborhoodSizeException);
+    EXPECT_THROW(lattice->getNeighbors(0, 0, 0, neighborhoodSize, neighbors), incompatibleParametersException);
     neighborhoodSize = 100;
-    EXPECT_THROW(lattice->getNeighbors(0, 0, 0, neighborhoodSize, neighbors), neighborhoodSizeException);
+    EXPECT_THROW(lattice->getNeighbors(0, 0, 0, neighborhoodSize, neighbors), incompatibleParametersException);
 
     delete lattice;
 }

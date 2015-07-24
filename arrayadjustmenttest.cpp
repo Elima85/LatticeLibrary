@@ -19,7 +19,7 @@ TEST(ValueCropper, valuecroppertest) {
     ValueCropper<int> intCropper;
 
     // T = int
-    EXPECT_THROW(intCropper.apply(intTestArray, size,5,4), incompatibleException);
+    EXPECT_THROW(intCropper.apply(intTestArray, size,5,4), incompatibleParametersException);
     EXPECT_EQ(0, intTestArray[0]);
     EXPECT_EQ(1, intTestArray[1]);
     EXPECT_EQ(2, intTestArray[2]);
@@ -98,7 +98,7 @@ TEST(ValueCropper, valuecroppertest) {
     EXPECT_EQ(2, intTestArray[9]);
 
     // T = double
-    EXPECT_THROW(doubleCropper.apply(doubleTestArray, size, 5.0, 4.0), incompatibleException);
+    EXPECT_THROW(doubleCropper.apply(doubleTestArray, size, 5.0, 4.0), incompatibleParametersException);
     EXPECT_NEAR(0.0, doubleTestArray[0], EPSILONT);
     EXPECT_NEAR(1.1, doubleTestArray[1], EPSILONT);
     EXPECT_NEAR(2.2, doubleTestArray[2], EPSILONT);
@@ -195,7 +195,7 @@ TEST(ValueNormalizer, valuenormalizertest) {
     ValueNormalizer<int> intNormalizer;
 
     // T = int
-    EXPECT_THROW(intNormalizer.apply(intTestArray, size, 10, 1), incompatibleException);
+    EXPECT_THROW(intNormalizer.apply(intTestArray, size, 10, 1), incompatibleParametersException);
     EXPECT_EQ(1, intTestArray[0]);
     EXPECT_EQ(2, intTestArray[1]);
     EXPECT_EQ(3, intTestArray[2]);
@@ -219,7 +219,7 @@ TEST(ValueNormalizer, valuenormalizertest) {
     EXPECT_EQ(1, intTestArray[9]);
 
     // T = double
-    EXPECT_THROW(doubleNormalizer.apply(doubleTestArray1, size, 10.0, 1.0), incompatibleException);
+    EXPECT_THROW(doubleNormalizer.apply(doubleTestArray1, size, 10.0, 1.0), incompatibleParametersException);
     EXPECT_NEAR(1.0, doubleTestArray1[0], EPSILONT);
     EXPECT_NEAR(2.0, doubleTestArray1[1], EPSILONT);
     EXPECT_NEAR(3.0, doubleTestArray1[2], EPSILONT);
@@ -287,7 +287,7 @@ TEST(ValueNormalizer, valuenormalizertest) {
     EXPECT_NEAR(doubleTestArray4[9] / doubleTestArray4[8], 5.5 / 5, EPSILONT);
 
     // T = float
-    EXPECT_THROW(floatNormalizer.apply(floatTestArray1, size, float(10.0), float(1.0)), incompatibleException);
+    EXPECT_THROW(floatNormalizer.apply(floatTestArray1, size, float(10.0), float(1.0)), incompatibleParametersException);
     EXPECT_NEAR(1.0, floatTestArray1[0], EPSILONT);
     EXPECT_NEAR(2.0, floatTestArray1[1], EPSILONT);
     EXPECT_NEAR(3.0, floatTestArray1[2], EPSILONT);
@@ -372,7 +372,7 @@ TEST(ValueDenormalizer, valuedenormalizertest) {
     ValueDenormalizer<float> floatDenormalizer;
 
     // T = double
-    EXPECT_THROW(doubleDenormalizer.apply(doubleTestArray1, size, 10.0, 1.0), incompatibleException);
+    EXPECT_THROW(doubleDenormalizer.apply(doubleTestArray1, size, 10.0, 1.0), incompatibleParametersException);
     EXPECT_NEAR(doubleTestArray1[0], 0.0, EPSILONT);
     EXPECT_NEAR(doubleTestArray1[1], 0.1, EPSILONT);
     EXPECT_NEAR(doubleTestArray1[2], 0.2, EPSILONT);
@@ -429,7 +429,7 @@ TEST(ValueDenormalizer, valuedenormalizertest) {
     EXPECT_NEAR(doubleTestArray3[9], -1.0, EPSILONT);
 
     // T = float
-    EXPECT_THROW(floatDenormalizer.apply(floatTestArray1, size, float(10.0), float(1.0)), incompatibleException);
+    EXPECT_THROW(floatDenormalizer.apply(floatTestArray1, size, float(10.0), float(1.0)), incompatibleParametersException);
     EXPECT_NEAR(floatTestArray1[0], 0.0, EPSILONT);
     EXPECT_NEAR(floatTestArray1[1], 0.1, EPSILONT);
     EXPECT_NEAR(floatTestArray1[2], 0.2, EPSILONT);

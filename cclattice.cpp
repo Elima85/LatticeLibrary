@@ -39,7 +39,7 @@ namespace LatticeLib {
     }*/
     void CCLattice::get6Neighbors(int rowIndex, int columnIndex, int layerIndex, vector<Neighbor> &neighbors) const {
         if (!this->isValid(rowIndex, columnIndex, layerIndex)) {
-            throw outsideRangeException();
+            throw outOfRangeException();
         }
         neighbors.clear();
         if (this->isValid(rowIndex, columnIndex + 1, layerIndex)) {
@@ -66,7 +66,7 @@ namespace LatticeLib {
     }
     void CCLattice::get18Neighbors(int rowIndex, int columnIndex, int layerIndex, vector<Neighbor> &neighbors) const {
         if (!this->isValid(rowIndex, columnIndex, layerIndex)) {
-            throw outsideRangeException();
+            throw outOfRangeException();
         }
         neighbors.clear();
         get6Neighbors(rowIndex, columnIndex, layerIndex, neighbors);
@@ -112,7 +112,7 @@ namespace LatticeLib {
     }
     void CCLattice::get26Neighbors(int rowIndex, int columnIndex, int layerIndex, vector<Neighbor> &neighbors) const {
         if (!this->isValid(rowIndex, columnIndex, layerIndex)) {
-            throw outsideRangeException();
+            throw outOfRangeException();
         }
         neighbors.clear();
         get18Neighbors(rowIndex, columnIndex, layerIndex, neighbors);
@@ -146,7 +146,7 @@ namespace LatticeLib {
     }
     void CCLattice::get124Neighbors(int rowIndex, int columnIndex, int layerIndex, vector<Neighbor> &neighbors) const {
         if (!this->isValid(rowIndex, columnIndex, layerIndex)) {
-            throw outsideRangeException();
+            throw outOfRangeException();
         }
         get26Neighbors(rowIndex, columnIndex, layerIndex, neighbors);
         int localNeighborIndex = 26;
@@ -566,7 +566,7 @@ namespace LatticeLib {
     }
     void CCLattice::get342Neighbors(int rowIndex, int columnIndex, int layerIndex, vector<Neighbor> &neighbors) const {
         if (!this->isValid(rowIndex, columnIndex, layerIndex)) {
-            throw outsideRangeException();
+            throw outOfRangeException();
         }
         get124Neighbors(rowIndex, columnIndex, layerIndex, neighbors);
         int localNeighborIndex = 124;
@@ -1483,7 +1483,7 @@ namespace LatticeLib {
                 get342Neighbors(rowIndex, columnIndex, layerIndex, neighbors);
                 break;
             default:
-                throw neighborhoodSizeException();
+                throw incompatibleParametersException();
         }
     }
     void CCLattice::getNeighbors(int elementIndex, int neighborhoodSize, vector<Neighbor> &neighbors) const {

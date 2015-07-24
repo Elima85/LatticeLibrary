@@ -52,7 +52,7 @@ namespace LatticeLib {
     vector <T> minElements(vector <T> v1, vector <T> v2) {
         int length = v1.size();
         if (length != v2.size()) {
-            throw dimensionMismatchException();
+            throw incompatibleParametersException();
         }
         vector <T> result;
         for (int i = 0; i < length; i++) {
@@ -65,7 +65,7 @@ namespace LatticeLib {
     vector <T> maxElements(vector <T> v1, vector <T> v2) {
         int length = v1.size();
         if (length != v2.size()) {
-            throw dimensionMismatchException();
+            throw incompatibleParametersException();
         }
         vector <T> result;
         for (int i = 0; i < length; i++) {

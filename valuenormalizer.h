@@ -29,7 +29,7 @@ namespace LatticeLib {
          */
         void apply(T *array, int nElements, T minValue, T maxValue) const {
             if (minValue > maxValue) {
-                throw incompatibleException();
+                throw incompatibleParametersException();
             }
             T range = maxValue - minValue;
             for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {

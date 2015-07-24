@@ -111,16 +111,16 @@ TEST(Image, bands) {
     EXPECT_NEAR((*image)(image->indexToR(index), image->indexToC(index), image->indexToL(index), 4), originalIntensity[4], EPSILONT);
 
 
-    EXPECT_THROW(image->setElement(-1, intensitiesRight), outsideImageException);
-    EXPECT_THROW(image->setElement(nElements, intensitiesRight), outsideImageException);
-    EXPECT_THROW(image->setElement(1, intensitiesShort), dimensionMismatchException);
-    EXPECT_THROW(image->setElement(1, intensitiesLong), dimensionMismatchException);
+    EXPECT_THROW(image->setElement(-1, intensitiesRight), outOfRangeException);
+    EXPECT_THROW(image->setElement(nElements, intensitiesRight), outOfRangeException);
+    EXPECT_THROW(image->setElement(1, intensitiesShort), incompatibleParametersException);
+    EXPECT_THROW(image->setElement(1, intensitiesLong), incompatibleParametersException);
 
-    EXPECT_THROW(image->setElement(-1, 1, 1, intensitiesRight), outsideImageException);
-    EXPECT_THROW(image->setElement(1, -1, 1, intensitiesRight), outsideImageException);
-    EXPECT_THROW(image->setElement(1, 1, -1, intensitiesRight), outsideImageException);
-    EXPECT_THROW(image->setElement(1, intensitiesShort), dimensionMismatchException);
-    EXPECT_THROW(image->setElement(1, intensitiesLong), dimensionMismatchException);
+    EXPECT_THROW(image->setElement(-1, 1, 1, intensitiesRight), outOfRangeException);
+    EXPECT_THROW(image->setElement(1, -1, 1, intensitiesRight), outOfRangeException);
+    EXPECT_THROW(image->setElement(1, 1, -1, intensitiesRight), outOfRangeException);
+    EXPECT_THROW(image->setElement(1, intensitiesShort), incompatibleParametersException);
+    EXPECT_THROW(image->setElement(1, intensitiesLong), incompatibleParametersException);
 
     delete lattice;
     delete image;

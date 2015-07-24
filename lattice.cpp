@@ -42,25 +42,25 @@ namespace LatticeLib {
     }
     int Lattice::rclToIndex(int rowIndex, int columnIndex, int layerIndex) const {
         if (!this->isValid(rowIndex, columnIndex, layerIndex)) {
-            throw outsideImageException();
+            throw outOfRangeException();
         }
         return (nRows * nColumns * layerIndex + nColumns * rowIndex + columnIndex);
     }
     int Lattice::indexToC(int elementIndex) const {
         if (!this->isValid(elementIndex)) {
-            throw outsideImageException();
+            throw outOfRangeException();
         }
         return (elementIndex % (nRows * nColumns)) % nColumns;
     }
     int Lattice::indexToR(int elementIndex) const {
         if (!this->isValid(elementIndex)) {
-            throw outsideImageException();
+            throw outOfRangeException();
         }
         return (elementIndex % (nRows * nColumns)) / nColumns;
     }
     int Lattice::indexToL(int elementIndex) const {
         if (!this->isValid(elementIndex)) {
-            throw outsideImageException();
+            throw outOfRangeException();
         }
         return elementIndex / (nRows * nColumns);
     }

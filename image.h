@@ -36,11 +36,11 @@ namespace LatticeLib {
  * .
  * .
  */
-	template <class T>
+	template <class intensityTemplate>
 	class Image {
 	protected:
 		/** Array of intensity values. */
-		T *data;
+		intensityTemplate *data;
 
 		/** Specifies the sampling lattice of the image, and contains its dimensions. */
 		Lattice &lattice;
@@ -58,7 +58,7 @@ namespace LatticeLib {
          * l			| INPUT		| %Image sampling lattice.
          * nB			| INPUT		| Number of modality bands, must be at least 1.
          */
-		Image(T *d, Lattice &l, int nB) : lattice(l) {
+		Image(intensityTemplate *d, Lattice &l, int nB) : lattice(l) {
 			data = d;
 			nBands = nB;
 		}
@@ -70,7 +70,7 @@ namespace LatticeLib {
          * :---------    | :------	| :-------
          * original      | INPUT	| Image object to be copied.
          */
-		Image(const Image<T> &original) : lattice(original.getLattice()) {
+		Image(const Image<intensityTemplate> &original) : lattice(original.getLattice()) {
 			nBands = original.nBands;
 			int nTotal = nBands * original.getNElements();
 			data = original.data;
@@ -136,7 +136,7 @@ namespace LatticeLib {
 		/**
          * Returns a pointer to the data array of the image.
          */
-		T* getData() const {
+		intensityTemplate* getData() const {
 			return data;
 		}
 
@@ -145,9 +145,9 @@ namespace LatticeLib {
          *
          * Parameter	| in/out	| Comment
          * :---------	| :------	| :-------
-         * bandIndex	| INPUT		| Index of the requested band.
+         * bandIndex	| INPUintensityTemplate		| Index of the requested band.
 		 */
-		T* getBand(int bandIndex) const {
+		intensityTemplate* getBand(int bandIndex) const {
 			return data + bandIndex * getNElements();
 		}
 
@@ -336,12 +336,12 @@ namespace LatticeLib {
          * bandIndex	| INPUT		| Index of the band of interest.
          * intensity	| INPUT		| New intensity value.
          */
-		template<class S>
-		void setElement(int elementIndex, int bandIndex, S intensity) {
+		template<class inputIntensityTemplate>
+		void setElement(int elementIndex, int bandIndex, inputIntensityTemplate intensity) {
 			if (!this->isValid(elementIndex, bandIndex)) {
-				throw outsideImageException();
+				throw outOfRangeException();
 			}
-			data[bandIndex * lattice.getNElements() + elementIndex] = T(intensity);
+			data[bandIndex * lattice.getNElements() + elementIndex] = intensityTemplate(intensity);
 		}
 
 		/**
@@ -355,8 +355,8 @@ namespace LatticeLib {
          * bandIndex	| INPUT		| Index of the band of interest.
          * intensity	| INPUT		| New intensity value.
          */
-		template<class S>
-		void setElement(int rowIndex, int columnIndex, int layerIndex, int bandIndex, S intensity) {
+		template<class inputIntensityTemplate>
+		void setElement(int rowIndex, int columnIndex, int layerIndex, int bandIndex, inputIntensityTemplate intensity) {
 			int index = rclToIndex(rowIndex, columnIndex, layerIndex);
 			this->setElement(index, bandIndex, intensity);
 		}
@@ -369,16 +369,16 @@ namespace LatticeLib {
          * elementIndex		| INPUT		| Index of the element of interest.
          * intensityValues	| OUTPUT	| New intensity values for each modality band.
          */
-		template<class S>
-		void setElement(int elementIndex, vector<S> intensityValues) {
+		template<class inputIntensityTemplate>
+		void setElement(int elementIndex, vector<inputIntensityTemplate> intensityValues) {
 			if (!this->isValid(elementIndex)) {
-				throw outsideImageException();
+				throw outOfRangeException();
 			}
 			if (intensityValues.size() != nBands) {
-				throw dimensionMismatchException();
+				throw incompatibleParametersException();
 			}
 			for (int band = 0; band < this->nBands; band++) {
-				data[band * lattice.getNElements() + elementIndex] = T(intensityValues[band]);
+				data[band * lattice.getNElements() + elementIndex] = intensityTemplate(intensityValues[band]);
 			}
 		}
 
@@ -392,8 +392,8 @@ namespace LatticeLib {
          * layerIndex		| INPUT		| Layer index of the element of interest.
          * intensityValues	| OUTPUT	| New intensity values for each modality band.
          */
-		template<class S>
-		void setElement(int rowIndex, int columnIndex, int layerIndex, vector<S> intensityValues) {
+		template<class inputIntensityTemplate>
+		void setElement(int rowIndex, int columnIndex, int layerIndex, vector<inputIntensityTemplate> intensityValues) {
 			int index = rclToIndex(rowIndex, columnIndex, layerIndex);
 			this->setElement(index, intensityValues);
 		}
@@ -436,9 +436,9 @@ namespace LatticeLib {
          * layerIndex	| INPUT		| Layer index of the element of interest.
          * bandIndex	| INPUT		| Index of the band of interest.
 		 */
-		T &operator()(int rowIndex, int columnIndex, int layerIndex, int bandIndex = 0) const {
+		intensityTemplate &operator()(int rowIndex, int columnIndex, int layerIndex, int bandIndex = 0) const {
 			if (!this->isValid(rowIndex, columnIndex, layerIndex, bandIndex)) {
-				throw outsideImageException();
+				throw outOfRangeException();
 			}
 			return this->data[bandIndex * this->lattice.getNElements() + this->rclToIndex(rowIndex, columnIndex, layerIndex)];
 		}
@@ -451,9 +451,9 @@ namespace LatticeLib {
          * elementIndex	| INPUT		| Index of the element of interest.
          * bandIndex	| INPUT		| Index of the band of interest.
 		 */
-		T &operator()(int elementIndex, int bandIndex) const {
+		intensityTemplate &operator()(int elementIndex, int bandIndex) const {
 			if (!this->isValid(elementIndex, bandIndex)) {
-				throw outsideImageException();
+				throw outOfRangeException();
 			}
 			return this->data[bandIndex * lattice.getNElements() + elementIndex];
 		}
@@ -465,11 +465,11 @@ namespace LatticeLib {
          * :---------	| :------	| :-------
          * elementIndex	| INPUT		| Index of the element of interest.
 		 */
-		vector<T> operator[](int elementIndex) const {
+		vector<intensityTemplate> operator[](int elementIndex) const {
 			if (!this->isValid(elementIndex)) {
-				throw outsideImageException();
+				throw outOfRangeException();
 			}
-			vector<T> intensityValues;
+			vector<intensityTemplate> intensityValues;
 			for (int band = 0; band < this->nBands; band++) {
 				intensityValues.push_back(this->data[band * this->lattice.getNElements() + elementIndex]);
 			}

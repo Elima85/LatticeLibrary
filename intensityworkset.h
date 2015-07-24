@@ -112,7 +112,7 @@ namespace LatticeLib {
                     break;
                 }
                 default:
-                    throw invalidArgumentException();
+                    throw incompatibleParametersException();
             }
             minIntensity = minVal;
             maxIntensity = maxVal;
@@ -227,7 +227,7 @@ namespace LatticeLib {
                     normalizeIntensities();
                     break;
                 default:
-                    throw invalidArgumentException(); // TODO: other exception?
+                    throw incompatibleParametersException(); // TODO: other exception?
             }
         }
 
@@ -254,7 +254,7 @@ namespace LatticeLib {
                     normalizeIntensities();
                     break;
                 default:
-                    throw invalidArgumentException();
+                    throw incompatibleParametersException();
             }
         }
 

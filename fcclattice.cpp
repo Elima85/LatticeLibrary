@@ -52,7 +52,7 @@ namespace LatticeLib {
     }*/
     void FCCLattice::get12Neighbors(int rowIndex, int columnIndex, int layerIndex, vector<Neighbor> &neighbors) const {
         if (!this->isValid(rowIndex, columnIndex, layerIndex)) {
-            throw outsideRangeException();
+            throw outOfRangeException();
         }
         neighbors.clear();
         if ((layerIndex % 2) != 1) {
@@ -217,7 +217,7 @@ namespace LatticeLib {
     }
     void FCCLattice::get18Neighbors(int rowIndex, int columnIndex, int layerIndex, vector<Neighbor> &neighbors) const {
         if (!this->isValid(rowIndex, columnIndex, layerIndex)) {
-            throw outsideRangeException();
+            throw outOfRangeException();
         }
         neighbors.clear();
         get12Neighbors(rowIndex, columnIndex, layerIndex, neighbors);
@@ -318,7 +318,7 @@ namespace LatticeLib {
                 get18Neighbors(rowIndex, columnIndex, layerIndex, neighbors);
                 break;
             default:
-                throw neighborhoodSizeException();
+                throw incompatibleParametersException();
         }
     }
     void FCCLattice::getNeighbors(int elementIndex, int neighborhoodSize, vector<Neighbor> &neighbors) const {
@@ -330,7 +330,7 @@ namespace LatticeLib {
                 get18Neighbors(elementIndex, neighbors);
                 break;
             default:
-                throw neighborhoodSizeException();
+                throw incompatibleParametersException();
         }
     }
 }
