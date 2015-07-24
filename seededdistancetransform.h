@@ -145,7 +145,7 @@ namespace LatticeLib {
             std::cout << "current label: " << currentLabel << std::endl;
             for (int seedIndex = 0; seedIndex < nSeeds; seedIndex++) {
                 if (seeds[seedIndex].getLabel() == currentLabel) {
-                    int elementIndex = seeds[seedIndex].getIndex();
+                    int elementIndex = seeds[seedIndex].getElementIndex();
                     distanceTransform.setElement(elementIndex, labelIndex, 0);
                     queue.push(PriorityQueueElement<T>(elementIndex, 0));
                     inQueue[elementIndex] = true;
@@ -233,7 +233,7 @@ namespace LatticeLib {
             int currentLabel = listOfLabels[labelIndex];
             for (int seedIndex = 0; seedIndex < nSeeds; seedIndex++) {
                 if (seeds[seedIndex].getLabel() == currentLabel) {
-                    int elementIndex = seeds[seedIndex].getIndex();
+                    int elementIndex = seeds[seedIndex].getElementIndex();
                     distanceTransform.setElement(elementIndex, labelIndex, 0);
                     queue.push(PriorityQueueElement<T>(elementIndex, 0));
                     inQueue[elementIndex] = true;
@@ -311,7 +311,7 @@ namespace LatticeLib {
             int currentLabel = listOfLabels[labelIndex];
             for (int seedIndex = 0; seedIndex < nSeeds; seedIndex++) {
                 if (seeds[seedIndex].getLabel() == currentLabel) {
-                    int elementIndex = seeds[seedIndex].getIndex();
+                    int elementIndex = seeds[seedIndex].getElementIndex();
                     distanceTransform.setElement(elementIndex, labelIndex, 0);
                     queue.push(PriorityQueueElement<T>(elementIndex, 0));
                     inQueue[elementIndex] = true;
@@ -394,7 +394,7 @@ namespace LatticeLib {
             int currentLabel = listOfLabels[labelIndex];
             for (int seedIndex = 0; seedIndex < nSeeds; seedIndex++) {
                 if (seeds[seedIndex].getLabel() == currentLabel) {
-                    int elementIndex = seeds[seedIndex].getIndex();
+                    int elementIndex = seeds[seedIndex].getElementIndex();
                     distanceTransform.setElement(elementIndex, labelIndex, 0);
                     queue.push(PriorityQueueElement<T>(elementIndex, 0));
                     inQueue[elementIndex] = true;

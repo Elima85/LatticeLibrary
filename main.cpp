@@ -32,7 +32,7 @@ using namespace LatticeLib;
 	neighBCC = imBCC->get_neighbors(2,2,2,14);
 	cout << "BCC center: " << imBCC->index2x(imBCC->rcl2index(2,2,2)) << ","<< imBCC->index2y(imBCC->rcl2index(2,2,2)) << ","<< imBCC->index2z(imBCC->rcl2index(2,2,2)) << ")" << endl;
 	for (size_t i = 0; i < neighBCC.size(); i++){
-		cout << "BCC n" << i << ": (" << imBCC->index2x(neighBCC[i].getIndex()) << ","<< imBCC->index2y(neighBCC[i].getIndex()) << ","<< imBCC->index2z(neighBCC[i].getIndex()) << ")" << endl;
+		cout << "BCC n" << i << ": (" << imBCC->index2x(neighBCC[i].getElementIndex()) << ","<< imBCC->index2y(neighBCC[i].getIndex()) << ","<< imBCC->index2z(neighBCC[i].getIndex()) << ")" << endl;
 	}
 
 	return 0;

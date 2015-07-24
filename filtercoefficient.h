@@ -11,7 +11,7 @@ namespace LatticeLib {
  * index		| Position index of the element in a neighborhood. The midpoint element has index -1.
  * coefficient	| %WeightedAverageFilter coefficient for the specified element.
  */
-    template<class S>
+    template<class coefficientTemplate>
     class FilterCoefficient {
 
     private:
@@ -19,7 +19,7 @@ namespace LatticeLib {
         int positionIndex;
 
         /** %WeightedAverageFilter coefficient for the specified element. */
-        S coefficient;
+        coefficientTemplate coefficient;
 
     public:
         /**
@@ -38,7 +38,7 @@ namespace LatticeLib {
          * i            | INPUT     | Position index.
          * c            | INPUT     | Corresponding coefficient value.
          */
-        FilterCoefficient(int i, S c) {
+        FilterCoefficient(int i, coefficientTemplate c) {
             positionIndex = i;
             coefficient = c;
         }
@@ -53,7 +53,7 @@ namespace LatticeLib {
         /**
          * Returns coefficient.
          */
-        S getCoefficient() const {
+        coefficientTemplate getCoefficient() const {
             return coefficient;
         }
 
@@ -75,7 +75,7 @@ namespace LatticeLib {
 		 * :----------  | :-------  | :--------
          * c            | INPUT     | New coefficient value.
          */
-        void setCoefficient(S c) {
+        void setCoefficient(coefficientTemplate c) {
             coefficient = c;
         }
 
@@ -87,7 +87,7 @@ namespace LatticeLib {
          * i            | INPUT     | New position index.
          * c            | INPUT     | New coefficient value.
          */
-        void set(int i, S c) {
+        void set(int i, coefficientTemplate c) {
             positionIndex = i;
             coefficient = c;
         }

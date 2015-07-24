@@ -63,7 +63,7 @@ namespace LatticeLib {
             vector <Neighbor> neighbors;
             image.getNeighbors(elementIndex, neighborhoodSize, neighbors);
             for (int neighborIndex = 0; neighborIndex < neighbors.size(); neighborIndex++) {
-                int neighborGlobalIndex = neighbors[neighborIndex].getIndex();
+                int neighborGlobalIndex = neighbors[neighborIndex].getElementIndex();
                 double distanceToNeighbor = image.euclideanDistance(elementIndex, neighborGlobalIndex);
                 double distance = distanceTransform(elementIndex, labelIndex) +
                                   0.5 * norm.compute(image[neighborGlobalIndex] + image[elementIndex]) * distanceToNeighbor;

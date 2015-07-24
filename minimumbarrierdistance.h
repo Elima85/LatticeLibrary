@@ -120,7 +120,7 @@ namespace LatticeLib {
             image.getNeighbors(elementIndex, neighborhoodSize, neighbors);
             int nNeighbors = neighbors.size();
             for (int neighborIndex = 0; neighborIndex < nNeighbors; neighborIndex++) {
-                int neighborGlobalIndex = neighbors[neighborIndex].getIndex();
+                int neighborGlobalIndex = neighbors[neighborIndex].getElementIndex();
                 T minIntensity = MIN(pathMinimumValue[elementIndex], image(neighborGlobalIndex, 0));
                 T maxIntensity = MAX(pathMaximumValue[elementIndex], image(neighborGlobalIndex, 0));
                 T intensitySpan = maxIntensity - minIntensity;

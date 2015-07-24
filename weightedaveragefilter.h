@@ -109,14 +109,12 @@ namespace LatticeLib {
 					filterCoefficientSum += coefficients[coefficientIndex].getCoefficient();
 				}
 				// neighbors
-				int neighborhoodSize = getNeighborhoodSize();
 				vector<Neighbor> neighbors;
-				image.getNeighbors(elementIndex, neighborhoodSize, neighbors);
-				int nFoundNeighbors = neighbors.size();
-				for (int neighborIndex = 0; neighborIndex < nFoundNeighbors; neighborIndex++) {
+				image.getNeighbors(elementIndex, getNeighborhoodSize(), neighbors);
+				for (int neighborIndex = 0; neighborIndex < neighbors.size(); neighborIndex++) {
 					coefficientIndex = findCoefficient(neighbors[neighborIndex].getPosition());
 					if (coefficientIndex > -1) {
-						result[elementIndex] += image(neighbors[neighborIndex].getIndex(), bandIndex) *
+						result[elementIndex] += image(neighbors[neighborIndex].getElementIndex(), bandIndex) *
 												coefficients[coefficientIndex].getCoefficient();
 						filterCoefficientSum += coefficients[coefficientIndex].getCoefficient();
 					}

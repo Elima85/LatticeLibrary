@@ -41,7 +41,7 @@ namespace LatticeLib {
 		int getPosition() const;
 
 		/** Returns elementIndex. */
-		int getIndex() const;
+		int getElementIndex() const;
 	};
 
 }

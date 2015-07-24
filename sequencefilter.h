@@ -3,7 +3,8 @@
 
 #include "templatefilter.h"
 #include "spatialtemplate.h"
-#include "vectorindexpicker.h"
+#include "vectorvaluefinder.h"
+#include "neighbor.h"
 
 namespace LatticeLib {
 
@@ -24,7 +25,7 @@ namespace LatticeLib {
 
     private:
         /** Defines which intensity value to pick from the neighborhood of an element. */
-        VectorIndexPicker<intensityTemplate> &indexPicker;
+        VectorValueFinder<intensityTemplate> &indexPicker;
 
     public:
         /**
@@ -34,13 +35,13 @@ namespace LatticeLib {
          * :---------   | :------   | :-------
          * indexPicker  | INPUT     | Defines which intensity value to pick from the neighborhood of an element.
          */
-        SequenceFilter(vector<FilterCoefficient<bool> > c, int nS, VectorIndexPicker<intensityTemplate> &picker) : TemplateFilter<bool, intensityTemplate> (c, nS), indexPicker(picker){ }
+        SequenceFilter(vector<FilterCoefficient<bool> > c, int nS, VectorValueFinder<intensityTemplate> &picker) : TemplateFilter<bool, intensityTemplate> (c, nS), indexPicker(picker){ }
         ~SequenceFilter() {}
 
         /**
          * Returns indexPicker.
          */
-        VectorIndexPicker<intensityTemplate> &getIndexPicker() const {
+        VectorValueFinder<intensityTemplate>& getIndexPicker() const {
             return indexPicker;
         }
 
@@ -97,7 +98,37 @@ namespace LatticeLib {
          * bandIndex	| INPUT		| Index of the band to be filtered.
          * result		| OUTPUT	| Filtered intensity values. Needs to be of a length of at least image.nElements.
          */
-        void applyToBand(Image <intensityTemplate> image, int bandIndex, double *result) const { }
+        void applyToBand(Image <intensityTemplate> image, int bandIndex, double *result) const {
+            if ((bandIndex < 0) || (bandIndex >= image.getNBands())) {
+                // throw error or exception
+            }
+
+            int nElements = image.getNElements();
+            vector<FilterCoefficient<bool> > coefficients = getCoefficients();
+            for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
+                // center element
+                vector<intensityTemplate> intensities;
+                int coefficientIndex = findCoefficient(-1);
+                if (coefficientIndex > -1) {
+                    if (getCoefficients()[coefficientIndex].getCoefficient()) {
+                        intensities.push_back(image(elementIndex, bandIndex));
+                    }
+                }
+                // neighbors
+                vector<Neighbor> neighbors;
+                image.getNeighbors(elementIndex, getNeighborhoodSize(), neighbors);
+                for (int neighborIndex = 0; neighborIndex < neighbors.size(); neighborIndex++) {
+                    coefficientIndex = findCoefficient(neighbors[neighborIndex].getPosition());
+                    if (coefficientIndex > -1) {
+                        if (getCoefficients()[coefficientIndex].getCoefficient()) {
+                            intensities.push_back(image(neighbors[neighborIndex].getElementIndex(), bandIndex));
+                        }
+                    }
+                }
+                result[elementIndex] = intensities[indexPicker.getVectorElementIndex(intensities)];
+            }
+
+        }
 
         /**
          * Implements TemplateFilter::applyToImage().
@@ -107,7 +138,14 @@ namespace LatticeLib {
          * image		| INPUT		| Input image.
          * result		| OUTPUT	| Filtered intensity values. Needs to be of a length of at least image.nElements * image.nBands.
          */
-        void applyToImage(Image <intensityTemplate> image, double *result) const { }
+        void applyToImage(Image <intensityTemplate> image, double *result) const {
+            int nElements = image.getNElements();
+            int nBands = image.getNBands();
+            for (int bandIndex = 0; bandIndex < nBands; bandIndex++) {
+                int offset = bandIndex * nElements;
+                applyToBand(image, bandIndex, result + offset);
+            }
+        }
     };
 }
 

@@ -9,7 +9,7 @@ namespace LatticeLib {
     int Neighbor::getPosition() const {
         return positionIndex;
     }
-    int Neighbor::getIndex() const {
+    int Neighbor::getElementIndex() const {
         return elementIndex;
     }
 }

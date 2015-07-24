@@ -61,7 +61,7 @@ namespace LatticeLib {
             vector<Neighbor> neighbors;
             image.getNeighbors(elementIndex, neighborhoodSize, neighbors);
             for (int neighborIndex = 0; neighborIndex < neighbors.size(); neighborIndex++) {
-                int neighborGlobalIndex = neighbors[neighborIndex].getIndex();
+                int neighborGlobalIndex = neighbors[neighborIndex].getElementIndex();
                 double distance = MAX(distanceTransform(elementIndex, labelIndex), norm.compute(image[neighborGlobalIndex] - image[elementIndex]));  // if the current link is not weaker, the distance does not change.
                 if (distance < distanceTransform(neighborGlobalIndex, labelIndex)) {
                     distanceTransform.setElement(neighborGlobalIndex, labelIndex, distance);
