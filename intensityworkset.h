@@ -3,9 +3,7 @@
 
 #include "image.h"
 #include "lattice.h"
-#include "valuecropper.h"
-#include "valuenormalizer.h"
-#include "valuedenormalizer.h"
+#include "dataredistribution.h"
 #include <algorithm>
 #include "exception.h"
 #include <stdio.h>
@@ -51,8 +49,6 @@ namespace LatticeLib {
                                           -0.457351805704674, -0.472200234189075, -0.488465341540169,
                                           -0.506733087451326, -0.528145846788120, -0.555652269755902,
                                           -0.620350490899443}; // TODO: 255 elements or interpolation
-
-    enum imageIntensityAdjustmentOption {none, crop, normalize}; // for the entire image at once
     enum distanceApproximationOption {linear, ball, voronoi};
 
 /**
@@ -64,56 +60,54 @@ namespace LatticeLib {
  * minIntensity | The lowest possible intensity value.
  * maxIntensity	| The highest possible intensity value.
  */
-    template <class T>
+    template <class intensityTemplate>
     class IntensityWorkset {
 
     private:
         /** %Image dimensions and data. */
-        Image<T> &image;
+        Image<intensityTemplate> &image;
 
         /** Minimum intensity value. */
-        T minIntensity;
+        intensityTemplate minIntensity;
 
         /** Maximum intensity value. */
-        T maxIntensity;
+        intensityTemplate maxIntensity;
 
     public:
         /**
-         * Constructor for IntensityWorkset objects.
+         * Constructor for IntensityWorkset objects. Does not adjust the image data to the specified intensity range.
          *
          * Parameter    | in/out    |Comment
          * :---------   | :------   |:-------
          * image        | INPUT     | %Image dimensions and data.
          * minVal       | INPUT     | Minimum intensity value.
          * maxVal       | INPUT     | Maximum intensity value.
-         * option       | INPUT     | Intensity adjustment of the input data.<br> none: No adjustment. <br> crop: Crop all values outside of the specified range. <br> normalize: Stretch or compress the image data to the specified range. _This does not work well for integer intensities. Please see ValueNormalizer::apply()._
          */
-        IntensityWorkset(Image<T> &im, T minVal, T maxVal, imageIntensityAdjustmentOption option) : image(im){
-            switch (option) {
-                case none:
-                    break;
-                case crop: {
-                    T* data = im.getData();
-                    int nElements = im.getLattice().getNElements() * im.getNBands();
-                    ValueCropper<T> cropper;
-                    cropper.apply(data, nElements, minVal, maxVal);
-                    break;
-                }
-                case normalize:{
-                    T *data = im.getData();
-                    int nElements = im.getLattice().getNElements() * im.getNBands();
-                    ValueNormalizer<T> normalizer;
-                    ValueDenormalizer<T> denormalizer;
-                    T currentMinVal = *std::min_element(data, data + nElements);
+        IntensityWorkset(Image<intensityTemplate> &im, intensityTemplate minVal, intensityTemplate maxVal) : image(im){
+            minIntensity = minVal;
+            maxIntensity = maxVal;
+        }
 
-                    T currentMaxVal = *std::max_element(data, data + nElements);
-                    normalizer.apply(data, nElements, currentMinVal, currentMaxVal);
-                    denormalizer.apply(data, nElements, minVal, maxVal);
-                    break;
-                }
-                default:
-                    throw incompatibleParametersException();
+        /**
+         * Constructor for IntensityWorkset objects. Adjusts the image data to the specified intensity range, using the provided IntensityRedistribution object..
+         *
+         * Parameter    | in/out    |Comment
+         * :---------   | :------   |:-------
+         * image        | INPUT     | %Image dimensions and data.
+         * minVal       | INPUT     | Minimum intensity value.
+         * maxVal       | INPUT     | Maximum intensity value.
+         */
+        IntensityWorkset(Image<intensityTemplate> &im, intensityTemplate minVal, intensityTemplate maxVal,
+                         const DataRedistribution<intensityTemplate> &newDistribution) : image(im) {
+            int nTotal = image.getNBands() * image.getNElements();
+            intensityTemplate *data = image.getData();
+            intensityTemplate oldMinVal = INF;
+            intensityTemplate oldMaxVal = -INF;
+            for (int dataIndex = 0; dataIndex < nTotal; dataIndex++) {
+                oldMinVal = MIN(oldMinVal, data[dataIndex]);
+                oldMaxVal = MAX(oldMaxVal, data[dataIndex]);
             }
+            newDistribution.apply(data, nTotal, oldMinVal, oldMaxVal, minVal, maxVal);
             minIntensity = minVal;
             maxIntensity = maxVal;
         }
@@ -125,7 +119,7 @@ namespace LatticeLib {
          * :---------   | :------   |:-------
          * original     | INPUT     | IntensityWorkset object to be copied.
          */
-        IntensityWorkset(const IntensityWorkset<T> &original) : image(original.getImage()){
+        IntensityWorkset(const IntensityWorkset<intensityTemplate> &original) : image(original.getImage()){
             minIntensity = original.minIntensity;
             maxIntensity = original.maxIntensity;
         }
@@ -133,75 +127,98 @@ namespace LatticeLib {
         ~IntensityWorkset() {}; // TODO: delete data array?
 
         /** Returns image. */
-        Image<T>& getImage() const {
+        Image<intensityTemplate>& getImage() const {
             return image;
         }
 
         /** Returns minIntensity. */
-        T getMinIntensity() const {
+        intensityTemplate getMinIntensity() const {
             return minIntensity;
         }
 
         /** Returns maxIntensity. */
-        T getMaxIntensity() const {
+        intensityTemplate getMaxIntensity() const {
             return maxIntensity;
         }
 
         /** Returns the length of the intensity range. */
-        T getRange() const {
+        intensityTemplate getRange() const {
             return maxIntensity - minIntensity;
         }
 
         /**
-         * Crops the intensity values, so that all values fit in the specified intensity range.
-         */
-        void cropIntensities() {
-            int nElements = image.getNElements();
-            int nBands = image.getNBands();
-            ValueCropper<T> cropper;
-            cropper.apply(image.getData(), nBands * nElements, minIntensity, maxIntensity);
-        }
-
-        /**
-         * Normalizes the image, so that it's maximum intensity is maxIntensity, and it's lowest intensity is
-         * minIntensity. Preserves the intensity relationship between the modality bands.
-         * _This does not work well for integer intensities. Please see ValueNormalizer::apply()._
-         */
-        void normalizeIntensities() {
-            int nElements = image.getNElements();
-            int nBands = image.getNBands();
-            int nTotal = nBands * nElements;
-            T* data = image.getData();
-            ValueNormalizer<T> normalizer;
-            ValueDenormalizer<T> denormalizer;
-            T currentMinVal = *std::min_element(data, data + nTotal);
-            T currentMaxVal = *std::max_element(data, data + nTotal);
-            //std::cout << "minVal: " << currentMinVal << ", maxVal: " << currentMaxVal << std::endl;
-            normalizer.apply(data, nTotal, currentMinVal, currentMaxVal);
-            denormalizer.apply(data, nTotal, minIntensity, maxIntensity);
-        }
-
-        /**
-         * Normalizes the specified modality band of the image, so that it's maximum intensity is maxIntensity, and
-         * it's lowest intensity is minIntensity. The other modality bands are left untouched.
-         * _This does not work well for integer intensities. Please see ValueNormalizer::apply()._
+         * Adapts the intensity range of the specified band to that specified in the IntensityWorkset object using the input DataDistribution object.
          *
-         * Parameter	| in/out    | Comment
-         * :-------		| :------   | :-------
-         * bandIndex	| INPUT     | Index of the band to be normalized.
+         * Parameter	    | in/out    | Comment
+         * :-------		    | :------   | :-------
+         * bandIndex        | INPUT     | Index of the band to be processed.
+         * newDistribution  | INPUT     | Defines the new distribution of the intensity values.
          */
-        void normalizeBand(int bandIndex) {
+        void fitBandIntensities(int bandIndex, const DataRedistribution<intensityTemplate> &newDistribution) {
             int nElements = image.getNElements();
-            int start = bandIndex * nElements;
-            int stop = start + nElements;
-            T *data = image.getData();
-            ValueNormalizer<T> normalizer;
-            ValueDenormalizer<T> denormalizer;
-            T currentMinVal = *std::min_element(data + start, data + stop);
-            T currentMaxVal = *std::max_element(data + start, data + stop);
-            //std::cout << "minVal: " << currentMinVal << ", maxVal: " << currentMaxVal << std::endl;
-            normalizer.apply(data + start, nElements, currentMinVal, currentMaxVal);
-            denormalizer.apply(data + start, nElements, minIntensity, maxIntensity);
+            intensityTemplate *data = image.getData() + bandIndex * nElements;
+            intensityTemplate actualMin = INF;
+            intensityTemplate actualMax = -INF;
+            for (int dataIndex = 0; dataIndex < nElements; dataIndex++) {
+                actualMin = MIN(actualMin, data[dataIndex]);
+                actualMax = MAX(actualMax, data[dataIndex]);
+            }
+            std::cout << "fitBandIntensities: actualMin = " << actualMin << ", actualMax = " << actualMax << "\n new limits: min = " << minIntensity << ", max = " << maxIntensity << std::endl;
+            newDistribution.apply(data, nElements, actualMin, actualMax, minIntensity, maxIntensity);
+        }
+
+        /**
+         * Adapts the intensity range of the Image object to that specified in the IntensityWorkset object using the input DataDistribution object.
+         *
+         * Parameter	    | in/out    | Comment
+         * :-------		    | :------   | :-------
+         * newDistribution  | INPUT     | Defines the new distribution of the intensity values.
+         */
+        void fitImageIntensities(const DataRedistribution<intensityTemplate> &newDistribution) {
+            int nTotal = image.getNBands() * image.getNElements();
+            intensityTemplate *data = image.getData();
+            intensityTemplate actualMin = INF;
+            intensityTemplate actualMax = -INF;
+            for (int dataIndex = 0; dataIndex < nTotal; dataIndex++) {
+                actualMin = MIN(actualMin, data[dataIndex]);
+                actualMax = MAX(actualMax, data[dataIndex]);
+            }
+            std::cout << "fitImageIntensities: actualMin = " << actualMin << ", actualMax = " << actualMax << "\n new limits: min = " << minIntensity << ", max = " << maxIntensity << std::endl;
+            newDistribution.apply(data, nTotal, actualMin, actualMax, minIntensity, maxIntensity);
+        }
+
+        /**
+         * Redistributes the intensities of the specified band using the input DataDistribution object.
+         *
+         * Parameter	    | in/out    | Comment
+         * :-------		    | :------   | :-------
+         * bandIndex        | INPUT     | Index of the band to be processed.
+         * newDistribution  | INPUT     | Defines the new distribution of the intensity values.
+         * newMinVal	    | INPUT     | New minimum intensity
+         * newMaxVal	    | INPUT     | New maximum intensity
+         */
+        void redistributeBandIntensities(int bandIndex, const DataRedistribution<intensityTemplate> &newDistribution,
+                                         intensityTemplate newMinIntensity, intensityTemplate newMaxIntensity) {
+            int nElements = image.getNElements();
+            intensityTemplate *data = image.getData() + bandIndex * nElements;
+            newDistribution.apply(data, nElements, minIntensity, maxIntensity, newMinIntensity, newMaxIntensity);
+        }
+
+        /**
+         * Redistributes the intensities of the image using the input DataDistribution object.
+         *
+         * Parameter	    | in/out    | Comment
+         * :-------		    | :------   | :-------
+         * newDistribution  | INPUT     | Defines the new distribution of the intensity values.
+         * newMinVal	    | INPUT     | New minimum intensity
+         * newMaxVal	    | INPUT     | New maximum intensity
+         */
+        void redistributeImageIntensities(const DataRedistribution<intensityTemplate> &newDistribution,
+                                         intensityTemplate newMinIntensity, intensityTemplate newMaxIntensity) {
+            int nBands = image.getNBands();
+            for (int bandIndex = 0; bandIndex < nBands; bandIndex++) {
+                redistributeBandIntensities(bandIndex, newDistribution, newMinIntensity, newMaxIntensity);
+            }
         }
 
         /**
@@ -211,24 +228,23 @@ namespace LatticeLib {
          * Parameter	| in/out    | Comment
          * :-------		| :------   | :-------
          * newMinVal	| INPUT     | New minimum intensity
-         * option       | INPUT     | Intensity adjustment of the input data.<br> none: No adjustment. <br> crop: Crop all values outside of the specified range. <br> normalize: Stretch or compress the image data to the specified range. _This does not work well for integer intensities. Please see ValueNormalizer::apply()._
          */
-        void setMinIntensity(T newMinVal, imageIntensityAdjustmentOption option) {
-            switch (option) {
-                case none:
-                    minIntensity = newMinVal;
-                    break;
-                case crop:
-                    minIntensity = newMinVal;
-                    cropIntensities();
-                    break;
-                case normalize:
-                    minIntensity = newMinVal;
-                    normalizeIntensities();
-                    break;
-                default:
-                    throw incompatibleParametersException(); // TODO: other exception?
-            }
+        void setMinIntensity(intensityTemplate newMinIntensity) {
+            minIntensity = newMinIntensity;
+        }
+
+        /**
+         * Sets the minimum intensity to the specified value, and optionally traverses and adjusts the data to the new
+         * intensity range.
+         *
+         * Parameter	| in/out    | Comment
+         * :-------		| :------   | :-------
+         * newMinVal	| INPUT     | New minimum intensity
+         */
+        void setMinIntensity(intensityTemplate newMinIntensity,
+                             const DataRedistribution<intensityTemplate> &newDistribution) {
+            redistributeImageIntensities(newDistribution, newMinIntensity, maxIntensity);
+            setMinIntensity(newMinIntensity);
         }
 
         /**
@@ -238,24 +254,23 @@ namespace LatticeLib {
          * Parameter	| in/out    | Comment
          * :-------		| :------   | :-------
          * newMaxVal	| INPUT     | New maximum intensity
-         * option       | INPUT     | Intensity adjustment of the input data.<br> none: No adjustment. <br> crop: Crop all values outside of the specified range. <br> normalize: Stretch or compress the image data to the specified range. _This does not work well for integer intensities. Please see ValueNormalizer::apply()._
          */
-        void setMaxIntensity(T newMaxVal, imageIntensityAdjustmentOption option) {
-            switch (option) {
-                case none:
-                    maxIntensity = newMaxVal;
-                    break;
-                case crop:
-                    maxIntensity = newMaxVal;
-                    cropIntensities();
-                    break;
-                case normalize:
-                    maxIntensity = newMaxVal;
-                    normalizeIntensities();
-                    break;
-                default:
-                    throw incompatibleParametersException();
-            }
+        void setMaxIntensity(intensityTemplate newMaxIntensity) {
+            maxIntensity = newMaxIntensity;
+        }
+
+        /**
+         * Sets the maximum intensity to the specified value, and optionally traverses and adjusts the data to the new
+         * intensity range.
+         *
+         * Parameter	| in/out    | Comment
+         * :-------		| :------   | :-------
+         * newMaxVal	| INPUT     | New maximum intensity
+         */
+        void setMaxIntensity(intensityTemplate newMaxIntensity,
+                             const DataRedistribution<intensityTemplate> &newDistribution) {
+            redistributeImageIntensities(newDistribution, minIntensity, newMaxIntensity);
+            setMaxIntensity(newMaxIntensity);
         }
 
         /**
@@ -266,7 +281,7 @@ namespace LatticeLib {
          * intensity	| INPUT     | Coverage value of the spatial element.
          * option       | INPUT     | Method of approximation. <br> linear: \f$distance = 0.5 - coverage\f$ <br> ball: The spatial element is approximated by a ball. <br> voronoi: The average relationship between distance and coverage for the particular lattice is used.
          */
-        double intensityToInternalDistance(T intensity, distanceApproximationOption option){
+        double intensityToInternalDistance(intensityTemplate intensity, distanceApproximationOption option){
             intensity = MIN(maxIntensity, MAX(minIntensity, intensity));
             double minValue = minIntensity;
             double range = maxIntensity - minIntensity;

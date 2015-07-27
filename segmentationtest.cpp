@@ -125,9 +125,9 @@ TEST(Segmentation, fuzzyEqual) {
     Image<uint8> uint8Labels(uint8LabelValues, lattice, nBands);
     Image<int> intLabels(intLabelValues, lattice, nBands);
     Image<double> doubleLabels(doubleLabelValues, lattice, nBands);
-    IntensityWorkset<uint8> uint8FuzzyLabels(uint8Labels, 0, 255, none);
-    IntensityWorkset<int> intFuzzyLabels(intLabels, 14, 92, none);
-    IntensityWorkset<double> doubleFuzzyLabels(doubleLabels, 0.0, 1.0, none);
+    IntensityWorkset<uint8> uint8FuzzyLabels(uint8Labels, 0, 255);
+    IntensityWorkset<int> intFuzzyLabels(intLabels, 14, 92);
+    IntensityWorkset<double> doubleFuzzyLabels(doubleLabels, 0.0, 1.0);
 
     Segmentation segmentation;
     segmentation.fuzzy(distanceTransform, uint8FuzzyLabels);
@@ -228,8 +228,8 @@ TEST(Segmentation, fuzzyUnequal) {
     double doubleLabelValues2[nElements * nBands];
     Image<double> doubleLabels1(doubleLabelValues1, lattice1, nBands);
     Image<double> doubleLabels2(doubleLabelValues2, lattice2, nBands);
-    IntensityWorkset<double> doubleFuzzyLabels1(doubleLabels1, 0.0, 1.0, none);
-    IntensityWorkset<double> doubleFuzzyLabels2(doubleLabels2, 0.0, 1.0, none);
+    IntensityWorkset<double> doubleFuzzyLabels1(doubleLabels1, 0.0, 1.0);
+    IntensityWorkset<double> doubleFuzzyLabels2(doubleLabels2, 0.0, 1.0);
     Segmentation segmentation;
     segmentation.fuzzy(distanceTransform1, doubleFuzzyLabels1);
     segmentation.fuzzy(distanceTransform2, doubleFuzzyLabels2);

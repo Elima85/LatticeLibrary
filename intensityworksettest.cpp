@@ -2,6 +2,8 @@
 #include "intensityworkset.h"
 #include "defs.h"
 #include "cclattice.h"
+#include "cropintensityrange.h"
+#include "renormalizeintensityrange.h"
 
 using namespace LatticeLib;
 
@@ -30,9 +32,11 @@ TEST(IntensityWorkset, initialization) {
     Image<double> doubleImage2(doubleData2, lattice, nBands);
     Image<double> doubleImage3(doubleData3, lattice, nBands);
 
-    IntensityWorkset<double> doubleIW1(doubleImage1, 0.0, 1.0, none);
-    IntensityWorkset<double> doubleIW2(doubleImage2, 0.0, 1.0, crop);
-    IntensityWorkset<double> doubleIW3(doubleImage3, 0.0, 1.0, normalize);
+    IntensityWorkset<double> doubleIW1(doubleImage1, 0.0, 1.0);
+    CropIntensityRange<double> cropIntensities;
+    RenormalizeIntensityRange<double> renormalizeIntensities;
+    IntensityWorkset<double> doubleIW2(doubleImage2, 0.0, 1.0, cropIntensities);
+    IntensityWorkset<double> doubleIW3(doubleImage3, 0.0, 1.0, renormalizeIntensities);
 
     EXPECT_EQ(long(doubleIW1.getImage().getData()), long(doubleData1));
     double sum = 0;
@@ -129,60 +133,62 @@ TEST(IntensityWorkset, normalization) {
     Image<double> doubleImage6(doubleData6, lattice, nBands);
     Image<double> doubleImage7(doubleData7, lattice, 1);
 
-    IntensityWorkset<double> doubleIW1(doubleImage1, 0.0, 10.0, none);
-    IntensityWorkset<double> doubleIW2(doubleImage2, 0.0, 10.0, none);
-    IntensityWorkset<double> doubleIW3(doubleImage3, 0.0, 10.0, none);
-    IntensityWorkset<double> doubleIWCropped(doubleImage4, 0.0, 10.0, crop);
-    IntensityWorkset<double> doubleIWNormalized(doubleImage5, 0.0, 10.0, normalize);
-    IntensityWorkset<double> doubleIWRef(doubleImage6, 0.0, 10.0, none);
-    IntensityWorkset<double> doubleIWNormalizedBand(doubleImage7, 0.0, 10.0, normalize);
+    CropIntensityRange<double> cropIntensities;
+    RenormalizeIntensityRange<double> renormalizeIntensities;
+    IntensityWorkset<double> doubleIW1(doubleImage1, 0.0, 10.0);
+    IntensityWorkset<double> doubleIW2(doubleImage2, 0.0, 10.0);
+    IntensityWorkset<double> doubleIW3(doubleImage3, 0.0, 10.0);
+    IntensityWorkset<double> doubleIWCropped(doubleImage4, 0.0, 10.0, cropIntensities);
+    IntensityWorkset<double> doubleIWNormalized(doubleImage5, 0.0, 10.0, renormalizeIntensities);
+    IntensityWorkset<double> doubleIWRef(doubleImage6, 0.0, 10.0);
+    IntensityWorkset<double> doubleIWNormalizedBand(doubleImage7, 0.0, 10.0, renormalizeIntensities);
 
-    doubleIW1.cropIntensities();
-    doubleIW2.normalizeIntensities();
-    doubleIW3.normalizeBand(1);
+    doubleIW1.fitImageIntensities(cropIntensities);
+    doubleIW2.fitImageIntensities(renormalizeIntensities);
+    doubleIW3.fitBandIntensities(1, renormalizeIntensities);
 
     EXPECT_EQ(long(doubleIW1.getImage().getData()), long(doubleData1));
     EXPECT_EQ(long(doubleIWCropped.getImage().getData()), long(doubleData4));
-    double sum = 0;
     for (int dataIndex = 0; dataIndex < nTotal; dataIndex++) {
-        sum = sum + fabs(doubleData1[dataIndex] - doubleData4[dataIndex]);
+        string message = "index = ";
+        SCOPED_TRACE(message + to_string(dataIndex));
+        EXPECT_NEAR(doubleData4[dataIndex], doubleData1[dataIndex], EPSILONT);
     }
-    EXPECT_LT(sum, EPSILONT);
 
     EXPECT_EQ(long(doubleIW2.getImage().getData()), long(doubleData2));
     EXPECT_EQ(long(doubleIWNormalized.getImage().getData()), long(doubleData5));
-    sum = 0;
     for (int dataIndex = 0; dataIndex < nTotal; dataIndex++) {
-        sum = sum + fabs(doubleData2[dataIndex] - doubleData5[dataIndex]);
+        string message = "index = ";
+        SCOPED_TRACE(message + to_string(dataIndex));
+        EXPECT_NEAR(doubleData5[dataIndex], doubleData2[dataIndex], EPSILONT);
     }
-    EXPECT_LT(sum, EPSILONT);
 
     EXPECT_EQ(long(doubleIW3.getImage().getData()), long(doubleData3));
     EXPECT_EQ(long(doubleIWRef.getImage().getData()), long(doubleData6));
     EXPECT_EQ(long(doubleIWNormalizedBand.getImage().getData()), long(doubleData7));
     // first band
-    sum = 0;
     for (int dataIndex = 0; dataIndex < nElements; dataIndex++) {
-        sum = sum + fabs(doubleData3[dataIndex] - doubleData6[dataIndex]);
+        string message = "index = ";
+        SCOPED_TRACE(message + to_string(dataIndex));
+        EXPECT_NEAR(doubleData6[dataIndex], doubleData3[dataIndex], EPSILONT);
     }
-    EXPECT_LT(sum, EPSILONT);
     // second band
-    sum = 0;
     for (int dataIndex = 0; dataIndex < nElements; dataIndex++) {
-        sum = sum + fabs(doubleData3[nElements + dataIndex] - doubleData7[dataIndex]);
+        string message = "index = ";
+        SCOPED_TRACE(message + to_string(dataIndex));
+        EXPECT_NEAR(doubleData7[dataIndex], doubleData3[nElements + dataIndex], EPSILONT);
     }
-    EXPECT_LT(sum, EPSILONT);
-    sum = 0;
     for (int dataIndex = 0; dataIndex < nElements; dataIndex++) {
-        sum = sum + fabs(doubleData3[nElements + dataIndex] - doubleData5[dataIndex]);
+        string message = "index = ";
+        SCOPED_TRACE(message + to_string(dataIndex));
+        EXPECT_GT(fabs(doubleData3[nElements + dataIndex] - doubleData5[nElements + dataIndex]), EPSILONT);
     }
-    EXPECT_GT(sum, EPSILONT);
     // third band
-    sum = 0;
     for (int dataIndex = 2 * nElements; dataIndex < 3 * nElements; dataIndex++) {
-        sum = sum + fabs(doubleData3[dataIndex] - doubleData6[dataIndex]);
+        string message = "index = ";
+        SCOPED_TRACE(message + to_string(dataIndex));
+        EXPECT_NEAR(doubleData6[dataIndex], doubleData3[dataIndex], EPSILONT);
     }
-    EXPECT_LT(sum, EPSILONT);
 
 }
 
@@ -237,12 +243,13 @@ TEST(IntensityWorkset, limits) {
     Image<double> doubleImage9(doubleData9, lattice, nBands);
 
     // Crop
-    IntensityWorkset<double> doubleIW1(doubleImage1, minVal, maxVal, none);
-    IntensityWorkset<double> doubleIWRef(doubleImage3, minVal, maxVal, none); // untouched
-    IntensityWorkset<double> doubleIWCroppedHighHigh(doubleImage4, minValHigh, maxVal, crop); // cropped, minValHigh, maxVal
-    IntensityWorkset<double> doubleIWCroppedHighLow(doubleImage5, minValHigh, maxValLow, crop); // cropped, minValHigh, maxValLow
+    CropIntensityRange<double> cropIntensities;
+    IntensityWorkset<double> doubleIW1(doubleImage1, minVal, maxVal);
+    IntensityWorkset<double> doubleIWRef(doubleImage3, minVal, maxVal); // untouched
+    IntensityWorkset<double> doubleIWCroppedHighHigh(doubleImage4, minValHigh, maxVal, cropIntensities); // cropped, minValHigh, maxVal
+    IntensityWorkset<double> doubleIWCroppedHighLow(doubleImage5, minValHigh, maxValLow, cropIntensities); // cropped, minValHigh, maxValLow
 
-    doubleIW1.setMinIntensity(minValLow,crop);
+    doubleIW1.setMinIntensity(minValLow, cropIntensities);
     EXPECT_NEAR(doubleIW1.getMinIntensity(), minValLow, EPSILONT);
     EXPECT_NEAR(doubleIW1.getMaxIntensity(), maxVal, EPSILONT);
     double sum = 0;
@@ -251,7 +258,7 @@ TEST(IntensityWorkset, limits) {
     }
     EXPECT_LT(sum, EPSILONT);
 
-    doubleIW1.setMaxIntensity(maxValHigh, crop);
+    doubleIW1.setMaxIntensity(maxValHigh, cropIntensities);
     EXPECT_NEAR(doubleIW1.getMinIntensity(), minValLow, EPSILONT);
     EXPECT_NEAR(doubleIW1.getMaxIntensity(), maxValHigh, EPSILONT);
     sum = 0;
@@ -260,7 +267,7 @@ TEST(IntensityWorkset, limits) {
     }
     EXPECT_LT(sum, EPSILONT);
 
-    doubleIW1.setMinIntensity(minValHigh, crop);
+    doubleIW1.setMinIntensity(minValHigh, cropIntensities);
     EXPECT_NEAR(doubleIW1.getMinIntensity(), minValHigh, EPSILONT);
     EXPECT_NEAR(doubleIW1.getMaxIntensity(), maxValHigh, EPSILONT);
     sum = 0;
@@ -269,7 +276,7 @@ TEST(IntensityWorkset, limits) {
     }
     EXPECT_LT(sum, EPSILONT);
 
-    doubleIW1.setMaxIntensity(maxValLow, crop);
+    doubleIW1.setMaxIntensity(maxValLow, cropIntensities);
     EXPECT_NEAR(doubleIW1.getMinIntensity(), minValHigh, EPSILONT);
     EXPECT_NEAR(doubleIW1.getMaxIntensity(), maxValLow, EPSILONT);
     sum = 0;
@@ -279,13 +286,14 @@ TEST(IntensityWorkset, limits) {
     EXPECT_LT(sum, EPSILONT);
 
     // normalize
-    IntensityWorkset<double> doubleIW2(doubleImage2, minVal, maxVal, none);
-    IntensityWorkset<double> doubleIWNormalizedLowNormal(doubleImage6, minValLow, maxVal, normalize); // normalized, minValLow, maxVal
-    IntensityWorkset<double> doubleIWNormalizedLowHigh(doubleImage7, minValLow, maxValHigh, normalize); // normalized, minValLow, maxValHigh
-    IntensityWorkset<double> doubleIWNormalizedHighHigh(doubleImage8, minValHigh, maxValHigh, normalize); // normalized, minValHigh, maxValHigh
-    IntensityWorkset<double> doubleIWNormalizedHighLow(doubleImage9, minValHigh, maxValLow, normalize); // normalized, minValHigh, maxValLow
+    RenormalizeIntensityRange<double> renormalizeIntensities;
+    IntensityWorkset<double> doubleIW2(doubleImage2, minVal, maxVal);
+    IntensityWorkset<double> doubleIWNormalizedLowNormal(doubleImage6, minValLow, maxVal, renormalizeIntensities); // normalized, minValLow, maxVal
+    IntensityWorkset<double> doubleIWNormalizedLowHigh(doubleImage7, minValLow, maxValHigh, renormalizeIntensities); // normalized, minValLow, maxValHigh
+    IntensityWorkset<double> doubleIWNormalizedHighHigh(doubleImage8, minValHigh, maxValHigh, renormalizeIntensities); // normalized, minValHigh, maxValHigh
+    IntensityWorkset<double> doubleIWNormalizedHighLow(doubleImage9, minValHigh, maxValLow, renormalizeIntensities); // normalized, minValHigh, maxValLow
 
-    doubleIW2.setMinIntensity(minValLow, normalize);
+    doubleIW2.setMinIntensity(minValLow, renormalizeIntensities);
     EXPECT_NEAR(doubleIW2.getMinIntensity(), minValLow, EPSILONT);
     EXPECT_NEAR(doubleIW2.getMaxIntensity(), maxVal, EPSILONT);
     sum = 0;
@@ -294,7 +302,7 @@ TEST(IntensityWorkset, limits) {
     }
     EXPECT_LT(sum, EPSILONT);
 
-    doubleIW2.setMaxIntensity(maxValHigh, normalize);
+    doubleIW2.setMaxIntensity(maxValHigh, renormalizeIntensities);
     EXPECT_NEAR(doubleIW2.getMinIntensity(), minValLow, EPSILONT);
     EXPECT_NEAR(doubleIW2.getMaxIntensity(), maxValHigh, EPSILONT);
     sum = 0;
@@ -303,7 +311,7 @@ TEST(IntensityWorkset, limits) {
     }
     EXPECT_LT(sum, EPSILONT);
 
-    doubleIW2.setMinIntensity(minValHigh, normalize);
+    doubleIW2.setMinIntensity(minValHigh, renormalizeIntensities);
     EXPECT_NEAR(doubleIW2.getMinIntensity(), minValHigh, EPSILONT);
     EXPECT_NEAR(doubleIW2.getMaxIntensity(), maxValHigh, EPSILONT);
     sum = 0;
@@ -312,7 +320,7 @@ TEST(IntensityWorkset, limits) {
     }
     EXPECT_LT(sum, EPSILONT);
 
-    doubleIW2.setMaxIntensity(maxValLow, normalize);
+    doubleIW2.setMaxIntensity(maxValLow, renormalizeIntensities);
     EXPECT_NEAR(doubleIW2.getMinIntensity(), minValHigh, EPSILONT);
     EXPECT_NEAR(doubleIW2.getMaxIntensity(), maxValLow, EPSILONT);
     sum = 0;

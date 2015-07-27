@@ -21,7 +21,7 @@ TEST(WeightedAverageFilter, initialization) {
 
     // getters
     for (int index = 0; index < 3; index++) {
-        string message = "getCoefficients, index = ";
+        string message = "index = ";
         SCOPED_TRACE(message + to_string(index));
 
         vector<FilterCoefficient<double> > extractedFilterCoefficients = filter.getCoefficients();
@@ -31,7 +31,7 @@ TEST(WeightedAverageFilter, initialization) {
     }
 
     for (int index = 0; index < 3; index++) {
-        string message = "getCoefficient, index = ";
+        string message = "index = ";
         SCOPED_TRACE(message + to_string(index));
 
         FilterCoefficient<double> c = filter.getCoefficient(index);

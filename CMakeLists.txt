@@ -7,11 +7,12 @@ set(GTEST_ROOT "${PROJECT_SOURCE_DIR}/googletest")
 
 set(SOURCE_FILES
     approximateminimumbarrierdistance.h
-    arrayadjustment.h
     bcclattice.cpp
     bcclattice.h
     cclattice.cpp
     cclattice.h
+    cropintensityrange.h
+    dataredistribution.h
     defs.h
     exception.h
     fcclattice.cpp
@@ -30,14 +31,12 @@ set(SOURCE_FILES
     neighbor.h
     norm.h
     priorityqueue.h
+    renormalizeintensityrange.h
     seed.cpp
     seed.h
     seededdistancemeasure.h
     seededdistancetransform.h
     segmentation.h
-    valuecropper.h
-    valuenormalizer.h
-    valuedenormalizer.h
     vectoroperators.h
     weightedaveragefilter.h
     )
@@ -50,13 +49,13 @@ set(MAIN_SOURCE_FILES
 set(TEST_SOURCE_FILES
     ${SOURCE_FILES}
     ${GTEST_ROOT}/src/gtest-all.cc
-    arrayadjustmenttest.cpp
     bcclatticetestcoordinates.cpp
     bcclatticetestinitialization.cpp
     bcclatticetestneighbors.cpp
     cclatticetestcoordinates.cpp
     cclatticetestinitialization.cpp
     cclatticetestneighbors.cpp
+    dataredistributiontest.cpp
     fcclatticetestcoordinates.cpp
     fcclatticetestinitialization.cpp
     fcclatticetestneighbors.cpp
