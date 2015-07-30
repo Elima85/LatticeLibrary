@@ -22,7 +22,7 @@ namespace LatticeLib {
         ~RenormalizeIntensityRange() { }
 
         /**
-         * Implements DataReistribution::applyToImage().
+         * Implements DataRedistribution::apply().
          *
          * Normalizes the range of the input data to [newMinValue,newMaxValue]. _Does not work well for integer values, due to round-off errors._
          *

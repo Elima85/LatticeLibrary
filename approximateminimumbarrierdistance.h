@@ -8,6 +8,7 @@
 #include "vectoroperators.h"
 #include "seed.h"
 #include <cfloat> // DBL_MAX
+#include <cmath>
 #include <vector>
 
 namespace LatticeLib {
@@ -60,7 +61,7 @@ namespace LatticeLib {
          * :---------   | :------   | :-------
          * image        | INPUT     | Input image for the distance transform.
          */
-        void setup(Image<T> &image) {
+        void setup(const Image<T> &image) {
             if ((pathMaximumValue != NULL) || (pathMinimumValue != NULL)) {
                 // TODO: Throw error or exception
             }
@@ -129,7 +130,7 @@ namespace LatticeLib {
                 vector<T> maxIntensities = maxElements(pathMaximumValue[elementIndex], image[neighborGlobalIndex]);
                 vector<T> intensitySpans = maxIntensities - minIntensities;
                 double distance = norm.compute(intensitySpans);
-                if (distance < distanceTransform(neighborGlobalIndex, labelIndex)) {
+                if (distanceTransform(neighborGlobalIndex, labelIndex) - distance > DBL_EPSILON) {
                     distanceTransform.setElement(neighborGlobalIndex, labelIndex, distance);
                     roots.setElement(neighborGlobalIndex, labelIndex, elementIndex);
                     pathMinimumValue[neighborGlobalIndex] = minIntensities;
@@ -143,8 +144,8 @@ namespace LatticeLib {
          * Overloads SeededDistanceMeasure::clear().
          */
         void clear() {
-            delete pathMinimumValue;
-            delete pathMaximumValue;
+            delete[] pathMinimumValue;
+            delete[] pathMaximumValue;
             pathMinimumValue = NULL;
             pathMaximumValue = NULL;
         }

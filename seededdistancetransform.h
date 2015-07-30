@@ -10,6 +10,7 @@
 #include <algorithm> // find
 #include "vectoroperators.h"
 #include "seededdistancemeasure.h"
+#include <stdio.h>
 
 namespace LatticeLib {
 
@@ -18,6 +19,7 @@ namespace LatticeLib {
      */
     class SeededDistanceTransform {
 
+    public:
         /**
          * Applies the specified distance measure to the input image, and computes the distance transform and the roots of its inverse forest.
          *

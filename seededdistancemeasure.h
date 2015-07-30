@@ -23,7 +23,7 @@ namespace LatticeLib {
          * :---------   | :------   | :-------
          * image        | INPUT     | Input image for the distance transform.
          */
-        virtual void setup(Image<T> &image) {}
+        virtual void setup(const Image<T> &image) {}
 
         /**
          * Initializes all parameters before traversing the image.

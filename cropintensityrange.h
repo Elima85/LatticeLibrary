@@ -22,7 +22,7 @@ namespace LatticeLib {
         ~CropIntensityRange() { }
 
         /**
-         * Implements DataReistribution::applyToBand().
+         * Implements DataRedistribution::apply().
          *
          * Truncates the range of the input data to [newMinValue,newMaxValue].
          *

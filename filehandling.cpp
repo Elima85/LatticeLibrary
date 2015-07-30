@@ -15,8 +15,9 @@ namespace LatticeLib {
         double *vol = new double[nTot];
 
         int r, rTot = 0;
-        while (!feof(f) && (r = fread(vol + rTot, sizeof(double), MIN(2048, nTot - rTot), f)) > 0)
+        while (!feof(f) && (r = fread(vol + rTot, sizeof(double), MIN(2048, nTot - rTot), f)) > 0) {
             rTot += r;
+        }
         fclose(f);
         return vol;
     }

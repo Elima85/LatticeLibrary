@@ -63,7 +63,7 @@ namespace LatticeLib {
             for (int neighborIndex = 0; neighborIndex < neighbors.size(); neighborIndex++) {
                 int neighborGlobalIndex = neighbors[neighborIndex].getElementIndex();
                 double distance = MAX(distanceTransform(elementIndex, labelIndex), norm.compute(image[neighborGlobalIndex] - image[elementIndex]));  // if the current link is not weaker, the distance does not change.
-                if (distance < distanceTransform(neighborGlobalIndex, labelIndex)) {
+                if (distanceTransform(neighborGlobalIndex, labelIndex) - distance > DBL_EPSILON) {
                     distanceTransform.setElement(neighborGlobalIndex, labelIndex, distance);
                     roots.setElement(neighborGlobalIndex, labelIndex, elementIndex);
                     toQueue.push_back(PriorityQueueElement<T>(neighborGlobalIndex, distance));

@@ -6,6 +6,9 @@
 
 namespace LatticeLib {
 
+    /**
+     * Class for basic arithmetic operations on Image objects.
+     */
     class ImageArithmetic {
 
     public:
