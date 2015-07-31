@@ -4,6 +4,7 @@
 #include "image.h"
 #include "intensityworkset.h"
 #include "cclattice.h"
+#include "filehandling.h"
 
 using namespace LatticeLib;
 
@@ -252,4 +253,38 @@ TEST(Segmentation, fuzzyUnequal) {
     EXPECT_GE(fabs(doubleFuzzyLabels1.getImage()(0, 2) - doubleFuzzyLabels1.getImage()(0, 3)), EPSILONT);
     EXPECT_GE(fabs(doubleFuzzyLabels1.getImage()(0, 2) - EPSILONT),  EPSILONT);
 
+}
+
+TEST(Segmentation, AMBD) {
+
+    int nRows = 321;
+    int nColumns = 481;
+    int nLayers = 1;
+    int nElements = nRows * nColumns * nLayers;
+    CCLattice lattice(nRows, nColumns, nLayers, 1.0);
+    int nBands = 3;
+    int nTotal = nElements * nBands;
+
+    char inputFilename[] = "AMBDflowersRGB26.bin";
+    char *inputFilenamePointer = inputFilename;
+    double *distanceTransformData = readVolume(inputFilenamePointer, nTotal);
+    Image<double> distanceTransformImage(distanceTransformData, lattice, nBands);
+    bool segmentationData[nTotal];
+    Image<bool> segmentationImage(segmentationData, lattice, nBands);
+    double doubleSegmentationData[nTotal];
+
+    Segmentation segmentation;
+    segmentation.crisp(distanceTransformImage, segmentationImage);
+    for (int dataIndex = 0; dataIndex < nTotal; dataIndex++) {
+        if (segmentationData[dataIndex]) {
+            doubleSegmentationData[dataIndex] = 1.0;
+        }
+        else {
+            doubleSegmentationData[dataIndex] = 0.0;
+        }
+    }
+    char newFilename[] = "AMBDflowersRGB26segmentation.bin";
+    writeVolume(newFilename, doubleSegmentationData, nTotal);
+
+    delete distanceTransformData;
 }

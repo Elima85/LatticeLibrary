@@ -24,8 +24,10 @@ set(SOURCE_FILES
     image.h
     imagearithmetic.h
     intensityworkset.h
+    interpolation.h
     lattice.cpp
     lattice.h
+    linearinterpolation.h
     modalitymerge.h
     neighbor.cpp
     neighbor.h
@@ -68,6 +70,7 @@ set(TEST_SOURCE_FILES
     imagetestneighbors.cpp
     imagetestmanipulation.cpp
     intensityworksettest.cpp
+    linearinterpolationtest.cpp
     modalitymergetest.cpp
     neighbortest.cpp
     normtest.cpp

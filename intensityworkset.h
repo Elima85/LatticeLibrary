@@ -163,7 +163,6 @@ namespace LatticeLib {
                 actualMin = MIN(actualMin, data[dataIndex]);
                 actualMax = MAX(actualMax, data[dataIndex]);
             }
-            std::cout << "fitBandIntensities: actualMin = " << actualMin << ", actualMax = " << actualMax << "\n new limits: min = " << minIntensity << ", max = " << maxIntensity << std::endl;
             newDistribution.apply(data, nElements, actualMin, actualMax, minIntensity, maxIntensity);
         }
 
@@ -183,7 +182,6 @@ namespace LatticeLib {
                 actualMin = MIN(actualMin, data[dataIndex]);
                 actualMax = MAX(actualMax, data[dataIndex]);
             }
-            std::cout << "fitImageIntensities: actualMin = " << actualMin << ", actualMax = " << actualMax << "\n new limits: min = " << minIntensity << ", max = " << maxIntensity << std::endl;
             newDistribution.apply(data, nTotal, actualMin, actualMax, minIntensity, maxIntensity);
         }
 
