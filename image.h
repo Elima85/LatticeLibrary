@@ -125,11 +125,11 @@ namespace LatticeLib {
 		}
 
 		/**
-         * Wrapper for Lattice::getScaleFactor();
+         * Wrapper for Lattice::getDensity();
          *
-         * Returns the lattice scale factor.
+         * Returns the sampling density.
          */
-		double getScaleFactor() const {
+		double getDensity() const {
 			return lattice.getDensity();
 		}
 

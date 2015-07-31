@@ -34,14 +34,14 @@ TEST(Image,initialization) {
     EXPECT_EQ(latticeCC->getNColumns(), imageCC->getNColumns());
     EXPECT_EQ(latticeCC->getNLayers(), imageCC->getNLayers());
     EXPECT_EQ(latticeCC->getNElements(), imageCC->getNElements());
-    EXPECT_EQ(latticeCC->getDensity(), imageCC->getScaleFactor());
+    EXPECT_EQ(latticeCC->getDensity(), imageCC->getDensity());
     EXPECT_EQ(nBands, imageCC->getNBands());
     EXPECT_EQ(long(data), long(imageCC->getData()));
     EXPECT_NE(latticeCC->getNRows(), imageCC->getNRows() + 1);
     EXPECT_NE(latticeCC->getNColumns(), imageCC->getNColumns() + 1);
     EXPECT_NE(latticeCC->getNLayers(), imageCC->getNLayers() + 1);
     EXPECT_NE(latticeCC->getNElements(), imageCC->getNElements() + 1);
-    EXPECT_NE(0.0, imageCC->getScaleFactor());
+    EXPECT_NE(0.0, imageCC->getDensity());
     EXPECT_NE(nBands, imageCC->getNBands() + 1);
     EXPECT_NE(0, long(imageCC->getData()));
 
@@ -50,14 +50,14 @@ TEST(Image,initialization) {
     EXPECT_EQ(latticeBCC->getNColumns(), imageBCC->getNColumns());
     EXPECT_EQ(latticeBCC->getNLayers(), imageBCC->getNLayers());
     EXPECT_EQ(latticeBCC->getNElements(), imageBCC->getNElements());
-    EXPECT_EQ(latticeBCC->getDensity(), imageBCC->getScaleFactor());
+    EXPECT_EQ(latticeBCC->getDensity(), imageBCC->getDensity());
     EXPECT_EQ(nBands, imageBCC->getNBands());
     EXPECT_EQ(long(data), long(imageBCC->getData()));
     EXPECT_NE(latticeBCC->getNRows(), imageBCC->getNRows() + 1);
     EXPECT_NE(latticeBCC->getNColumns(), imageBCC->getNColumns() + 1);
     EXPECT_NE(latticeBCC->getNLayers(), imageBCC->getNLayers() + 1);
     EXPECT_NE(latticeBCC->getNElements(), imageBCC->getNElements() + 1);
-    EXPECT_NE(0.0, imageBCC->getScaleFactor());
+    EXPECT_NE(0.0, imageBCC->getDensity());
     EXPECT_NE(nBands, imageBCC->getNBands() + 1);
     EXPECT_NE(0, long(imageBCC->getData()));
 
@@ -66,14 +66,14 @@ TEST(Image,initialization) {
     EXPECT_EQ(latticeFCC->getNColumns(), imageFCC->getNColumns());
     EXPECT_EQ(latticeFCC->getNLayers(), imageFCC->getNLayers());
     EXPECT_EQ(latticeFCC->getNElements(), imageFCC->getNElements());
-    EXPECT_EQ(latticeFCC->getDensity(), imageFCC->getScaleFactor());
+    EXPECT_EQ(latticeFCC->getDensity(), imageFCC->getDensity());
     EXPECT_EQ(nBands, imageFCC->getNBands());
     EXPECT_EQ(long(data), long(imageFCC->getData()));
     EXPECT_NE(latticeFCC->getNRows(), imageFCC->getNRows() + 1);
     EXPECT_NE(latticeFCC->getNColumns(), imageFCC->getNColumns() + 1);
     EXPECT_NE(latticeFCC->getNLayers(), imageFCC->getNLayers() + 1);
     EXPECT_NE(latticeFCC->getNElements(), imageFCC->getNElements() + 1);
-    EXPECT_NE(0.0, imageFCC->getScaleFactor());
+    EXPECT_NE(0.0, imageFCC->getDensity());
     EXPECT_NE(nBands, imageFCC->getNBands() + 1);
     EXPECT_NE(0, long(imageFCC->getData()));
     
@@ -259,7 +259,7 @@ TEST(Image,copying) {
     EXPECT_EQ(original.getNColumns(), copy.getNColumns());
     EXPECT_EQ(original.getNLayers(), copy.getNLayers());
     EXPECT_EQ(original.getNElements(), copy.getNElements());
-    EXPECT_EQ(original.getScaleFactor(), copy.getScaleFactor());
+    EXPECT_EQ(original.getDensity(), copy.getDensity());
     EXPECT_EQ(original.getNBands(), copy.getNBands());
     EXPECT_EQ(original.getData(), copy.getData());
 

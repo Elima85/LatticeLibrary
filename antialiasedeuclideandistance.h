@@ -8,6 +8,7 @@
 #include "pnorm.h"
 #include <vector>
 #include <cfloat> // DBL_MAX
+#include "distancetovoronoicellcenter.h"
 
 namespace LatticeLib {
 
@@ -26,7 +27,7 @@ namespace LatticeLib {
 	 * [Linnér and Strand 2014] (http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=6976896&url=http%3A%2F%2Fieeexplore.ieee.org%2Fxpls%2Fabs_all.jsp%3Farnumber%3D6976896)
 	 */
 	template<class T>
-	class AntiAliasedEuclideanDistance : public DistanceMeasure<T> { // TODO: Implement Lattice::coverageToInternalDistance()! Test!
+	class AntiAliasedEuclideanDistance : public DistanceMeasure<T> { // TODO: Test!
 
 	private:
 		/** Index of the closest edge element to each spatial element in the image. */
@@ -58,6 +59,7 @@ namespace LatticeLib {
 			T intensityRange = maxIntensity - minIntensity;
 			Image<T> image = input.getImage();
 			int nElements = image.getNElements();
+			DistanceToVoronoiCellCenter subElementDistance;
 			for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
 				if (image(elementIndex, bandIndex) > 0) {
 					if (image(elementIndex, bandIndex) == 1) {// object element
@@ -81,7 +83,7 @@ namespace LatticeLib {
 						roots.setElement(elementIndex, bandIndex) = elementIndex;
 						originalRoots[elementIndex] = elementIndex;
 						double coverage = (image(elementIndex, bandIndex) - minIntensity)/ intensityRange;
-						distanceTransform.setElement(elementIndex, bandIndex) = image.getLattice().coverageToInternalDistance(coverage);
+						distanceTransform.setElement(elementIndex, bandIndex) = subElementDistance.compute(input, elementIndex, bandIndex);
 						toQueue.push_back(PriorityQueueElement<T>(elementIndex, distanceTransform(elementIndex, bandIndex)));
 					}
 				}
@@ -106,7 +108,7 @@ namespace LatticeLib {
 			for (int neighborIndex = 0; neighborIndex < nNeighbors; neighborIndex++) {
 				int neighborGlobalIndex = neighbors[neighborIndex].getIndex();
 				double distance = input.getImage().euclideanDistance(elementIndex, neighborGlobalIndex) + distanceTransform(originalRoots[elementIndex],bandIndex);
-				if (distance < distanceTransform(neighborGlobalIndex, labelIndex)) {
+				if (distanceTransform(neighborGlobalIndex, labelIndex) - distance > DBL_EPSILON) {
 					distanceTransform.setElement(neighborGlobalIndex, bandIndex, distance);
 					roots.setElement(neighborGlobalIndex, bandIndex, elementIndex);
 					originalRoots[neighborGlobalIndex] = originalRoots[elementIndex];

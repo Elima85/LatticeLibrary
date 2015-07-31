@@ -1,5 +1,5 @@
-#ifndef LATTICE_H
-#define LATTICE_H
+#ifndef LATTICELIBRARY_LATTICE_H
+#define LATTICELIBRARY_LATTICE_H
 
 #include "neighbor.h"
 #include <vector>
@@ -220,9 +220,13 @@ namespace LatticeLib {
         void euclideanDistanceVector(int elementIndex1, int elementIndex2, vector<double> &distanceVector) const;
 
         /*
-         * Approximates the distance from the spel center to an edge within the spel based on the coverage value of the spel.
+         * Approximates the distance from the element center to an edge intersecting the element based on the coverage value of the element.
+         *
+         * Parameter	| in/out	| Comment
+         * :----------	| :-------	| :--------
+         * coverage     | INPUT     | Element coverage value.
          */
-        // TODO: virtual double coverageToInternalDistance(double coverage) const = 0;
+        virtual double approximateDistanceToElementCenter(double coverage) const = 0;
 
         /**
         * Returns the neighbors of an element.
