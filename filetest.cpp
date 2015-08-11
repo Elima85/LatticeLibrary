@@ -10,7 +10,7 @@ TEST(Files, readVolume) {
     int nR = 2, nC = 3, nL = 4, nB = 5;
     int nElements = nR * nC * nL;
     int nTotal = nB * nElements;
-    char filename[] = "testimage2345.bin";
+    char filename[] = "testfiles/testimage2345.bin";
     char *filenamepointer = filename;
     double *fromFile = readVolume(filenamepointer, nTotal);
     double referenceData[] = {

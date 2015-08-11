@@ -265,7 +265,7 @@ TEST(Segmentation, AMBD) {
     int nBands = 3;
     int nTotal = nElements * nBands;
 
-    char inputFilename[] = "AMBDflowersRGB26.bin";
+    char inputFilename[] = "testfiles/AMBDflowersRGB26.bin";
     char *inputFilenamePointer = inputFilename;
     double *distanceTransformData = readVolume(inputFilenamePointer, nTotal);
     Image<double> distanceTransformImage(distanceTransformData, lattice, nBands);
@@ -283,7 +283,7 @@ TEST(Segmentation, AMBD) {
             doubleSegmentationData[dataIndex] = 0.0;
         }
     }
-    char newFilename[] = "AMBDflowersRGB26segmentation.bin";
+    char newFilename[] = "testfiles/AMBDflowersRGB26segmentation.bin";
     writeVolume(newFilename, doubleSegmentationData, nTotal);
 
     delete distanceTransformData;

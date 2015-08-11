@@ -7,6 +7,7 @@
 #include "vectoroperators.h"
 #include <cmath>
 #include <stdio.h>
+#include "exception.h"
 
 namespace LatticeLib {
 
@@ -26,10 +27,10 @@ namespace LatticeLib {
          */
         void crisp(Image<double> distanceTransform, Image<bool> segmentation) {
             if (distanceTransform.getLattice() != segmentation.getLattice()) {
-                // throw error
+                throw incompatibleParametersException();
             }
             if (distanceTransform.getNBands() != segmentation.getNBands()) {
-                // throw error
+                throw incompatibleParametersException();
             }
 
             int nElements = distanceTransform.getNElements();
@@ -61,10 +62,10 @@ namespace LatticeLib {
         template <class T>
         void fuzzy(Image<double> distanceTransform, IntensityWorkset<T> segmentation) {
             if (distanceTransform.getLattice() != segmentation.getImage().getLattice()) {
-                // TODO: throw error
+                throw incompatibleParametersException();
             }
             if (distanceTransform.getNBands() != segmentation.getImage().getNBands()) {
-                // TODO: throw error
+                throw incompatibleParametersException();
             }
 
             int nElements = distanceTransform.getNElements();
@@ -73,7 +74,7 @@ namespace LatticeLib {
             T maxCoverage = segmentation.getMaxIntensity();
             T coverageRange = maxCoverage - minCoverage;
             double scaleFactor = cbrt(1 / segmentation.getImage().getLattice().getDensity());
-            double radius = cbrt(3/(4 * PI)) * scaleFactor; // approximate the spel by a sphere
+            double radius = cbrt(3/(4 * PI)) * scaleFactor; // approximate the element by a sphere
             for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
                 vector<double> distances = distanceTransform[elementIndex];
                 int nearestLabel = getIndexOfMinimumValue(distances);

@@ -219,7 +219,7 @@ namespace LatticeLib {
         */
         void euclideanDistanceVector(int elementIndex1, int elementIndex2, vector<double> &distanceVector) const;
 
-        /*
+        /**
          * Approximates the distance from the element center to an edge intersecting the element based on the coverage value of the element.
          *
          * Parameter	| in/out	| Comment
@@ -227,6 +227,15 @@ namespace LatticeLib {
          * coverage     | INPUT     | Element coverage value.
          */
         virtual double approximateDistanceToElementCenter(double coverage) const = 0;
+
+        /**
+         * Approximates the area of the intersection between the element and a planar surface based on the coverage value of the element.
+         *
+         * Parameter	| in/out	| Comment
+         * :----------	| :-------	| :--------
+         * coverage     | INPUT     | Element coverage value.
+         */
+        virtual double approximateIntersectionArea(double coverage) const = 0;
 
         /**
         * Returns the neighbors of an element.

@@ -2,6 +2,7 @@
 #include "defs.h"
 #include "exception.h"
 #include <cmath>
+#include "linearinterpolation.h"
 
 using namespace std;
 
@@ -44,12 +45,31 @@ namespace LatticeLib {
     double FCCLattice::getDepth() const {
         return this->indexToZ(0) + indexToZ(this->rclToIndex(0, 0, this->nLayers - 1));
     }
-
-    /* TODO: double coverageToInternalDistance(double coverage) const {
-        coverageIndex = round(coverage * 255);
-        double scaleFactor = cbrt(1/ this->latticeDensity);
-        return subSpelDistanceVoronoiFCC[coverageIndex] * [function of scaleFactor];
-    }*/
+    double FCCLattice::approximateDistanceToElementCenter(double coverage) const {
+        LinearInterpolation<int, double> interpolation;
+        double coveragePosition = coverage * 128;
+        vector<int> bounds;
+        bounds.push_back(floor(coveragePosition));
+        bounds.push_back(ceil(coveragePosition));
+        vector<double> values;
+        values.push_back(distanceTableFCC[bounds[0]]);
+        values.push_back(distanceTableFCC[bounds[1]]);
+        double scaleFactor = cbrt(1 / getDensity());
+        return interpolation.apply(bounds, values, coveragePosition) * scaleFactor;
+    }
+    double FCCLattice::approximateIntersectionArea(double coverage) const {
+        LinearInterpolation<int, double> interpolation;
+        double coveragePosition = coverage * 128;
+        vector<int> bounds;
+        bounds.push_back(floor(coveragePosition));
+        bounds.push_back(ceil(coveragePosition));
+        vector<double> values;
+        values.push_back(surfaceAreaTableFCC[bounds[0]]);
+        values.push_back(surfaceAreaTableFCC[bounds[1]]);
+        double scaleFactor = cbrt(1 / getDensity());
+        scaleFactor *= scaleFactor;
+        return interpolation.apply(bounds, values, coveragePosition) * scaleFactor;
+    }
     void FCCLattice::get12Neighbors(int rowIndex, int columnIndex, int layerIndex, vector<Neighbor> &neighbors) const {
         if (!this->isValid(rowIndex, columnIndex, layerIndex)) {
             throw outOfRangeException();

@@ -5,14 +5,14 @@
 
 namespace LatticeLib {
     /**
-     * Class for converting the intensity value of an element in an IntensityWorkset to the distance, in the range \f$[-0.5,0.5]\f$, between the element center and the surface of a fuzzy segmented object that intersects the Voronoi cell of that element.
+     * Class for converting the intensity value of an element in an IntensityWorkset to the distance between the element center and the surface of a fuzzy segmented object that intersects the Voronoi cell of that element.
      */
     template <class intensityTemplate>
     class DistanceToElementCenter {
 
     public:
         /**
-         * Approximates the distance, in the range \f$[-0.5,0.5]\f$, between the center of the specified element and the surface of a fuzzy segmented object that intersects the Voronoi cell of that element.
+         * Approximates the distance between the center of the specified element and the surface of a fuzzy segmented object that intersects the Voronoi cell of that element.
          *
          * Parameter    | in/out    | Comment
          * :---------   | :------   | :-------
