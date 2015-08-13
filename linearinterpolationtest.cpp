@@ -22,6 +22,10 @@ TEST(Interpolation, linearinterpolationInt) {
     double result;
     result = interpolation.apply(intPositions, intValues, 2.5);
     EXPECT_NEAR(25, result, EPSILONT);
+    result = interpolation.apply(intPositions, intValues, 0);
+    EXPECT_NEAR(0, result, EPSILONT);
+    result = interpolation.apply(intPositions, intValues, 4);
+    EXPECT_NEAR(40, result, EPSILONT);
     EXPECT_THROW(interpolation.apply(vector<int>(intPositions.begin(), intPositions.begin() + 1),
                                      vector<int>(intValues.begin(), intValues.begin() + 1), -1.0), incompatibleParametersException);
     EXPECT_THROW(interpolation.apply(intPositions, intValues, -1.0), incompatibleParametersException);

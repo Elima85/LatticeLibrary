@@ -4,6 +4,7 @@
 #include "interpolation.h"
 #include "exception.h"
 #include <vector>
+#include <stdio.h> // DEBUG
 
 namespace LatticeLib {
 
@@ -27,19 +28,22 @@ namespace LatticeLib {
          */
         double apply(vector <positionTemplate> referencePositions, vector <intensityTemplate> referenceValues,
                      double intermediatePosition) const {
+            //std::cout << "Inside LinearInterpolation::apply()" << std::endl;
             if ((referencePositions.size() < 2) || (referencePositions.size() != referenceValues.size())) {
+                std::cout << "LinearInterpolation.apply(): #positions: " << referencePositions.size() << ", #values: " << referenceValues.size() << endl;
                 throw incompatibleParametersException();
             }
-            positionTemplate position1, position2, value1, value2;
+            double position1, position2, value1, value2;
             double result;
             bool found = false;
             for (int positionIndex = 0; positionIndex < referencePositions.size() - 1; positionIndex++) {
-                if ((referencePositions[positionIndex] < intermediatePosition) && (referencePositions[positionIndex + 1] > intermediatePosition)) {
+                if ((referencePositions[positionIndex] <= intermediatePosition) && (referencePositions[positionIndex + 1] >= intermediatePosition)) {
                     position1 = referencePositions[positionIndex];
                     position2 = referencePositions[positionIndex + 1];
                     value1 = referenceValues[positionIndex];
                     value2 = referenceValues[positionIndex + 1];
                     found = true;
+                    //std::cout << "Found value." << std::endl;
                 }
             }
             if (found) {
@@ -48,6 +52,7 @@ namespace LatticeLib {
                 result =  value1 + subStep * inclination;
             }
             else {
+                std::cout << "LinearInterpolation.apply(): " << intermediatePosition << " is not in the span [" << referencePositions[0] << ", " << referencePositions[referencePositions.size() - 1] << "]." << std::endl;
                 throw incompatibleParametersException();
             }
             return result;

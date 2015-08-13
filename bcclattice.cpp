@@ -3,6 +3,7 @@
 #include "exception.h"
 #include <cmath>
 #include "linearinterpolation.h"
+#include <stdio.h> // DEBUG
 
 using namespace std;
 
@@ -46,8 +47,9 @@ namespace LatticeLib {
         return this->indexToZ(0) + this->indexToZ(this->getNElements() - 1);
     }
     double BCCLattice::approximateDistanceToElementCenter(double coverage) const {
+        //std::cout << "Inside BCCLattice::approximateDistanceToElementCenter()." << std::endl; // DEBUG
         LinearInterpolation<int, double> interpolation;
-        double coveragePosition = coverage * 128;
+        double coveragePosition = coverage * 127;
         vector<int> bounds;
         bounds.push_back(floor(coveragePosition));
         bounds.push_back(ceil(coveragePosition));
@@ -58,8 +60,8 @@ namespace LatticeLib {
         return interpolation.apply(bounds, values, coveragePosition) * scaleFactor;
     }
     double BCCLattice::approximateIntersectionArea(double coverage) const {
-        LinearInterpolation<int, double> interpolation;
-        double coveragePosition = coverage * 128;
+        //std::cout << "Inside BCCLattice::approximateIntersectionArea()." << std::endl; // DEBUG
+        double coveragePosition = coverage * 255;
         vector<int> bounds;
         bounds.push_back(floor(coveragePosition));
         bounds.push_back(ceil(coveragePosition));
@@ -67,7 +69,9 @@ namespace LatticeLib {
         values.push_back(surfaceAreaTableBCC[bounds[0]]);
         values.push_back(surfaceAreaTableBCC[bounds[1]]);
         double scaleFactor = cbrt(1 / getDensity());
-        scaleFactor *= scaleFactor;
+        scaleFactor = scaleFactor * scaleFactor;
+        LinearInterpolation<int, double> interpolation;
+        //std::cout << "coverage: " << coverage << ", index: " << coveragePosition << ", lower bound: " << values[0] << ", upper bound: " << values[1] << std::endl;
         return interpolation.apply(bounds, values, coveragePosition) * scaleFactor;
     }
     void BCCLattice::get8Neighbors(int rowIndex, int columnIndex, int layerIndex, vector<Neighbor> &neighbors) const {

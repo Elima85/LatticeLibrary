@@ -3,6 +3,11 @@
 
 #include "intensityworkset.h"
 #include "objectsurfacearea.h"
+#include "exception.h"
+#include <stdio.h> // DEBUG
+#include "defs.h" // DEBUG
+#include <cmath> // DEBUG
+#include <fstream> // DEBUG
 
 namespace LatticeLib {
 
@@ -22,7 +27,8 @@ namespace LatticeLib {
          * inputImage           | INPUT     | %Image containing the specified element.
          * labelIndex           | INPUT     | Label (band) index for the specified element.
          */
-        double compute(IntensityWorkset<intensityTemplate> inputImage, int labelIndex) const {
+        double compute(IntensityWorkset<intensityTemplate> &inputImage, int labelIndex) const {
+            //cout << "inputImage: min = " << int(inputImage.getMinIntensity()) << ", max = " << int(inputImage.getMaxIntensity()) << ", data = " << long(inputImage.getImage().getData()) << ", density = " << inputImage.getImage().getLattice().getDensity() << endl; // DEBUG
             int nElements = inputImage.getImage().getNElements();
             int start = labelIndex * nElements;
             int stop = start + nElements;
@@ -30,12 +36,23 @@ namespace LatticeLib {
             double minValue = inputImage.getMinIntensity();
             double maxValue = inputImage.getMaxIntensity();
             double range = maxValue - minValue;
+            //if (fabs(range) < EPSILONT) { // DEBUG
+            //    std::cout << "Range is too small." << std::endl; // DEBUG
+            //} // DEBUG
             double approximatedArea = 0.0;
+            //std::cout << "Traversing image data..." << std::endl; // DEBUG
             for (int dataIndex = start; dataIndex < stop; dataIndex++) {
-                intensityTemplate intensity = MIN(maxValue, MAX(minValue, data[dataIndex]));
-                double coverage = (double(intensity) - minValue) / range;
-                approximatedArea += inputImage.getImage().getLattice().approximateIntersectionArea(coverage);
+                double intensity = MIN(maxValue, MAX(minValue, data[dataIndex]));
+                double coverage = (intensity - minValue) / range;
+                //if (coverage < 0 || coverage > 1) { // DEBUG
+                //    std::cout << "coverage out of bounds for dataIndex = " << dataIndex << std::endl; // DEBUG
+                //} // DEBUG
+                if (coverage > 0 && coverage < 1) {
+                    approximatedArea = approximatedArea + inputImage.getImage().getLattice().approximateIntersectionArea(coverage);
+                    //std::cout << "index: " << dataIndex << ", intensity: " << intensity << ", coverage: " << coverage << ", area: " << inputImage.getImage().getLattice().approximateIntersectionArea(coverage) << std::endl;
+                }
             }
+            //std::cout << "\t computed area: " << approximatedArea << std::endl;
             return approximatedArea;
         }
     };

@@ -19,7 +19,7 @@ namespace LatticeLib {
          * inputImage           | INPUT     | %Image containing the specified element.
          * labelIndex           | INPUT     | Label (band) index for the specified element.
          */
-        virtual double compute(IntensityWorkset<intensityTemplate> inputImage, int labelIndex) const = 0;
+        virtual double compute(IntensityWorkset<intensityTemplate> &inputImage, int labelIndex) const = 0;
 
     };
 }
