@@ -47,7 +47,7 @@ namespace LatticeLib {
     }
     double FCCLattice::approximateDistanceToElementCenter(double coverage) const {
         LinearInterpolation<int, double> interpolation;
-        double coveragePosition = coverage * 128;
+        double coveragePosition = coverage * 127;
         vector<int> bounds;
         bounds.push_back(floor(coveragePosition));
         bounds.push_back(ceil(coveragePosition));
@@ -59,7 +59,7 @@ namespace LatticeLib {
     }
     double FCCLattice::approximateIntersectionArea(double coverage) const {
         LinearInterpolation<int, double> interpolation;
-        double coveragePosition = coverage * 128;
+        double coveragePosition = coverage * 255;
         vector<int> bounds;
         bounds.push_back(floor(coveragePosition));
         bounds.push_back(ceil(coveragePosition));

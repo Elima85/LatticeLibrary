@@ -30,7 +30,7 @@ namespace LatticeLib {
                      double intermediatePosition) const {
             //std::cout << "Inside LinearInterpolation::apply()" << std::endl;
             if ((referencePositions.size() < 2) || (referencePositions.size() != referenceValues.size())) {
-                std::cout << "LinearInterpolation.apply(): #positions: " << referencePositions.size() << ", #values: " << referenceValues.size() << endl;
+                //std::cout << "LinearInterpolation.apply(): #positions: " << referencePositions.size() << ", #values: " << referenceValues.size() << endl;
                 throw incompatibleParametersException();
             }
             double position1, position2, value1, value2;
@@ -43,16 +43,22 @@ namespace LatticeLib {
                     value1 = referenceValues[positionIndex];
                     value2 = referenceValues[positionIndex + 1];
                     found = true;
-                    //std::cout << "Found value." << std::endl;
+                    //std::cout << "Found position.";
                 }
             }
             if (found) {
-                double inclination = (value2 - value1) / (position2 - position1);
-                double subStep = intermediatePosition - position1;
-                result =  value1 + subStep * inclination;
+                if (position1 != position2) {
+                    double inclination = (value2 - value1) / (position2 - position1);
+                    double subStep = intermediatePosition - position1;
+                    result = value1 + subStep * inclination;
+                }
+                else {
+                    result = value1;
+                }
+                //std::cout << " Interpolated value: " << result << std::endl;
             }
             else {
-                std::cout << "LinearInterpolation.apply(): " << intermediatePosition << " is not in the span [" << referencePositions[0] << ", " << referencePositions[referencePositions.size() - 1] << "]." << std::endl;
+                //std::cout << "LinearInterpolation.apply(): " << intermediatePosition << " is not in the span [" << referencePositions[0] << ", " << referencePositions[referencePositions.size() - 1] << "]." << std::endl;
                 throw incompatibleParametersException();
             }
             return result;

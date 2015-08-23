@@ -72,6 +72,7 @@ namespace LatticeLib {
         scaleFactor = scaleFactor * scaleFactor;
         LinearInterpolation<int, double> interpolation;
         //std::cout << "coverage: " << coverage << ", index: " << coveragePosition << ", lower bound: " << values[0] << ", upper bound: " << values[1] << std::endl;
+        //std::cout << "interpolated value: " << interpolation.apply(bounds, values, coveragePosition) << std::endl;
         return interpolation.apply(bounds, values, coveragePosition) * scaleFactor;
     }
     void BCCLattice::get8Neighbors(int rowIndex, int columnIndex, int layerIndex, vector<Neighbor> &neighbors) const {

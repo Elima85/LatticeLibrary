@@ -51,13 +51,16 @@ set(MAIN_SOURCE_FILES
 set(TEST_SOURCE_FILES
     ${SOURCE_FILES}
     ${GTEST_ROOT}/src/gtest-all.cc
+    bcclatticetestareaapproximation.cpp
     bcclatticetestcoordinates.cpp
     bcclatticetestinitialization.cpp
     bcclatticetestneighbors.cpp
+    cclatticetestareaapproximation.cpp
     cclatticetestcoordinates.cpp
     cclatticetestinitialization.cpp
     cclatticetestneighbors.cpp
     dataredistributiontest.cpp
+    fcclatticetestareaapproximation.cpp
     fcclatticetestcoordinates.cpp
     fcclatticetestinitialization.cpp
     fcclatticetestneighbors.cpp
@@ -80,6 +83,7 @@ set(TEST_SOURCE_FILES
     sequencefiltertest.cpp
     spatialtemplatetest.cpp
     latticelibtest.cpp
+    uniformweighttest.cpp
     )
 
 include_directories(

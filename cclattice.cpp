@@ -13,7 +13,7 @@ namespace LatticeLib {
 
     double CCLattice::indexToX(int elementIndex) const {
         double scaleFactor = cbrt(1 / this->latticeDensity);
-        return scaleFactor * (this->indexToC(elementIndex) + 0.5); // scaleFactor är sidan på kuben
+        return scaleFactor * (this->indexToC(elementIndex) + 0.5);
     }
     double CCLattice::indexToY(int elementIndex) const {
         double scaleFactor = cbrt(1 / this->latticeDensity);
@@ -34,7 +34,7 @@ namespace LatticeLib {
     }
     double CCLattice::approximateDistanceToElementCenter(double coverage) const {
         LinearInterpolation<int, double> interpolation;
-        double coveragePosition = coverage * 128;
+        double coveragePosition = coverage * 127;
         vector<int> bounds;
         bounds.push_back(floor(coveragePosition));
         bounds.push_back(ceil(coveragePosition));
@@ -46,7 +46,7 @@ namespace LatticeLib {
     }
     double CCLattice::approximateIntersectionArea(double coverage) const {
         LinearInterpolation<int, double> interpolation;
-        double coveragePosition = coverage * 128;
+        double coveragePosition = coverage * 255;
         vector<int> bounds;
         bounds.push_back(floor(coveragePosition));
         bounds.push_back(ceil(coveragePosition));
