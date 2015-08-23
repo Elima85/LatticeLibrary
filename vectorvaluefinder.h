@@ -22,15 +22,6 @@ namespace LatticeLib {
         virtual ~VectorValueFinder() {}
 
         /**
-         * Returns the value of the vector element with some specific property.
-         *
-         * Parameter    | in/out    | Comment
-         * :---------   | :------   | :-------
-         * vector       | INPUT     | Vector in which to find the element.
-         */
-        virtual intensityTemplate getVectorElement(const vector<intensityTemplate> &vector) const = 0;
-
-        /**
          * Returns the index of a vector element with some specific property.
          *
          * Parameter    | in/out    | Comment
@@ -38,6 +29,18 @@ namespace LatticeLib {
          * vector       | INPUT     | Vector in which to find the element.
          */
         virtual int getVectorElementIndex(const vector<intensityTemplate> &vector) const = 0;
+
+        /**
+         * Returns the value of the vector element with some specific property.
+         *
+         * Parameter    | in/out    | Comment
+         * :---------   | :------   | :-------
+         * vector       | INPUT     | Vector in which to find the element.
+         */
+        virtual intensityTemplate getVectorElement(const vector<intensityTemplate> &vector) const {
+            int index = getVectorElementIndex(vector);
+            return vector[index];
+        };
     };
 }
 

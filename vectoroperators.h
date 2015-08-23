@@ -74,7 +74,7 @@ namespace LatticeLib {
         return result;
     }
 
-    template<class T>
+    /*template<class T>
     int getIndexOfMinimumValue(vector<T> v) {
         int length = v.size();
         int index;
@@ -86,9 +86,9 @@ namespace LatticeLib {
             }
         }
         return index;
-    }
+    }*/
 
-    template<class T>
+    /*template<class T>
     int getIndexOfMaximumValue(vector<T> v) {
         int length = v.size();
         int index;
@@ -100,7 +100,7 @@ namespace LatticeLib {
             }
         }
         return index;
-    }
+    }*/
 
     template<class T>
     T sumOfElements(vector<T> v) {

@@ -11,6 +11,8 @@ namespace LatticeLib {
 /**
  * Base class for a graph-based representation of a sampling lattice, to be used as a foundation for different applications.
  *
+ * The lattice point with index 0 is placed in the origin, which is in the upper left front corner.
+ *
  * Member 		| Comment
  * :-------		| :-------
  * nColumns		| Number of rows of the lattice.
@@ -180,13 +182,22 @@ namespace LatticeLib {
         virtual double indexToY(int elementIndex) const = 0;
 
         /**
-        * Converts the index of an element to its z-coordinate.
+         * Converts the index of an element to its z-coordinate.
          *
          * Parameter    | in/out	| Comment
          * :----------  | :-------	| :--------
          * elementIndex | INPUT     | Element index.
-        */
+         */
         virtual double indexToZ(int elementIndex) const = 0;
+
+        /**
+         * Returns the index of the element closest to the specified point.
+         *
+         * Parameter    | in/out	| Comment
+         * :----------	| :-------	| :--------
+         * coordinates	| INPUT 	| coordinates of the spatial elements
+         */
+        virtual int coordinatesToIndex(vector<double> coordinates) const = 0;
 
         /**
         * Uses indexTo[X,Y,Z](i) to compute the coordinates of an element based on its index.
@@ -194,7 +205,7 @@ namespace LatticeLib {
         * Parameter	    | in/out	| Comment
         * :----------	| :-------	| :--------
         * elementIndex  | INPUT 	| index of element
-        * coordinates	| OUTPUT	| coordinates of the spatial elements
+        * coordinates	| OUTPUT	| coordinates of the spatial element
         */
         void getCoordinates(int elementIndex, vector<double> &coordinates) const;
 

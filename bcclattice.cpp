@@ -4,6 +4,9 @@
 #include <cmath>
 #include "linearinterpolation.h"
 #include <stdio.h> // DEBUG
+#include "pnorm.h"
+#include <vector>
+#include "vectoroperators.h"
 
 using namespace std;
 
@@ -19,7 +22,7 @@ namespace LatticeLib {
         double scaleFactor = cbrt(1 / this->latticeDensity);
         c = this->indexToC(elementIndex);
         l = this->indexToL(elementIndex);
-        x = scaleFactor * ((1 + !IS_EVEN(l)) * BCCOFFSET + c * BCCSQFACEDISTANCE);
+        x = scaleFactor * ((!IS_EVEN(l)) * BCCOFFSET + c * BCCSQFACEDISTANCE);
         return x;
     }
     double BCCLattice::indexToY(int elementIndex) const {
@@ -28,23 +31,48 @@ namespace LatticeLib {
         double scaleFactor = cbrt(1 / this->latticeDensity);
         r = this->indexToR(elementIndex);
         l = this->indexToL(elementIndex);
-        y = scaleFactor * ((1 + !IS_EVEN(l)) * BCCOFFSET + r * BCCSQFACEDISTANCE);
+        y = scaleFactor * ((!IS_EVEN(l)) * BCCOFFSET + r * BCCSQFACEDISTANCE);
         return y;
     }
     double BCCLattice::indexToZ(int elementIndex) const {
         int l = this->indexToL(elementIndex);
         double scaleFactor = cbrt(1 / this->latticeDensity);
-        double z = scaleFactor * (1 + l) * BCCOFFSET;
+        double z = scaleFactor * (l) * BCCOFFSET;
         return z;
     }
+    int BCCLattice::coordinatesToIndex(vector<double> coordinates) const {
+        if (coordinates.size() != 3) {
+            throw incompatibleParametersException();
+        }
+        double scaleFactor = cbrt(1 / this->latticeDensity);
+        int prelColumnIndex = MAX(0, MIN(this->nColumns - 1, round(coordinates[0] / (scaleFactor * BCCSQFACEDISTANCE))));
+        int prelRowIndex = MAX(0, MIN(this->nRows - 1, round(coordinates[1] / (scaleFactor * BCCSQFACEDISTANCE))));
+        int prelLayerIndex = MAX(0, MIN(this->nLayers - 1, round(coordinates[2] / (scaleFactor * BCCOFFSET))));
+        int prelIndex = this->rclToIndex(prelRowIndex, prelColumnIndex, prelLayerIndex);
+        vector<double> potentialCoordinates;
+        this->getCoordinates(prelIndex, potentialCoordinates);
+        PNorm<double> norm(2);
+        double smallestDistance = norm.compute(coordinates - potentialCoordinates);
+        vector<Neighbor> neighbors;
+        this->getNeighbors(prelIndex, 14, neighbors);
+        for (int neighborIndex = 0; neighborIndex < neighbors.size(); neighborIndex++) {
+            this->getCoordinates(neighbors[neighborIndex].getElementIndex(), potentialCoordinates);
+            double prelDistance = norm.compute(coordinates - potentialCoordinates);
+            if (prelDistance < smallestDistance) {
+                smallestDistance = prelDistance;
+                prelIndex = neighbors[neighborIndex].getElementIndex();
+            }
+        }
+        return prelIndex;
+    }
     double BCCLattice::getWidth() const {
-        return this->indexToX(0) + this->indexToX(this->rclToIndex(0, this->nColumns - 1, (this->nLayers > 1)));
+        return (this->nColumns * BCCSQFACEDISTANCE + (this->nLayers > 1) * BCCOFFSET) * cbrt(1 / this->latticeDensity);
     }
     double BCCLattice::getHeight() const {
-        return this->indexToY(0) + this->indexToY(this->rclToIndex(this->nRows - 1, 0, (this->nLayers > 1)));
+        return (this->nRows * BCCSQFACEDISTANCE + (this->nLayers > 1) * BCCOFFSET) * cbrt(1 / this->latticeDensity);
     }
     double BCCLattice::getDepth() const {
-        return this->indexToZ(0) + this->indexToZ(this->getNElements() - 1);
+        return (this->nLayers + 1) * BCCOFFSET * cbrt(1 / this->latticeDensity);
     }
     double BCCLattice::approximateDistanceToElementCenter(double coverage) const {
         //std::cout << "Inside BCCLattice::approximateDistanceToElementCenter()." << std::endl; // DEBUG
@@ -60,7 +88,6 @@ namespace LatticeLib {
         return interpolation.apply(bounds, values, coveragePosition) * scaleFactor;
     }
     double BCCLattice::approximateIntersectionArea(double coverage) const {
-        //std::cout << "Inside BCCLattice::approximateIntersectionArea()." << std::endl; // DEBUG
         double coveragePosition = coverage * 255;
         vector<int> bounds;
         bounds.push_back(floor(coveragePosition));
@@ -71,8 +98,6 @@ namespace LatticeLib {
         double scaleFactor = cbrt(1 / getDensity());
         scaleFactor = scaleFactor * scaleFactor;
         LinearInterpolation<int, double> interpolation;
-        //std::cout << "coverage: " << coverage << ", index: " << coveragePosition << ", lower bound: " << values[0] << ", upper bound: " << values[1] << std::endl;
-        //std::cout << "interpolated value: " << interpolation.apply(bounds, values, coveragePosition) << std::endl;
         return interpolation.apply(bounds, values, coveragePosition) * scaleFactor;
     }
     void BCCLattice::get8Neighbors(int rowIndex, int columnIndex, int layerIndex, vector<Neighbor> &neighbors) const {

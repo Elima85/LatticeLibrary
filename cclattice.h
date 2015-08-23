@@ -163,6 +163,15 @@ namespace LatticeLib {
         double indexToZ(int elementIndex) const;
 
         /**
+         * Implements Lattice::coordinatesToIndex();
+         *
+         * Parameter    | in/out	| Comment
+         * :----------	| :-------	| :--------
+         * coordinates	| INPUT 	| coordinates of the spatial elements
+         */
+        int coordinatesToIndex(vector<double> coordinates) const;
+
+        /**
          * Implements Lattice::approximateDistanceToElementCenter().
          *
          * Parameter	| in/out	| Comment

@@ -21,7 +21,7 @@ namespace LatticeLib {
          * :---------   | :------   | :-------
          * vector       | INPUT     | Vector in which to find the element.
          */
-        intensityTemplate getVectorElement(const vector<intensityTemplate> &vector) const {
+        /*intensityTemplate getVectorElement(const vector<intensityTemplate> &vector) const {
             int length = vector.size();
             intensityTemplate maxValue = -INF;
             for (int elementIndex = 0; elementIndex < length; elementIndex++) {
@@ -30,7 +30,7 @@ namespace LatticeLib {
                 }
             }
             return maxValue;
-        }
+        }*/
 
         /**
          * Implements VectorIndexPicker::getVectorElementIndex().
@@ -46,7 +46,7 @@ namespace LatticeLib {
             int indexOfMaximumValue;
             double maxValue = -INF;
             for (int elementIndex = 0; elementIndex < length; elementIndex++) {
-                if (vector[elementIndex] < maxValue) {
+                if (vector[elementIndex] > maxValue) {
                     maxValue = vector[elementIndex];
                     indexOfMaximumValue = elementIndex;
                 }

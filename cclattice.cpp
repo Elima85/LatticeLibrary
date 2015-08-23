@@ -2,6 +2,8 @@
 #include "exception.h"
 #include <cmath>
 #include "linearinterpolation.h"
+#include "defs.h"
+#include <stdio.h>
 
 using namespace std;
 
@@ -13,24 +15,34 @@ namespace LatticeLib {
 
     double CCLattice::indexToX(int elementIndex) const {
         double scaleFactor = cbrt(1 / this->latticeDensity);
-        return scaleFactor * (this->indexToC(elementIndex) + 0.5);
+        return scaleFactor * this->indexToC(elementIndex);
     }
     double CCLattice::indexToY(int elementIndex) const {
         double scaleFactor = cbrt(1 / this->latticeDensity);
-        return scaleFactor * (this->indexToR(elementIndex) + 0.5);
+        return scaleFactor * this->indexToR(elementIndex);
     }
     double CCLattice::indexToZ(int elementIndex) const {
         double scaleFactor = cbrt(1 / this->latticeDensity);
-        return scaleFactor * (this->indexToL(elementIndex) + 0.5);
+        return scaleFactor * this->indexToL(elementIndex);
+    }
+    int CCLattice::coordinatesToIndex(vector<double> coordinates) const {
+        if (coordinates.size() != 3) {
+            throw incompatibleParametersException();
+        }
+        double scaleFactor = cbrt(1 / this->latticeDensity);
+        int columnIndex = MAX(0, MIN(this->nColumns - 1, round(coordinates[0] / scaleFactor)));
+        int rowIndex = MAX(0, MIN(this->nRows - 1, round(coordinates[1] / scaleFactor)));
+        int layerIndex = MAX(0, MIN(this->nLayers - 1, round(coordinates[2] / scaleFactor)));
+        return this->rclToIndex(rowIndex, columnIndex, layerIndex);
     }
     double CCLattice::getWidth() const {
-        return this->indexToX(0) + this->indexToX(this->rclToIndex(0, this->nColumns - 1, 0));
+        return this->nColumns * cbrt(1 / this->latticeDensity);
     }
     double CCLattice::getHeight() const {
-        return this->indexToY(0) + this->indexToY(this->rclToIndex(this->nRows - 1, 0, 0));
+        return this->nRows * cbrt(1 / this->latticeDensity);
     }
     double CCLattice::getDepth() const {
-        return this->indexToZ(0) + this->indexToZ(this->rclToIndex(0, 0, this->nLayers - 1));
+        return this->nLayers * cbrt(1 / this->latticeDensity);
     }
     double CCLattice::approximateDistanceToElementCenter(double coverage) const {
         LinearInterpolation<int, double> interpolation;

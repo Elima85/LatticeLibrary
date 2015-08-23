@@ -5,6 +5,7 @@
 #include "weightassignment.h"
 #include <vector>
 #include <math.h> // exp
+#include "pnorm.h"
 
 namespace LatticeLib {
 
@@ -65,10 +66,8 @@ namespace LatticeLib {
             referenceImage.getCoordinates(referenceElementIndex, referenceCoordinates);
             vector<double> inputCoordinates;
             inputImage.getCoordinates(inputElementIndex, inputCoordinates);
-            double xDistance = referenceCoordinates[0] - inputCoordinates[0];
-            double yDistance = referenceCoordinates[1] - inputCoordinates[1];
-            double zDistance = referenceCoordinates[2] - inputCoordinates[2];
-            double distance = sqrt(xDistance * xDistance + yDistance * yDistance + zDistance * zDistance);
+            PNorm norm(2);
+            double distance = norm(referenceCoordinates - inputCoordinates);
             return 1/(standardDeviation * sqrt(2 * PI)) * exp(distance * distance/(2 * standardDeviation * standardDeviation));
         }
     };

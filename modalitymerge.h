@@ -3,6 +3,9 @@
 
 #include "image.h"
 #include "vectoroperators.h"
+#include "minimumvaluefinder.h"
+#include "maximumvaluefinder.h"
+#include <stdio.h>
 
 namespace LatticeLib {
 
@@ -24,38 +27,39 @@ namespace LatticeLib {
          * option		| INPUT		| Decides how to merge the modality bands into one <br> blendOption::min: minimum value is kept <br> blendOption::max: maximum value is kept <br> blendOption::mean: returns the mean intensity for each element <br> blendOption::sum: returns the sum of the intensities for each element
          * result		| OUTPUT	| Blended values. Needs to be of length >= nElements.
          */
-        template<class T>
-        void mergeAllBands(Image<T> image, blendOption option, T* result) const {
+        template<class intensityTemplate>
+        void mergeAllBands(Image<intensityTemplate> image, blendOption option, intensityTemplate* result) const {
             switch (option) {
                 case min:
                     for (int elementIndex = 0; elementIndex < image.getNElements(); elementIndex++) {
-                        vector <T> intensities = image[elementIndex];
-                        int minIndex = getIndexOfMinimumValue(intensities);
+                        vector<intensityTemplate> intensities = image[elementIndex];
+                        MinimumValueFinder<intensityTemplate> valueFinder;
+                        int minIndex = valueFinder.getVectorElementIndex(intensities);
                         result[elementIndex] = intensities[minIndex];
                     }
                     break;
                 case max:
                     for (int elementIndex = 0; elementIndex < image.getNElements(); elementIndex++) {
-                        vector <T> intensities = image[elementIndex];
-                        int maxIndex = getIndexOfMaximumValue(intensities);
+                        vector<intensityTemplate> intensities = image[elementIndex];
+                        MaximumValueFinder<intensityTemplate> valueFinder;
+                        int maxIndex = valueFinder.getVectorElementIndex(intensities);
                         result[elementIndex] = intensities[maxIndex];
                     }
                     break;
                 case mean:
                     for (int elementIndex = 0; elementIndex < image.getNElements(); elementIndex++) {
-                        vector <T> intensities = image[elementIndex];
-                        result[elementIndex] = T(meanValue(intensities));
+                        vector <intensityTemplate> intensities = image[elementIndex];
+                        result[elementIndex] = intensityTemplate(meanValue(intensities));
                     }
                     break;
                 case sum:
                     for (int elementIndex = 0; elementIndex < image.getNElements(); elementIndex++) {
-                        vector <T> intensities = image[elementIndex];
-                        result[elementIndex] = T(sumOfElements(intensities));
+                        vector <intensityTemplate> intensities = image[elementIndex];
+                        result[elementIndex] = intensityTemplate(sumOfElements(intensities));
                     }
                     break;
                 default:
-                    return;
-                    // throw error or exception
+                    throw incompatibleParametersException();
             }
         }
 
@@ -69,51 +73,52 @@ namespace LatticeLib {
          * option		| INPUT		| Decides how to merge the modality bands into one <br> blendOption::min: minimum value is kept <br> blendOption::max: maximum value is kept <br> blendOption::mean: returns the mean intensity for each element <br> blendOption::sum: returns the sum of the intensities for each element
          * result		| OUTPUT	| Blended values. Needs to be of length >= nElements.
          */
-        template<class T>
-        void mergeBands(Image<T> image, vector<int> bandIndices, blendOption option, T *result) const {
+        template<class intensityTemplate>
+        void mergeBands(Image<intensityTemplate> image, vector<int> bandIndices, blendOption option, intensityTemplate *result) const {
             int nBands = bandIndices.size();
             switch (option) {
                 case min:
                     for (int elementIndex = 0; elementIndex < image.getNElements(); elementIndex++) {
-                        vector<T> intensities;
+                        vector<intensityTemplate> intensities;
                         for (int bandIndex = 0; bandIndex < nBands; bandIndex++) {
                             intensities.push_back(image(elementIndex,bandIndices[bandIndex]));
                         }
-                        int minIndex = getIndexOfMinimumValue(intensities);
+                        MinimumValueFinder<intensityTemplate> valueFinder;
+                        int minIndex = valueFinder.getVectorElementIndex(intensities);
                         result[elementIndex] = intensities[minIndex];
                     }
                     break;
                 case max:
                     for (int elementIndex = 0; elementIndex < image.getNElements(); elementIndex++) {
-                        vector<T> intensities;
+                        vector<intensityTemplate> intensities;
                         for (int bandIndex = 0; bandIndex < nBands; bandIndex++) {
                             intensities.push_back(image(elementIndex, bandIndices[bandIndex]));
                         }
-                        int maxIndex = getIndexOfMaximumValue(intensities);
+                        MaximumValueFinder<intensityTemplate> valueFinder;
+                        int maxIndex = valueFinder.getVectorElementIndex(intensities);
                         result[elementIndex] = intensities[maxIndex];
                     }
                     break;
                 case mean:
                     for (int elementIndex = 0; elementIndex < image.getNElements(); elementIndex++) {
-                        vector<T> intensities;
+                        vector<intensityTemplate> intensities;
                         for (int bandIndex = 0; bandIndex < nBands; bandIndex++) {
                             intensities.push_back(image(elementIndex, bandIndices[bandIndex]));
                         }
-                        result[elementIndex] = T(meanValue(intensities));
+                        result[elementIndex] = intensityTemplate(meanValue(intensities));
                     }
                     break;
                 case sum:
                     for (int elementIndex = 0; elementIndex < image.getNElements(); elementIndex++) {
-                        vector<T> intensities;
+                        vector<intensityTemplate> intensities;
                         for (int bandIndex = 0; bandIndex < nBands; bandIndex++) {
                             intensities.push_back(image(elementIndex, bandIndices[bandIndex]));
                         }
-                        result[elementIndex] = T(sumOfElements(intensities));
+                        result[elementIndex] = intensityTemplate(sumOfElements(intensities));
                     }
                     break;
                 default:
-                    // throw error or exception
-                    return;
+                    throw incompatibleParametersException();
             }
         }
 

@@ -8,6 +8,7 @@
 #include <cmath>
 #include <stdio.h>
 #include "exception.h"
+#include "minimumvaluefinder.h"
 
 namespace LatticeLib {
 
@@ -35,10 +36,11 @@ namespace LatticeLib {
 
             int nElements = distanceTransform.getNElements();
             int nBands = distanceTransform.getNBands();
+            MinimumValueFinder<double> valueFinder;
             for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
                 vector<double> distances = distanceTransform[elementIndex];
                 vector<bool> labels(nBands, false);
-                labels.at(getIndexOfMinimumValue(distances)) = true;
+                labels.at(valueFinder.getVectorElementIndex(distances)) = true;
                 segmentation.setElement(elementIndex,labels);
             }
         }
@@ -75,9 +77,10 @@ namespace LatticeLib {
             T coverageRange = maxCoverage - minCoverage;
             double scaleFactor = cbrt(1 / segmentation.getImage().getLattice().getDensity());
             double radius = cbrt(3/(4 * PI)) * scaleFactor; // approximate the element by a sphere
+            MinimumValueFinder<double> valueFinder;
             for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
                 vector<double> distances = distanceTransform[elementIndex];
-                int nearestLabel = getIndexOfMinimumValue(distances);
+                int nearestLabel = valueFinder.getVectorElementIndex(distances);
                 double smallestDistance = distances[nearestLabel];
                 vector<int> competingLabels;
                 int nCompetingLabels = 0;

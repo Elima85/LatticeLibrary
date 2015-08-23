@@ -2,6 +2,10 @@
 #include "defs.h"
 #include "bcclattice.h"
 #include <cmath>
+#include <vector>
+#include "pnorm.h"
+#include "vectoroperators.h"
+#include "neighbor.h"
 
 using namespace LatticeLib;
 
@@ -32,49 +36,49 @@ TEST(BCCLattice,coordinates) {
     vector<double> coordinates;
 
     // spel coordinates
-    EXPECT_NEAR(lattice1.indexToX(0), BCCOFFSET, EPSILONT);
-    EXPECT_NEAR(lattice1.indexToY(0), BCCOFFSET, EPSILONT);
-    EXPECT_NEAR(lattice1.indexToZ(0), BCCOFFSET, EPSILONT);
-    EXPECT_NEAR(lattice1.indexToX(82), BCCOFFSET + 4 * BCCSQFACEDISTANCE, EPSILONT);
-    EXPECT_NEAR(lattice1.indexToY(82), BCCOFFSET + 3 * BCCSQFACEDISTANCE, EPSILONT);
-    EXPECT_NEAR(lattice1.indexToZ(82), BCCOFFSET + BCCSQFACEDISTANCE, EPSILONT);
-    EXPECT_NEAR(lattice1.indexToX(112), BCCOFFSET + 9 * BCCOFFSET, EPSILONT);
-    EXPECT_NEAR(lattice1.indexToY(112), BCCOFFSET + 7 * BCCOFFSET, EPSILONT);
-    EXPECT_NEAR(lattice1.indexToZ(112), BCCOFFSET + 3 * BCCOFFSET, EPSILONT);
-    EXPECT_NEAR(lattice1.indexToX(209), BCCOFFSET + 5 * BCCSQFACEDISTANCE, EPSILONT);
-    EXPECT_NEAR(lattice1.indexToY(209), BCCOFFSET + 4 * BCCSQFACEDISTANCE, EPSILONT); // !!!!!!
-    EXPECT_NEAR(lattice1.indexToZ(209), BCCOFFSET + 3 * BCCSQFACEDISTANCE, EPSILONT);
+    EXPECT_NEAR(lattice1.indexToX(0), 0.0, EPSILONT);
+    EXPECT_NEAR(lattice1.indexToY(0), 0.0, EPSILONT);
+    EXPECT_NEAR(lattice1.indexToZ(0), 0.0, EPSILONT);
+    EXPECT_NEAR(lattice1.indexToX(82), 4 * BCCSQFACEDISTANCE, EPSILONT);
+    EXPECT_NEAR(lattice1.indexToY(82), 3 * BCCSQFACEDISTANCE, EPSILONT);
+    EXPECT_NEAR(lattice1.indexToZ(82), BCCSQFACEDISTANCE, EPSILONT);
+    EXPECT_NEAR(lattice1.indexToX(112), 9 * BCCOFFSET, EPSILONT);
+    EXPECT_NEAR(lattice1.indexToY(112), 7 * BCCOFFSET, EPSILONT);
+    EXPECT_NEAR(lattice1.indexToZ(112), 3 * BCCOFFSET, EPSILONT);
+    EXPECT_NEAR(lattice1.indexToX(209), 5 * BCCSQFACEDISTANCE, EPSILONT);
+    EXPECT_NEAR(lattice1.indexToY(209), 4 * BCCSQFACEDISTANCE, EPSILONT); // !!!!!!
+    EXPECT_NEAR(lattice1.indexToZ(209), 3 * BCCSQFACEDISTANCE, EPSILONT);
 
     lattice1.getCoordinates(0, coordinates);
-    EXPECT_NEAR(coordinates[0], BCCOFFSET, EPSILONT);
-    EXPECT_NEAR(coordinates[1], BCCOFFSET, EPSILONT);
-    EXPECT_NEAR(coordinates[2], BCCOFFSET, EPSILONT);
+    EXPECT_NEAR(coordinates[0], 0.0, EPSILONT);
+    EXPECT_NEAR(coordinates[1], 0.0, EPSILONT);
+    EXPECT_NEAR(coordinates[2], 0.0, EPSILONT);
     lattice1.getCoordinates(82, coordinates);
-    EXPECT_NEAR(coordinates[0], BCCOFFSET + 4 * BCCSQFACEDISTANCE, EPSILONT);
-    EXPECT_NEAR(coordinates[1], BCCOFFSET + 3 * BCCSQFACEDISTANCE, EPSILONT);
-    EXPECT_NEAR(coordinates[2], BCCOFFSET + BCCSQFACEDISTANCE, EPSILONT);
+    EXPECT_NEAR(coordinates[0], 4 * BCCSQFACEDISTANCE, EPSILONT);
+    EXPECT_NEAR(coordinates[1], 3 * BCCSQFACEDISTANCE, EPSILONT);
+    EXPECT_NEAR(coordinates[2], BCCSQFACEDISTANCE, EPSILONT);
     lattice1.getCoordinates(112, coordinates);
-    EXPECT_NEAR(coordinates[0], BCCOFFSET + 9 * BCCOFFSET, EPSILONT);
-    EXPECT_NEAR(coordinates[1], BCCOFFSET + 7 * BCCOFFSET, EPSILONT);
-    EXPECT_NEAR(coordinates[2], BCCOFFSET + 3 * BCCOFFSET, EPSILONT);
+    EXPECT_NEAR(coordinates[0], 9 * BCCOFFSET, EPSILONT);
+    EXPECT_NEAR(coordinates[1], 7 * BCCOFFSET, EPSILONT);
+    EXPECT_NEAR(coordinates[2], 3 * BCCOFFSET, EPSILONT);
     lattice1.getCoordinates(209, coordinates);
-    EXPECT_NEAR(coordinates[0], BCCOFFSET + 5 * BCCSQFACEDISTANCE, EPSILONT);
-    EXPECT_NEAR(coordinates[1], BCCOFFSET + 4 * BCCSQFACEDISTANCE, EPSILONT);
-    EXPECT_NEAR(coordinates[2], BCCOFFSET + 3 * BCCSQFACEDISTANCE, EPSILONT);
+    EXPECT_NEAR(coordinates[0], 5 * BCCSQFACEDISTANCE, EPSILONT);
+    EXPECT_NEAR(coordinates[1], 4 * BCCSQFACEDISTANCE, EPSILONT);
+    EXPECT_NEAR(coordinates[2], 3 * BCCSQFACEDISTANCE, EPSILONT);
 
 
-    EXPECT_NEAR(lattice2.indexToX(0), scaleFactor2 * (BCCOFFSET), EPSILONT);
-    EXPECT_NEAR(lattice2.indexToY(0), scaleFactor2 * (BCCOFFSET), EPSILONT);
-    EXPECT_NEAR(lattice2.indexToZ(0), scaleFactor2 * (BCCOFFSET), EPSILONT);
-    EXPECT_NEAR(lattice2.indexToX(82), scaleFactor2 * (BCCOFFSET + 4 * BCCSQFACEDISTANCE), EPSILONT);
-    EXPECT_NEAR(lattice2.indexToY(82), scaleFactor2 * (BCCOFFSET + 3 * BCCSQFACEDISTANCE), EPSILONT);
-    EXPECT_NEAR(lattice2.indexToZ(82), scaleFactor2 * (BCCOFFSET + BCCSQFACEDISTANCE), EPSILONT);
-    EXPECT_NEAR(lattice2.indexToX(112), scaleFactor2 * (BCCOFFSET + 9 * BCCOFFSET), EPSILONT);
-    EXPECT_NEAR(lattice2.indexToY(112), scaleFactor2 * (BCCOFFSET + 7 * BCCOFFSET), EPSILONT);
-    EXPECT_NEAR(lattice2.indexToZ(112), scaleFactor2 * (BCCOFFSET + 3 * BCCOFFSET), EPSILONT);
-    EXPECT_NEAR(lattice2.indexToX(209), scaleFactor2 * (BCCOFFSET + 5 * BCCSQFACEDISTANCE), EPSILONT);
-    EXPECT_NEAR(lattice2.indexToY(209), scaleFactor2 * (BCCOFFSET + 4 * BCCSQFACEDISTANCE), EPSILONT); // !!!!!!
-    EXPECT_NEAR(lattice2.indexToZ(209), scaleFactor2 * (BCCOFFSET + 3 * BCCSQFACEDISTANCE), EPSILONT);
+    EXPECT_NEAR(lattice2.indexToX(0), 0.0, EPSILONT);
+    EXPECT_NEAR(lattice2.indexToY(0), 0.0, EPSILONT);
+    EXPECT_NEAR(lattice2.indexToZ(0), 0.0, EPSILONT);
+    EXPECT_NEAR(lattice2.indexToX(82), scaleFactor2 * (0.0 + 4 * BCCSQFACEDISTANCE), EPSILONT);
+    EXPECT_NEAR(lattice2.indexToY(82), scaleFactor2 * (0.0 + 3 * BCCSQFACEDISTANCE), EPSILONT);
+    EXPECT_NEAR(lattice2.indexToZ(82), scaleFactor2 * (0.0 + BCCSQFACEDISTANCE), EPSILONT);
+    EXPECT_NEAR(lattice2.indexToX(112), scaleFactor2 * (0.0 + 9 * BCCOFFSET), EPSILONT);
+    EXPECT_NEAR(lattice2.indexToY(112), scaleFactor2 * (0.0 + 7 * BCCOFFSET), EPSILONT);
+    EXPECT_NEAR(lattice2.indexToZ(112), scaleFactor2 * (0.0 + 3 * BCCOFFSET), EPSILONT);
+    EXPECT_NEAR(lattice2.indexToX(209), scaleFactor2 * (0.0 + 5 * BCCSQFACEDISTANCE), EPSILONT);
+    EXPECT_NEAR(lattice2.indexToY(209), scaleFactor2 * (0.0 + 4 * BCCSQFACEDISTANCE), EPSILONT); // !!!!!!
+    EXPECT_NEAR(lattice2.indexToZ(209), scaleFactor2 * (0.0 + 3 * BCCSQFACEDISTANCE), EPSILONT);
 
     EXPECT_GT(lattice1.indexToX(170) - lattice2.indexToX(170), EPSILONT);
     EXPECT_GT(lattice1.indexToY(170) - lattice2.indexToY(170), EPSILONT);
@@ -317,5 +321,138 @@ TEST(BCCLattice,distances) {
     EXPECT_NEAR(distanceVector[0], bbr2[0], EPSILONT);
     EXPECT_NEAR(distanceVector[1], bbr2[1], EPSILONT);
     EXPECT_NEAR(distanceVector[2], bbr2[2], EPSILONT);
+
+}
+
+TEST(BCCLattice, coordinatestoindex) {
+
+    int nRows = 5;
+    int nColumns = 6;
+    int nLayers = 7;
+    int nElements = nRows * nColumns * nLayers;
+    double density1 = 1.0;
+    double density2 = 2.5;
+    double scaleFactor2 = cbrt(1 / density2);
+    BCCLattice lattice1(nRows, nColumns, nLayers, density1);
+    BCCLattice lattice2(nRows, nColumns, nLayers, density2);
+
+    vector<double> coordinates;
+    coordinates.push_back(3.456);
+    coordinates.push_back(4.567);
+    coordinates.push_back(5.678);
+
+    int closestElementIndex = lattice1.coordinatesToIndex(coordinates);
+    vector<Neighbor> neighbors;
+    lattice1.getNeighbors(closestElementIndex, 14, neighbors);
+    PNorm<double> norm(2);
+    vector<double> closestPointCoordinates;
+    lattice1.getCoordinates(closestElementIndex, closestPointCoordinates);
+    double smallestDistance = norm.compute(coordinates - closestPointCoordinates);
+    for (int neighborIndex = 0; neighborIndex < neighbors.size(); neighborIndex++) {
+        string message = "index = ";
+        SCOPED_TRACE(message + to_string(neighborIndex));
+        vector<double> neighborCoordinates;
+        lattice1.getCoordinates(neighbors[neighborIndex].getElementIndex(), neighborCoordinates);
+        EXPECT_GT(norm.compute(coordinates - neighborCoordinates), smallestDistance);
+    }
+
+    closestElementIndex = lattice2.coordinatesToIndex(coordinates);
+    lattice2.getNeighbors(closestElementIndex, 14, neighbors);
+    lattice2.getCoordinates(closestElementIndex, closestPointCoordinates);
+    smallestDistance = norm.compute(coordinates - closestPointCoordinates);
+    for (int neighborIndex = 0; neighborIndex < neighbors.size(); neighborIndex++) {
+        string message = "index = ";
+        SCOPED_TRACE(message + to_string(neighborIndex));
+        vector<double> neighborCoordinates;
+        lattice2.getCoordinates(neighbors[neighborIndex].getElementIndex(), neighborCoordinates);
+        EXPECT_GT(norm.compute(coordinates - neighborCoordinates), smallestDistance);
+    }
+
+    coordinates.clear();
+    coordinates.push_back(0);
+    coordinates.push_back(0);
+    coordinates.push_back(0);
+
+    closestElementIndex = lattice1.coordinatesToIndex(coordinates);
+    lattice1.getNeighbors(closestElementIndex, 14, neighbors);
+    lattice1.getCoordinates(closestElementIndex, closestPointCoordinates);
+    smallestDistance = norm.compute(coordinates - closestPointCoordinates);
+    for (int neighborIndex = 0; neighborIndex < neighbors.size(); neighborIndex++) {
+        string message = "index = ";
+        SCOPED_TRACE(message + to_string(neighborIndex));
+        vector<double> neighborCoordinates;
+        lattice1.getCoordinates(neighbors[neighborIndex].getElementIndex(), neighborCoordinates);
+        EXPECT_GT(norm.compute(coordinates - neighborCoordinates), smallestDistance);
+    }
+
+    closestElementIndex = lattice2.coordinatesToIndex(coordinates);
+    lattice2.getNeighbors(closestElementIndex, 14, neighbors);
+    lattice2.getCoordinates(closestElementIndex, closestPointCoordinates);
+    smallestDistance = norm.compute(coordinates - closestPointCoordinates);
+    for (int neighborIndex = 0; neighborIndex < neighbors.size(); neighborIndex++) {
+        string message = "index = ";
+        SCOPED_TRACE(message + to_string(neighborIndex));
+        vector<double> neighborCoordinates;
+        lattice2.getCoordinates(neighbors[neighborIndex].getElementIndex(), neighborCoordinates);
+        EXPECT_GT(norm.compute(coordinates - neighborCoordinates), smallestDistance);
+    }
+
+    coordinates.clear();
+    coordinates.push_back(-1.0);
+    coordinates.push_back(-1.0);
+    coordinates.push_back(-1.0);
+
+    closestElementIndex = lattice1.coordinatesToIndex(coordinates);
+    lattice1.getNeighbors(closestElementIndex, 14, neighbors);
+    lattice1.getCoordinates(closestElementIndex, closestPointCoordinates);
+    smallestDistance = norm.compute(coordinates - closestPointCoordinates);
+    for (int neighborIndex = 0; neighborIndex < neighbors.size(); neighborIndex++) {
+        string message = "index = ";
+        SCOPED_TRACE(message + to_string(neighborIndex));
+        vector<double> neighborCoordinates;
+        lattice1.getCoordinates(neighbors[neighborIndex].getElementIndex(), neighborCoordinates);
+        EXPECT_GT(norm.compute(coordinates - neighborCoordinates), smallestDistance);
+    }
+
+    closestElementIndex = lattice2.coordinatesToIndex(coordinates);
+    lattice2.getNeighbors(closestElementIndex, 14, neighbors);
+    lattice2.getCoordinates(closestElementIndex, closestPointCoordinates);
+    smallestDistance = norm.compute(coordinates - closestPointCoordinates);
+    for (int neighborIndex = 0; neighborIndex < neighbors.size(); neighborIndex++) {
+        string message = "index = ";
+        SCOPED_TRACE(message + to_string(neighborIndex));
+        vector<double> neighborCoordinates;
+        lattice2.getCoordinates(neighbors[neighborIndex].getElementIndex(), neighborCoordinates);
+        EXPECT_GT(norm.compute(coordinates - neighborCoordinates), smallestDistance);
+    }
+
+    coordinates.clear();
+    coordinates.push_back(8.18949 + 1.0);
+    coordinates.push_back(6.92957 + 1.0);
+    coordinates.push_back(5.03968 + 1.0);
+
+    closestElementIndex = lattice1.coordinatesToIndex(coordinates);
+    lattice1.getNeighbors(closestElementIndex, 14, neighbors);
+    lattice1.getCoordinates(closestElementIndex, closestPointCoordinates);
+    smallestDistance = norm.compute(coordinates - closestPointCoordinates);
+    for (int neighborIndex = 0; neighborIndex < neighbors.size(); neighborIndex++) {
+        string message = "index = ";
+        SCOPED_TRACE(message + to_string(neighborIndex));
+        vector<double> neighborCoordinates;
+        lattice1.getCoordinates(neighbors[neighborIndex].getElementIndex(), neighborCoordinates);
+        EXPECT_GT(norm.compute(coordinates - neighborCoordinates), smallestDistance);
+    }
+
+    closestElementIndex = lattice2.coordinatesToIndex(coordinates);
+    lattice2.getNeighbors(closestElementIndex, 14, neighbors);
+    lattice2.getCoordinates(closestElementIndex, closestPointCoordinates);
+    smallestDistance = norm.compute(coordinates - closestPointCoordinates);
+    for (int neighborIndex = 0; neighborIndex < neighbors.size(); neighborIndex++) {
+        string message = "index = ";
+        SCOPED_TRACE(message + to_string(neighborIndex));
+        vector<double> neighborCoordinates;
+        lattice2.getCoordinates(neighbors[neighborIndex].getElementIndex(), neighborCoordinates);
+        EXPECT_GT(norm.compute(coordinates - neighborCoordinates), smallestDistance);
+    }
 
 }

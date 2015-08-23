@@ -6,7 +6,7 @@
 namespace LatticeLib {
 
     /**
-     * Class for assigning weights to spatial elements of Image objects, to be used in computations of weighted averages.
+     * Abstract base class for assigning weights to spatial elements of Image objects, to be used in computations of weighted averages.
      */
     template <class intensityTemplate>
     class WeightAssignment {

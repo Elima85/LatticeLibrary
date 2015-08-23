@@ -3,6 +3,9 @@
 #include "exception.h"
 #include <cmath>
 #include "linearinterpolation.h"
+#include "pnorm.h"
+#include <vector>
+#include "vectoroperators.h"
 
 using namespace std;
 
@@ -11,7 +14,6 @@ namespace LatticeLib {
     FCCLattice::FCCLattice(int rows, int columns, int layers, double density) : Lattice(rows, columns, layers, density) {};
     FCCLattice::FCCLattice(const FCCLattice &original) : Lattice(original) {};
     FCCLattice::~FCCLattice() {};
-
     double FCCLattice::indexToX(int elementIndex) const {
         int row, column, layer;
         double x;
@@ -19,7 +21,7 @@ namespace LatticeLib {
         row = this->indexToR(elementIndex);
         column = this->indexToC(elementIndex);
         layer = this->indexToL(elementIndex);
-        x = scaleFactor * ((1 + !IS_EVEN(layer + row)) * FCCOFFSET + column * FCCPOINTDISTANCE);
+        x = scaleFactor * ((!IS_EVEN(layer + row)) * FCCOFFSET + column * FCCPOINTDISTANCE);
         return x;
     }
     double FCCLattice::indexToY(int elementIndex) const {
@@ -27,23 +29,51 @@ namespace LatticeLib {
         double y;
         double scaleFactor = cbrt(1 / this->latticeDensity);
         row = this->indexToR(elementIndex);
-        y = scaleFactor * ((row + 1) * FCCOFFSET);
+        y = scaleFactor * ((row) * FCCOFFSET);
         return y;
     }
     double FCCLattice::indexToZ(int elementIndex) const {
         int layer = this->indexToL(elementIndex);
         double scaleFactor = cbrt(1 / this->latticeDensity);
-        double z = scaleFactor * ((layer + 1) * FCCOFFSET);
+        double z = scaleFactor * ((layer) * FCCOFFSET);
         return z;
     }
+    int FCCLattice::coordinatesToIndex(vector<double> coordinates) const {
+        if (coordinates.size() != 3) {
+            throw incompatibleParametersException();
+        }
+        double scaleFactor = cbrt(1 / this->latticeDensity);
+        int prelColumnIndex = MAX(0, MIN(this->nColumns - 1, round(coordinates[0] / (scaleFactor * FCCPOINTDISTANCE))));
+        int prelRowIndex = MAX(0, MIN(this->nRows - 1, round(coordinates[1] / (scaleFactor * FCCPOINTDISTANCE))));
+        int prelLayerIndex = MAX(0, MIN(this->nLayers - 1, round(coordinates[2] / (scaleFactor * FCCOFFSET))));
+        int prelIndex = this->rclToIndex(prelRowIndex, prelColumnIndex, prelLayerIndex);
+        vector<double> potentialCoordinates;
+        this->getCoordinates(prelIndex, potentialCoordinates);
+        PNorm<double> norm(2);
+        double smallestDistance = norm.compute(coordinates - potentialCoordinates);
+        vector<Neighbor> neighbors;
+        this->getNeighbors(prelIndex, 12, neighbors);
+        for (int neighborIndex = 0; neighborIndex < neighbors.size(); neighborIndex++) {
+            this->getCoordinates(neighbors[neighborIndex].getElementIndex(), potentialCoordinates);
+            double prelDistance = norm.compute(coordinates - potentialCoordinates);
+            if (prelDistance < smallestDistance) {
+                smallestDistance = prelDistance;
+                prelIndex = neighbors[neighborIndex].getElementIndex();
+            }
+        }
+        return prelIndex;
+    }
     double FCCLattice::getWidth() const {
-        return (1 + ((this->nRows > 1) || (this->nLayers > 1))) * this->indexToX(0) + this->indexToX(this->rclToIndex(0, this->nColumns - 1, 0));
+        return (this->nColumns * FCCPOINTDISTANCE + ((this->nLayers > 1) || (this->nRows > 1)) * FCCOFFSET) * cbrt(1 / this->latticeDensity);
+        //return (1 + ((this->nRows > 1) || (this->nLayers > 1))) * this->indexToX(0) + this->indexToX(this->rclToIndex(0, this->nColumns - 1, 0));
     }
     double FCCLattice::getHeight() const {
-        return this->indexToY(this->rclToIndex(this->nRows - 1, 0, 0)) + this->indexToY(0);
+        return (this->nRows + 1) * FCCOFFSET * cbrt(1 / this->latticeDensity);
+        //return this->indexToY(this->rclToIndex(this->nRows - 1, 0, 0)) + this->indexToY(0);
     }
     double FCCLattice::getDepth() const {
-        return this->indexToZ(0) + indexToZ(this->rclToIndex(0, 0, this->nLayers - 1));
+        return ((this->nLayers + 1) * FCCOFFSET) * cbrt(1 / this->latticeDensity);
+        //return this->indexToZ(0) + indexToZ(this->rclToIndex(0, 0, this->nLayers - 1));
     }
     double FCCLattice::approximateDistanceToElementCenter(double coverage) const {
         LinearInterpolation<int, double> interpolation;
