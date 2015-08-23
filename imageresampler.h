@@ -8,9 +8,9 @@
 #include "vectoroperators.h"
 #include "neighbor.h"
 #include "pnorm.h"
+#include <stdio.h>
 
 namespace LatticeLib {
-    template<class intensityTemplate>
     /**
      * Class for resampling image data from one lattice to another.
      *
@@ -19,6 +19,7 @@ namespace LatticeLib {
      * input image elements are set to zero intensity. If the output image is smaller than the input image, only part
      * of the input image is used.
      */
+    template<class intensityTemplate>
     class ImageResampler {
     public:
         /**
@@ -41,64 +42,26 @@ namespace LatticeLib {
             int newNRows = outputImage.getNRows();
             int newNColumns = outputImage.getNColumns();
             int newNLayers = outputImage.getNLayers();
-            double oldElementWidth, oldElementHeight, oldElementDepth, newElementWidth, newElementHeight, newElementDepth;
-            vector<double> coordinates1, coordinates2;
+
             // compute half column step length
-            if (newNColumns > 1) {
-                outputImage.getCoordinates(outputImage.rclToIndex(0, 0, 0), coordinates1);
-                outputImage.getCoordinates(outputImage.rclToIndex(0, 1, 0), coordinates2);
-                newElementWidth = fabs(coordinates1[0] - coordinates2[0]);
-            }
-            else {
-                newElementWidth = outputImage.getWidth();
-            }
-            if (inputImage.getNColumns() > 1) {
-                inputImage.getCoordinates(inputImage.rclToIndex(0, 0, 0), coordinates1);
-                inputImage.getCoordinates(inputImage.rclToIndex(0, 1, 0), coordinates2);
-                oldElementWidth = fabs(coordinates1[0] - coordinates2[0]);
-            }
-            else {
-                oldElementWidth = inputImage.getWidth();
-            }
+            double newElementWidth = outputImage.getWidth() / double(newNColumns);
+            std::cout << "new element width = " << newElementWidth << std::endl;
+            double oldElementWidth = inputImage.getWidth() / double(inputImage.getNColumns());
+            std::cout << "old element width = " << oldElementWidth << std::endl;
             double columnHalfChunk = ceil(0.5 * newElementWidth / oldElementWidth);
+            std::cout << "columnHalfChunk = " << columnHalfChunk << std::endl;
 
             // compute half row step length
-            if (newNRows > 1) {
-                outputImage.getCoordinates(outputImage.rclToIndex(0, 0, 0), coordinates1);
-                outputImage.getCoordinates(outputImage.rclToIndex(1, 0, 0), coordinates2);
-                newElementHeight = fabs(coordinates1[1] - coordinates2[1]);
-            }
-            else {
-                newElementHeight = outputImage.getHeight();
-            }
-            if (inputImage.getNRows() > 1) {
-                inputImage.getCoordinates(inputImage.rclToIndex(0, 0, 0), coordinates1);
-                inputImage.getCoordinates(inputImage.rclToIndex(1, 0, 0), coordinates2);
-                oldElementHeight = fabs(coordinates1[1] - coordinates2[1]);
-            }
-            else {
-                oldElementHeight = inputImage.getHeight();
-            }
+            double newElementHeight = outputImage.getHeight() / double(newNRows);
+            double oldElementHeight = inputImage.getHeight() / double(inputImage.getNRows());
             double rowHalfChunk = ceil(0.5 * newElementHeight / oldElementHeight);
+            std::cout << "rowHalfChunk = " << rowHalfChunk << std::endl;
 
             // compute half layer step length
-            if (newNLayers > 1) {
-                outputImage.getCoordinates(outputImage.rclToIndex(0, 0, 0), coordinates1);
-                outputImage.getCoordinates(outputImage.rclToIndex(0, 0, 1), coordinates2);
-                newElementDepth = fabs(coordinates1[2] - coordinates2[2]);
-            }
-            else {
-                newElementDepth = outputImage.getDepth();
-            }
-            if (inputImage.getNLayers() > 1) {
-                inputImage.getCoordinates(inputImage.rclToIndex(0, 0, 0), coordinates1);
-                inputImage.getCoordinates(inputImage.rclToIndex(0, 0, 1), coordinates2);
-                oldElementDepth = fabs(coordinates1[2] - coordinates2[2]);
-            }
-            else {
-                oldElementDepth = inputImage.getDepth();
-            }
+            double newElementDepth = outputImage.getDepth() / double(newNLayers);
+            double oldElementDepth = inputImage.getDepth() / double(inputImage.getNLayers());
             double layerHalfChunk = ceil(0.5 * newElementDepth / oldElementDepth);
+            std::cout << "layerHalfChunk = " << layerHalfChunk << std::endl;
 
             for (int newRowIndex = 0; newRowIndex < newNRows; newRowIndex++) {
                 for (int newColumnIndex = 0; newColumnIndex < newNColumns; newColumnIndex++) {
@@ -118,14 +81,17 @@ namespace LatticeLib {
                             newNeighborPositions.push_back(neighborPosition);
                         }
                         // find closest element in input image
-                        int closestOldElement;
+                        int closestOldElement = inputImage.getLattice().coordinatesToIndex(newElementPosition);
                         // extract box containing the Voronoi region of the new element
                         int oldRowIndexStart = inputImage.indexToR(closestOldElement) - rowHalfChunk;
                         int oldRowIndexStop = inputImage.indexToR(closestOldElement) + rowHalfChunk;
+                        std::cout << "Searched rows: " << oldRowIndexStart << " - " << oldRowIndexStop << std::endl;
                         int oldColumnIndexStart = inputImage.indexToC(closestOldElement) - columnHalfChunk;
                         int oldColumnIndexStop = inputImage.indexToC(closestOldElement) + columnHalfChunk;
+                        std::cout << "Searched columns: " << oldColumnIndexStart << " - " << oldColumnIndexStop << std::endl;
                         int oldLayerIndexStart = inputImage.indexToL(closestOldElement) - layerHalfChunk;
                         int oldLayerIndexStop = inputImage.indexToL(closestOldElement) + layerHalfChunk;
+                        std::cout << "Searched layers: " << oldLayerIndexStart << " - " << oldLayerIndexStop << std::endl;
                         int nOldElementsInNewVoronoiRegion = 0;
                         int nBands = inputImage.getNBands();
                         vector<double> accumulatedIntensity(nBands,0.0);
@@ -157,8 +123,14 @@ namespace LatticeLib {
                                 }
                             }
                         }
+                        std::cout << "accumulated intensity: (";
+                        for (int bandIndex = 0; bandIndex < nBands; bandIndex++) {
+                            std::cout << accumulatedIntensity[bandIndex] << " ";
+                        }
+                        std::cout << ")" << std::endl;
+                        std::cout << "#found elements: " << nOldElementsInNewVoronoiRegion << std::endl;
                         // set new element intensity
-                        outputImage.setElement(newElementIndex, 1 / double(nOldElementsInNewVoronoiRegion) * accumulatedIntensity);
+                        outputImage.setElement(newElementIndex, 1 / MAX(double(nOldElementsInNewVoronoiRegion),1.0) * accumulatedIntensity);
                     }
                 }
             }

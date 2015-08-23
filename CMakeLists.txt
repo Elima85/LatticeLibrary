@@ -60,6 +60,7 @@ set(TEST_SOURCE_FILES
     cclatticetestinitialization.cpp
     cclatticetestneighbors.cpp
     dataredistributiontest.cpp
+    downsampletest.cpp
     fcclatticetestareaapproximation.cpp
     fcclatticetestcoordinates.cpp
     fcclatticetestinitialization.cpp

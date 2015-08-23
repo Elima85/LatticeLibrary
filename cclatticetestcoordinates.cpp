@@ -253,7 +253,6 @@ TEST(CCLattice, coordinatestoindex) {
     coordinates.push_back(5.678);
 
     int closestElementIndex = lattice1.coordinatesToIndex(coordinates);
-    std::cout << "returned index: " << closestElementIndex << std::endl;
     vector<Neighbor> neighbors;
     lattice1.getNeighbors(closestElementIndex, neighborhoodSize, neighbors);
     PNorm <double> norm(2);

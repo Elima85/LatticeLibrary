@@ -187,7 +187,7 @@ namespace LatticeLib {
 			cout << "#columns: " << lattice.getNColumns() << endl;
 			cout << "#layers: " << lattice.getNLayers() << endl;
 			cout << "#modality bands: " << nBands << endl;
-			cout << "scale factor: " << lattice.getDensity() << endl;
+			cout << "density: " << lattice.getDensity() << endl;
 			cout << "data array: " << data << endl;
 		}
 
