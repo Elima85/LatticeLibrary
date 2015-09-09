@@ -133,6 +133,21 @@ namespace LatticeLib {
         ~CCLattice();
 
         /**
+        * Implements Lattice::getElementWidth().
+        */
+        double getElementWidth() const;
+
+        /**
+        * Implements Lattice::getElementHeight().
+        */
+        double getElementHeight() const;
+
+        /**
+        * Implements Lattice::getElementDepth().
+        */
+        double getElementDepth() const;
+
+        /**
          * Implements Lattice::getWidth().
          */
         double getWidth() const;

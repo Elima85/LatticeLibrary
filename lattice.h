@@ -91,6 +91,21 @@ namespace LatticeLib {
         double getDensity() const;
 
         /**
+        * Returns the width of the Voronoi region of an element in distance units.
+        */
+        virtual double getElementWidth() const = 0;
+
+        /**
+        * Returns the height of the Voronoi region of an element in distance units.
+        */
+        virtual double getElementHeight() const = 0;
+
+        /**
+        * Returns the depth of the Voronoi region of an element in distance units.
+        */
+        virtual double getElementDepth() const = 0;
+
+        /**
         * Returns the width of the lattice in distance units.
         */
         virtual double getWidth() const = 0;

@@ -63,8 +63,17 @@ namespace LatticeLib {
         }
         return prelIndex;
     }
+    double FCCLattice::getElementWidth() const {
+        return FCCPOINTDISTANCE * cbrt(1 / this->latticeDensity);
+    }
+    double FCCLattice::getElementHeight() const {
+        return FCCPOINTDISTANCE * cbrt(1 / this->latticeDensity);
+    }
+    double FCCLattice::getElementDepth() const {
+        return FCCPOINTDISTANCE * cbrt(1 / this->latticeDensity);
+    }
     double FCCLattice::getWidth() const {
-        return (this->nColumns * FCCPOINTDISTANCE + ((this->nLayers > 1) || (this->nRows > 1)) * FCCOFFSET) * cbrt(1 / this->latticeDensity);
+        return (this->nColumns * FCCPOINTDISTANCE + ((this->nLayers > 1) || (this->nRows > 1)) * FCCOFFSET) * cbrt(1.0 / this->latticeDensity);
         //return (1 + ((this->nRows > 1) || (this->nLayers > 1))) * this->indexToX(0) + this->indexToX(this->rclToIndex(0, this->nColumns - 1, 0));
     }
     double FCCLattice::getHeight() const {

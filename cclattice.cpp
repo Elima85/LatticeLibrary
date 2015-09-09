@@ -35,6 +35,15 @@ namespace LatticeLib {
         int layerIndex = MAX(0, MIN(this->nLayers - 1, round(coordinates[2] / scaleFactor)));
         return this->rclToIndex(rowIndex, columnIndex, layerIndex);
     }
+    double CCLattice::getElementWidth() const {
+        return cbrt(1 / this->latticeDensity);
+    }
+    double CCLattice::getElementHeight() const {
+        return cbrt(1 / this->latticeDensity);
+    }
+    double CCLattice::getElementDepth() const {
+        return cbrt(1 / this->latticeDensity);
+    }
     double CCLattice::getWidth() const {
         return this->nColumns * cbrt(1 / this->latticeDensity);
     }

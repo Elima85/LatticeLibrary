@@ -65,6 +65,15 @@ namespace LatticeLib {
         }
         return prelIndex;
     }
+    double BCCLattice::getElementWidth() const {
+        return BCCSQFACEDISTANCE * cbrt(1 / this->latticeDensity);
+    }
+    double BCCLattice::getElementHeight() const {
+        return BCCSQFACEDISTANCE * cbrt(1 / this->latticeDensity);
+    }
+    double BCCLattice::getElementDepth() const {
+        return BCCSQFACEDISTANCE * cbrt(1 / this->latticeDensity);
+    }
     double BCCLattice::getWidth() const {
         return (this->nColumns * BCCSQFACEDISTANCE + (this->nLayers > 1) * BCCOFFSET) * cbrt(1 / this->latticeDensity);
     }

@@ -44,22 +44,20 @@ namespace LatticeLib {
             int newNLayers = outputImage.getNLayers();
 
             // compute half column step length
-            double newElementWidth = outputImage.getWidth() / double(newNColumns);
-            std::cout << "new element width = " << newElementWidth << std::endl;
-            double oldElementWidth = inputImage.getWidth() / double(inputImage.getNColumns());
-            std::cout << "old element width = " << oldElementWidth << std::endl;
+            double newElementWidth = outputImage.getLattice().getElementWidth();
+            double oldElementWidth = inputImage.getLattice().getElementWidth();
             double columnHalfChunk = ceil(0.5 * newElementWidth / oldElementWidth);
             std::cout << "columnHalfChunk = " << columnHalfChunk << std::endl;
 
             // compute half row step length
-            double newElementHeight = outputImage.getHeight() / double(newNRows);
-            double oldElementHeight = inputImage.getHeight() / double(inputImage.getNRows());
+            double newElementHeight = outputImage.getLattice().getElementHeight();
+            double oldElementHeight = inputImage.getLattice().getElementHeight();
             double rowHalfChunk = ceil(0.5 * newElementHeight / oldElementHeight);
             std::cout << "rowHalfChunk = " << rowHalfChunk << std::endl;
 
             // compute half layer step length
-            double newElementDepth = outputImage.getDepth() / double(newNLayers);
-            double oldElementDepth = inputImage.getDepth() / double(inputImage.getNLayers());
+            double newElementDepth = outputImage.getLattice().getElementDepth();
+            double oldElementDepth = inputImage.getLattice().getElementDepth();
             double layerHalfChunk = ceil(0.5 * newElementDepth / oldElementDepth);
             std::cout << "layerHalfChunk = " << layerHalfChunk << std::endl;
 
@@ -70,6 +68,8 @@ namespace LatticeLib {
                         // compute position of new element
                         vector<double> newElementPosition;
                         outputImage.getCoordinates(newElementIndex, newElementPosition);
+                        std::cout << "new element position: ";
+                        printVector(newElementPosition);
                         // compute positions of the neighbors of the new element
                         vector<Neighbor> newElementNeighbors;
                         outputImage.getNeighbors(newElementIndex, neighborhoodSize, newElementNeighbors);
