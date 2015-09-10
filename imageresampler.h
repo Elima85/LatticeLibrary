@@ -47,29 +47,29 @@ namespace LatticeLib {
             double newElementWidth = outputImage.getLattice().getElementWidth();
             double oldElementWidth = inputImage.getLattice().getElementWidth();
             double columnHalfChunk = ceil(0.5 * newElementWidth / oldElementWidth);
-            std::cout << "columnHalfChunk = " << columnHalfChunk << std::endl;
+            //std::cout << "columnHalfChunk = " << columnHalfChunk << std::endl;
 
             // compute half row step length
             double newElementHeight = outputImage.getLattice().getElementHeight();
             double oldElementHeight = inputImage.getLattice().getElementHeight();
             double rowHalfChunk = ceil(0.5 * newElementHeight / oldElementHeight);
-            std::cout << "rowHalfChunk = " << rowHalfChunk << std::endl;
+            //std::cout << "rowHalfChunk = " << rowHalfChunk << std::endl;
 
             // compute half layer step length
             double newElementDepth = outputImage.getLattice().getElementDepth();
             double oldElementDepth = inputImage.getLattice().getElementDepth();
             double layerHalfChunk = ceil(0.5 * newElementDepth / oldElementDepth);
-            std::cout << "layerHalfChunk = " << layerHalfChunk << std::endl;
+            //std::cout << "layerHalfChunk = " << layerHalfChunk << std::endl;
 
-            for (int newRowIndex = 0; newRowIndex < newNRows; newRowIndex++) {
-                for (int newColumnIndex = 0; newColumnIndex < newNColumns; newColumnIndex++) {
-                    for (int newLayerIndex = 0; newLayerIndex < newNLayers; newLayerIndex++) {
+            for (int newLayerIndex = 0; newLayerIndex < newNLayers; newLayerIndex++) {
+                for (int newRowIndex = 0; newRowIndex < newNRows; newRowIndex++) {
+                    for (int newColumnIndex = 0; newColumnIndex < newNColumns; newColumnIndex++) {
                         int newElementIndex = outputImage.rclToIndex(newRowIndex, newColumnIndex, newLayerIndex);
                         // compute position of new element
                         vector<double> newElementPosition;
                         outputImage.getCoordinates(newElementIndex, newElementPosition);
-                        std::cout << "new element position: ";
-                        printVector(newElementPosition);
+                        //std::cout << "new element position: ";
+                        //printVector(newElementPosition);
                         // compute positions of the neighbors of the new element
                         vector<Neighbor> newElementNeighbors;
                         outputImage.getNeighbors(newElementIndex, neighborhoodSize, newElementNeighbors);
@@ -85,19 +85,19 @@ namespace LatticeLib {
                         // extract box containing the Voronoi region of the new element
                         int oldRowIndexStart = inputImage.indexToR(closestOldElement) - rowHalfChunk;
                         int oldRowIndexStop = inputImage.indexToR(closestOldElement) + rowHalfChunk;
-                        std::cout << "Searched rows: " << oldRowIndexStart << " - " << oldRowIndexStop << std::endl;
+                        //std::cout << "Searched rows: " << oldRowIndexStart << " - " << oldRowIndexStop << std::endl;
                         int oldColumnIndexStart = inputImage.indexToC(closestOldElement) - columnHalfChunk;
                         int oldColumnIndexStop = inputImage.indexToC(closestOldElement) + columnHalfChunk;
-                        std::cout << "Searched columns: " << oldColumnIndexStart << " - " << oldColumnIndexStop << std::endl;
+                        //std::cout << "Searched columns: " << oldColumnIndexStart << " - " << oldColumnIndexStop << std::endl;
                         int oldLayerIndexStart = inputImage.indexToL(closestOldElement) - layerHalfChunk;
                         int oldLayerIndexStop = inputImage.indexToL(closestOldElement) + layerHalfChunk;
-                        std::cout << "Searched layers: " << oldLayerIndexStart << " - " << oldLayerIndexStop << std::endl;
+                        //std::cout << "Searched layers: " << oldLayerIndexStart << " - " << oldLayerIndexStop << std::endl;
                         int nOldElementsInNewVoronoiRegion = 0;
                         int nBands = inputImage.getNBands();
                         vector<double> accumulatedIntensity(nBands,0.0);
                         for (int oldRowIndex = oldRowIndexStart; oldRowIndex < oldRowIndexStop; oldRowIndex++) {
                             for (int oldColumnIndex = oldColumnIndexStart; oldColumnIndex < oldColumnIndexStop; oldColumnIndex++) {
-                                for (int oldLayerIndex = oldLayerIndexStart; oldLayerIndex < oldColumnIndexStop; oldLayerIndex++) {
+                                for (int oldLayerIndex = oldLayerIndexStart; oldLayerIndex < oldLayerIndexStop; oldLayerIndex++) {
                                     // check if the potential old element exists
                                     if (inputImage.getLattice().isValid(oldRowIndex, oldColumnIndex, oldLayerIndex)) {
                                         int oldElementIndex = inputImage.rclToIndex(oldRowIndex, oldColumnIndex, oldLayerIndex);
@@ -112,6 +112,7 @@ namespace LatticeLib {
                                         for (int newNeighborIndex = 0; newNeighborIndex < actualNeighborhoodSize; newNeighborIndex++) {
                                             if (norm.compute(oldElementPosition - newNeighborPositions[newNeighborIndex]) < distanceToNewElement) {
                                                 insideVoronoiRegion = false;
+                                                //std::cout << "The subspel at [" << oldRowIndex << "," << oldColumnIndex << "," << oldLayerIndex << "]/(" << oldElementPosition[0] << "," << oldElementPosition[1] << "," << oldElementPosition[2] << ") is closer to the spel at (" << newNeighborPositions[newNeighborIndex][0] << "," << newNeighborPositions[newNeighborIndex][1] << "," << newNeighborPositions[newNeighborIndex][2] << ")" << std::endl;
                                             }
                                         }
                                         if (insideVoronoiRegion) {
@@ -123,12 +124,12 @@ namespace LatticeLib {
                                 }
                             }
                         }
-                        std::cout << "accumulated intensity: (";
-                        for (int bandIndex = 0; bandIndex < nBands; bandIndex++) {
-                            std::cout << accumulatedIntensity[bandIndex] << " ";
-                        }
-                        std::cout << ")" << std::endl;
-                        std::cout << "#found elements: " << nOldElementsInNewVoronoiRegion << std::endl;
+                        //std::cout << "accumulated intensity: (";
+                        //for (int bandIndex = 0; bandIndex < nBands; bandIndex++) {
+                        //    std::cout << accumulatedIntensity[bandIndex] << " ";
+                        //}
+                        //std::cout << ")" << std::endl;
+                        //std::cout << "#found elements: " << nOldElementsInNewVoronoiRegion << std::endl;
                         // set new element intensity
                         outputImage.setElement(newElementIndex, 1 / MAX(double(nOldElementsInNewVoronoiRegion),1.0) * accumulatedIntensity);
                     }

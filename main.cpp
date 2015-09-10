@@ -13,82 +13,94 @@
 #include <iostream>
 #include <fstream>
 #include <string.h>
-using namespace std;
+#include "imageresampler.h"
+#include "uniformweight.h"
 
+using namespace std;
 using namespace LatticeLib;
 
 int main(int argc, char *argv[]) {
 
-	if (argc != 9) {
-		cerr << "Usage: dist inputfile [c|b|f] #rows #columns #layers #bands  areafile volumefile" << endl;
+
+	if (argc != 16) {
+		cerr << "Usage: dist inputfile [c|b|f] #inputrows #inputcolumns #inputlayers #inputbands inputdensity outputfile [c|b|f] #outputrows #outputcolumns #outputlayers #outputbands outputdensity neighborhoodSize" << endl;
 		exit(1);
 	}
 
 	// read input parameters
-	char lattice;
-	int nR,nC,nL,nB,nN,nTot;
-	char *infilename,*areaFilename,*volumeFilename;
-	infilename = argv[1];
-	lattice = *argv[2];
-	nR = atoi(argv[3]);
-	nC = atoi(argv[4]);
-	nL = atoi(argv[5]);
-	nB = atoi(argv[6]);
-	areaFilename = argv[7];
-	volumeFilename = argv[8];
-	nTot = nR * nC * nL;
-	//cout << "lattice: " << lattice << "\n#rows: " << nR << "\n#columns: " << nC << "\n#layers: " << nL << "\n#bands: " << nB << "\nReading from " << infilename << " and writing to " << areaFilename << " and " << volumeFilename << endl;
-	cout << infilename << endl;
+	char *inputFilename, *outputFilename;
+	char inputLatticeType, outputLatticeType;
+	int inputNRows, inputNColumns, inputNLayers, inputNBands, outputNRows, outputNColumns, outputNLayers, outputNBands, neighborhoodSize;
+	double inputDensity, outputDensity;
+	inputFilename = argv[1];
+	inputLatticeType = *argv[2];
+	inputNRows = atoi(argv[3]);
+	inputNColumns = atoi(argv[4]);
+	inputNLayers = atoi(argv[5]);
+	inputNBands = atoi(argv[6]);
+	inputDensity = atof(argv[7]);
+	outputFilename = argv[8];
+	outputLatticeType = *argv[9];
+	outputNRows = atoi(argv[10]);
+	outputNColumns = atoi(argv[11]);
+	outputNLayers = atoi(argv[12]);
+	outputNBands = atoi(argv[13]);
+	outputDensity = atof(argv[14]);
+	neighborhoodSize = atoi(argv[15]);
 
-	// read volume
-	double *spels;
-	spels = readVolume(infilename,nTot*nB);
-
-	// create image object
-	Lattice* imageLattice;
-	switch(lattice) {
+	// create input image
+	double *inputIntensities;
+	inputIntensities = readVolume(inputFilename, inputNRows * inputNColumns * inputNLayers * inputNBands);
+	Lattice* inputLattice;
+	switch(inputLatticeType) {
 	case 'c':
-		//cout << "CC lattice" << endl;
-		imageLattice = new CCLattice(nR, nC, nL, 1.0);
+		inputLattice = new CCLattice(inputNRows, inputNColumns, inputNLayers, inputDensity);
 		break;
 	case 'b':
-		//cout << "BCC lattice" << endl;
-		imageLattice = new BCCLattice(nR, nC, nL, 1.0);
+		inputLattice = new BCCLattice(inputNRows, inputNColumns, inputNLayers, inputDensity);
 		break;
 	case 'f':
-		//cout << "FCC lattice" << endl;
-		imageLattice = new FCCLattice(nR, nC, nL, 1.0);
+		inputLattice = new FCCLattice(inputNRows, inputNColumns, inputNLayers, inputDensity);
 		break;
 	default:
-		//cerr << "Invalid lattice. Valid options are: {c,b,f}" << endl;
 		exit(1);
 	}
-	Image<double> inputImage(spels, *imageLattice, nB);
-	IntensityWorkset<double> fuzzyObject(inputImage, 0.0, 1.0);
-	//cout << "fuzzyObject: min = " << double(fuzzyObject.getMinIntensity()) << ", max = " << double(fuzzyObject.getMaxIntensity()) << ", data = " << long(fuzzyObject.getImage().getData()) << endl; // DEBUG
+	Image<double> inputImage(inputIntensities, *inputLattice, inputNBands);
 
-	ObjectSurfaceAreaFromVoronoiCellIntersection<double> areaApproximation;
-	//cout << "computing area... " << endl; // DEBUG
-	double area = areaApproximation.compute(fuzzyObject, 0);
-	//cout << "area: " << area; // DEBUG
-	std::ofstream areaFile;
-	areaFile.open(areaFilename, std::ios_base::app);
-	areaFile.write(reinterpret_cast<char*>(&area), sizeof(double));
-	//areaFile << area << "\n";
-	areaFile.close();
+	// create output image
+	double *outputIntensities = new double(outputNRows * outputNColumns * outputNLayers * outputNBands);
+	Lattice *outputLattice;
+	switch (outputLatticeType) {
+		case 'c':
+			outputLattice = new CCLattice(outputNRows, outputNColumns, outputNLayers, outputDensity);
+			break;
+		case 'b':
+			outputLattice = new BCCLattice(outputNRows, outputNColumns, outputNLayers, outputDensity);
+			break;
+		case 'f':
+			outputLattice = new FCCLattice(outputNRows, outputNColumns, outputNLayers, outputDensity);
+			break;
+		default:
+			exit(1);
+	}
+	Image<double> outputImage(outputIntensities, *outputLattice, outputNBands);
 
-	ObjectVolumeFromCoverage<double> volumeApproximation;
-	double volume = volumeApproximation.compute(fuzzyObject, 0);
-	std::ofstream volumeFile;
-	volumeFile.open(volumeFilename, std::ios_base::app);
-	//volumeFile << volume << "\n";
-	volumeFile.write(reinterpret_cast<char *>(&volume), sizeof(double));
-	volumeFile.close();
-	//cout << " and volume... " << volume << endl; // DEBUG
-	//cout << "done!" << endl; // DEBUG
 
-	delete imageLattice;
-	delete spels;
+	ImageResampler<double> resampler;
+	UniformWeight<double> weights;
+	resampler.downsample(inputImage, weights, neighborhoodSize, outputImage);
+
+	writeVolume(outputFilename, outputIntensities, outputNRows * outputNColumns * outputNLayers * outputNBands);
+
+	//std::ofstream volumeFile;
+	//volumeFile.open(volumeFilename, std::ios_base::app);
+	//volumeFile.write(reinterpret_cast<char *>(&volume), sizeof(double));
+	//volumeFile.close();
+
+	delete inputLattice;
+	delete inputIntensities;
+	delete inputLattice;
+	delete inputIntensities;
 
 	return 0;
 }
