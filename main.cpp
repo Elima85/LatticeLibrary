@@ -23,6 +23,7 @@ int main(int argc, char *argv[]) {
 
 
 	if (argc != 16) {
+		cerr << "#arguments = " << argc << endl;
 		cerr << "Usage: dist inputfile [c|b|f] #inputrows #inputcolumns #inputlayers #inputbands inputdensity outputfile [c|b|f] #outputrows #outputcolumns #outputlayers #outputbands outputdensity neighborhoodSize" << endl;
 		exit(1);
 	}
@@ -47,10 +48,12 @@ int main(int argc, char *argv[]) {
 	outputNBands = atoi(argv[13]);
 	outputDensity = atof(argv[14]);
 	neighborhoodSize = atoi(argv[15]);
+	int inputNDataPoints = inputNRows * inputNColumns * inputNLayers * inputNBands;
+	int outputNDataPoints = outputNRows * outputNColumns * outputNLayers * outputNBands;
 
 	// create input image
 	double *inputIntensities;
-	inputIntensities = readVolume(inputFilename, inputNRows * inputNColumns * inputNLayers * inputNBands);
+	inputIntensities = readVolume(inputFilename, inputNDataPoints);
 	Lattice* inputLattice;
 	switch(inputLatticeType) {
 	case 'c':
@@ -66,9 +69,10 @@ int main(int argc, char *argv[]) {
 		exit(1);
 	}
 	Image<double> inputImage(inputIntensities, *inputLattice, inputNBands);
+	inputImage.printParameters();
 
 	// create output image
-	double *outputIntensities = new double(outputNRows * outputNColumns * outputNLayers * outputNBands);
+	double *outputIntensities = new double[outputNDataPoints];
 	Lattice *outputLattice;
 	switch (outputLatticeType) {
 		case 'c':
@@ -84,7 +88,7 @@ int main(int argc, char *argv[]) {
 			exit(1);
 	}
 	Image<double> outputImage(outputIntensities, *outputLattice, outputNBands);
-
+	outputImage.printParameters();
 
 	ImageResampler<double> resampler;
 	UniformWeight<double> weights;
@@ -99,8 +103,8 @@ int main(int argc, char *argv[]) {
 
 	delete inputLattice;
 	delete inputIntensities;
-	delete inputLattice;
-	delete inputIntensities;
+	delete outputLattice;
+	delete outputIntensities;
 
 	return 0;
 }

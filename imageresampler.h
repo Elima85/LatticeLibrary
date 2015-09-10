@@ -47,19 +47,19 @@ namespace LatticeLib {
             double newElementWidth = outputImage.getLattice().getElementWidth();
             double oldElementWidth = inputImage.getLattice().getElementWidth();
             double columnHalfChunk = ceil(0.5 * newElementWidth / oldElementWidth);
-            //std::cout << "columnHalfChunk = " << columnHalfChunk << std::endl;
+            std::cout << "columnHalfChunk = " << columnHalfChunk << std::endl;
 
             // compute half row step length
             double newElementHeight = outputImage.getLattice().getElementHeight();
             double oldElementHeight = inputImage.getLattice().getElementHeight();
             double rowHalfChunk = ceil(0.5 * newElementHeight / oldElementHeight);
-            //std::cout << "rowHalfChunk = " << rowHalfChunk << std::endl;
+            std::cout << "rowHalfChunk = " << rowHalfChunk << std::endl;
 
             // compute half layer step length
             double newElementDepth = outputImage.getLattice().getElementDepth();
             double oldElementDepth = inputImage.getLattice().getElementDepth();
             double layerHalfChunk = ceil(0.5 * newElementDepth / oldElementDepth);
-            //std::cout << "layerHalfChunk = " << layerHalfChunk << std::endl;
+            std::cout << "layerHalfChunk = " << layerHalfChunk << std::endl;
 
             for (int newLayerIndex = 0; newLayerIndex < newNLayers; newLayerIndex++) {
                 for (int newRowIndex = 0; newRowIndex < newNRows; newRowIndex++) {

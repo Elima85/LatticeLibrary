@@ -87,6 +87,11 @@ set(TEST_SOURCE_FILES
     uniformweighttest.cpp
     )
 
+set(SEGMENT_SOURCE_FILES
+    ${SOURCE_FILES}
+    mrisegmentation.cpp
+    )
+
 include_directories(
     "${GTEST_ROOT}"
     "${GTEST_ROOT}/include"
@@ -94,6 +99,7 @@ include_directories(
 
 add_executable(release ${MAIN_SOURCE_FILES})
 add_executable(testing ${TEST_SOURCE_FILES})
+add_executable(segment ${SEGMENT_SOURCE_FILES})
 
 target_link_libraries(
     testing
