@@ -131,9 +131,9 @@ TEST(Segmentation, fuzzyEqual) {
     IntensityWorkset<double> doubleFuzzyLabels(doubleLabels, 0.0, 1.0);
 
     Segmentation segmentation;
-    segmentation.fuzzy(distanceTransform, uint8FuzzyLabels);
-    segmentation.fuzzy(distanceTransform, intFuzzyLabels);
-    segmentation.fuzzy(distanceTransform, doubleFuzzyLabels);
+    segmentation.fuzzy(distanceTransform, sqrt(2), uint8FuzzyLabels);
+    segmentation.fuzzy(distanceTransform, sqrt(2), intFuzzyLabels);
+    segmentation.fuzzy(distanceTransform, sqrt(2), doubleFuzzyLabels);
 
     int uint8LabelSum = 0, intLabelSum = 0;
     double doubleLabelSum = 0.0;
@@ -232,8 +232,8 @@ TEST(Segmentation, fuzzyUnequal) {
     IntensityWorkset<double> doubleFuzzyLabels1(doubleLabels1, 0.0, 1.0);
     IntensityWorkset<double> doubleFuzzyLabels2(doubleLabels2, 0.0, 1.0);
     Segmentation segmentation;
-    segmentation.fuzzy(distanceTransform1, doubleFuzzyLabels1);
-    segmentation.fuzzy(distanceTransform2, doubleFuzzyLabels2);
+    segmentation.fuzzy(distanceTransform1, sqrt(3) / cbrt(density1), doubleFuzzyLabels1);
+    segmentation.fuzzy(distanceTransform2, sqrt(3) / cbrt(density2), doubleFuzzyLabels2);
 
     double totalCoverage1 = 0.0, totalCoverage2 = 0.0;
     for (int bandIndex = 0; bandIndex < nBands; bandIndex++) {

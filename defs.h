@@ -6,7 +6,7 @@ namespace LatticeLib {
     typedef unsigned char uint8;
 
 // general definitions
-#define EPSILON = 0.0000001
+#define EPSILON 0.0000001
 #define EPSILONT 0.0000001 // tolerance for testing
 #define INF 10000000.0
 #define PI 3.141592653589793

@@ -4,6 +4,8 @@
 #include "filtercoefficient.h"
 #include "spatialtemplate.h"
 #include "image.h"
+#include <cmath>
+#include <stdio.h>
 
 namespace LatticeLib {
 
@@ -47,12 +49,12 @@ namespace LatticeLib {
 		 * Parameter			| in/out	| Comment
 		 * :----------			| :-------	| :--------
 		 * image				| INPUT		| Image to be eroded.
-		 * backgroundIntensity	| INPUT		| Elements of this intensity are regarded as belonging to the background.
 		 * bandIndex			| INPUT		| Index of the band to dilate.
+		 * backgroundIntensity	| INPUT		| Elements of this intensity are regarded as belonging to the background.
 	 	 * result				| OUTPUT	| Result image. Needs to be of the same dimensions as the input image.
 		 */
 		template<class intensityTemplate>
-		void binaryErodeBand(Image<intensityTemplate> image, intensityTemplate backgroundIntensity, int bandIndex,
+		void binaryErodeBand(Image<intensityTemplate> image, int bandIndex, intensityTemplate backgroundIntensity,
 							 Image<intensityTemplate> result) const {
 			if (image.getLattice() != result.getLattice()) {
 				throw incompatibleParametersException();
@@ -61,23 +63,26 @@ namespace LatticeLib {
 			int nNeighbors = getNeighborhoodSize();
 			int nElements = image.getNElements();
 			for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
-				int position = findCoeff(-1);
+				int position = findCoefficient(-1);
 				bool fit = true;
 				if (position != -1) {
 					// check if the origin element fits
-					if ((getCoeff(position).getFactor()) ==
+					if ((getCoefficient(position).getCoefficient()) ==
 						(fabs(image(elementIndex, bandIndex) - backgroundIntensity) > EPSILON)) {
+						//std::cout << elementIndex << " fits template origin. Value = " << image(elementIndex, bandIndex) << endl;
 						vector<Neighbor> neighbors;
 						image.getNeighbors(elementIndex, nNeighbors, neighbors);
 						int localNNeighbors = neighbors.size();
 						// check if the neighbor elements fit
 						for (int neighborIndex = 0; neighborIndex < localNNeighbors; neighborIndex++) {
 							int neighborPosition = neighbors[neighborIndex].getPosition();
-							position = findCoeff(neighborPosition);
+							position = findCoefficient(neighborPosition);
 							if (position != -1) {
-								if (((getCoeff(position).getFactor()) !=
-									 (fabs(image(neighbors[neighborIndex].getElementIndex(), bandIndex) -
-										   image(elementIndex, bandIndex)) < EPSILON))) {
+								//std::cout << "\t coefficient: " << getCoefficient(position).getCoefficient() << ", value: " << image(neighbors[neighborIndex].getElementIndex(), bandIndex) << std::endl;
+								if ((getCoefficient(position).getCoefficient()) !=
+										(fabs(image(neighbors[neighborIndex].getElementIndex(), bandIndex) -
+										 image(elementIndex, bandIndex)) < EPSILON)) {
+									//std::cout << "\tA neighbor does not fit the template." << std::endl;
 									fit = false;
 								}
 							}
@@ -86,8 +91,9 @@ namespace LatticeLib {
 					else {
 						fit = false;
 					}
-					if (fit) { // keep element intensity
+					if (fit) { // set to the same value as the input element
 						result.setElement(elementIndex, 0, image(elementIndex, bandIndex));
+						//std::cout << "\tresult: " << result(elementIndex, bandIndex) << std::endl;
 					}
 					else { // set to background
 						result.setElement(elementIndex, 0, backgroundIntensity);
@@ -117,15 +123,15 @@ namespace LatticeLib {
 			if ((image.getNBands() != result.getNBands()) || image.getLattice() != result.getLattice()) {
 				throw incompatibleParametersException();
 			}
+			//std::cout << "Inside binaryErodeImage." << std::endl;
 			int nNeighbors = getNeighborhoodSize();
 			int nElements = image.getNElements();
 			int nBands = image.getNBands();
 			for (int bandIndex = 0; bandIndex < nBands; bandIndex++) {
-				intensityTemplate *inputBandData = image.getBand(bandIndex);
+				//std::cout << "eroding band " << bandIndex << std::endl;
 				intensityTemplate *outputBandData = result.getBand(bandIndex);
-				Image<intensityTemplate> imageBand(inputBandData, image.getLattice(), 1);
 				Image<intensityTemplate> resultBand(outputBandData, image.getLattice(), 1);
-				binaryErodeBand(imageBand, backgroundIntensity, bandIndex, resultBand);
+				binaryErodeBand(image, bandIndex, backgroundIntensity, resultBand);
 			}
 		}
 
@@ -164,7 +170,7 @@ namespace LatticeLib {
 				bool fit = true;
 				if (position != -1) {
 					// check if the origin element fits
-					if ((getCoeff(position).getFactor()) !=
+					if ((getCoefficient(position).getCoefficient()) !=
 						(fabs(image(elementIndex, bandIndex) - backgroundIntensity) > EPSILON)) {
 						fit = false;
 					}

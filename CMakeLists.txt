@@ -83,6 +83,7 @@ set(TEST_SOURCE_FILES
     segmentationtest.cpp
     sequencefiltertest.cpp
     spatialtemplatetest.cpp
+    structuringelementtest.cpp
     latticelibtest.cpp
     uniformweighttest.cpp
     )

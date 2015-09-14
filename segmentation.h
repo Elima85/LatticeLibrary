@@ -9,6 +9,8 @@
 #include <stdio.h>
 #include "exception.h"
 #include "minimumvaluefinder.h"
+#include "seed.h"
+#include "priorityqueue.h"
 
 namespace LatticeLib {
 
@@ -113,7 +115,7 @@ namespace LatticeLib {
             T maxCoverage = segmentation.getMaxIntensity();
             T coverageRange = maxCoverage - minCoverage;
             double scaleFactor = cbrt(1 / segmentation.getImage().getLattice().getDensity());
-            double radius = tolerance;//cbrt(3/(4 * PI)) * scaleFactor; // approximate the element by a sphere
+            double radius = cbrt(3/(4 * PI)) * scaleFactor; // approximate the element by a sphere
             MinimumValueFinder<double> valueFinder;
             for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
                 vector<double> distances = distanceTransform[elementIndex];
