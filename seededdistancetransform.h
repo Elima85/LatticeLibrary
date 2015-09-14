@@ -39,10 +39,10 @@ namespace LatticeLib {
 
             if ((inputImage.getLattice() != distanceTransform.getLattice()) ||
                 (inputImage.getLattice() != roots.getLattice())) {
-                // throw exception or error
+                throw incompatibleParametersException();
             }
             if ((distanceTransform.getNBands() != seeds.size()) || (roots.getNBands() != seeds.size())) {
-                // throw exception or error
+                throw incompatibleParametersException();
             }
 
             // setup
@@ -84,6 +84,73 @@ namespace LatticeLib {
             distanceMeasure.clear();
         }
 
+        /**
+         * Applies the specified distance measure to the input image, and computes the distance transform and the roots of its inverse forest.
+         *
+         * Parameter            | in/out    | Comment
+         * :---------           | :------   | :-------
+         * inputImage           | INPUT     | Input image for the distance transform.
+         * seeds                | INPUT     | %Seed points for the distance transform. Contains one vector of seed points for every label.
+         * distanceMeasure      | INPUT     | Distance measure to be used for the transform.
+         * neighborhoodSize     | INPUT     | The number of neighbors that count as adjacent to a spel.
+         * distanceTransform    | OUTPUT    | The computed distance transform. Must have the same lattice and dimensions as the input image, and one modality band for each label.
+         * roots                | OUTPUT    | The roots of the distance transform. Must have the same lattice and dimensions as the input image, and one modality band for each label.
+         */
+        template<class T>
+        void applySingleLayer(const Image<T> &inputImage, const vector<vector<Seed> > &seeds,
+                              SeededDistanceMeasure<T> &distanceMeasure, int neighborhoodSize,
+                              Image<double> distanceTransform, Image<int> roots) const {
+
+            if ((inputImage.getLattice() != distanceTransform.getLattice()) ||
+                (inputImage.getLattice() != roots.getLattice())) {
+                throw incompatibleParametersException();
+            }
+            if ((distanceTransform.getNBands() != 1) || (roots.getNBands() != 1)) {
+                throw incompatibleParametersException();
+            }
+
+            // setup
+            int nElements = inputImage.getNElements();
+            int nLabels = seeds.size();
+            bool *inQueue = new bool[nElements]; // so that only the "best" copy of an element is popped, and all others are skipped, until a better one is pushed.
+            std::fill_n(inQueue, nElements, false);
+            distanceMeasure.setup(inputImage);
+            vector< vector<Seed> > allSeeds;
+            vector<Seed> cumulativeSeeds;
+            for (int labelIndex = 0; labelIndex < nLabels; labelIndex++){
+                cumulativeSeeds.insert(cumulativeSeeds.end(), seeds[labelIndex].begin(), seeds[labelIndex].end());
+            }
+
+            // initialization
+            priority_queue<PriorityQueueElement<T>, vector<PriorityQueueElement<T> >, PriorityQueueElementComparison> queue;
+            vector<PriorityQueueElement<T> > newQueueElements;
+            distanceMeasure.initialize(inputImage, seeds, 0, distanceTransform, roots, newQueueElements);
+            int nNewQueueElements = newQueueElements.size();
+            for (int newQueueElementIndex = 0; newQueueElementIndex < nNewQueueElements; newQueueElementIndex++) {
+                queue.push(newQueueElements[newQueueElementIndex]);
+                inQueue[newQueueElements[newQueueElementIndex].getIndex()] = true;
+            }
+            
+            // wave front propagation
+            while (!queue.empty()) {
+                PriorityQueueElement<T> topElement = queue.top();
+                queue.pop();
+                int poppedElementIndex = topElement.getIndex();
+                if (inQueue[poppedElementIndex]) {
+                    inQueue[poppedElementIndex] = false; // so that old queue elements offering larger distances are skipped
+                    distanceMeasure.update(inputImage, neighborhoodSize, poppedElementIndex, 0, distanceTransform,
+                                           roots, newQueueElements);
+                    nNewQueueElements = newQueueElements.size();
+                    for (int queueElementIndex = 0; queueElementIndex < nNewQueueElements; queueElementIndex++) {
+                        queue.push(newQueueElements[queueElementIndex]);
+                        inQueue[newQueueElements[queueElementIndex].getIndex()] = true;
+                    }
+                }
+            }
+
+            // cleanup
+            distanceMeasure.clear();
+        }
     };
 /*
 * Approximated vectorial minimum barrier distance

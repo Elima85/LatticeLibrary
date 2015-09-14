@@ -45,6 +45,41 @@ namespace LatticeLib {
             }
         }
 
+        void crisp(Image<int> roots, vector< vector<Seed> >seeds, int neighborhoodSize, Image<int> segmentation) {
+            if ((roots.getNBands() != 1) || (segmentation.getNBands() != 1)) {
+                throw incompatibleParametersException();
+            }
+            // initialization
+            priority_queue<PriorityQueueElement<int>, vector<PriorityQueueElement<int> >, PriorityQueueElementComparison> queue;
+            int nLabels = seeds.size();
+            for (int labelIndex = 0; labelIndex < nLabels; labelIndex++) {
+                int nSeeds = seeds[labelIndex].size();
+                for (int seedIndex = 0; seedIndex < nSeeds; seedIndex++) {
+                    int elementIndex = seeds[labelIndex][seedIndex].getElementIndex();
+                    int label = seeds[labelIndex][seedIndex].getLabel();
+                    segmentation.setElement(elementIndex, 0, label);
+                    queue.push(PriorityQueueElement<int>(elementIndex, label));
+                }
+            }
+            // label propagation
+            while(!queue.empty()) {
+                PriorityQueueElement<int> topElement = queue.top();
+                queue.pop();
+                int poppedElementIndex = topElement.getIndex();
+                int poppedElementLabel = topElement.getValue();
+                vector<Neighbor> neighbors;
+                segmentation.getNeighbors(poppedElementIndex,neighborhoodSize, neighbors);
+                int nNeighbors = neighbors.size();
+                for (int neighborIndex = 0; neighborIndex < nNeighbors; neighborIndex++) {
+                    int neighborElement = neighbors[neighborIndex].getElementIndex();
+                    if (roots(neighborElement, 0) == poppedElementIndex) {
+                        segmentation.setElement(neighborElement, 0, poppedElementLabel);
+                        queue.push(PriorityQueueElement<int>(neighborElement, poppedElementLabel));
+                    }
+                }
+            }
+        }
+
         /**
          * Fuzzy segmentation, based on a distance transform. Each modality band in the output image corresponds to a
          * label. The sum of the intensities of each spatial element is segmentation.maxIntensity. The intensity of a
@@ -59,10 +94,12 @@ namespace LatticeLib {
          * Parameter            | in/out    | Comment
          * :---------           | :-----    |:-------
          * distanceTransform    | INPUT     | Distance transform on which to base the segmentation.
+         * tolerance            | INPUT     | The maximum difference in distance that results in a fuzzy segmentation.
          * segmentation         | OUTPUT    | Resulting segmentation. Must have the same lattice and number of modality bands as distanceTransform.
+
          */
         template <class T>
-        void fuzzy(Image<double> distanceTransform, IntensityWorkset<T> segmentation) {
+        void fuzzy(Image<double> distanceTransform, double tolerance, IntensityWorkset<T> segmentation) {
             if (distanceTransform.getLattice() != segmentation.getImage().getLattice()) {
                 throw incompatibleParametersException();
             }
@@ -76,7 +113,7 @@ namespace LatticeLib {
             T maxCoverage = segmentation.getMaxIntensity();
             T coverageRange = maxCoverage - minCoverage;
             double scaleFactor = cbrt(1 / segmentation.getImage().getLattice().getDensity());
-            double radius = cbrt(3/(4 * PI)) * scaleFactor; // approximate the element by a sphere
+            double radius = tolerance;//cbrt(3/(4 * PI)) * scaleFactor; // approximate the element by a sphere
             MinimumValueFinder<double> valueFinder;
             for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
                 vector<double> distances = distanceTransform[elementIndex];

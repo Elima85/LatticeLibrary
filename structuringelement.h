@@ -28,128 +28,156 @@ namespace LatticeLib {
 		 * c			| INPUT		| Vector containing the template coefficients.
 		 * nS			| INPUT		| Neighborhood size.
 		 */
-		StructuringElement(vector<FilterCoefficient<bool> > c, int nS) : SpatialTemplate<bool> (c, nS) {}
+		StructuringElement(vector<FilterCoefficient<bool> > c, int nS) : SpatialTemplate<bool>(c, nS) { }
 
 		/**
 		 * Destructor for StructuringElement objects.
 		 */
 		~StructuringElement() { };
 
-		//TODO: binaryErodeBand, binaryDilateBand, binaryOpenBand, binaryCloseBand
-
 		/**
-		 * Erodes a binary image, one band at a time, (treating intensity values greater than 0 as 1) using the
-		 * provided structuring element.
+		 * Erodes the specified band of an image, using the provided structuring element.
 		 *
 		 * coefficient value	| meaning
 		 * :-----------------	| :-------
-		 * true					| Required to be >0.
-		 * false				| Required to be ==0, to a precision defined in defs.h.
+		 * true					| Required to be foreground.
+		 * false				| Required to be background.
 		 * not defined			| No requirements.
 		 *
-		 * Parameter	| in/out	| Comment
-		 * :----------	| :-------	| :--------
-		 * image		| INPUT		| Image to be eroded.
-	 	 * result		| OUTPUT	| Intensity values after erosion. Needs to be of a length of at least image.nElements * image.nBands.
+		 * Parameter			| in/out	| Comment
+		 * :----------			| :-------	| :--------
+		 * image				| INPUT		| Image to be eroded.
+		 * backgroundIntensity	| INPUT		| Elements of this intensity are regarded as belonging to the background.
+		 * bandIndex			| INPUT		| Index of the band to dilate.
+	 	 * result				| OUTPUT	| Result image. Needs to be of the same dimensions as the input image.
 		 */
-		template<class T>
-		void binaryErode(Image<intensityTemplate> image, intensityTemplate *result) const {
+		template<class intensityTemplate>
+		void binaryErodeBand(Image<intensityTemplate> image, intensityTemplate backgroundIntensity, int bandIndex,
+							 Image<intensityTemplate> result) const {
+			if (image.getLattice() != result.getLattice()) {
+				throw incompatibleParametersException();
+			}
 
 			int nNeighbors = getNeighborhoodSize();
-			vector<Neighbor> neighbors;
-			T *data = image.getData();
-			int nBands = image.getNBands();
 			int nElements = image.getNElements();
-			int localNNeighbors, nID, position, start;
-			bool fit = true;
-			T newVal;
-
-			for (int b = 0; b < nBands; b++) {
-				start = b * nElements; // start of modality band b
-				for (int i = 0; i < nElements; i++) {
-					// get neighbors
-					image.getNeighbors(start + i, nNeighbors, neighbors);
-					localNNeighbors = neighbors.size();
-
-					// compute new value
-					// center spel
-					position = findCoeff(-1);
-					if (position != -1) {
-						if ((getCoeff(position).getFactor() != (data[start + i] > 0))) {
-							fit = false;
-						}
-					}
-					// neighbors
-					for (int n = 0; n < localNNeighbors; n++) {
-						nID = neighbors[n].getLocation();
-						position = findCoeff(nID);
-						if (position != -1) {
-							if ((getCoeff(position).getFactor() != (data[start + neighbors[n].getIndex()] > 0))) {
-								fit = false;
+			for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
+				int position = findCoeff(-1);
+				bool fit = true;
+				if (position != -1) {
+					// check if the origin element fits
+					if ((getCoeff(position).getFactor()) ==
+						(fabs(image(elementIndex, bandIndex) - backgroundIntensity) > EPSILON)) {
+						vector<Neighbor> neighbors;
+						image.getNeighbors(elementIndex, nNeighbors, neighbors);
+						int localNNeighbors = neighbors.size();
+						// check if the neighbor elements fit
+						for (int neighborIndex = 0; neighborIndex < localNNeighbors; neighborIndex++) {
+							int neighborPosition = neighbors[neighborIndex].getPosition();
+							position = findCoeff(neighborPosition);
+							if (position != -1) {
+								if (((getCoeff(position).getFactor()) !=
+									 (fabs(image(neighbors[neighborIndex].getElementIndex(), bandIndex) -
+										   image(elementIndex, bandIndex)) < EPSILON))) {
+									fit = false;
+								}
 							}
 						}
 					}
-					if (fit) {
-						result[start + i] = 1;
-					}
 					else {
-						result[start + i] = 0;
+						fit = false;
+					}
+					if (fit) { // keep element intensity
+						result.setElement(elementIndex, 0, image(elementIndex, bandIndex));
+					}
+					else { // set to background
+						result.setElement(elementIndex, 0, backgroundIntensity);
 					}
 				}
 			}
 		}
 
 		/**
-		 * Dilates a binary image, one band at a time, (treating intensity values greater than 0 as 1) using the
-		 * provided structuring element.
+		 * Erodes an image, one band at a time, using the provided structuring element.
+		 *
+		 * coefficient value	| meaning
+		 * :-----------------	| :-------
+		 * true					| Required to be foreground.
+		 * false				| Required to be background.
+		 * not defined			| No requirements.
+		 *
+		 * Parameter			| in/out	| Comment
+		 * :----------			| :-------	| :--------
+		 * image				| INPUT		| Image to be eroded.
+		 * backgroundIntensity	| INPUT		| Elements of this intensity are regarded as belonging to the background.
+	 	 * result				| OUTPUT	| Result image. Needs to be of the same dimensions as the input image.
+		 */
+		template<class intensityTemplate>
+		void binaryErodeImage(Image<intensityTemplate> image, intensityTemplate backgroundIntensity,
+							 Image<intensityTemplate> result) const {
+			if ((image.getNBands() != result.getNBands()) || image.getLattice() != result.getLattice()) {
+				throw incompatibleParametersException();
+			}
+			int nNeighbors = getNeighborhoodSize();
+			int nElements = image.getNElements();
+			int nBands = image.getNBands();
+			for (int bandIndex = 0; bandIndex < nBands; bandIndex++) {
+				intensityTemplate *inputBandData = image.getBand(bandIndex);
+				intensityTemplate *outputBandData = result.getBand(bandIndex);
+				Image<intensityTemplate> imageBand(inputBandData, image.getLattice(), 1);
+				Image<intensityTemplate> resultBand(outputBandData, image.getLattice(), 1);
+				binaryErodeBand(imageBand, backgroundIntensity, bandIndex, resultBand);
+			}
+		}
+
+		/**
+		 * Dilates the specified band of an image, using the provided structuring element.
 		 *
 		 * Template fitting:
 		 *
 		 * coefficient value	| location	| meaning
 		 * :-----------------	| :--------	| :-------
-		 * true					| main		| Required to be >0.
-		 * false				| main		| Required to be ==0.
-		 * true					| other		| Set to 1 if main element fits.
+		 * true					| origin	| Required to be in foreground.
+		 * false				| origin	| Required to be in background.
+		 * true					| other		| Set to the same intensity as the origin element, if the origin element fits.
 		 * false				| other		| No effect.
 		 * not defined			| other		| No effect.
 		 *
-		 * Parameter	| in/out	| Comment
-		 * :----------	| :-------	| :--------
-		 * filter		| INPUT		| Structuring element.
-		 * result		| OUTPUT	| Intensity values after dilation. Needs to be of a length of at least image.nElements * image.nBands.
+		 * Parameter			| in/out	| Comment
+		 * :----------			| :-------	| :--------
+		 * filter				| INPUT		| Structuring element.
+		 * backgroundIntensity	| INPUT		| Elements of this intensity are regarded as belonging to the background.
+		 * bandIndex			| INPUT		| Index of the band to dilate.
+	 	 * result				| OUTPUT	| Result image. Needs to be of the same dimensions as the input image.
 		 */
-		template<class T>
-		void binaryDilate(Image<intensityTemplate> image, intensityTemplate *result) const {
+		template<class intensityTemplate>
+		void binaryDilateBand(Image<intensityTemplate> image, intensityTemplate backgroundIntensity, int bandIndex,
+							  Image<intensityTemplate> result) const {
+			if ((image.getNBands() != result.getNBands()) || image.getLattice() != result.getLattice()) {
+				throw incompatibleParametersException();
+			}
 
-			// Memset result to 0!!!
-			int nNeighbors = filter.getNeighborhoodSize();
-			int locNNeighbors, nID, position;
-			vector<Neighbor> neighbors;
-			vector<FilterCoefficient<bool> > coeffs = filter.getCoeffs();
-			bool fit = true;
-
-			int start;
-			for (int b = 0; b < nBands; b++) {
-				start = b * nElements; // start of modality band b
-				for (int i = 0; i < nElements; i++) {
-					// get neighbors
-					this->getNeighbors(start + i, nNeighbors, neighbors);
-					locNNeighbors = neighbors.size();
-
-					// compute new value
-					// center spel
-					position = filter.findCoeff(-1);
-					if (position != -1) {
-						fit = (filter.getCoeff(position).getFactor() == (data[start + i] > 0));
+			int nNeighbors = getNeighborhoodSize();
+			int nBands = image.getNBands();
+			int nElements = image.getNElements();
+			for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
+				int position = findCoefficient(-1);
+				bool fit = true;
+				if (position != -1) {
+					// check if the origin element fits
+					if ((getCoeff(position).getFactor()) !=
+						(fabs(image(elementIndex, bandIndex) - backgroundIntensity) > EPSILON)) {
+						fit = false;
 					}
-					// neighbors
-					if (fit) {
-						for (int n = 0; n < locNNeighbors; n++) {
-							nID = neighbors[n].getLocation();
-							position = filter.findCoeff(nID);
+					if (fit) { // spread element intensity to specified neighbors
+						vector<Neighbor> neighbors;
+						image.getNeighbors(elementIndex, nNeighbors, neighbors);
+						int localNNeighbors = neighbors.size();
+						for (int neighborIndex = 0; neighborIndex < localNNeighbors; neighborIndex++) {
+							int neighborPosition = neighbors[neighborIndex].getPosition();
+							position = findCoefficient(neighborPosition);
 							if (position != -1) {
-								if (filter.getCoeff(position).getFactor()) {
-									result[start + i] = 1;
+								if (getCoefficient(position).getCoefficient()) {
+									result.setElement(elementIndex, bandIndex, image(elementIndex, bandIndex));
 								}
 							}
 						}
@@ -159,117 +187,42 @@ namespace LatticeLib {
 		}
 
 		/**
-		 * Opens the image, one band at a time, using the provided structuring element, by applying erosion followed by
-		 * dilation.
+		 * Dilates an image, one band at a time, using the provided structuring element.
 		 *
-		 * Parameter	| in/out	| Comment
-		 * :----------	| :-------	| :--------
-		 * filter		| INPUT		| Structuring element.
-		 * result		| OUTPUT	| Intensity values after opening. Needs to be of a length of at least image.nElements * image.nBands.
+		 * Template fitting:
+		 *
+		 * coefficient value	| location	| meaning
+		 * :-----------------	| :--------	| :-------
+		 * true					| origin	| Required to be in foreground.
+		 * false				| origin	| Required to be in background.
+		 * true					| other		| Set to the same intensity as the origin element, if the origin element fits.
+		 * false				| other		| No effect.
+		 * not defined			| other		| No effect.
+		 *
+		 * Parameter			| in/out	| Comment
+		 * :----------			| :-------	| :--------
+		 * image				| INPUT		| Image to be eroded.
+		 * backgroundIntensity	| INPUT		| Elements of this intensity are regarded as belonging to the background.
+	 	 * result				| OUTPUT	| Result image. Needs to be of the same dimensions as the input image.
 		 */
-		template<class T>
-		void binaryOpen(Image<intensityTemplate> image, intensityTemplate *result) const {
-
-			// erosion
-			T erosion[this->getNElements() * this->getNBands()];
-			this->binaryErode(filter, erosion); // Does this really work? erosion is on stack!
-
-			// dilation
-			// Memset result to 0!!!
-			int nNeighbors = filter.getNeighborhoodSize();
-			int locNNeighbors, nID, position;
-			vector<Neighbor> neighbors;
-			vector<FilterCoefficient<bool> > coeffs = filter.getCoeffs();
-			bool fit = true;
-
-			int start;
-			for (int b = 0; b < nBands; b++) {
-				start = b * nElements; // start of modality band b
-				for (int i = 0; i < nElements; i++) {
-					// get neighbors
-					this->getNeighbors(start + i, nNeighbors, neighbors);
-					locNNeighbors = neighbors.size();
-
-					// compute new value
-					// center spel
-					position = filter.findCoeff(-1);
-					if (position != -1) {
-						fit = (filter.getCoeff(position).getFactor() == (erosion[start + i] > 0));
-					}
-					// neighbors
-					if (fit) {
-						for (int n = 0; n < locNNeighbors; n++) {
-							nID = neighbors[n].getLocation();
-							position = filter.findCoeff(nID);
-							if (position != -1) {
-								if (filter.getCoeff(position).getFactor()) {
-									result[start + neighbors[n].getIndex()] = 1;
-								}
-							}
-						}
-					}
-				}
+		template<class intensityTemplate>
+		void binaryDilateImage(Image<intensityTemplate> image, intensityTemplate backgroundIntensity,
+							  Image<intensityTemplate> result) const {
+			if ((image.getNBands() != result.getNBands()) || image.getLattice() != result.getLattice()) {
+				throw incompatibleParametersException();
+			}
+			int nNeighbors = getNeighborhoodSize();
+			int nElements = image.getNElements();
+			int nBands = image.getNBands();
+			for (int bandIndex = 0; bandIndex < nBands; bandIndex++) {
+				intensityTemplate *inputBandData = image.getBand(bandIndex);
+				intensityTemplate *outputBandData = result.getBand(bandIndex);
+				Image<intensityTemplate> imageBand(inputBandData, image.getLattice(), 1);
+				Image<intensityTemplate> resultBand(outputBandData, image.getLattice(), 1);
+				binaryDilateBand(imageBand, backgroundIntensity, bandIndex, resultBand);
 			}
 		}
-
-		/**
-		 * Closes the image, one band at a time, using the provided structuring element, by applying dilation followed
-		 * by erosion.
-		 *
-		 * Parameter	| in/out	| Comment
-		 * :----------	| :-------	| :--------
-		 * filter		| INPUT		| Structuring element.
-		 * result		| OUTPUT	| Intensity values after closing. Needs to be of a length of at least image.nElements * image.nBands.
-		 */
-		template<class T>
-		void binaryClose(Image<intensityTemplate> image, intensityTemplate *result) const {
-
-			// dilation
-			T dilation[this->getNElements() * this->getNBands()];
-			this->binaryDilate(filter, dilation); // Does this really work? dilation is on stack!
-
-			// erosion
-			int nNeighbors = filter.getNeighborhoodSize();
-			int locNNeighbors, nID, position;
-			vector<Neighbor> neighbors;
-			vector<FilterCoefficient<bool> > coeffs = filter.getCoeffs();
-			T newVal;
-			bool fit = true;
-
-			int start;
-			for (int b = 0; b < nBands; b++) {
-				start = b * nElements; // start of modality band b
-				for (int i = 0; i < nElements; i++) {
-					// get neighbors
-					this->getNeighbors(start + i, nNeighbors, neighbors);
-					locNNeighbors = neighbors.size();
-
-					// compute new value
-					// center spel
-					position = filter.findCoeff(-1);
-					if (position != -1) {
-						fit = (filter.getCoeff(position).getFactor() == (dilation[start + i] > 0));
-					}
-					// neighbors
-					for (int n = 0; n < locNNeighbors; n++) {
-						nID = neighbors[n].getLocation();
-						position = filter.findCoeff(nID);
-						if (position != -1) {
-							fit = (filter.getCoeff(position).getFactor() ==
-								   (dilation[start + neighbors[n].getIndex()] > 0));
-						}
-					}
-					if (fit) {
-						result[start + i] = 1;
-					}
-					else {
-						result[start + i] = 0;
-					}
-				}
-			}
-		}
-	};// TODO: Test!
-
+	};
 }
 
 #endif

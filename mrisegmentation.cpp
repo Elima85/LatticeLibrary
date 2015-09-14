@@ -79,23 +79,39 @@ int main(int argc, char *argv[]) {
     }
     Image<double> inputImage(volumeData, *lattice, nBands);
     cout << "Created input volume:" << endl;
-    inputImage.printParameters();
+    //inputImage.printParameters();
 
     // extract seed points
-    double *seedData;
     int nLabels = 5;
+    double *seedData;
+    seedData = readVolume(seedsFilename, nElements * nLabels);
+    cout << "#data points in seedData: " << nElements * nLabels << endl;
+    Image<double> seedImage(seedData, *lattice, nLabels);
+    int nPotentialSeeds = 0;
+    for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
+        if (fabs(seedData[elementIndex]) > EPSILONT) {
+            nPotentialSeeds++;
+        }
+    }
+    cout << "#Potential seedpoints: " << nPotentialSeeds << endl;
     vector< vector<Seed> > seedPoints;
     vector<Seed> tmp;
-    for (int label = 1; label <= nLabels; label++) {
+    for (int label = 0; label < nLabels; label++) {
+        tmp.clear();
         for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
-            if (seedData[elementIndex] == label) {
+            if (fabs(seedImage(elementIndex, label)-1) < EPSILONT) {
                 tmp.push_back(Seed(Seed(elementIndex, label)));
             }
         }
         seedPoints.push_back(tmp);
     }
     delete seedData;
-    cout << "Extracted seedpoints." << endl;
+    cout << "Extracted seedpoints:" << endl;
+    cout << "\tlabel 1: " << seedPoints[0].size() << endl;
+    cout << "\tlabel 2: " << seedPoints[1].size() << endl;
+    cout << "\tlabel 3: " << seedPoints[2].size() << endl;
+    cout << "\tlabel 4: " << seedPoints[3].size() << endl;
+    cout << "\tlabel 5: " << seedPoints[4].size() << endl;
 
     // distance measure
     Norm<double> *norm;
@@ -144,25 +160,47 @@ int main(int argc, char *argv[]) {
     SeededDistanceTransform seededDistanceTransform;
     seededDistanceTransform.apply(inputImage, seedPoints, *distanceMeasure, neighborhoodSize, distanceImage, rootImage);
     delete rootData;
-    cout << "Finished distance transform." << endl;
+    for (int dataIndex = 0; dataIndex < nElements * nLabels; dataIndex++) {
+        double tmp = distanceTransformData[dataIndex];
+        distanceTransformData[dataIndex] = 0.0;
+        distanceTransformData[dataIndex] = tmp;
+    }
+    vector<double> bandSum(nLabels, 0.0);
+    for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
+        bandSum = bandSum + distanceImage[elementIndex];
+    }
+    std::cout << "Sum of distances: ";
+    printVector(bandSum);
+    std::cout << "saving " << nElements * nLabels << " elements..." << std::endl;
+    writeVolume("distancetransform.bin", distanceTransformData, nElements * nLabels);
+    //writeVolume(outputFilename, outputIntensities, outputNRows * outputNColumns * outputNLayers * outputNBands);
+    cout << "Finished distance transform:" << endl;
+    distanceImage.printParameters();
 
     // segmentation
     Segmentation segmentation;
     double *segmentationData = new double[nElements * nLabels];
+    //bool *crispSegmentationData = new bool[nElements * nLabels];
+    //Image<bool> segmentationImage(crispSegmentationData, *lattice, nLabels);
+    //segmentation.crisp(distanceImage, segmentationImage);
     Image<double> segmentationImage(segmentationData, *lattice, nLabels);
     IntensityWorkset<double> fuzzySegmentation(segmentationImage, 0.0, 1.0);
-    segmentation.fuzzy(distanceImage, fuzzySegmentation);
+    segmentation.fuzzy(distanceImage, 0.01, fuzzySegmentation);
+    //for (int dataIndex = 0; dataIndex < nElements * nLabels; dataIndex++) {
+    //    segmentationData[dataIndex] = double(crispSegmentationData[dataIndex]);
+    //}
     writeVolume(segmentationFilename, segmentationData, nElements * nLabels);
-    cout << "Finished segmentation." << endl;
+    cout << "Finished segmentation:" << endl;
+    //fuzzySegmentation.getImage().printParameters();
 
     ObjectSurfaceAreaFromVoronoiCellIntersection<double> surfaceArea;
-    cout << "small tomato surface area: " << surfaceArea.compute(fuzzySegmentation, 5) << endl;
-    cout << "large tomato surface area: " << surfaceArea.compute(fuzzySegmentation, 4) << endl;
-    cout << "avocado surface area: " << surfaceArea.compute(fuzzySegmentation, 3) << endl;
+    //cout << "small tomato surface area: " << surfaceArea.compute(fuzzySegmentation, 5) << endl;
+    //cout << "large tomato surface area: " << surfaceArea.compute(fuzzySegmentation, 4) << endl;
+    //cout << "avocado surface area: " << surfaceArea.compute(fuzzySegmentation, 3) << endl;
     ObjectVolumeFromCoverage<double> volume;
-    cout << "small tomato volume: " << volume.compute(fuzzySegmentation, 5) << endl;
-    cout << "large tomato volume: " << volume.compute(fuzzySegmentation, 4) << endl;
-    cout << "avocado volume: " << volume.compute(fuzzySegmentation, 3) << endl;
+    //cout << "small tomato volume: " << volume.compute(fuzzySegmentation, 5) << endl;
+    //cout << "large tomato volume: " << volume.compute(fuzzySegmentation, 4) << endl;
+    //cout << "avocado volume: " << volume.compute(fuzzySegmentation, 3) << endl;
 
     //std::ofstream volumeFile;
     //volumeFile.open(volumeFilename, std::ios_base::app);

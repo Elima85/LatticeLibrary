@@ -28,7 +28,7 @@ namespace LatticeLib {
          * labelIndex           | INPUT     | Label (band) index for the specified element.
          */
         double compute(IntensityWorkset<intensityTemplate> &inputImage, int labelIndex) const {
-            //cout << "inputImage: min = " << int(inputImage.getMinIntensity()) << ", max = " << int(inputImage.getMaxIntensity()) << ", data = " << long(inputImage.getImage().getData()) << ", density = " << inputImage.getImage().getLattice().getDensity() << endl; // DEBUG
+            cout << "inputImage: min = " << int(inputImage.getMinIntensity()) << ", max = " << int(inputImage.getMaxIntensity()) << ", data = " << long(inputImage.getImage().getData()) << ", density = " << inputImage.getImage().getLattice().getDensity() << endl; // DEBUG
             int nElements = inputImage.getImage().getNElements();
             int start = labelIndex * nElements;
             int stop = start + nElements;
@@ -40,7 +40,7 @@ namespace LatticeLib {
             //    std::cout << "Range is too small." << std::endl; // DEBUG
             //} // DEBUG
             double approximatedArea = 0.0;
-            //std::cout << "Traversing image data..." << std::endl; // DEBUG
+            std::cout << "Traversing image data..." << std::endl; // DEBUG
             for (int dataIndex = start; dataIndex < stop; dataIndex++) {
                 double intensity = MIN(maxValue, MAX(minValue, data[dataIndex]));
                 double coverage = (intensity - minValue) / range;

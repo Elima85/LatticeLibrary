@@ -49,11 +49,19 @@ int main(int argc, char *argv[]) {
 	outputDensity = atof(argv[14]);
 	neighborhoodSize = atoi(argv[15]);
 	int inputNDataPoints = inputNRows * inputNColumns * inputNLayers * inputNBands;
+	cout << "#input data points: " << inputNDataPoints << endl;
 	int outputNDataPoints = outputNRows * outputNColumns * outputNLayers * outputNBands;
 
 	// create input image
 	double *inputIntensities;
 	inputIntensities = readVolume(inputFilename, inputNDataPoints);
+	int NNZ = 0;
+	for (int dataIndex = 0; dataIndex < inputNDataPoints; dataIndex++) {
+		if (fabs(inputIntensities[dataIndex]) > EPSILONT) {
+			NNZ++;
+		}
+	}
+	cout << "#seeds: " << NNZ << endl;
 	Lattice* inputLattice;
 	switch(inputLatticeType) {
 	case 'c':
@@ -69,7 +77,14 @@ int main(int argc, char *argv[]) {
 		exit(1);
 	}
 	Image<double> inputImage(inputIntensities, *inputLattice, inputNBands);
+	cout << "Read input image:" << endl;
 	inputImage.printParameters();
+	vector<double> bandSum(inputImage.getNBands(), 0.0);
+	for (int elementIndex = 0; elementIndex < inputImage.getNElements(); elementIndex++) {
+		bandSum = bandSum + inputImage[elementIndex];
+	}
+	std::cout << "Sum of band elements: ";
+	printVector(bandSum);
 
 	// create output image
 	double *outputIntensities = new double[outputNDataPoints];
@@ -88,6 +103,7 @@ int main(int argc, char *argv[]) {
 			exit(1);
 	}
 	Image<double> outputImage(outputIntensities, *outputLattice, outputNBands);
+	cout << "Allocated output image:" << endl;
 	outputImage.printParameters();
 
 	ImageResampler<double> resampler;
