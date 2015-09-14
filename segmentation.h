@@ -11,6 +11,10 @@
 #include "minimumvaluefinder.h"
 #include "seed.h"
 #include "priorityqueue.h"
+#include "structuringelement.h"
+#include "seededdistancemeasure.h"
+#include "seededdistancetransform.h"
+#include "seed.h"
 
 namespace LatticeLib {
 
@@ -21,7 +25,7 @@ namespace LatticeLib {
     public:
         /**
          * Crisp segmentation, based on a distance transform. Each modality band in the output image corresponds to a label.
-         * Each spel belongs to exactly one layer, in which its value is 'true'.
+         * Each element belongs to exactly one layer, in which its value is 'true'.
          *
          * Parameter            | in/out    | Comment
          * :---------           | :-----    |:-------
@@ -47,6 +51,16 @@ namespace LatticeLib {
             }
         }
 
+        /**
+         * Crisp segmentation, based on a seeded distance transform.
+         *
+         * Parameter        | in/out    | Comment
+         * :---------       | :-----    |:-------
+         * roots            | INPUT     | Roots of the seeded distance transform, on which to base the segmentation.
+         * seeds            | INPUT     | Seeds used for the distance transform.
+         * neighborhoodSize | INPUT     | Neighborhood size used for the distance transform.
+         * segmentation     | OUTPUT    | The resulting segmentation is placed in the first modality band. Must have the same lattice as roots.
+         */
         void crisp(Image<int> roots, vector< vector<Seed> >seeds, int neighborhoodSize, Image<int> segmentation) {
             if ((roots.getNBands() != 1) || (segmentation.getNBands() != 1)) {
                 throw incompatibleParametersException();
@@ -80,6 +94,57 @@ namespace LatticeLib {
                     }
                 }
             }
+        }
+
+        template <class intensityTemplate, class membershipTemplate>
+        void fuzzy(Image<intensityTemplate> inputImage, Image<double> distanceTransform, StructuringElement structuringElement, IntensityWorkset<membershipTemplate> fuzzySegmentation) {
+
+            if ((inputImage.getLattice() != distanceTransform.getLattice()) || (inputImage.getLattice() != fuzzySegmentation.getImage().getLattice())) {
+                throw incompatibleParametersException();
+            }
+            if (distanceTransform.getNBands() != fuzzySegmentation.getImage().getNBands()) {
+                throw incompatibleParametersException();
+            }
+
+            int nElements = inputImage.getNElements();
+            int nLabels = distanceTransform.getNBands();
+
+            // create crisp segmentation
+            bool *crispSegmentationData = new bool[nElements * nLabels];
+            Image<bool> crispSegmentation(crispSegmentationData, inputImage.getLattice(), nLabels);
+            crisp(distanceTransform, crispSegmentation);
+
+            // create space between segmented regions
+            bool *erodedSegmentationData = new bool[nElements];
+            Image<bool> erodedCrispSegmentation(erodedSegmentationData, crispSegmentation.getLattice(), 1);
+            structuringElement.binaryErodeImage(crispSegmentation, false, erodedCrispSegmentation);
+
+            // fill in the gaps
+            membershipTemplate minMembership = fuzzySegmentation.getMinIntensity();
+            membershipTemplate maxMembership = fuzzySegmentation.getMaxIntensity();
+            membershipTemplate membershipRange = fuzzySegmentation.getRange();
+            for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
+                vector<bool> crispMembership = erodedCrispSegmentation[elementIndex];
+                vector<bool>::iterator labelIterator = find(crispMembership.begin(), crispMembership.end(), true);
+                if (labelIterator != crispMembership.end()) {
+                    vector<membershipTemplate> membership(nLabels, minMembership);
+                    int labelIndex = labelIterator - crispMembership.begin();
+                    membership[labelIndex] = maxMembership;
+                    fuzzySegmentation.getImage().setElement(elementIndex, membership);
+                }
+                else {
+                    // find which regions are close
+                    // find shortest distance to the sets of seedpoints of those regions
+                    // compute claims of closest regionss
+                }
+            }
+        }
+
+        template<class intensityTemplate>
+        void fuzzify(Image<bool> segmentation, StructuringElement structuringElement,
+                     const SeededDistanceMeasure<int> &distanceMeasure,
+                     IntensityWorkset<intensityTemplate> fuzzySegmentation) {
+
         }
 
         /**

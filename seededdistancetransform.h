@@ -33,7 +33,7 @@ namespace LatticeLib {
          * roots                | OUTPUT    | The roots of the distance transform. Must have the same lattice and dimensions as the input image, and one modality band for each label.
          */
         template<class T>
-        void apply(const Image<T> &inputImage, const vector<vector<Seed> > &seeds,
+        void applyMultipleLayers(const Image<T> &inputImage, const vector<vector<Seed> > &seeds,
                    SeededDistanceMeasure<T> &distanceMeasure, int neighborhoodSize,
                    Image<double> distanceTransform, Image<int> roots) const {
 
