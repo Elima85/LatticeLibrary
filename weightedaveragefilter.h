@@ -114,9 +114,9 @@ namespace LatticeLib {
 				for (int neighborIndex = 0; neighborIndex < neighbors.size(); neighborIndex++) {
 					coefficientIndex = findCoefficient(neighbors[neighborIndex].getPosition());
 					if (coefficientIndex > -1) {
-						result[elementIndex] += image(neighbors[neighborIndex].getElementIndex(), bandIndex) *
-												coefficients[coefficientIndex].getCoefficient();
-						filterCoefficientSum += coefficients[coefficientIndex].getCoefficient();
+						result[elementIndex] += double(image(neighbors[neighborIndex].getElementIndex(), bandIndex)) *
+												double(coefficients[coefficientIndex].getCoefficient());
+						filterCoefficientSum += double(coefficients[coefficientIndex].getCoefficient());
 					}
 				}
 				// normalization

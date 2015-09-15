@@ -8,7 +8,7 @@ namespace LatticeLib {
  *
  * Member 		| Comment
  * --------		| --------
- * index		| Position index of the element in a neighborhood. The midpoint element has index -1.
+ * index		| Position index of the element in a neighborhood. The origin element has index -1.
  * coefficient	| %WeightedAverageFilter coefficient for the specified element.
  */
     template<class coefficientTemplate>

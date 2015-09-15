@@ -33,7 +33,7 @@ namespace LatticeLib {
          * roots                | OUTPUT    | The roots of the distance transform. Must have the same lattice and dimensions as the input image, and one modality band for each label.
          */
         template<class T>
-        void applyMultipleLayers(const Image<T> &inputImage, const vector<vector<Seed> > &seeds,
+        void apply(const Image<T> &inputImage, const vector<vector<Seed> > &seeds,
                    SeededDistanceMeasure<T> &distanceMeasure, int neighborhoodSize,
                    Image<double> distanceTransform, Image<int> roots) const {
 
@@ -47,10 +47,13 @@ namespace LatticeLib {
 
             // setup
             int nElements = inputImage.getNElements();
+            std::cout << "nElements = " << nElements << std::endl;
             int nLabels = seeds.size();
+            std::cout << "nLabels = " << nLabels << std::endl;
             bool *inQueue = new bool[nElements]; // so that only the "best" copy of an element is popped, and all others are skipped, until a better one is pushed.
             distanceMeasure.setup(inputImage);
             for (int labelIndex = 0; labelIndex < nLabels; labelIndex++) {
+                std::cout << "processing label " << labelIndex << std::endl;
                 // initialization
                 for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
                     inQueue[elementIndex] = false;
@@ -63,6 +66,7 @@ namespace LatticeLib {
                     queue.push(newQueueElements[newQueueElementIndex]);
                     inQueue[newQueueElements[newQueueElementIndex].getIndex()] = true;
                 }
+                std::cout << "initialization done." << std::endl;
                 // wave front propagation
                 while (!queue.empty()) {
                     PriorityQueueElement<T> topElement = queue.top();
@@ -105,51 +109,27 @@ namespace LatticeLib {
                 (inputImage.getLattice() != roots.getLattice())) {
                 throw incompatibleParametersException();
             }
-            if ((distanceTransform.getNBands() != 1) || (roots.getNBands() != 1)) {
-                throw incompatibleParametersException();
-            }
+            cout << "Inside applySingleLayer." << std::endl;
 
             // setup
             int nElements = inputImage.getNElements();
             int nLabels = seeds.size();
-            bool *inQueue = new bool[nElements]; // so that only the "best" copy of an element is popped, and all others are skipped, until a better one is pushed.
+            bool *inQueue = new bool[nElements];
             std::fill_n(inQueue, nElements, false);
             distanceMeasure.setup(inputImage);
             vector< vector<Seed> > allSeeds;
             vector<Seed> cumulativeSeeds;
             for (int labelIndex = 0; labelIndex < nLabels; labelIndex++){
-                cumulativeSeeds.insert(cumulativeSeeds.end(), seeds[labelIndex].begin(), seeds[labelIndex].end());
-            }
-
-            // initialization
-            priority_queue<PriorityQueueElement<T>, vector<PriorityQueueElement<T> >, PriorityQueueElementComparison> queue;
-            vector<PriorityQueueElement<T> > newQueueElements;
-            distanceMeasure.initialize(inputImage, seeds, 0, distanceTransform, roots, newQueueElements);
-            int nNewQueueElements = newQueueElements.size();
-            for (int newQueueElementIndex = 0; newQueueElementIndex < nNewQueueElements; newQueueElementIndex++) {
-                queue.push(newQueueElements[newQueueElementIndex]);
-                inQueue[newQueueElements[newQueueElementIndex].getIndex()] = true;
-            }
-            
-            // wave front propagation
-            while (!queue.empty()) {
-                PriorityQueueElement<T> topElement = queue.top();
-                queue.pop();
-                int poppedElementIndex = topElement.getIndex();
-                if (inQueue[poppedElementIndex]) {
-                    inQueue[poppedElementIndex] = false; // so that old queue elements offering larger distances are skipped
-                    distanceMeasure.update(inputImage, neighborhoodSize, poppedElementIndex, 0, distanceTransform,
-                                           roots, newQueueElements);
-                    nNewQueueElements = newQueueElements.size();
-                    for (int queueElementIndex = 0; queueElementIndex < nNewQueueElements; queueElementIndex++) {
-                        queue.push(newQueueElements[queueElementIndex]);
-                        inQueue[newQueueElements[queueElementIndex].getIndex()] = true;
-                    }
+                int nSeeds = seeds[labelIndex].size();
+                for (int seedIndex = 0; seedIndex < nSeeds; seedIndex++) {
+                    cumulativeSeeds.push_back(Seed(seeds[labelIndex][seedIndex].getElementIndex(),
+                                                   seeds[labelIndex][seedIndex].getLabel()));
                 }
             }
+            allSeeds.push_back(cumulativeSeeds);
+            std::cout << "Finished seed setup: " << allSeeds[0].size() << std::endl;
 
-            // cleanup
-            distanceMeasure.clear();
+            apply(inputImage, allSeeds, distanceMeasure, neighborhoodSize, distanceTransform, roots);
         }
     };
 /*

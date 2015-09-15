@@ -15,6 +15,8 @@
 #include "seededdistancemeasure.h"
 #include "seededdistancetransform.h"
 #include "seed.h"
+#include "weightedaveragefilter.h"
+#include "maximumvaluefinder.h"
 
 namespace LatticeLib {
 
@@ -52,7 +54,7 @@ namespace LatticeLib {
         }
 
         /**
-         * Crisp segmentation, based on a seeded distance transform.
+         * Crisp segmentation, based on a seeded distance transform. Each element is assigned the label of the seed point within the shortest distance.
          *
          * Parameter        | in/out    | Comment
          * :---------       | :-----    |:-------
@@ -65,6 +67,7 @@ namespace LatticeLib {
             if ((roots.getNBands() != 1) || (segmentation.getNBands() != 1)) {
                 throw incompatibleParametersException();
             }
+            //std::cout << "Inside crisp segmentation." << std::endl;
             // initialization
             priority_queue<PriorityQueueElement<int>, vector<PriorityQueueElement<int> >, PriorityQueueElementComparison> queue;
             int nLabels = seeds.size();
@@ -77,12 +80,14 @@ namespace LatticeLib {
                     queue.push(PriorityQueueElement<int>(elementIndex, label));
                 }
             }
+            //std::cout << "Initialized queue." << std::endl;
             // label propagation
             while(!queue.empty()) {
                 PriorityQueueElement<int> topElement = queue.top();
                 queue.pop();
                 int poppedElementIndex = topElement.getIndex();
-                int poppedElementLabel = topElement.getValue();
+                //std::cout << "Popped element " << poppedElementIndex << std::endl;
+                int poppedElementLabel = segmentation(poppedElementIndex, 0);
                 vector<Neighbor> neighbors;
                 segmentation.getNeighbors(poppedElementIndex,neighborhoodSize, neighbors);
                 int nNeighbors = neighbors.size();
@@ -96,55 +101,68 @@ namespace LatticeLib {
             }
         }
 
-        template <class intensityTemplate, class membershipTemplate>
-        void fuzzy(Image<intensityTemplate> inputImage, Image<double> distanceTransform, StructuringElement structuringElement, IntensityWorkset<membershipTemplate> fuzzySegmentation) {
+        /**
+         * Fuzzy segmentation, based on a seeded distance transform.
+         * Based on [Malmberg et al. 2011](http://www.sciencedirect.com/science/article/pii/S0304397510006687).
+         *
+         * Parameter            | in/out    | Comment
+         * :---------           | :-----    |:-------
+         * distanceTransform    | INPUT     | Distance transform on which to base the segmentation.
+         * neighborhoodSize     | INPUT     | Neighborhood size used for computing vertex coverage. Use of only face neighbors is recommended.
+         * fuzzySegmentation    | OUTPUT    | Resulting segmentation. Must have the same lattice and number of modality bands as distanceTransform.
+         */
+        template<class intensityTemplate, class membershipTemplate>
+        void fuzzy(Image<double> distanceTransform,
+                   int neighborhoodSize,
+                   IntensityWorkset<membershipTemplate> fuzzySegmentation) {
 
-            if ((inputImage.getLattice() != distanceTransform.getLattice()) || (inputImage.getLattice() != fuzzySegmentation.getImage().getLattice())) {
+            if ((distanceTransform.getLattice() != fuzzySegmentation.getImage().getLattice()) ||
+                distanceTransform.getNBands() != distanceTransform.getNBands()) {
                 throw incompatibleParametersException();
             }
-            if (distanceTransform.getNBands() != fuzzySegmentation.getImage().getNBands()) {
-                throw incompatibleParametersException();
-            }
-
-            int nElements = inputImage.getNElements();
             int nLabels = distanceTransform.getNBands();
+            int nElements = distanceTransform.getNElements();
 
-            // create crisp segmentation
             bool *crispSegmentationData = new bool[nElements * nLabels];
-            Image<bool> crispSegmentation(crispSegmentationData, inputImage.getLattice(), nLabels);
+            Image<bool> crispSegmentation(crispSegmentationData, distanceTransform.getLattice(), nLabels);
             crisp(distanceTransform, crispSegmentation);
 
-            // create space between segmented regions
-            bool *erodedSegmentationData = new bool[nElements];
-            Image<bool> erodedCrispSegmentation(erodedSegmentationData, crispSegmentation.getLattice(), 1);
-            structuringElement.binaryErodeImage(crispSegmentation, false, erodedCrispSegmentation);
-
-            // fill in the gaps
-            membershipTemplate minMembership = fuzzySegmentation.getMinIntensity();
-            membershipTemplate maxMembership = fuzzySegmentation.getMaxIntensity();
-            membershipTemplate membershipRange = fuzzySegmentation.getRange();
+            membershipTemplate minCoverage = fuzzySegmentation.getMinIntensity();
+            membershipTemplate maxCoverage = fuzzySegmentation.getMaxIntensity();
+            membershipTemplate coverageRange = fuzzySegmentation.getRange();
+            MaximumValueFinder<bool> crispMembershipFinder;
             for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
-                vector<bool> crispMembership = erodedCrispSegmentation[elementIndex];
-                vector<bool>::iterator labelIterator = find(crispMembership.begin(), crispMembership.end(), true);
-                if (labelIterator != crispMembership.end()) {
-                    vector<membershipTemplate> membership(nLabels, minMembership);
-                    int labelIndex = labelIterator - crispMembership.begin();
-                    membership[labelIndex] = maxMembership;
-                    fuzzySegmentation.getImage().setElement(elementIndex, membership);
+                int elementLabel = crispMembershipFinder.getVectorElementIndex(crispSegmentation[elementIndex]);
+                double elementPrimaryDistance = distanceTransform(elementIndex, elementLabel);
+                vector<Neighbor> neighbors;
+                distanceTransform.getNeighbors(elementIndex, neighborhoodSize, neighbors);
+                vector<double> coverage(nLabels, 0.0);
+                for (int neighborIndex = 0; neighborIndex < neighbors.size(); neighborIndex++) {
+                    int neighborLabel = crispMembershipFinder.getVectorElementIndex(crispSegmentation[neighbors[neighborIndex].getElementIndex()]);
+                    if (elementLabel != neighborLabel) {
+                        double neighborPrimaryDistance = distanceTransform(neighbors[neighborIndex].getElementIndex(),
+                                                                           neighborLabel);
+                        double neighborSecondaryDistance = distanceTransform(neighbors[neighborIndex].getElementIndex(),
+                                                                             elementLabel);
+                        double elementSecondaryDistance = distanceTransform(elementIndex, neighborLabel);
+                        double a = elementPrimaryDistance * 1 + elementSecondaryDistance * elementLabel * 0;
+                        double b = neighborPrimaryDistance * 1 + neighborSecondaryDistance * elementLabel * 0;
+                        double c = neighborPrimaryDistance * 0 + neighborSecondaryDistance * elementLabel * 1;
+                        double d = elementPrimaryDistance * 0 + elementSecondaryDistance * elementLabel * 1;
+                        double cutLocation = (a - d) / (a - d + c - b);
+                        double edgeCoverage = MIN(cutLocation, 0.5);
+                        coverage[elementLabel] = coverage[elementLabel] + edgeCoverage;
+                        coverage[neighborLabel] = coverage[neighborLabel] + (0.5 - edgeCoverage);
+                    }
+                    else {
+                        coverage[elementLabel] = coverage[elementLabel] + 0.5;
+                    }
                 }
-                else {
-                    // find which regions are close
-                    // find shortest distance to the sets of seedpoints of those regions
-                    // compute claims of closest regionss
-                }
+                coverage = (1 / (0.5 * neighborhoodSize)) * coverage;
+                coverage = coverageRange * coverage;
+                coverage = coverage + vector<double>(nLabels, minCoverage);
+                fuzzySegmentation.getImage().setElement(elementIndex, coverage);
             }
-        }
-
-        template<class intensityTemplate>
-        void fuzzify(Image<bool> segmentation, StructuringElement structuringElement,
-                     const SeededDistanceMeasure<int> &distanceMeasure,
-                     IntensityWorkset<intensityTemplate> fuzzySegmentation) {
-
         }
 
         /**
@@ -163,7 +181,6 @@ namespace LatticeLib {
          * distanceTransform    | INPUT     | Distance transform on which to base the segmentation.
          * tolerance            | INPUT     | The maximum difference in distance that results in a fuzzy segmentation.
          * segmentation         | OUTPUT    | Resulting segmentation. Must have the same lattice and number of modality bands as distanceTransform.
-
          */
         template <class T>
         void fuzzy(Image<double> distanceTransform, double tolerance, IntensityWorkset<T> segmentation) {

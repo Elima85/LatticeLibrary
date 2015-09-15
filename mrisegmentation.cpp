@@ -32,14 +32,14 @@ using namespace LatticeLib;
 
 int main(int argc, char *argv[]) {
 
-
+    //std::cout << "Running mrisegmentation.cpp..." << std::endl;
     if (argc != 13) {
         cerr << "#arguments = " << argc << endl;
         cerr <<
         "Usage: dist mrivolume.bin seeds.bin [c|b|f] #rows #columns #layers #bands samplingdensity [a|c|f|g|m] [m|p|*] neighborhoodSize segmentation.bin" << endl;
         exit(1);
     }
-
+    //std::cout << "Passed argument check." << std::endl;
     // read input parameters
     char *volumeFilename, *seedsFilename, *segmentationFilename;
     char latticeType, distanceMeasureType, normType;
@@ -57,12 +57,13 @@ int main(int argc, char *argv[]) {
     normType = *argv[10];
     neighborhoodSize = atoi(argv[11]);
     segmentationFilename = argv[12];
+    //std::cout << "Read arguments." << std::endl;
+
     int nElements = nRows * nColumns * nLayers;
-    int nDataPoints = nElements * nBands;
 
     // create input image
     double *volumeData;
-    volumeData = readVolume(volumeFilename, nDataPoints);
+    volumeData = readVolume(volumeFilename, nElements * nBands);
     Lattice *lattice;
     switch (latticeType) {
         case 'c':
@@ -78,22 +79,22 @@ int main(int argc, char *argv[]) {
             exit(1);
     }
     Image<double> inputImage(volumeData, *lattice, nBands);
-    cout << "Created input volume:" << endl;
-    //inputImage.printParameters();
+    //std::cout << "Created input volume:" << std::endl;
+    inputImage.printParameters();
 
     // extract seed points
     int nLabels = 5;
     double *seedData;
     seedData = readVolume(seedsFilename, nElements * nLabels);
-    cout << "#data points in seedData: " << nElements * nLabels << endl;
+    //std::cout << "#data points in seedData: " << nElements * nLabels << std::endl;
     Image<double> seedImage(seedData, *lattice, nLabels);
-    int nPotentialSeeds = 0;
-    for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
-        if (fabs(seedData[elementIndex]) > EPSILONT) {
-            nPotentialSeeds++;
-        }
-    }
-    cout << "#Potential seedpoints: " << nPotentialSeeds << endl;
+    //int nPotentialSeeds = 0;
+    //for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
+    //    if (fabs(seedData[elementIndex]) > EPSILONT) {
+    //        nPotentialSeeds++;
+    //    }
+    //}
+    //cout << "#Potential seedpoints: " << nPotentialSeeds << endl;
     vector< vector<Seed> > seedPoints;
     vector<Seed> tmp;
     for (int label = 0; label < nLabels; label++) {
@@ -106,12 +107,12 @@ int main(int argc, char *argv[]) {
         seedPoints.push_back(tmp);
     }
     delete seedData;
-    cout << "Extracted seedpoints:" << endl;
-    cout << "\tlabel 1: " << seedPoints[0].size() << endl;
-    cout << "\tlabel 2: " << seedPoints[1].size() << endl;
-    cout << "\tlabel 3: " << seedPoints[2].size() << endl;
-    cout << "\tlabel 4: " << seedPoints[3].size() << endl;
-    cout << "\tlabel 5: " << seedPoints[4].size() << endl;
+    //std::cout << "Extracted seedpoints:" << std::endl;
+    //std::cout << "\tlabel 1: " << seedPoints[0].size() << std::endl;
+    //std::cout << "\tlabel 2: " << seedPoints[1].size() << std::endl;
+    //std::cout << "\tlabel 3: " << seedPoints[2].size() << std::endl;
+    //std::cout << "\tlabel 4: " << seedPoints[3].size() << std::endl;
+    //std::cout << "\tlabel 5: " << seedPoints[4].size() << std::endl;
 
     // distance measure
     Norm<double> *norm;
@@ -148,50 +149,43 @@ int main(int argc, char *argv[]) {
         default:
             exit(1);
     }
-    cout << "Initialized distance measure." << endl;
+    //std::cout << "Initialized distance measure." << std::endl;
 
     // distance transform
-    double *distanceTransformData = new double[nElements * nLabels];
-    Image<double> distanceImage(distanceTransformData, *lattice, nLabels);
+    double *distanceTransformData = new double[nElements];
+    Image<double> distanceImage(distanceTransformData, *lattice, 1);
     distanceImage.printParameters();
-    int *rootData = new int[nElements * nLabels];
-    Image<int> rootImage(rootData, *lattice, nLabels);
+
+    int *rootData = new int[nElements];
+    Image<int> rootImage(rootData, *lattice, 1);
     rootImage.printParameters();
+
     SeededDistanceTransform seededDistanceTransform;
-    seededDistanceTransform.apply(inputImage, seedPoints, *distanceMeasure, neighborhoodSize, distanceImage, rootImage);
-    delete rootData;
-    for (int dataIndex = 0; dataIndex < nElements * nLabels; dataIndex++) {
-        double tmp = distanceTransformData[dataIndex];
-        distanceTransformData[dataIndex] = 0.0;
-        distanceTransformData[dataIndex] = tmp;
+    seededDistanceTransform.applySingleLayer(inputImage, seedPoints, *distanceMeasure, neighborhoodSize, distanceImage, rootImage);
+
+    writeVolume("distancetransform.bin", distanceTransformData, nElements);
+    double *rootDataDouble = new double[nElements];
+    for (int dataIndex = 0; dataIndex < nElements; dataIndex++) {
+        rootDataDouble[dataIndex] = double(rootData[dataIndex]);
     }
-    vector<double> bandSum(nLabels, 0.0);
-    for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
-        bandSum = bandSum + distanceImage[elementIndex];
-    }
-    std::cout << "Sum of distances: ";
-    printVector(bandSum);
-    std::cout << "saving " << nElements * nLabels << " elements..." << std::endl;
-    writeVolume("distancetransform.bin", distanceTransformData, nElements * nLabels);
-    //writeVolume(outputFilename, outputIntensities, outputNRows * outputNColumns * outputNLayers * outputNBands);
-    cout << "Finished distance transform:" << endl;
-    distanceImage.printParameters();
+
+    writeVolume("roots.bin", rootDataDouble, nElements);
+
+    //std::cout << "Finished distance transform." << std::endl;
 
     // segmentation
     Segmentation segmentation;
-    double *segmentationData = new double[nElements * nLabels];
-    //bool *crispSegmentationData = new bool[nElements * nLabels];
-    //Image<bool> segmentationImage(crispSegmentationData, *lattice, nLabels);
-    //segmentation.crisp(distanceImage, segmentationImage);
-    Image<double> segmentationImage(segmentationData, *lattice, nLabels);
-    IntensityWorkset<double> fuzzySegmentation(segmentationImage, 0.0, 1.0);
-    segmentation.fuzzy(distanceImage, 0.01, fuzzySegmentation);
-    //for (int dataIndex = 0; dataIndex < nElements * nLabels; dataIndex++) {
-    //    segmentationData[dataIndex] = double(crispSegmentationData[dataIndex]);
-    //}
-    writeVolume(segmentationFilename, segmentationData, nElements * nLabels);
-    cout << "Finished segmentation:" << endl;
-    //fuzzySegmentation.getImage().printParameters();
+    int *crispSegmentationData = new int[nElements];
+    Image<int> segmentationImage(crispSegmentationData, *lattice, 1);
+    // save segmentation
+    segmentation.crisp(rootImage, seedPoints, neighborhoodSize, segmentationImage);
+    //std::cout << "Finished segmentation." << std::endl;
+    double *segmentationData = new double[nElements];
+    for (int dataIndex = 0; dataIndex < nElements; dataIndex++) {
+        segmentationData[dataIndex] = double(crispSegmentationData[dataIndex]);
+    }
+    writeVolume(segmentationFilename, segmentationData, nElements);
+    std::cout << "Finished segmentation." << std::endl;
 
     ObjectSurfaceAreaFromVoronoiCellIntersection<double> surfaceArea;
     //cout << "small tomato surface area: " << surfaceArea.compute(fuzzySegmentation, 5) << endl;
