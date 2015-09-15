@@ -15,7 +15,6 @@
 #include "defs.h"
 
 using namespace LatticeLib;
-
 #ifdef AMBDTEST
 TEST(SeededDistanceTransform, ApproximateMinimumBarrierDistanceRGB) {
 
@@ -27,7 +26,7 @@ TEST(SeededDistanceTransform, ApproximateMinimumBarrierDistanceRGB) {
     int nBands = 3;
     int nTotal = nElements * nBands;
 
-    char inputFilename[] = "flowersRGB.bin";
+    char inputFilename[] = "testfiles/flowersRGB.bin";
     char *inputFilenamePointer = inputFilename;
     double *imageData = readVolume(inputFilenamePointer, nTotal);
     Image<double> inputImage(imageData, lattice, nBands);

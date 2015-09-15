@@ -163,6 +163,7 @@ namespace LatticeLib {
                 coverage = coverage + vector<double>(nLabels, minCoverage);
                 fuzzySegmentation.getImage().setElement(elementIndex, coverage);
             }
+            delete crispSegmentationData;
         }
 
         /**

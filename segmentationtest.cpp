@@ -5,6 +5,7 @@
 #include "intensityworkset.h"
 #include "cclattice.h"
 #include "filehandling.h"
+#include "vectoroperators.h"
 
 using namespace LatticeLib;
 
@@ -255,7 +256,7 @@ TEST(Segmentation, fuzzyUnequal) {
 
 }
 
-TEST(Segmentation, AMBD) {
+TEST(Segmentation, CrispAMBD) {
 
     int nRows = 321;
     int nColumns = 481;
@@ -285,6 +286,39 @@ TEST(Segmentation, AMBD) {
     }
     char newFilename[] = "testfiles/AMBDflowersRGB26segmentation.bin";
     writeVolume(newFilename, doubleSegmentationData, nTotal);
+
+    delete distanceTransformData;
+}
+
+TEST(Segmentation, FuzzyAMBD) {
+
+    int nRows = 321;
+    int nColumns = 481;
+    int nLayers = 1;
+    int nElements = nRows * nColumns * nLayers;
+    CCLattice lattice(nRows, nColumns, nLayers, 1.0);
+    int nBands = 3;
+    int nLabels = 3;
+
+    char inputFilename[] = "testfiles/AMBDflowersRGB26.bin";
+    char *inputFilenamePointer = inputFilename;
+    double *distanceTransformData = readVolume(inputFilenamePointer, nElements * nLabels);
+    Image<double> distanceTransformImage(distanceTransformData, lattice, nLabels);
+    double segmentationData[nElements * nLabels];
+    Image<double> segmentationImage(segmentationData, lattice, nLabels);
+    IntensityWorkset<double> fuzzySegmentation(segmentationImage, 0.0, 1.0);
+
+    Segmentation segmentation;
+    segmentation.fuzzy(distanceTransformImage, 6, fuzzySegmentation);
+
+    for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
+        string message = "index = ";
+        SCOPED_TRACE(message + to_string(elementIndex));
+        EXPECT_NEAR(sumOfElements(segmentationImage[elementIndex]), 1.0, EPSILONT);
+    }
+
+    char newFilename[] = "testfiles/fuzzyAMBDflowersRGB26segmentation.bin";
+    writeVolume(newFilename, segmentationData, nElements * nLabels);
 
     delete distanceTransformData;
 }
