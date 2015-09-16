@@ -86,7 +86,7 @@ TEST(Segmentation, crisp) {
     EXPECT_EQ(84, labelSum);
 }
 
-TEST(Segmentation, fuzzyEqual) {
+/*TEST(Segmentation, fuzzyEqual) {
 
     int nRows = 5;
     int nColumns = 5;
@@ -206,9 +206,9 @@ TEST(Segmentation, fuzzyEqual) {
     EXPECT_NEAR(1, doubleFuzzyLabels.getImage()(2, 4, 0, 3), EPSILONT);
     EXPECT_NEAR(1, doubleFuzzyLabels.getImage()(3, 4, 0, 3), EPSILONT);
     EXPECT_NEAR(1, doubleFuzzyLabels.getImage()(2, 3, 0, 3), EPSILONT);
-}
+}*/
 
-TEST(Segmentation, fuzzyUnequal) {
+/*TEST(Segmentation, fuzzyUnequal) {
 
     int nRows = 1;
     int nColumns = 1;
@@ -254,7 +254,7 @@ TEST(Segmentation, fuzzyUnequal) {
     EXPECT_GE(fabs(doubleFuzzyLabels1.getImage()(0, 2) - doubleFuzzyLabels1.getImage()(0, 3)), EPSILONT);
     EXPECT_GE(fabs(doubleFuzzyLabels1.getImage()(0, 2) - EPSILONT),  EPSILONT);
 
-}
+}*/
 
 TEST(Segmentation, CrispAMBD) {
 

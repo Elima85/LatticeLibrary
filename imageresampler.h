@@ -47,8 +47,8 @@ namespace LatticeLib {
             for (int elementIndex = 0; elementIndex < inputImage.getNElements(); elementIndex++) {
                 bandSum = bandSum + inputImage[elementIndex];
             }
-            std::cout << "Sum of band elements: ";
-            printVector(bandSum);
+            //std::cout << "Sum of band elements: ";
+            //printVector(bandSum);
 
             // compute half column step length
             double newElementWidth = outputImage.getLattice().getElementWidth();

@@ -111,7 +111,7 @@ namespace LatticeLib {
          * neighborhoodSize     | INPUT     | Neighborhood size used for computing vertex coverage. Use of only face neighbors is recommended.
          * fuzzySegmentation    | OUTPUT    | Resulting segmentation. Must have the same lattice and number of modality bands as distanceTransform.
          */
-        template<class intensityTemplate, class membershipTemplate>
+        template<class membershipTemplate>
         void fuzzy(Image<double> distanceTransform,
                    int neighborhoodSize,
                    IntensityWorkset<membershipTemplate> fuzzySegmentation) {
@@ -138,29 +138,38 @@ namespace LatticeLib {
                 distanceTransform.getNeighbors(elementIndex, neighborhoodSize, neighbors);
                 vector<double> coverage(nLabels, 0.0);
                 for (int neighborIndex = 0; neighborIndex < neighbors.size(); neighborIndex++) {
+                    double edgeCoverage = 0.5;
                     int neighborLabel = crispMembershipFinder.getVectorElementIndex(crispSegmentation[neighbors[neighborIndex].getElementIndex()]);
                     if (elementLabel != neighborLabel) {
+                        //std::cout << "found edge element: " << elementIndex << std::endl;
                         double neighborPrimaryDistance = distanceTransform(neighbors[neighborIndex].getElementIndex(),
                                                                            neighborLabel);
                         double neighborSecondaryDistance = distanceTransform(neighbors[neighborIndex].getElementIndex(),
                                                                              elementLabel);
                         double elementSecondaryDistance = distanceTransform(elementIndex, neighborLabel);
-                        double a = elementPrimaryDistance * 1 + elementSecondaryDistance * elementLabel * 0;
-                        double b = neighborPrimaryDistance * 1 + neighborSecondaryDistance * elementLabel * 0;
-                        double c = neighborPrimaryDistance * 0 + neighborSecondaryDistance * elementLabel * 1;
-                        double d = elementPrimaryDistance * 0 + elementSecondaryDistance * elementLabel * 1;
-                        double cutLocation = (a - d) / (a - d + c - b);
-                        double edgeCoverage = MIN(cutLocation, 0.5);
-                        coverage[elementLabel] = coverage[elementLabel] + edgeCoverage;
-                        coverage[neighborLabel] = coverage[neighborLabel] + (0.5 - edgeCoverage);
+                        //double a = elementPrimaryDistance * 1.0 + elementSecondaryDistance * 0;
+                        //double b = neighborPrimaryDistance * 1.0 + neighborSecondaryDistance * 0;
+                        //double c = neighborPrimaryDistance * 0 + neighborSecondaryDistance * 1.0;
+                        //double d = elementPrimaryDistance * 0 + elementSecondaryDistance * 1.0;
+                        //std::cout << "factors: a = " << a << ", b = " << b << ", c = " << c << ", d = " << d << std::endl;
+                        //double cutLocation = (a - d) / (a - d + c - b);
+                        double cutLocation = (elementSecondaryDistance - elementPrimaryDistance) /
+                                (elementSecondaryDistance - elementPrimaryDistance +
+                                        neighborSecondaryDistance - neighborPrimaryDistance);
+                        //std::cout << "\tcut location: " << cutLocation << std::endl;
+                        edgeCoverage = MIN(cutLocation, 0.5);
                     }
-                    else {
-                        coverage[elementLabel] = coverage[elementLabel] + 0.5;
-                    }
+                    //std::cout << "\tcomputed edge coverage: " << edgeCoverage << std::endl;
+                    coverage[elementLabel] = coverage[elementLabel] + edgeCoverage;
+                    coverage[neighborLabel] = coverage[neighborLabel] + (0.5 - edgeCoverage);
                 }
-                coverage = (1 / (0.5 * neighborhoodSize)) * coverage;
+                coverage = (1.0 / (0.5 * double(neighbors.size()))) * coverage;
+                //std::cout << "\tcomputed coverage: ";
+                //printVector(coverage);
                 coverage = coverageRange * coverage;
                 coverage = coverage + vector<double>(nLabels, minCoverage);
+                //std::cout << "\tassigned coverage: ";
+                //printVector(coverage);
                 fuzzySegmentation.getImage().setElement(elementIndex, coverage);
             }
             delete crispSegmentationData;
@@ -183,7 +192,7 @@ namespace LatticeLib {
          * tolerance            | INPUT     | The maximum difference in distance that results in a fuzzy segmentation.
          * segmentation         | OUTPUT    | Resulting segmentation. Must have the same lattice and number of modality bands as distanceTransform.
          */
-        template <class T>
+        /*template <class T>
         void fuzzy(Image<double> distanceTransform, double tolerance, IntensityWorkset<T> segmentation) {
             if (distanceTransform.getLattice() != segmentation.getImage().getLattice()) {
                 throw incompatibleParametersException();
@@ -228,7 +237,7 @@ namespace LatticeLib {
                 // This favours the first, and lowest, label, as the accumulated round-off error, which may be as much as nBands, is added to its coverage value, but it's the only idea I've got right now. The practise of favouring the lowest element was inspired by F. Malmberg, who uses this method to make the segmentations deterministic.
                 segmentation.getImage().setElement(elementIndex, competingLabels[0], maxCoverage - accumulatedCoverage);
             }
-        }
+        }*/
     };
 }
 

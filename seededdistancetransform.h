@@ -47,13 +47,13 @@ namespace LatticeLib {
 
             // setup
             int nElements = inputImage.getNElements();
-            std::cout << "nElements = " << nElements << std::endl;
+            //std::cout << "nElements = " << nElements << std::endl;
             int nLabels = seeds.size();
-            std::cout << "nLabels = " << nLabels << std::endl;
+            //std::cout << "nLabels = " << nLabels << std::endl;
             bool *inQueue = new bool[nElements]; // so that only the "best" copy of an element is popped, and all others are skipped, until a better one is pushed.
             distanceMeasure.setup(inputImage);
             for (int labelIndex = 0; labelIndex < nLabels; labelIndex++) {
-                std::cout << "processing label " << labelIndex << std::endl;
+                //std::cout << "processing label " << labelIndex << std::endl;
                 // initialization
                 for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
                     inQueue[elementIndex] = false;
@@ -66,7 +66,7 @@ namespace LatticeLib {
                     queue.push(newQueueElements[newQueueElementIndex]);
                     inQueue[newQueueElements[newQueueElementIndex].getIndex()] = true;
                 }
-                std::cout << "initialization done." << std::endl;
+                //std::cout << "initialization done." << std::endl;
                 // wave front propagation
                 while (!queue.empty()) {
                     PriorityQueueElement<T> topElement = queue.top();
@@ -109,7 +109,7 @@ namespace LatticeLib {
                 (inputImage.getLattice() != roots.getLattice())) {
                 throw incompatibleParametersException();
             }
-            cout << "Inside applySingleLayer." << std::endl;
+            //cout << "Inside applySingleLayer." << std::endl;
 
             // setup
             int nElements = inputImage.getNElements();
@@ -127,7 +127,7 @@ namespace LatticeLib {
                 }
             }
             allSeeds.push_back(cumulativeSeeds);
-            std::cout << "Finished seed setup: " << allSeeds[0].size() << std::endl;
+            //std::cout << "Finished seed setup: " << allSeeds[0].size() << std::endl;
 
             apply(inputImage, allSeeds, distanceMeasure, neighborhoodSize, distanceTransform, roots);
         }
