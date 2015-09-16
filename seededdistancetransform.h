@@ -44,6 +44,7 @@ namespace LatticeLib {
             if ((distanceTransform.getNBands() != seeds.size()) || (roots.getNBands() != seeds.size())) {
                 throw incompatibleParametersException();
             }
+            std::cout << "Inside SeededDistanceTransform.apply()." << std::endl;
 
             // setup
             int nElements = inputImage.getNElements();
@@ -53,7 +54,7 @@ namespace LatticeLib {
             bool *inQueue = new bool[nElements]; // so that only the "best" copy of an element is popped, and all others are skipped, until a better one is pushed.
             distanceMeasure.setup(inputImage);
             for (int labelIndex = 0; labelIndex < nLabels; labelIndex++) {
-                //std::cout << "processing label " << labelIndex << std::endl;
+                std::cout << "\tprocessing label " << labelIndex << std::endl;
                 // initialization
                 for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
                     inQueue[elementIndex] = false;
@@ -66,7 +67,7 @@ namespace LatticeLib {
                     queue.push(newQueueElements[newQueueElementIndex]);
                     inQueue[newQueueElements[newQueueElementIndex].getIndex()] = true;
                 }
-                //std::cout << "initialization done." << std::endl;
+                std::cout << "\tinitialization done." << std::endl;
                 // wave front propagation
                 while (!queue.empty()) {
                     PriorityQueueElement<T> topElement = queue.top();
@@ -83,6 +84,7 @@ namespace LatticeLib {
                         }
                     }
                 }
+                std::cout << "\tWave front propagation done." << std::endl;
             }
             // cleanup
             distanceMeasure.clear();

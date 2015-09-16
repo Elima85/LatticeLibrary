@@ -28,31 +28,21 @@ namespace LatticeLib {
          * labelIndex           | INPUT     | Label (band) index for the specified element.
          */
         double compute(IntensityWorkset<intensityTemplate> &inputImage, int labelIndex) const {
-            cout << "inputImage: min = " << int(inputImage.getMinIntensity()) << ", max = " << int(inputImage.getMaxIntensity()) << ", data = " << long(inputImage.getImage().getData()) << ", density = " << inputImage.getImage().getLattice().getDensity() << endl; // DEBUG
             int nElements = inputImage.getImage().getNElements();
             int start = labelIndex * nElements;
             int stop = start + nElements;
             intensityTemplate *data = inputImage.getImage().getData();
             double minValue = inputImage.getMinIntensity();
             double maxValue = inputImage.getMaxIntensity();
-            double range = maxValue - minValue;
-            //if (fabs(range) < EPSILONT) { // DEBUG
-            //    std::cout << "Range is too small." << std::endl; // DEBUG
-            //} // DEBUG
+            double range = inputImage.getRange();
             double approximatedArea = 0.0;
-            std::cout << "Traversing image data..." << std::endl; // DEBUG
             for (int dataIndex = start; dataIndex < stop; dataIndex++) {
-                double intensity = MIN(maxValue, MAX(minValue, data[dataIndex]));
+                double intensity = data[dataIndex];
                 double coverage = (intensity - minValue) / range;
-                //if (coverage < 0 || coverage > 1) { // DEBUG
-                //    std::cout << "coverage out of bounds for dataIndex = " << dataIndex << std::endl; // DEBUG
-                //} // DEBUG
                 if (coverage > 0 && coverage < 1) {
                     approximatedArea = approximatedArea + inputImage.getImage().getLattice().approximateIntersectionArea(coverage);
-                    //std::cout << "index: " << dataIndex << ", intensity: " << intensity << ", coverage: " << coverage << ", area: " << inputImage.getImage().getLattice().approximateIntersectionArea(coverage) << std::endl;
                 }
             }
-            //std::cout << "\t computed area: " << approximatedArea << std::endl;
             return approximatedArea;
         }
     };

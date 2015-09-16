@@ -3,8 +3,6 @@
 #include "filehandling.h"
 #include "lattice.h"
 #include "cclattice.h"
-#include "bcclattice.h"
-#include "fcclattice.h"
 #include "intensityworkset.h"
 #include "objectsurfaceareafromvoronoicellintersection.h"
 #include "objectvolumefromcoverage.h"
@@ -33,56 +31,43 @@ using namespace LatticeLib;
 int main(int argc, char *argv[]) {
 
     //std::cout << "Running mrisegmentation.cpp..." << std::endl;
-    if (argc != 13) {
+    if (argc != 12) {
         cerr << "#arguments = " << argc << endl;
         cerr <<
-        "Usage: dist mrivolume.bin seeds.bin [c|b|f] #rows #columns #layers #bands samplingdensity [a|c|f|g|m] [m|p|*] neighborhoodSize segmentation.bin" << endl;
+        "Usage: dist mrivolume.bin seeds.bin #rows #columns #layers #bands samplingdensity [a|c|f|g|m] [m|p|*] neighborhoodSize segmentation.bin" <<
+        endl;
         exit(1);
     }
     // read input parameters
     char *volumeFilename, *seedsFilename, *segmentationFilename;
-    char latticeType, distanceMeasureType, normType;
+    char distanceMeasureType, normType;
     int nRows, nColumns, nLayers, nBands, neighborhoodSize;
     double inputDensity, outputDensity;
     volumeFilename = argv[1];
     seedsFilename = argv[2];
-    latticeType = *argv[3];
-    nRows = atoi(argv[4]);
-    nColumns = atoi(argv[5]);
-    nLayers = atoi(argv[6]);
-    nBands = atoi(argv[7]);
-    inputDensity = atof(argv[8]);
-    distanceMeasureType = *argv[9];
-    normType = *argv[10];
-    neighborhoodSize = atoi(argv[11]);
-    segmentationFilename = argv[12];
+    nRows = atoi(argv[3]);
+    nColumns = atoi(argv[4]);
+    nLayers = atoi(argv[5]);
+    nBands = atoi(argv[6]);
+    inputDensity = atof(argv[7]);
+    distanceMeasureType = *argv[8];
+    normType = *argv[9];
+    neighborhoodSize = atoi(argv[10]);
+    segmentationFilename = argv[11];
 
     int nElements = nRows * nColumns * nLayers;
 
     // create input image
     double *volumeData;
     volumeData = readVolume(volumeFilename, nElements * nBands);
-    Lattice *lattice;
-    switch (latticeType) {
-        case 'c':
-            lattice = new CCLattice(nRows, nColumns, nLayers, inputDensity);
-            break;
-        case 'b':
-            lattice = new BCCLattice(nRows, nColumns, nLayers, inputDensity);
-            break;
-        case 'f':
-            lattice = new FCCLattice(nRows, nColumns, nLayers, inputDensity);
-            break;
-        default:
-            exit(1);
-    }
-    Image<double> inputImage(volumeData, *lattice, nBands);
+    CCLattice lattice(nRows, nColumns, nLayers, inputDensity);
+    Image<double> inputImage(volumeData, lattice, nBands);
 
     // extract seed points
     int nLabels = 5;
     double *seedData;
     seedData = readVolume(seedsFilename, nElements * nLabels);
-    Image<double> seedImage(seedData, *lattice, nLabels);
+    Image<double> seedImage(seedData, lattice, nLabels);
     //int nPotentialSeeds = 0;
     //for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
     //    if (fabs(seedData[elementIndex]) > EPSILONT) {
@@ -90,12 +75,12 @@ int main(int argc, char *argv[]) {
     //    }
     //}
     //cout << "#Potential seedpoints: " << nPotentialSeeds << endl;
-    vector< vector<Seed> > seedPoints;
+    vector<vector<Seed> > seedPoints;
     vector<Seed> tmp;
     for (int label = 0; label < nLabels; label++) {
         tmp.clear();
         for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
-            if (fabs(seedImage(elementIndex, label)-1) < EPSILONT) {
+            if (fabs(seedImage(elementIndex, label) - 1) < EPSILONT) {
                 tmp.push_back(Seed(Seed(elementIndex, label)));
             }
         }
@@ -145,12 +130,12 @@ int main(int argc, char *argv[]) {
     }
 
     // distance transform
-    double *distanceTransformData = new double[nElements * nLabels];
-    Image<double> distanceImage(distanceTransformData, *lattice, nLabels);
+    double *distanceTransformData = new double[nElements];
+    Image<double> distanceImage(distanceTransformData, lattice, 1);
     int *rootData = new int[nElements * nLabels];
-    Image<int> rootImage(rootData, *lattice, nLabels);
+    Image<int> rootImage(rootData, lattice, 1);
     SeededDistanceTransform seededDistanceTransform;
-    seededDistanceTransform.apply(inputImage, seedPoints, *distanceMeasure, neighborhoodSize, distanceImage, rootImage);
+    seededDistanceTransform.applySingleLayer(inputImage, seedPoints, *distanceMeasure, neighborhoodSize, distanceImage, rootImage);
     writeVolume("distancetransform.bin", distanceTransformData, nElements);
 
     // segmentation
@@ -177,7 +162,6 @@ int main(int argc, char *argv[]) {
     //volumeFile.write(reinterpret_cast<char *>(&volume), sizeof(double));
     //volumeFile.close();
 
-    delete lattice;
     delete seedData;
     delete volumeData;
     delete rootData;
@@ -188,3 +172,4 @@ int main(int argc, char *argv[]) {
 
     return 0;
 }
+
