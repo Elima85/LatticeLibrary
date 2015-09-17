@@ -67,7 +67,7 @@ namespace LatticeLib {
             if ((roots.getNBands() != 1) || (segmentation.getNBands() != 1)) {
                 throw incompatibleParametersException();
             }
-            //std::cout << "Inside crisp segmentation." << std::endl;
+            std::cout << "Inside crisp segmentation." << std::endl;
             // initialization
             priority_queue<PriorityQueueElement<int>, vector<PriorityQueueElement<int> >, PriorityQueueElementComparison> queue;
             int nLabels = seeds.size();
@@ -77,6 +77,7 @@ namespace LatticeLib {
                     int elementIndex = seeds[labelIndex][seedIndex].getElementIndex();
                     int label = seeds[labelIndex][seedIndex].getLabel();
                     segmentation.setElement(elementIndex, 0, label);
+                    //std::cout << "element label set to " << segmentation(elementIndex,0) << std::endl;
                     queue.push(PriorityQueueElement<int>(elementIndex, label));
                 }
             }
@@ -95,6 +96,7 @@ namespace LatticeLib {
                     int neighborElement = neighbors[neighborIndex].getElementIndex();
                     if (roots(neighborElement, 0) == poppedElementIndex) {
                         segmentation.setElement(neighborElement, 0, poppedElementLabel);
+                        //std::cout << "element label set to " << segmentation(neighborElement, 0) << std::endl;
                         queue.push(PriorityQueueElement<int>(neighborElement, poppedElementLabel));
                     }
                 }

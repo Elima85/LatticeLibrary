@@ -98,15 +98,21 @@ set(SEGMENT_HIGHRES_SOURCE_FILES
     mrisegmentationhighres.cpp
     )
 
+set(DOWNSAMPLED_VOLUME_SOURCE_FILES
+    ${SOURCE_FILES}
+    downsamplevolume.cpp
+    )
+
 include_directories(
     "${GTEST_ROOT}"
     "${GTEST_ROOT}/include"
 )
 
 add_executable(release ${MAIN_SOURCE_FILES})
-add_executable(testing ${TEST_SOURCE_FILES})
+add_executable(testing ${TEST_SOURCE_FILES} downsamplevolume.cpp)
 add_executable(segment ${SEGMENT_SOURCE_FILES})
 add_executable(segmenthighres ${SEGMENT_HIGHRES_SOURCE_FILES})
+add_executable(downsamplevolume ${DOWNSAMPLED_VOLUME_SOURCE_FILES})
 
 target_link_libraries(
     testing

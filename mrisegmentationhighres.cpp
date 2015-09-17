@@ -132,7 +132,7 @@ int main(int argc, char *argv[]) {
     // distance transform
     double *distanceTransformData = new double[nElements];
     Image<double> distanceImage(distanceTransformData, lattice, 1);
-    int *rootData = new int[nElements * nLabels];
+    int *rootData = new int[nElements];
     Image<int> rootImage(rootData, lattice, 1);
     SeededDistanceTransform seededDistanceTransform;
     seededDistanceTransform.applySingleLayer(inputImage, seedPoints, *distanceMeasure, neighborhoodSize, distanceImage, rootImage);
@@ -140,22 +140,33 @@ int main(int argc, char *argv[]) {
 
     // segmentation
     Segmentation segmentation;
-    double *fuzzySegmentationData = new double[nElements * nLabels];
+    int *crispSegmentationData = new int[nElements];
+    Image<int> crispSegmentationImage(crispSegmentationData, lattice, 1);
+    //double *fuzzySegmentationData = new double[nElements * nLabels];
     //double *fuzzySegmentationData = readVolume(segmentationFilename, nElements * nLabels);
-    Image<double> fuzzySegmentationImage(fuzzySegmentationData, *lattice, nLabels);
-    IntensityWorkset<double> fuzzySegmentation(fuzzySegmentationImage, 0, 1);
+    //Image<double> fuzzySegmentationImage(fuzzySegmentationData, lattice, nLabels);
+    //IntensityWorkset<double> fuzzySegmentation(fuzzySegmentationImage, 0, 1);
     // save segmentation
-    segmentation.fuzzy(distanceImage, neighborhoodSize, fuzzySegmentation);
-    writeVolume(segmentationFilename, fuzzySegmentationData, nElements * nLabels);
+    segmentation.crisp(rootImage, seedPoints, neighborhoodSize, crispSegmentationImage);
+    //segmentation.fuzzy(distanceImage, neighborhoodSize, fuzzySegmentation);
+    //writeVolume(segmentationFilename, fuzzySegmentationData, nElements * nLabels);
+    double *crispSegmentationDataDouble = new double[nElements];
+    double elementSum = 0.0;
+    for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
+        crispSegmentationDataDouble[elementIndex] = double(crispSegmentationData[elementIndex]);
+        elementSum = elementSum + crispSegmentationDataDouble[elementIndex];
+    }
+    std::cout << "element sum: " << elementSum << std::endl;
+    writeVolume(segmentationFilename, crispSegmentationDataDouble, nElements);
 
-    ObjectSurfaceAreaFromVoronoiCellIntersection<double> surfaceArea;
-    cout << "small tomato surface area: " << surfaceArea.compute(fuzzySegmentation, 4) << endl;
-    cout << "large tomato surface area: " << surfaceArea.compute(fuzzySegmentation, 3) << endl;
-    cout << "avocado surface area: " << surfaceArea.compute(fuzzySegmentation, 2) << endl;
-    ObjectVolumeFromCoverage<double> volume;
-    cout << "small tomato volume: " << volume.compute(fuzzySegmentation, 4) << endl;
-    cout << "large tomato volume: " << volume.compute(fuzzySegmentation, 3) << endl;
-    cout << "avocado volume: " << volume.compute(fuzzySegmentation, 2) << endl;
+    //ObjectSurfaceAreaFromVoronoiCellIntersection<double> surfaceArea;
+    //cout << "small tomato surface area: " << surfaceArea.compute(fuzzySegmentation, 4) << endl;
+    //cout << "large tomato surface area: " << surfaceArea.compute(fuzzySegmentation, 3) << endl;
+    //cout << "avocado surface area: " << surfaceArea.compute(fuzzySegmentation, 2) << endl;
+    //ObjectVolumeFromCoverage<double> volume;
+    //cout << "small tomato volume: " << volume.compute(fuzzySegmentation, 4) << endl;
+    //cout << "large tomato volume: " << volume.compute(fuzzySegmentation, 3) << endl;
+    //cout << "avocado volume: " << volume.compute(fuzzySegmentation, 2) << endl;
 
     //std::ofstream volumeFile;
     //volumeFile.open(volumeFilename, std::ios_base::app);
@@ -166,7 +177,9 @@ int main(int argc, char *argv[]) {
     delete volumeData;
     delete rootData;
     delete distanceTransformData;
-    delete fuzzySegmentationData;
+    //delete fuzzySegmentationData;
+    delete crispSegmentationData;
+    delete crispSegmentationDataDouble;
     delete norm;
     delete distanceMeasure;
 

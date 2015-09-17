@@ -72,6 +72,9 @@ namespace LatticeLib {
                 for (int newRowIndex = 0; newRowIndex < newNRows; newRowIndex++) {
                     for (int newColumnIndex = 0; newColumnIndex < newNColumns; newColumnIndex++) {
                         int newElementIndex = outputImage.rclToIndex(newRowIndex, newColumnIndex, newLayerIndex);
+                        if (!(newElementIndex % 100000)) {
+                            std::cout << "\telement " << newElementIndex << " being processed." << std::endl;
+                        }
                         // compute position of new element
                         vector<double> newElementPosition;
                         outputImage.getCoordinates(newElementIndex, newElementPosition);
