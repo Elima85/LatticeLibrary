@@ -33,18 +33,18 @@ using namespace LatticeLib;
 int main(int argc, char *argv[]) {
 
     //std::cout << "Running mrisegmentation.cpp..." << std::endl;
-    if (argc != 13) {
+    if (argc != 15) {
         cerr << "#arguments = " << argc << endl;
         cerr <<
-        "Usage: dist mrivolume.bin seeds.bin [c|b|f] #rows #columns #layers #bands samplingdensity [a|c|f|g|m] [m|p|*] neighborhoodSize segmentation.bin" << endl;
+        "Usage: dist mrivolume.bin seeds.bin [c|b|f] #rows #columns #layers #bands samplingdensity [a|c|f|g|m] [m|p|*] neighborhoodSize segmentation.bin areafile.bin volumefile.bin" << endl;
         exit(1);
     }
     // read input parameters
-    char *volumeFilename, *seedsFilename, *segmentationFilename;
+    char *inputFilename, *seedsFilename, *segmentationFilename, *areaFilename, *volumeFilename;
     char latticeType, distanceMeasureType, normType;
     int nRows, nColumns, nLayers, nBands, neighborhoodSize;
     double inputDensity, outputDensity;
-    volumeFilename = argv[1];
+    inputFilename = argv[1];
     seedsFilename = argv[2];
     latticeType = *argv[3];
     nRows = atoi(argv[4]);
@@ -56,12 +56,14 @@ int main(int argc, char *argv[]) {
     normType = *argv[10];
     neighborhoodSize = atoi(argv[11]);
     segmentationFilename = argv[12];
+    areaFilename = argv[13];
+    volumeFilename = argv[14];
 
     int nElements = nRows * nColumns * nLayers;
 
     // create input image
     double *volumeData;
-    volumeData = readVolume(volumeFilename, nElements * nBands);
+    volumeData = readVolume(inputFilename, nElements * nBands);
     Lattice *lattice;
     switch (latticeType) {
         case 'c':
@@ -163,19 +165,41 @@ int main(int argc, char *argv[]) {
     segmentation.fuzzy(distanceImage, neighborhoodSize, fuzzySegmentation);
     writeVolume(segmentationFilename, fuzzySegmentationData, nElements * nLabels);
 
-    ObjectSurfaceAreaFromVoronoiCellIntersection<double> surfaceArea;
-    cout << "small tomato surface area: " << surfaceArea.compute(fuzzySegmentation, 4) << endl;
-    cout << "large tomato surface area: " << surfaceArea.compute(fuzzySegmentation, 3) << endl;
-    cout << "avocado surface area: " << surfaceArea.compute(fuzzySegmentation, 2) << endl;
-    ObjectVolumeFromCoverage<double> volume;
-    cout << "small tomato volume: " << volume.compute(fuzzySegmentation, 4) << endl;
-    cout << "large tomato volume: " << volume.compute(fuzzySegmentation, 3) << endl;
-    cout << "avocado volume: " << volume.compute(fuzzySegmentation, 2) << endl;
+    ObjectSurfaceAreaFromVoronoiCellIntersection<double> surfaceAreaComputer;
+    std::ofstream areaFile;
+    areaFile.open(areaFilename, std::ios_base::app);
+    double area;
+    area = surfaceAreaComputer.compute(fuzzySegmentation, 4);
+    areaFile.write(reinterpret_cast<char *>(&area), sizeof(double));
+    cout << "small tomato surface area: " << area << endl;
+    area = surfaceAreaComputer.compute(fuzzySegmentation, 3);
+    areaFile.write(reinterpret_cast<char *>(&area), sizeof(double));
+    cout << "large tomato surface area: " << area << endl;
+    area = surfaceAreaComputer.compute(fuzzySegmentation, 2);
+    areaFile.write(reinterpret_cast<char *>(&area), sizeof(double));
+    cout << "avocado surface area: " << area << endl;
+    area = surfaceAreaComputer.compute(fuzzySegmentation, 1);
+    areaFile.write(reinterpret_cast<char *>(&area), sizeof(double));
+    cout << "margarine surface area: " << area << endl;
+    areaFile.close();
 
-    //std::ofstream volumeFile;
-    //volumeFile.open(volumeFilename, std::ios_base::app);
-    //volumeFile.write(reinterpret_cast<char *>(&volume), sizeof(double));
-    //volumeFile.close();
+    ObjectVolumeFromCoverage<double> volumeComputer;
+    std::ofstream volumeFile;
+    volumeFile.open(volumeFilename, std::ios_base::app);
+    double volume;
+    volume = volumeComputer.compute(fuzzySegmentation, 4);
+    volumeFile.write(reinterpret_cast<char *>(&volume), sizeof(double));
+    cout << "small tomato volume: " << volume << endl;
+    volume = volumeComputer.compute(fuzzySegmentation, 3);
+    volumeFile.write(reinterpret_cast<char *>(&volume), sizeof(double));
+    cout << "large tomato volume: " << volume << endl;
+    volume = volumeComputer.compute(fuzzySegmentation, 2);
+    volumeFile.write(reinterpret_cast<char *>(&volume), sizeof(double));
+    cout << "avocado volume: " << volume << endl;
+    volume = volumeComputer.compute(fuzzySegmentation, 1);
+    volumeFile.write(reinterpret_cast<char *>(&volume), sizeof(double));
+    cout << "margarine volume: " << volume << endl;
+    volumeFile.close();
 
     delete lattice;
     delete seedData;
