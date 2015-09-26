@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
     if (argc != 15) {
         cerr << "#arguments = " << argc << endl;
         cerr <<
-        "Usage: dist mrivolume.bin seeds.bin [c|b|f] #rows #columns #layers #bands samplingdensity [a|c|f|g|m] [m|p|*] neighborhoodSize segmentation.bin areafile.bin volumefile.bin" << endl;
+        "Usage: segment mrivolume.bin seeds.bin [c|b|f] #rows #columns #layers #bands samplingdensity [a|c|f|g|m] [m|p|*] neighborhoodSize segmentation.bin areafile.bin volumefile.bin" << endl;
         exit(1);
     }
     // read input parameters
