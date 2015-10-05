@@ -34,25 +34,6 @@ namespace LatticeLib {
             }
             return indexOfMinimumValue;
         }
-        /**
-         * Implements VectorIndexPicker::getVectorElement().
-         *
-         * Returns the minimum value in the vector.
-         *
-         * Parameter    | in/out    | Comment
-         * :---------   | :------   | :-------
-         * vector       | INPUT     | Vector in which to find the element.
-         */
-        /*intensityTemplate getVectorElement(const vector<intensityTemplate> &vector) const {
-            int length = vector.size();
-            intensityTemplate minValue = INF;
-            for (int elementIndex = 0; elementIndex < length; elementIndex++) {
-                if (vector[elementIndex] < minValue) {
-                    minValue = vector[elementIndex];
-                }
-            }
-            return minValue;
-        }*/
     };
 }
 

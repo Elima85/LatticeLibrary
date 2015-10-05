@@ -7,7 +7,7 @@
 #include "templatefilter.h"
 #include "spatialtemplate.h"
 #include <vector>
-#include <stdio.h>
+#include "exception.h"
 
 namespace LatticeLib {
 
@@ -95,7 +95,7 @@ namespace LatticeLib {
 		 */
 		void applyToBand(Image<intensityTemplate> image, int bandIndex, double *result) const {
 			if ((bandIndex < 0) || (bandIndex >= image.getNBands())) {
-				// throw error or exception
+				throw incompatibleParametersException();
 			}
 
 			int nElements = image.getNElements();

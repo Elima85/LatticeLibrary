@@ -1,5 +1,5 @@
-#ifndef CCLATTICE_H
-#define CCLATTICE_H
+#ifndef LATTICELIBRARY_CCLATTICE_H
+#define LATTICELIBRARY_CCLATTICE_H
 
 #include "lattice.h"
 

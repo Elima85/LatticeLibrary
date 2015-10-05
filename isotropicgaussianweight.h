@@ -10,23 +10,26 @@
 namespace LatticeLib {
 
     /**
-     * Class for Gaussian weighting, using a Gaussian distribution with the specified mean value and standard deviation,
+     * Class for Gaussian weighting, using a Gaussian distribution with the specified standard deviation,
      * centered at the reference spatial element.
-     *
-     * TODO: Test!
      */
     template<class intensityTemplate>
-    class IsotropicGaussianWeight : public WeightAssignment<intensityTemplate> {
+    class IsotropicGaussianWeight : public WeightAssignment<intensityTemplate> { // TODO: Test!
     private:
+        /** Standard deviation of the Gaussian distribution. */
         double standardDeviation;
 
     public:
 
         /**
          * Constructor for GaussianWeight objects.
+         *
+         * Parameter    | Comment
+         * :---------   | :-------
+         * stdDev       | Standard deviation of the distribution.
          */
-        IsotropicGaussianWeight(double s) : WeightAssignment<intensityTemplate>() {
-            standardDeviation = s;
+        IsotropicGaussianWeight(double stdDev) : WeightAssignment<intensityTemplate>() {
+            standardDeviation = stdDev;
         }
 
         /**
@@ -43,8 +46,8 @@ namespace LatticeLib {
          * :---------   | :------	| :-------
          * s            | INPUT     | New standard deviation of the distribution.
          */
-        void setStandardDeviation(doube s) {
-            standardDeviation = s;
+        void setStandardDeviation(doube stdDev) {
+            standardDeviation = stdDev;
         }
 
         /**

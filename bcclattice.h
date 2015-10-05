@@ -1,5 +1,5 @@
-#ifndef BCCLATTICE_H
-#define BCCLATTICE_H
+#ifndef LATTICELIBRARY_BCCLATTICE_H
+#define LATTICELIBRARY_BCCLATTICE_H
 
 #include "lattice.h"
 

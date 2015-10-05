@@ -1,5 +1,5 @@
-#ifndef DISTANCEMEASURE_H
-#define DISTANCEMEASURE_H
+#ifndef LATTICELIBRARY_DISTANCEMEASURE_H
+#define LATTICELIBRARY_DISTANCEMEASURE_H
 
 #include "intensityworkset.h"
 #include "image.h"

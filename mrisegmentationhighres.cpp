@@ -140,46 +140,41 @@ int main(int argc, char *argv[]) {
 
     // segmentation
     Segmentation segmentation;
-    int *crispSegmentationData = new int[nElements];
-    Image<int> crispSegmentationImage(crispSegmentationData, lattice, 1);
-    //double *fuzzySegmentationData = new double[nElements * nLabels];
+    double *fuzzySegmentationData = new double[nElements * nLabels];
     //double *fuzzySegmentationData = readVolume(segmentationFilename, nElements * nLabels);
-    //Image<double> fuzzySegmentationImage(fuzzySegmentationData, lattice, nLabels);
-    //IntensityWorkset<double> fuzzySegmentation(fuzzySegmentationImage, 0, 1);
+    Image<double> fuzzySegmentationImage(fuzzySegmentationData, *lattice, nLabels);
+    IntensityWorkset<double> fuzzySegmentation(fuzzySegmentationImage, 0, 1);
     // save segmentation
-    segmentation.crisp(rootImage, seedPoints, neighborhoodSize, crispSegmentationImage);
-    //segmentation.fuzzy(distanceImage, neighborhoodSize, fuzzySegmentation);
-    //writeVolume(segmentationFilename, fuzzySegmentationData, nElements * nLabels);
-    double *crispSegmentationDataDouble = new double[nElements];
-    double elementSum = 0.0;
-    for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
-        crispSegmentationDataDouble[elementIndex] = double(crispSegmentationData[elementIndex]);
-        elementSum = elementSum + crispSegmentationDataDouble[elementIndex];
-    }
-    std::cout << "element sum: " << elementSum << std::endl;
-    writeVolume(segmentationFilename, crispSegmentationDataDouble, nElements);
+    segmentation.fuzzy(distanceImage, neighborhoodSize, fuzzySegmentation);
+    writeVolume(segmentationFilename, fuzzySegmentationData, nElements * nLabels);
 
-    //ObjectSurfaceAreaFromVoronoiCellIntersection<double> surfaceArea;
-    //cout << "small tomato surface area: " << surfaceArea.compute(fuzzySegmentation, 4) << endl;
-    //cout << "large tomato surface area: " << surfaceArea.compute(fuzzySegmentation, 3) << endl;
-    //cout << "avocado surface area: " << surfaceArea.compute(fuzzySegmentation, 2) << endl;
-    //ObjectVolumeFromCoverage<double> volume;
-    //cout << "small tomato volume: " << volume.compute(fuzzySegmentation, 4) << endl;
-    //cout << "large tomato volume: " << volume.compute(fuzzySegmentation, 3) << endl;
-    //cout << "avocado volume: " << volume.compute(fuzzySegmentation, 2) << endl;
+    ObjectSurfaceAreaFromVoronoiCellIntersection<double> surfaceAreaComputer;
+    double area;
+    area = surfaceAreaComputer.compute(fuzzySegmentation, 4);
+    cout << "small tomato surface area: " << area << endl;
+    area = surfaceAreaComputer.compute(fuzzySegmentation, 3);
+    cout << "large tomato surface area: " << area << endl;
+    area = surfaceAreaComputer.compute(fuzzySegmentation, 2);
+    cout << "avocado surface area: " << area << endl;
+    area = surfaceAreaComputer.compute(fuzzySegmentation, 1);
+    cout << "margarine surface area: " << area << endl;
 
-    //std::ofstream volumeFile;
-    //volumeFile.open(volumeFilename, std::ios_base::app);
-    //volumeFile.write(reinterpret_cast<char *>(&volume), sizeof(double));
-    //volumeFile.close();
+    ObjectVolumeFromCoverage<double> volumeComputer;
+    double volume;
+    volume = volumeComputer.compute(fuzzySegmentation, 4);
+    cout << "small tomato volume: " << volume << endl;
+    volume = volumeComputer.compute(fuzzySegmentation, 3);
+    cout << "large tomato volume: " << volume << endl;
+    volume = volumeComputer.compute(fuzzySegmentation, 2);
+    cout << "avocado volume: " << volume << endl;
+    volume = volumeComputer.compute(fuzzySegmentation, 1);
+    cout << "margarine volume: " << volume << endl;
 
     delete seedData;
     delete volumeData;
     delete rootData;
     delete distanceTransformData;
-    //delete fuzzySegmentationData;
-    delete crispSegmentationData;
-    delete crispSegmentationDataDouble;
+    delete fuzzySegmentationData;
     delete norm;
     delete distanceMeasure;
 

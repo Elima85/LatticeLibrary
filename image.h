@@ -1,13 +1,13 @@
-#ifndef IMAGE_H
-#define IMAGE_H
+#ifndef LATTICELIBRARY_IMAGE_H
+#define LATTICELIBRARY_IMAGE_H
 
 #include <vector>
-#include <iostream>
 #include <algorithm>
 #include "exception.h"
 #include "defs.h"
 #include "neighbor.h"
 #include "lattice.h"
+#include <cstdio>
 
 namespace LatticeLib {
 
@@ -79,7 +79,7 @@ namespace LatticeLib {
 			//	data[dataIndex] = original.data[dataIndex];
 			//}
 		}
-		~Image() {}; // TODO: Should this delete the data array?
+		~Image() {};
 
 		/**
          * Wrapper for Lattice::getNElements();
@@ -145,7 +145,7 @@ namespace LatticeLib {
          *
          * Parameter	| in/out	| Comment
          * :---------	| :------	| :-------
-         * bandIndex	| INPUintensityTemplate		| Index of the requested band.
+         * bandIndex	| INPUT		| Index of the requested band.
 		 */
 		intensityTemplate* getBand(int bandIndex) const {
 			return data + bandIndex * getNElements();
@@ -183,12 +183,12 @@ namespace LatticeLib {
          * Prints the parameters of the image.
          */
 		void printParameters() const {
-			cout << "#rows: " << lattice.getNRows() << endl;
-			cout << "#columns: " << lattice.getNColumns() << endl;
-			cout << "#layers: " << lattice.getNLayers() << endl;
-			cout << "#modality bands: " << nBands << endl;
-			cout << "density: " << lattice.getDensity() << endl;
-			cout << "data array: " << data << endl;
+			std::cout << "#rows: " << lattice.getNRows() << std::endl;
+			std::cout << "#columns: " << lattice.getNColumns() << std::endl;
+			std::cout << "#layers: " << lattice.getNLayers() << std::endl;
+			std::cout << "#modality bands: " << nBands << std::endl;
+			std::cout << "density: " << lattice.getDensity() << std::endl;
+			std::cout << "data array: " << data << std::endl;
 		}
 
 		/**

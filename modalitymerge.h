@@ -1,11 +1,10 @@
-#ifndef MODALITYMERGE_H
-#define MODALITYMERGE_H
+#ifndef LATTICELIBRARY_MODALITYMERGE_H
+#define LATTICELIBRARY_MODALITYMERGE_H
 
 #include "image.h"
 #include "vectoroperators.h"
 #include "minimumvaluefinder.h"
 #include "maximumvaluefinder.h"
-#include <stdio.h>
 
 namespace LatticeLib {
 
@@ -125,4 +124,4 @@ namespace LatticeLib {
     };
 }
 
-#endif //MODALITYMERGE_H
+#endif //LATTICELIBRARY_MODALITYMERGE_H

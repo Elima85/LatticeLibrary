@@ -4,10 +4,6 @@
 #include "intensityworkset.h"
 #include "objectsurfacearea.h"
 #include "exception.h"
-#include <stdio.h> // DEBUG
-#include "defs.h" // DEBUG
-#include <cmath> // DEBUG
-#include <fstream> // DEBUG
 
 namespace LatticeLib {
 

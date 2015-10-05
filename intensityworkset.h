@@ -6,7 +6,6 @@
 #include "dataredistribution.h"
 #include <algorithm>
 #include "exception.h"
-#include <stdio.h>
 #include <cmath>
 #include "linearinterpolation.h"
 
@@ -25,7 +24,7 @@ namespace LatticeLib {
     class IntensityWorkset {
 
     private:
-        /** %Image dimensions and data. */
+        /** Image dimensions and data. */
         Image<intensityTemplate> &image;
 
         /** Minimum intensity value. */
@@ -85,7 +84,7 @@ namespace LatticeLib {
             maxIntensity = original.maxIntensity;
         }
 
-        ~IntensityWorkset() {}; // TODO: delete data array?
+        ~IntensityWorkset() {};
 
         /** Returns image. */
         Image<intensityTemplate>& getImage() const {

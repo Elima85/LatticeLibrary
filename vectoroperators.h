@@ -1,10 +1,11 @@
-#ifndef VECTOROPERATORS_H
-#define VECTOROPERATORS_H
+#ifndef LATTICELIBRARY_VECTOROPERATORS_H
+#define LATTICELIBRARY_VECTOROPERATORS_H
 
 #include <vector>
 #include "exception.h"
 #include "defs.h"
 #include <numeric> // accumulate
+#include <cstdio>
 
 namespace LatticeLib {
 
@@ -74,34 +75,6 @@ namespace LatticeLib {
         return result;
     }
 
-    /*template<class T>
-    int getIndexOfMinimumValue(vector<T> v) {
-        int length = v.size();
-        int index;
-        double minValue = INF;
-        for (int i = 0; i < length; i++) {
-            if (v[i] < minValue) {
-                minValue = v[i];
-                index = i;
-            }
-        }
-        return index;
-    }*/
-
-    /*template<class T>
-    int getIndexOfMaximumValue(vector<T> v) {
-        int length = v.size();
-        int index;
-        double maxValue = -INF;
-        for (int i = 0; i < length; i++) {
-            if (v[i] > maxValue) {
-                maxValue = v[i];
-                index = i;
-            }
-        }
-        return index;
-    }*/
-
     template<class T>
     T sumOfElements(vector<T> v) {
         return std::accumulate(v.begin(), v.end(), T(0));
@@ -116,11 +89,11 @@ namespace LatticeLib {
     template<class T>
     void printVector(vector<T> v) {
         int nElements = v.size();
-        cout << "(" << v[0];
+        std::cout << "(" << v[0];
         for (int i = 1; i < nElements; i++){
-            cout << ", " << v[i];
+            std::cout << ", " << v[i];
         }
-        cout << ")" << endl;
+        std::cout << ")" << std::endl;
     }
 }
 #endif

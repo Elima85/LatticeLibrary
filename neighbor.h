@@ -1,5 +1,5 @@
-#ifndef NEIGHBOR_H
-#define NEIGHBOR_H
+#ifndef LATTICELIBRARY_NEIGHBOR_H
+#define LATTICELIBRARY_NEIGHBOR_H
 
 namespace LatticeLib {
 

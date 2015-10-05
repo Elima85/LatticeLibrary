@@ -1,5 +1,5 @@
-#ifndef FUZZYCONNECTEDNESS_H
-#define FUZZYCONNECTEDNESS_H
+#ifndef LATTICELIBRARY_FUZZYCONNECTEDNESS_H
+#define LATTICELIBRARY_FUZZYCONNECTEDNESS_H
 
 #include "distancemeasure.h"
 #include "image.h"
@@ -13,7 +13,6 @@ namespace LatticeLib {
      * Fuzzy connectedness
      * ====================
      * Maximizes the weakest link, defined as the difference in value between two neighbors along the path. *Only takes the first modality band into account!*
-     * TODO: Should an inter-neighbor Euclidean distance be used a factor, to consider different kinds of neighbors and lattices? Ask Punam Saha about fuzzy adjacency.
      *
      * References
      * ------------

@@ -1,8 +1,9 @@
-#ifndef IMAGEARITHMETIC_H
-#define IMAGEARITHMETIC_H
+#ifndef LATTICELIBRARY_IMAGEARITHMETIC_H
+#define LATTICELIBRARY_IMAGEARITHMETIC_H
 
 #include "image.h"
 #include "vectoroperators.h"
+#include "exception.h"
 
 namespace LatticeLib {
 
@@ -25,10 +26,10 @@ namespace LatticeLib {
         template<class T, class S>
         void add(Image<T> image1, Image <S> image2, Image<T> result) {
             if ((image1.getLattice() != image2.getLattice()) || (image1.getLattice() != result.getLattice())) {
-                // throw error or exception
+                throw incompatibleParametersException();
             }
             if ((image1.getNBands() != image2.getNBands()) || (image1.getNBands() != result.getNBands())) {
-                // throw error or exception
+                throw incompatibleParametersException();
             }
             int nElements = image1.getNElements();
             for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
@@ -48,10 +49,10 @@ namespace LatticeLib {
         template<class T, class S>
         void subtract(Image<T> image1, Image<S> image2, Image<T> result) {
             if ((image1.getLattice() != image2.getLattice()) || (image1.getLattice() != result.getLattice())) {
-                // throw error or exception
+                throw incompatibleParametersException();
             }
             if ((image1.getNBands() != image2.getNBands()) || (image1.getNBands() != result.getNBands())) {
-                // throw error or exception
+                throw incompatibleParametersException();
             }
             int nElements = image1.getNElements();
             for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
@@ -80,4 +81,4 @@ namespace LatticeLib {
     };
 }
 
-#endif //IMAGEARITHMETIC_H
+#endif //LATTICELIBRARY_IMAGEARITHMETIC_H

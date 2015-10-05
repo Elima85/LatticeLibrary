@@ -3,7 +3,7 @@
 
 #include "filtercoefficient.h"
 #include <vector>
-using std::vector; // TODO: Why do I need this here?!
+using std::vector;
 
 namespace LatticeLib {
     /**

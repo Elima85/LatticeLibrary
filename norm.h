@@ -1,5 +1,5 @@
-#ifndef NORM_H
-#define NORM_H
+#ifndef LATTICELIBRARY_NORM_H
+#define LATTICELIBRARY_NORM_H
 
 #include <vector>
 #include <cmath>
@@ -39,9 +39,9 @@ namespace LatticeLib {
          *
          * Parameter	| in/out	| Comment
          * :---------- 	| :-------	| :--------
-         * v			| INPUT		| Vector for which to compute a norm.
+         * vector		| INPUT		| Vector for which to compute a norm.
 		 */
-		virtual double compute(vector<T> v) const = 0;
+		virtual double compute(vector<T> vector) const = 0;
 	};
 }
 

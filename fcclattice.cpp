@@ -91,7 +91,7 @@ namespace LatticeLib {
         bounds.push_back(floor(coveragePosition));
         bounds.push_back(ceil(coveragePosition));
         vector<double> values;
-        values.push_back(distanceTableFCC[bounds[0]]);
+        values.push_back(distanceTableFCC[bounds[0]]); // ball-based approximation may be better.
         values.push_back(distanceTableFCC[bounds[1]]);
         double scaleFactor = cbrt(1 / getDensity());
         return interpolation.apply(bounds, values, coveragePosition) * scaleFactor;
@@ -117,156 +117,156 @@ namespace LatticeLib {
         if ((layerIndex % 2) != 1) {
             if ((rowIndex % 2) != 1) {
                 if (this->isValid(rowIndex - 1, columnIndex, layerIndex - 1)) {
-                    neighbors.push_back(Neighbor(0, this->rclToIndex(rowIndex - 1, columnIndex, layerIndex - 1))); //,FCCD1)); // top front
+                    neighbors.push_back(Neighbor(0, this->rclToIndex(rowIndex - 1, columnIndex, layerIndex - 1))); // top front
                 }
                 if (this->isValid(rowIndex - 1, columnIndex - 1, layerIndex)) {
-                    neighbors.push_back(Neighbor(1, this->rclToIndex(rowIndex - 1, columnIndex - 1, layerIndex))); //,FCCD1)); // top left
+                    neighbors.push_back(Neighbor(1, this->rclToIndex(rowIndex - 1, columnIndex - 1, layerIndex))); // top left
                 }
                 if (this->isValid(rowIndex - 1, columnIndex, layerIndex + 1)) {
-                    neighbors.push_back(Neighbor(2, this->rclToIndex(rowIndex - 1, columnIndex, layerIndex + 1))); //,FCCD1)); // top back
+                    neighbors.push_back(Neighbor(2, this->rclToIndex(rowIndex - 1, columnIndex, layerIndex + 1))); // top back
                 }
                 if (this->isValid(rowIndex - 1, columnIndex, layerIndex)) {
-                    neighbors.push_back(Neighbor(3, this->rclToIndex(rowIndex - 1, columnIndex, layerIndex))); //,FCCD1)); // top right
+                    neighbors.push_back(Neighbor(3, this->rclToIndex(rowIndex - 1, columnIndex, layerIndex))); // top right
                 }
                 if (this->isValid(rowIndex, columnIndex - 1, layerIndex - 1)) {
-                    neighbors.push_back(Neighbor(4, this->rclToIndex(rowIndex, columnIndex - 1, layerIndex - 1))); //,FCCD1)); // front left
+                    neighbors.push_back(Neighbor(4, this->rclToIndex(rowIndex, columnIndex - 1, layerIndex - 1))); // front left
                 }
                 if (this->isValid(rowIndex, columnIndex - 1, layerIndex + 1)) {
-                    neighbors.push_back(Neighbor(5, this->rclToIndex(rowIndex, columnIndex - 1, layerIndex + 1))); //,FCCD1)); // back left
+                    neighbors.push_back(Neighbor(5, this->rclToIndex(rowIndex, columnIndex - 1, layerIndex + 1))); // back left
                 }
                 if (this->isValid(rowIndex, columnIndex, layerIndex + 1)) {
-                    neighbors.push_back(Neighbor(6, this->rclToIndex(rowIndex, columnIndex, layerIndex + 1))); //,FCCD1)); // back right
+                    neighbors.push_back(Neighbor(6, this->rclToIndex(rowIndex, columnIndex, layerIndex + 1))); // back right
                 }
                 if (this->isValid(rowIndex, columnIndex, layerIndex - 1)) {
-                    neighbors.push_back(Neighbor(7, this->rclToIndex(rowIndex, columnIndex, layerIndex - 1))); //,FCCD1)); // front right
+                    neighbors.push_back(Neighbor(7, this->rclToIndex(rowIndex, columnIndex, layerIndex - 1))); // front right
                 }
                 if (this->isValid(rowIndex + 1, columnIndex, layerIndex - 1)) {
-                    neighbors.push_back(Neighbor(8, this->rclToIndex(rowIndex + 1, columnIndex, layerIndex - 1))); //,FCCD1)); // bottom front
+                    neighbors.push_back(Neighbor(8, this->rclToIndex(rowIndex + 1, columnIndex, layerIndex - 1))); // bottom front
                 }
                 if (this->isValid(rowIndex + 1, columnIndex - 1, layerIndex)) {
-                    neighbors.push_back(Neighbor(9, this->rclToIndex(rowIndex + 1, columnIndex - 1, layerIndex))); //,FCCD1)); // bottom left
+                    neighbors.push_back(Neighbor(9, this->rclToIndex(rowIndex + 1, columnIndex - 1, layerIndex))); // bottom left
                 }
                 if (this->isValid(rowIndex + 1, columnIndex, layerIndex + 1)) {
-                    neighbors.push_back(Neighbor(10, this->rclToIndex(rowIndex + 1, columnIndex, layerIndex + 1))); //,FCCD1)); // bottom back
+                    neighbors.push_back(Neighbor(10, this->rclToIndex(rowIndex + 1, columnIndex, layerIndex + 1))); // bottom back
                 }
                 if (this->isValid(rowIndex + 1, columnIndex, layerIndex)) {
-                    neighbors.push_back(Neighbor(11, this->rclToIndex(rowIndex + 1, columnIndex, layerIndex))); //,FCCD1)); // bottom right
+                    neighbors.push_back(Neighbor(11, this->rclToIndex(rowIndex + 1, columnIndex, layerIndex))); // bottom right
                 }
             }
             else { //offset row
                 if (this->isValid(rowIndex - 1, columnIndex, layerIndex - 1)) {
-                    neighbors.push_back(Neighbor(0, this->rclToIndex(rowIndex - 1, columnIndex, layerIndex - 1))); //,FCCD1)); // top front
+                    neighbors.push_back(Neighbor(0, this->rclToIndex(rowIndex - 1, columnIndex, layerIndex - 1))); // top front
                 }
                 if (this->isValid(rowIndex - 1, columnIndex, layerIndex)) {
-                    neighbors.push_back(Neighbor(1, this->rclToIndex(rowIndex - 1, columnIndex, layerIndex))); //,FCCD1)); // top left
+                    neighbors.push_back(Neighbor(1, this->rclToIndex(rowIndex - 1, columnIndex, layerIndex))); // top left
                 }
                 if (this->isValid(rowIndex - 1, columnIndex, layerIndex + 1)) {
-                    neighbors.push_back(Neighbor(2, this->rclToIndex(rowIndex - 1, columnIndex, layerIndex + 1))); //,FCCD1)); // top back
+                    neighbors.push_back(Neighbor(2, this->rclToIndex(rowIndex - 1, columnIndex, layerIndex + 1))); // top back
                 }
                 if (this->isValid(rowIndex - 1, columnIndex + 1, layerIndex)) {
-                    neighbors.push_back(Neighbor(3, this->rclToIndex(rowIndex - 1, columnIndex + 1, layerIndex))); //,FCCD1)); // top right
+                    neighbors.push_back(Neighbor(3, this->rclToIndex(rowIndex - 1, columnIndex + 1, layerIndex))); // top right
                 }
                 if (this->isValid(rowIndex, columnIndex, layerIndex - 1)) {
-                    neighbors.push_back(Neighbor(4, this->rclToIndex(rowIndex, columnIndex, layerIndex - 1))); //,FCCD1)); // front left
+                    neighbors.push_back(Neighbor(4, this->rclToIndex(rowIndex, columnIndex, layerIndex - 1))); // front left
                 }
                 if (this->isValid(rowIndex, columnIndex, layerIndex + 1)) {
-                    neighbors.push_back(Neighbor(5, this->rclToIndex(rowIndex, columnIndex, layerIndex + 1))); //,FCCD1)); // back left
+                    neighbors.push_back(Neighbor(5, this->rclToIndex(rowIndex, columnIndex, layerIndex + 1))); // back left
                 }
                 if (this->isValid(rowIndex, columnIndex + 1, layerIndex + 1)) {
-                    neighbors.push_back(Neighbor(6, this->rclToIndex(rowIndex, columnIndex + 1, layerIndex + 1))); //,FCCD1)); // back right
+                    neighbors.push_back(Neighbor(6, this->rclToIndex(rowIndex, columnIndex + 1, layerIndex + 1))); // back right
                 }
                 if (this->isValid(rowIndex, columnIndex + 1, layerIndex - 1)) {
-                    neighbors.push_back(Neighbor(7, this->rclToIndex(rowIndex, columnIndex + 1, layerIndex - 1))); //,FCCD1)); // front right
+                    neighbors.push_back(Neighbor(7, this->rclToIndex(rowIndex, columnIndex + 1, layerIndex - 1))); // front right
                 }
                 if (this->isValid(rowIndex + 1, columnIndex, layerIndex - 1)) {
-                    neighbors.push_back(Neighbor(8, this->rclToIndex(rowIndex + 1, columnIndex, layerIndex - 1))); //,FCCD1)); // bottom front
+                    neighbors.push_back(Neighbor(8, this->rclToIndex(rowIndex + 1, columnIndex, layerIndex - 1))); // bottom front
                 }
                 if (this->isValid(rowIndex + 1, columnIndex, layerIndex)) {
-                    neighbors.push_back(Neighbor(9, this->rclToIndex(rowIndex + 1, columnIndex, layerIndex))); //,FCCD1)); // bottom left
+                    neighbors.push_back(Neighbor(9, this->rclToIndex(rowIndex + 1, columnIndex, layerIndex))); // bottom left
                 }
                 if (this->isValid(rowIndex + 1, columnIndex, layerIndex + 1)) {
-                    neighbors.push_back(Neighbor(10, this->rclToIndex(rowIndex + 1, columnIndex, layerIndex + 1))); //,FCCD1)); // bottom back
+                    neighbors.push_back(Neighbor(10, this->rclToIndex(rowIndex + 1, columnIndex, layerIndex + 1))); // bottom back
                 }
                 if (this->isValid(rowIndex + 1, columnIndex + 1, layerIndex)) {
-                    neighbors.push_back(Neighbor(11, this->rclToIndex(rowIndex + 1, columnIndex + 1, layerIndex))); //,FCCD1)); // bottom right
+                    neighbors.push_back(Neighbor(11, this->rclToIndex(rowIndex + 1, columnIndex + 1, layerIndex))); // bottom right
                 }
             }
         }
         else { // offset layer
             if ((rowIndex % 2) == 1) { //aligned row
                 if (this->isValid(rowIndex - 1, columnIndex, layerIndex - 1)) {
-                    neighbors.push_back(Neighbor(0, this->rclToIndex(rowIndex - 1, columnIndex, layerIndex - 1))); //,FCCD1)); // top front
+                    neighbors.push_back(Neighbor(0, this->rclToIndex(rowIndex - 1, columnIndex, layerIndex - 1))); // top front
                 }
                 if (this->isValid(rowIndex - 1, columnIndex - 1, layerIndex)) {
-                    neighbors.push_back(Neighbor(1, this->rclToIndex(rowIndex - 1, columnIndex - 1, layerIndex))); //,FCCD1)); // top left
+                    neighbors.push_back(Neighbor(1, this->rclToIndex(rowIndex - 1, columnIndex - 1, layerIndex))); // top left
                 }
                 if (this->isValid(rowIndex - 1, columnIndex, layerIndex + 1)) {
-                    neighbors.push_back(Neighbor(2, this->rclToIndex(rowIndex - 1, columnIndex, layerIndex + 1))); //,FCCD1)); // top back
+                    neighbors.push_back(Neighbor(2, this->rclToIndex(rowIndex - 1, columnIndex, layerIndex + 1))); // top back
                 }
                 if (this->isValid(rowIndex - 1, columnIndex, layerIndex)) {
-                    neighbors.push_back(Neighbor(3, this->rclToIndex(rowIndex - 1, columnIndex, layerIndex))); //,FCCD1)); // top right
+                    neighbors.push_back(Neighbor(3, this->rclToIndex(rowIndex - 1, columnIndex, layerIndex))); // top right
                 }
                 if (this->isValid(rowIndex, columnIndex - 1, layerIndex - 1)) {
-                    neighbors.push_back(Neighbor(4, this->rclToIndex(rowIndex, columnIndex - 1, layerIndex - 1))); //,FCCD1)); // front left
+                    neighbors.push_back(Neighbor(4, this->rclToIndex(rowIndex, columnIndex - 1, layerIndex - 1))); // front left
                 }
                 if (this->isValid(rowIndex, columnIndex - 1, layerIndex + 1)) {
-                    neighbors.push_back(Neighbor(5, this->rclToIndex(rowIndex, columnIndex - 1, layerIndex + 1))); //,FCCD1)); // back left
+                    neighbors.push_back(Neighbor(5, this->rclToIndex(rowIndex, columnIndex - 1, layerIndex + 1))); // back left
                 }
                 if (this->isValid(rowIndex, columnIndex, layerIndex + 1)) {
-                    neighbors.push_back(Neighbor(6, this->rclToIndex(rowIndex, columnIndex, layerIndex + 1))); //,FCCD1)); // back right
+                    neighbors.push_back(Neighbor(6, this->rclToIndex(rowIndex, columnIndex, layerIndex + 1))); // back right
                 }
                 if (this->isValid(rowIndex, columnIndex, layerIndex - 1)) {
-                    neighbors.push_back(Neighbor(7, this->rclToIndex(rowIndex, columnIndex, layerIndex - 1))); //,FCCD1)); // front right
+                    neighbors.push_back(Neighbor(7, this->rclToIndex(rowIndex, columnIndex, layerIndex - 1))); // front right
                 }
                 if (this->isValid(rowIndex + 1, columnIndex, layerIndex - 1)) {
-                    neighbors.push_back(Neighbor(8, this->rclToIndex(rowIndex + 1, columnIndex, layerIndex - 1))); //,FCCD1)); // bottom front
+                    neighbors.push_back(Neighbor(8, this->rclToIndex(rowIndex + 1, columnIndex, layerIndex - 1))); // bottom front
                 }
                 if (this->isValid(rowIndex + 1, columnIndex - 1, layerIndex)) {
-                    neighbors.push_back(Neighbor(9, this->rclToIndex(rowIndex + 1, columnIndex - 1, layerIndex))); //,FCCD1)); // bottom left
+                    neighbors.push_back(Neighbor(9, this->rclToIndex(rowIndex + 1, columnIndex - 1, layerIndex))); // bottom left
                 }
                 if (this->isValid(rowIndex + 1, columnIndex, layerIndex + 1)) {
-                    neighbors.push_back(Neighbor(10, this->rclToIndex(rowIndex + 1, columnIndex, layerIndex + 1))); //,FCCD1)); // bottom back
+                    neighbors.push_back(Neighbor(10, this->rclToIndex(rowIndex + 1, columnIndex, layerIndex + 1))); // bottom back
                 }
                 if (this->isValid(rowIndex + 1, columnIndex, layerIndex)) {
-                    neighbors.push_back(Neighbor(11, this->rclToIndex(rowIndex + 1, columnIndex, layerIndex))); //,FCCD1)); // bottom right
+                    neighbors.push_back(Neighbor(11, this->rclToIndex(rowIndex + 1, columnIndex, layerIndex))); // bottom right
                 }
             }
             else { //offset row
                 if (this->isValid(rowIndex - 1, columnIndex, layerIndex - 1)) {
-                    neighbors.push_back(Neighbor(0, this->rclToIndex(rowIndex - 1, columnIndex, layerIndex - 1))); //,FCCD1)); // top front
+                    neighbors.push_back(Neighbor(0, this->rclToIndex(rowIndex - 1, columnIndex, layerIndex - 1))); // top front
                 }
                 if (this->isValid(rowIndex - 1, columnIndex, layerIndex)) {
-                    neighbors.push_back(Neighbor(1, this->rclToIndex(rowIndex - 1, columnIndex, layerIndex))); //,FCCD1)); // top left
+                    neighbors.push_back(Neighbor(1, this->rclToIndex(rowIndex - 1, columnIndex, layerIndex))); // top left
                 }
                 if (this->isValid(rowIndex - 1, columnIndex, layerIndex + 1)) {
-                    neighbors.push_back(Neighbor(2, this->rclToIndex(rowIndex - 1, columnIndex, layerIndex + 1))); //,FCCD1)); // top back
+                    neighbors.push_back(Neighbor(2, this->rclToIndex(rowIndex - 1, columnIndex, layerIndex + 1))); // top back
                 }
                 if (this->isValid(rowIndex - 1, columnIndex + 1, layerIndex)) {
-                    neighbors.push_back(Neighbor(3, this->rclToIndex(rowIndex - 1, columnIndex + 1, layerIndex))); //,FCCD1)); // top right
+                    neighbors.push_back(Neighbor(3, this->rclToIndex(rowIndex - 1, columnIndex + 1, layerIndex))); // top right
                 }
                 if (this->isValid(rowIndex, columnIndex, layerIndex - 1)) {
-                    neighbors.push_back(Neighbor(4, this->rclToIndex(rowIndex, columnIndex, layerIndex - 1))); //,FCCD1)); // front left
+                    neighbors.push_back(Neighbor(4, this->rclToIndex(rowIndex, columnIndex, layerIndex - 1))); // front left
                 }
                 if (this->isValid(rowIndex, columnIndex, layerIndex + 1)) {
-                    neighbors.push_back(Neighbor(5, this->rclToIndex(rowIndex, columnIndex, layerIndex + 1))); //,FCCD1)); // back left
+                    neighbors.push_back(Neighbor(5, this->rclToIndex(rowIndex, columnIndex, layerIndex + 1))); // back left
                 }
                 if (this->isValid(rowIndex, columnIndex + 1, layerIndex + 1)) {
-                    neighbors.push_back(Neighbor(6, this->rclToIndex(rowIndex, columnIndex + 1, layerIndex + 1))); //,FCCD1)); // back right
+                    neighbors.push_back(Neighbor(6, this->rclToIndex(rowIndex, columnIndex + 1, layerIndex + 1))); // back right
                 }
                 if (this->isValid(rowIndex, columnIndex + 1, layerIndex - 1)) {
-                    neighbors.push_back(Neighbor(7, this->rclToIndex(rowIndex, columnIndex + 1, layerIndex - 1))); //,FCCD1)); // front right
+                    neighbors.push_back(Neighbor(7, this->rclToIndex(rowIndex, columnIndex + 1, layerIndex - 1))); // front right
                 }
                 if (this->isValid(rowIndex + 1, columnIndex, layerIndex - 1)) {
-                    neighbors.push_back(Neighbor(8, this->rclToIndex(rowIndex + 1, columnIndex, layerIndex - 1))); //,FCCD1)); // bottom front
+                    neighbors.push_back(Neighbor(8, this->rclToIndex(rowIndex + 1, columnIndex, layerIndex - 1))); // bottom front
                 }
                 if (this->isValid(rowIndex + 1, columnIndex, layerIndex)) {
-                    neighbors.push_back(Neighbor(9, this->rclToIndex(rowIndex + 1, columnIndex, layerIndex))); //,FCCD1)); // bottom left
+                    neighbors.push_back(Neighbor(9, this->rclToIndex(rowIndex + 1, columnIndex, layerIndex))); // bottom left
                 }
                 if (this->isValid(rowIndex + 1, columnIndex, layerIndex + 1)) {
-                    neighbors.push_back(Neighbor(10, this->rclToIndex(rowIndex + 1, columnIndex, layerIndex + 1))); //,FCCD1)); // bottom back
+                    neighbors.push_back(Neighbor(10, this->rclToIndex(rowIndex + 1, columnIndex, layerIndex + 1))); // bottom back
                 }
                 if (this->isValid(rowIndex + 1, columnIndex + 1, layerIndex)) {
-                    neighbors.push_back(Neighbor(11, this->rclToIndex(rowIndex + 1, columnIndex + 1, layerIndex))); //,FCCD1)); // bottom right
+                    neighbors.push_back(Neighbor(11, this->rclToIndex(rowIndex + 1, columnIndex + 1, layerIndex))); // bottom right
                 }
             }
         }
@@ -283,84 +283,84 @@ namespace LatticeLib {
         if ((layerIndex % 2) != 1) {
             if ((rowIndex % 2) != 1) {
                 if (this->isValid(rowIndex - 2, columnIndex, layerIndex)) {
-                    neighbors.push_back(Neighbor(12, this->rclToIndex(rowIndex - 2, columnIndex, layerIndex))); //,FCCD2)); // top
+                    neighbors.push_back(Neighbor(12, this->rclToIndex(rowIndex - 2, columnIndex, layerIndex))); // top
                 }
                 if (this->isValid(rowIndex, columnIndex, layerIndex - 2)) {
-                    neighbors.push_back(Neighbor(13, this->rclToIndex(rowIndex, columnIndex, layerIndex - 2))); //,FCCD2)); // front
+                    neighbors.push_back(Neighbor(13, this->rclToIndex(rowIndex, columnIndex, layerIndex - 2))); // front
                 }
                 if (this->isValid(rowIndex, columnIndex - 1, layerIndex)) {
-                    neighbors.push_back(Neighbor(14, this->rclToIndex(rowIndex, columnIndex - 1, layerIndex))); //,FCCD2)); // left
+                    neighbors.push_back(Neighbor(14, this->rclToIndex(rowIndex, columnIndex - 1, layerIndex))); // left
                 }
                 if (this->isValid(rowIndex, columnIndex, layerIndex + 2)) {
-                    neighbors.push_back(Neighbor(15, this->rclToIndex(rowIndex, columnIndex, layerIndex + 2))); //,FCCD2)); // back
+                    neighbors.push_back(Neighbor(15, this->rclToIndex(rowIndex, columnIndex, layerIndex + 2))); // back
                 }
                 if (this->isValid(rowIndex, columnIndex + 1, layerIndex)) {
-                    neighbors.push_back(Neighbor(16, this->rclToIndex(rowIndex, columnIndex + 1, layerIndex))); //,FCCD2)); // right
+                    neighbors.push_back(Neighbor(16, this->rclToIndex(rowIndex, columnIndex + 1, layerIndex))); // right
                 }
                 if (this->isValid(rowIndex + 2, columnIndex, layerIndex)) {
-                    neighbors.push_back(Neighbor(17, this->rclToIndex(rowIndex + 2, columnIndex, layerIndex))); //,FCCD2)); // bottom
+                    neighbors.push_back(Neighbor(17, this->rclToIndex(rowIndex + 2, columnIndex, layerIndex))); // bottom
                 }
             }
             else { //offset row
                 if (this->isValid(rowIndex - 2, columnIndex, layerIndex)) {
-                    neighbors.push_back(Neighbor(12, this->rclToIndex(rowIndex - 2, columnIndex, layerIndex))); //,FCCD2)); // top
+                    neighbors.push_back(Neighbor(12, this->rclToIndex(rowIndex - 2, columnIndex, layerIndex))); // top
                 }
                 if (this->isValid(rowIndex, columnIndex, layerIndex - 2)) {
-                    neighbors.push_back(Neighbor(13, this->rclToIndex(rowIndex, columnIndex, layerIndex - 2))); //,FCCD2)); // front
+                    neighbors.push_back(Neighbor(13, this->rclToIndex(rowIndex, columnIndex, layerIndex - 2))); // front
                 }
                 if (this->isValid(rowIndex, columnIndex - 1, layerIndex)) {
-                    neighbors.push_back(Neighbor(14, this->rclToIndex(rowIndex, columnIndex - 1, layerIndex))); //,FCCD2)); // left
+                    neighbors.push_back(Neighbor(14, this->rclToIndex(rowIndex, columnIndex - 1, layerIndex))); // left
                 }
                 if (this->isValid(rowIndex, columnIndex, layerIndex + 2)) {
-                    neighbors.push_back(Neighbor(15, this->rclToIndex(rowIndex, columnIndex, layerIndex + 2))); //,FCCD2)); // back
+                    neighbors.push_back(Neighbor(15, this->rclToIndex(rowIndex, columnIndex, layerIndex + 2))); // back
                 }
                 if (this->isValid(rowIndex, columnIndex + 1, layerIndex)) {
-                    neighbors.push_back(Neighbor(16, this->rclToIndex(rowIndex, columnIndex + 1, layerIndex))); //,FCCD2)); // right
+                    neighbors.push_back(Neighbor(16, this->rclToIndex(rowIndex, columnIndex + 1, layerIndex))); // right
                 }
                 if (this->isValid(rowIndex + 2, columnIndex, layerIndex)) {
-                    neighbors.push_back(Neighbor(17, this->rclToIndex(rowIndex + 2, columnIndex, layerIndex))); //,FCCD2)); // bottom
+                    neighbors.push_back(Neighbor(17, this->rclToIndex(rowIndex + 2, columnIndex, layerIndex))); // bottom
                 }
             }
         }
         else { // offset layer
             if ((rowIndex % 2) == 1) { //aligned row
                 if (this->isValid(rowIndex - 2, columnIndex, layerIndex)) {
-                    neighbors.push_back(Neighbor(12, this->rclToIndex(rowIndex - 2, columnIndex, layerIndex))); //,FCCD2)); // top
+                    neighbors.push_back(Neighbor(12, this->rclToIndex(rowIndex - 2, columnIndex, layerIndex))); // top
                 }
                 if (this->isValid(rowIndex, columnIndex, layerIndex - 2)) {
-                    neighbors.push_back(Neighbor(13, this->rclToIndex(rowIndex, columnIndex, layerIndex - 2))); //,FCCD2)); // front
+                    neighbors.push_back(Neighbor(13, this->rclToIndex(rowIndex, columnIndex, layerIndex - 2))); // front
                 }
                 if (this->isValid(rowIndex, columnIndex - 1, layerIndex)) {
-                    neighbors.push_back(Neighbor(14, this->rclToIndex(rowIndex, columnIndex - 1, layerIndex))); //,FCCD2)); // left
+                    neighbors.push_back(Neighbor(14, this->rclToIndex(rowIndex, columnIndex - 1, layerIndex))); // left
                 }
                 if (this->isValid(rowIndex, columnIndex, layerIndex + 2)) {
-                    neighbors.push_back(Neighbor(15, this->rclToIndex(rowIndex, columnIndex, layerIndex + 2))); //,FCCD2)); // back
+                    neighbors.push_back(Neighbor(15, this->rclToIndex(rowIndex, columnIndex, layerIndex + 2))); // back
                 }
                 if (this->isValid(rowIndex, columnIndex + 1, layerIndex)) {
-                    neighbors.push_back(Neighbor(16, this->rclToIndex(rowIndex, columnIndex + 1, layerIndex))); //,FCCD2)); // right
+                    neighbors.push_back(Neighbor(16, this->rclToIndex(rowIndex, columnIndex + 1, layerIndex))); // right
                 }
                 if (this->isValid(rowIndex + 2, columnIndex, layerIndex)) {
-                    neighbors.push_back(Neighbor(17, this->rclToIndex(rowIndex + 2, columnIndex, layerIndex))); //,FCCD2)); // bottom
+                    neighbors.push_back(Neighbor(17, this->rclToIndex(rowIndex + 2, columnIndex, layerIndex))); // bottom
                 }
             }
             else { //offset row
                 if (this->isValid(rowIndex - 2, columnIndex, layerIndex)) {
-                    neighbors.push_back(Neighbor(12, this->rclToIndex(rowIndex - 2, columnIndex, layerIndex))); //,FCCD2)); // top
+                    neighbors.push_back(Neighbor(12, this->rclToIndex(rowIndex - 2, columnIndex, layerIndex))); // top
                 }
                 if (this->isValid(rowIndex, columnIndex, layerIndex - 2)) {
-                    neighbors.push_back(Neighbor(13, this->rclToIndex(rowIndex, columnIndex, layerIndex - 2))); //,FCCD2)); // front
+                    neighbors.push_back(Neighbor(13, this->rclToIndex(rowIndex, columnIndex, layerIndex - 2))); // front
                 }
                 if (this->isValid(rowIndex, columnIndex - 1, layerIndex)) {
-                    neighbors.push_back(Neighbor(14, this->rclToIndex(rowIndex, columnIndex - 1, layerIndex))); //,FCCD2)); // left
+                    neighbors.push_back(Neighbor(14, this->rclToIndex(rowIndex, columnIndex - 1, layerIndex))); // left
                 }
                 if (this->isValid(rowIndex, columnIndex, layerIndex + 2)) {
-                    neighbors.push_back(Neighbor(15, this->rclToIndex(rowIndex, columnIndex, layerIndex + 2))); //,FCCD2)); // back
+                    neighbors.push_back(Neighbor(15, this->rclToIndex(rowIndex, columnIndex, layerIndex + 2))); // back
                 }
                 if (this->isValid(rowIndex, columnIndex + 1, layerIndex)) {
-                    neighbors.push_back(Neighbor(16, this->rclToIndex(rowIndex, columnIndex + 1, layerIndex))); //,FCCD2)); // right
+                    neighbors.push_back(Neighbor(16, this->rclToIndex(rowIndex, columnIndex + 1, layerIndex))); // right
                 }
                 if (this->isValid(rowIndex + 2, columnIndex, layerIndex)) {
-                    neighbors.push_back(Neighbor(17, this->rclToIndex(rowIndex + 2, columnIndex, layerIndex))); //,FCCD2)); // bottom
+                    neighbors.push_back(Neighbor(17, this->rclToIndex(rowIndex + 2, columnIndex, layerIndex))); // bottom
                 }
             }
         }

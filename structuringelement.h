@@ -5,7 +5,6 @@
 #include "spatialtemplate.h"
 #include "image.h"
 #include <cmath>
-#include <stdio.h>
 
 namespace LatticeLib {
 
@@ -69,7 +68,6 @@ namespace LatticeLib {
 					// check if the origin element fits
 					if ((getCoefficient(position).getCoefficient()) ==
 						(fabs(image(elementIndex, bandIndex) - backgroundIntensity) > EPSILON)) {
-						//std::cout << elementIndex << " fits template origin. Value = " << image(elementIndex, bandIndex) << endl;
 						vector<Neighbor> neighbors;
 						image.getNeighbors(elementIndex, nNeighbors, neighbors);
 						int localNNeighbors = neighbors.size();
@@ -78,11 +76,9 @@ namespace LatticeLib {
 							int neighborPosition = neighbors[neighborIndex].getPosition();
 							position = findCoefficient(neighborPosition);
 							if (position != -1) {
-								//std::cout << "\t coefficient: " << getCoefficient(position).getCoefficient() << ", value: " << image(neighbors[neighborIndex].getElementIndex(), bandIndex) << std::endl;
 								if ((getCoefficient(position).getCoefficient()) !=
 										(fabs(image(neighbors[neighborIndex].getElementIndex(), bandIndex) -
 										 image(elementIndex, bandIndex)) < EPSILON)) {
-									//std::cout << "\tA neighbor does not fit the template." << std::endl;
 									fit = false;
 								}
 							}
@@ -93,7 +89,6 @@ namespace LatticeLib {
 					}
 					if (fit) { // set to the same value as the input element
 						result.setElement(elementIndex, 0, image(elementIndex, bandIndex));
-						//std::cout << "\tresult: " << result(elementIndex, bandIndex) << std::endl;
 					}
 					else { // set to background
 						result.setElement(elementIndex, 0, backgroundIntensity);

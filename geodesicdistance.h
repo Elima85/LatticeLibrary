@@ -1,5 +1,5 @@
-#ifndef GEODESICDISTANCE_H
-#define GEODESICDISTANCE_H
+#ifndef LATTICELIBRARY_GEODESICDISTANCE_H
+#define LATTICELIBRARY_GEODESICDISTANCE_H
 
 #include "distancemeasure.h"
 #include "image.h"
@@ -77,4 +77,4 @@ namespace LatticeLib {
 
 }
 
-#endif //GEODESICDISTANCE_H
+#endif //LATTICELIBRARY_GEODESICDISTANCE_H

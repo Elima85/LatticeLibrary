@@ -1,10 +1,10 @@
-#ifndef DISTANCETRANSFORM_H
-#define DISTANCETRANSFORM_H
+#ifndef LATTICELIBRARY_DISTANCETRANSFORM_H
+#define LATTICELIBRARY_DISTANCETRANSFORM_H
 
 #include "intensityworkset.h"
 #include "image.h"
 #include "distancemeasure.h"
-
+#include "exception.h"
 
 namespace LatticeLib {
 
@@ -17,12 +17,12 @@ namespace LatticeLib {
 
             if ((inputImage.getImage().getLattice() != distanceTransform.getLattice()) ||
                 (inputImage.getImage().getLattice() != roots.getLattice())) {
-                // throw exception or error
+                throw incompatibleParametersException();
             }
 
             if ((inputImage.getImage().getNBands() != distanceTransform.getNBands()) ||
                 (inputImage.getImage().getNBands() != roots.getNBands())) {
-                // throw exception or error
+                throw incompatibleParametersException();
             }
 
             for (int bandIndex = 0; bandIndex < inputImage.getImage().getNBands(); bandIndex++) {
@@ -61,4 +61,4 @@ namespace LatticeLib {
     };
 }
 
-#endif //DISTANCETRANSFORM_H
+#endif //LATTICELIBRARY_DISTANCETRANSFORM_H

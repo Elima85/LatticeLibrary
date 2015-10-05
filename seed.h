@@ -1,5 +1,5 @@
-#ifndef SEED_H
-#define SEED_H
+#ifndef LATTICELIBRARY_SEED_H
+#define LATTICELIBRARY_SEED_H
 
 namespace LatticeLib {
 

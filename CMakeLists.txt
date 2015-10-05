@@ -1,46 +1,46 @@
 cmake_minimum_required(VERSION 2.8.4)
 project(latticelibrary)
 
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 set(GTEST_ROOT "${PROJECT_SOURCE_DIR}/googletest")
 
 set(SOURCE_FILES
-    approximateminimumbarrierdistance.h
+    #approximateminimumbarrierdistance.h
     bcclattice.cpp
-    bcclattice.h
+    #bcclattice.h
     cclattice.cpp
-    cclattice.h
-    cropintensityrange.h
-    dataredistribution.h
-    defs.h
-    exception.h
+    #cclattice.h
+    #cropintensityrange.h
+    #dataredistribution.h
+    #defs.h
+    #exception.h
     fcclattice.cpp
-    fcclattice.h
+    #fcclattice.h
     filehandling.cpp
-    filehandling.h
-    filtercoefficient.h
-    fuzzyconnectedness.h
-    image.h
-    imagearithmetic.h
-    intensityworkset.h
-    interpolation.h
+    #filehandling.h
+    #filtercoefficient.h
+    #fuzzyconnectedness.h
+    #image.h
+    #imagearithmetic.h
+    #intensityworkset.h
+    #interpolation.h
     lattice.cpp
-    lattice.h
-    linearinterpolation.h
-    modalitymerge.h
+    #lattice.h
+    #linearinterpolation.h
+    #modalitymerge.h
     neighbor.cpp
-    neighbor.h
-    norm.h
-    priorityqueue.h
-    renormalizeintensityrange.h
+    #neighbor.h
+    #norm.h
+    #priorityqueue.h
+    #renormalizeintensityrange.h
     seed.cpp
-    seed.h
-    seededdistancemeasure.h
-    seededdistancetransform.h
-    segmentation.h
-    vectoroperators.h
-    weightedaveragefilter.h
+    #seed.h
+    #seededdistancemeasure.h
+    #seededdistancetransform.h
+    #segmentation.h
+    #vectoroperators.h
+    #weightedaveragefilter.h
     )
 
 set(MAIN_SOURCE_FILES
@@ -84,8 +84,8 @@ set(TEST_SOURCE_FILES
     sequencefiltertest.cpp
     spatialtemplatetest.cpp
     structuringelementtest.cpp
-    latticelibtest.cpp
     uniformweighttest.cpp
+    latticelibtest.cpp
     )
 
 set(SEGMENT_SOURCE_FILES

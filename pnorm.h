@@ -1,5 +1,5 @@
-#ifndef PNORM_H
-#define PNORM_H
+#ifndef LATTICELIBRARY_PNORM_H
+#define LATTICELIBRARY_PNORM_H
 
 #include "norm.h"
 #include <vector>
@@ -75,4 +75,4 @@ namespace LatticeLib {
     };
 }
 
-#endif //PNORM_H
+#endif //LATTICELIBRARY_PNORM_H

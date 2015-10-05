@@ -1,5 +1,5 @@
-#ifndef PRODUCTNORM_H
-#define PRODUCTNORM_H
+#ifndef LATTICELIBRARY_PRODUCTNORM_H
+#define LATTICELIBRARY_PRODUCTNORM_H
 
 #include "norm.h"
 #include <vector>
@@ -48,4 +48,4 @@ namespace LatticeLib {
     };
 }
 
-#endif //PRODUCTNORM_H
+#endif //LATTICELIBRARY_PRODUCTNORM_H

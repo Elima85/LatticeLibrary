@@ -1,5 +1,5 @@
-#ifndef FUZZYDISTANCE_H
-#define FUZZYDISTANCE_H
+#ifndef LATTICELIBRARY_FUZZYDISTANCE_H
+#define LATTICELIBRARY_FUZZYDISTANCE_H
 
 #include "distancemeasure.h"
 #include "image.h"

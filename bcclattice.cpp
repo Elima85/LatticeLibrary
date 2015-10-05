@@ -3,7 +3,6 @@
 #include "exception.h"
 #include <cmath>
 #include "linearinterpolation.h"
-#include <stdio.h> // DEBUG
 #include "pnorm.h"
 #include <vector>
 #include "vectoroperators.h"
@@ -84,7 +83,6 @@ namespace LatticeLib {
         return (this->nLayers + 1) * BCCOFFSET * cbrt(1 / this->latticeDensity);
     }
     double BCCLattice::approximateDistanceToElementCenter(double coverage) const {
-        //std::cout << "Inside BCCLattice::approximateDistanceToElementCenter()." << std::endl; // DEBUG
         LinearInterpolation<int, double> interpolation;
         double coveragePosition = coverage * 127;
         vector<int> bounds;

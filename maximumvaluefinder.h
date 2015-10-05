@@ -12,25 +12,6 @@ namespace LatticeLib {
     template<class intensityTemplate>
     class MaximumValueFinder : public VectorValueFinder<intensityTemplate> {
     public:
-        /**
-         * Implements VectorIndexPicker::getVectorElement().
-         *
-         * Returns the maximum value in the vector.
-         *
-         * Parameter    | in/out    | Comment
-         * :---------   | :------   | :-------
-         * vector       | INPUT     | Vector in which to find the element.
-         */
-        /*intensityTemplate getVectorElement(const vector<intensityTemplate> &vector) const {
-            int length = vector.size();
-            intensityTemplate maxValue = -INF;
-            for (int elementIndex = 0; elementIndex < length; elementIndex++) {
-                if (vector[elementIndex] < maxValue) {
-                    maxValue = vector[elementIndex];
-                }
-            }
-            return maxValue;
-        }*/
 
         /**
          * Implements VectorIndexPicker::getVectorElementIndex().

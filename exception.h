@@ -1,5 +1,5 @@
-#ifndef EXCEPTION_H
-#define EXCEPTION_H
+#ifndef LATTICELIBRARY_EXCEPTION_H
+#define LATTICELIBRARY_EXCEPTION_H
 
 #include <iostream>
 #include <exception>

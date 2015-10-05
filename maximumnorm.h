@@ -1,5 +1,5 @@
-#ifndef MAXIMUMNORM_H
-#define MAXIMUMNORM_H
+#ifndef LATTICELIBRARY_MAXIMUMNORM_H
+#define LATTICELIBRARY_MAXIMUMNORM_H
 
 #include "norm.h"
 #include <vector>
@@ -50,4 +50,4 @@ namespace LatticeLib {
 
 }
 
-#endif //MAXIMUMNORM_H
+#endif //LATTICELIBRARY_MAXIMUMNORM_H

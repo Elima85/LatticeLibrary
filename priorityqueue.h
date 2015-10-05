@@ -1,10 +1,9 @@
-#ifndef PRIORITYQUEUE_H
-#define PRIORITYQUEUE_H
+#ifndef LATTICELIBRARY_PRIORITYQUEUE_H
+#define LATTICELIBRARY_PRIORITYQUEUE_H
 
 #include <cmath>
 #include <queue>
 #include "defs.h"
-using namespace std;
 
 namespace LatticeLib {
 
@@ -91,6 +90,4 @@ namespace LatticeLib {
 }
 
 // declare queue using "priority_queue<PriorityQueueElement<T>, vector<PriorityQueueElement<T> >, PriorityQueueElementComparison> queue"
-// TODO: look into type aliases or something, to make some kind of typedef. This declaration is way too long. Maybe a wrapper class PriorityQueue<T> containing a private object queue?
-
 #endif

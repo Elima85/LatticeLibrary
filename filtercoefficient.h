@@ -1,5 +1,5 @@
-#ifndef FILTERCOEFFICIENT_H
-#define FILTERCOEFFICIENT_H
+#ifndef LATTICELIBRARY_FILTERCOEFFICIENT_H
+#define LATTICELIBRARY_FILTERCOEFFICIENT_H
 
 namespace LatticeLib {
 
@@ -9,7 +9,7 @@ namespace LatticeLib {
  * Member 		| Comment
  * --------		| --------
  * index		| Position index of the element in a neighborhood. The origin element has index -1.
- * coefficient	| %WeightedAverageFilter coefficient for the specified element.
+ * coefficient	| WeightedAverageFilter coefficient for the specified element.
  */
     template<class coefficientTemplate>
     class FilterCoefficient {
@@ -18,7 +18,7 @@ namespace LatticeLib {
         /** Position index of the element in a neighborhood. The midpoint element has index -1. */
         int positionIndex;
 
-        /** %WeightedAverageFilter coefficient for the specified element. */
+        /** WeightedAverageFilter coefficient for the specified element. */
         coefficientTemplate coefficient;
 
     public:
@@ -33,14 +33,14 @@ namespace LatticeLib {
         /**
          * Constructor for FilterCoefficient objects.
          *
-         * Parameter	| in/out	| Comment
-		 * :---------  	| :-------	| :--------
-         * i            | INPUT     | Position index.
-         * c            | INPUT     | Corresponding coefficient value.
+         * Parameter	        | in/out	| Comment
+		 * :---------  	        | :-------	| :--------
+         * inputPositionIndex   | INPUT     | Position index.
+         * inputCoefficient     | INPUT     | Corresponding coefficient value.
          */
-        FilterCoefficient(int i, coefficientTemplate c) {
-            positionIndex = i;
-            coefficient = c;
+        FilterCoefficient(int inputPositionIndex, coefficientTemplate inputCoefficient) {
+            positionIndex = inputPositionIndex;
+            coefficient = inputCoefficient;
         }
 
         /**
@@ -60,38 +60,38 @@ namespace LatticeLib {
         /**
          * Sets positionIndex to the input value.
          *
-         * Parameter    | in/out	| Comment
-		 * :----------  | :-------  | :--------
-         * i            | INPUT     | New position index.
+         * Parameter            | in/out	| Comment
+		 * :----------          | :-------  | :--------
+         * inputPositionIndex   | INPUT     | New position index.
          */
-        void setPositionIndex(int i) {
-            positionIndex = i;
+        void setPositionIndex(int inputPositionIndex) {
+            positionIndex = inputPositionIndex;
         }
 
         /**
          * Sets coefficient to the input value.
          *
-         * Parameter    | in/out    | Comment
-		 * :----------  | :-------  | :--------
-         * c            | INPUT     | New coefficient value.
+         * Parameter        | in/out    | Comment
+		 * :----------      | :-------  | :--------
+         * inputCoefficient | INPUT     | New coefficient value.
          */
-        void setCoefficient(coefficientTemplate c) {
-            coefficient = c;
+        void setCoefficient(coefficientTemplate inputCoefficient) {
+            coefficient = inputCoefficient;
         }
 
         /**
          * Sets positionIndex and coefficient to the input values.
          *
-         * Parameter	| in/out	| Comment
-		 * :----------  | :-------  | :--------
-         * i            | INPUT     | New position index.
-         * c            | INPUT     | New coefficient value.
+         * Parameter	        | in/out	| Comment
+		 * :----------          | :-------  | :--------
+         * inputPositionIndex   | INPUT     | New position index.
+         * inputCoefficient     | INPUT     | New coefficient value.
          */
-        void set(int i, coefficientTemplate c) {
-            positionIndex = i;
-            coefficient = c;
+        void set(int inputPositionIndex, coefficientTemplate inputCoefficient) {
+            positionIndex = inputPositionIndex;
+            coefficient = inputCoefficient;
         }
     };
 }
 
-#endif //FILTERCOEFFICIENT_H
+#endif //LATTICELIBRARY_FILTERCOEFFICIENT_H

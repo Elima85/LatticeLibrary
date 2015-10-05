@@ -1,5 +1,5 @@
-#ifndef APPROXIMATEMINIMUMBARRIERDISTANCE_H
-#define APPROXIMATEMINIMUMBARRIERDISTANCE_H
+#ifndef LATTICELIBRARY_APPROXIMATEMINIMUMBARRIERDISTANCE_H
+#define LATTICELIBRARY_APPROXIMATEMINIMUMBARRIERDISTANCE_H
 
 #include "seededdistancemeasure.h"
 #include "image.h"
@@ -63,7 +63,7 @@ namespace LatticeLib {
          */
         void setup(const Image<T> &image) {
             if ((pathMaximumValue != NULL) || (pathMinimumValue != NULL)) {
-                // TODO: Throw error or exception
+                // TODO: Throw error or exception?
             }
             int nElements = image.getNElements();
             pathMinimumValue = new vector<T>[nElements];
@@ -85,7 +85,7 @@ namespace LatticeLib {
         void initialize(const Image<T> &image, const vector<vector<Seed> > &seeds, int labelIndex,
                         Image<double> &distanceTransform, Image<int> &roots, vector<PriorityQueueElement<T> > &toQueue) {
             if ((pathMaximumValue == NULL) || (pathMinimumValue == NULL)) {
-                // TODO: Throw error or exception
+                // TODO: Throw error or exception?
             }
             int nElements = image.getNElements();
             for (int elementIndex = 0; elementIndex < nElements; elementIndex++) {
