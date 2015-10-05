@@ -3,5 +3,12 @@ CMakeFiles/
 Makefile
 cmake_install.cmake
 /.idea/
-*.bin
-!testimage2345.bin
+/*.bin
+/test/*.bin
+/*.sh
+/latex/
+/html/
+/spheres/
+/fettfantom/
+/*.graffle
+.DS_Store

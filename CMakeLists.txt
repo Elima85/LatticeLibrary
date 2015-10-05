@@ -6,41 +6,12 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 set(GTEST_ROOT "${PROJECT_SOURCE_DIR}/googletest")
 
 set(SOURCE_FILES
-    #approximateminimumbarrierdistance.h
     bcclattice.cpp
-    #bcclattice.h
     cclattice.cpp
-    #cclattice.h
-    #cropintensityrange.h
-    #dataredistribution.h
-    #defs.h
-    #exception.h
     fcclattice.cpp
-    #fcclattice.h
-    filehandling.cpp
-    #filehandling.h
-    #filtercoefficient.h
-    #fuzzyconnectedness.h
-    #image.h
-    #imagearithmetic.h
-    #intensityworkset.h
-    #interpolation.h
     lattice.cpp
-    #lattice.h
-    #linearinterpolation.h
-    #modalitymerge.h
     neighbor.cpp
-    #neighbor.h
-    #norm.h
-    #priorityqueue.h
-    #renormalizeintensityrange.h
     seed.cpp
-    #seed.h
-    #seededdistancemeasure.h
-    #seededdistancetransform.h
-    #segmentation.h
-    #vectoroperators.h
-    #weightedaveragefilter.h
     )
 
 set(MAIN_SOURCE_FILES
@@ -51,56 +22,42 @@ set(MAIN_SOURCE_FILES
 set(TEST_SOURCE_FILES
     ${SOURCE_FILES}
     ${GTEST_ROOT}/src/gtest-all.cc
-    bcclatticetestareaapproximation.cpp
-    bcclatticetestcoordinates.cpp
-    bcclatticetestinitialization.cpp
-    bcclatticetestneighbors.cpp
-    cclatticetestareaapproximation.cpp
-    cclatticetestcoordinates.cpp
-    cclatticetestinitialization.cpp
-    cclatticetestneighbors.cpp
-    dataredistributiontest.cpp
-    downsampletest.cpp
-    fcclatticetestareaapproximation.cpp
-    fcclatticetestcoordinates.cpp
-    fcclatticetestinitialization.cpp
-    fcclatticetestneighbors.cpp
-    filetest.cpp
-    filtercoefficienttest.cpp
-    imagearithmetictest.cpp
-    imagetestbands.cpp
-    imagetestcoordinates.cpp
-    imagetestinitialization.cpp
-    imagetestneighbors.cpp
-    imagetestmanipulation.cpp
-    intensityworksettest.cpp
-    linearinterpolationtest.cpp
-    modalitymergetest.cpp
-    neighbortest.cpp
-    normtest.cpp
-    priorityqueuetest.cpp
-    seededdistancetransformtest.cpp
-    segmentationtest.cpp
-    sequencefiltertest.cpp
-    spatialtemplatetest.cpp
-    structuringelementtest.cpp
-    uniformweighttest.cpp
-    latticelibtest.cpp
-    )
-
-set(SEGMENT_SOURCE_FILES
-    ${SOURCE_FILES}
-    mrisegmentation.cpp
-    )
-
-set(SEGMENT_HIGHRES_SOURCE_FILES
-    ${SOURCE_FILES}
-    mrisegmentationhighres.cpp
-    )
-
-set(DOWNSAMPLED_VOLUME_SOURCE_FILES
-    ${SOURCE_FILES}
-    downsamplevolume.cpp
+        test/bcclatticetestareaapproximation.cpp
+        test/bcclatticetestcoordinates.cpp
+        test/bcclatticetestinitialization.cpp
+        test/bcclatticetestneighbors.cpp
+        test/cclatticetestareaapproximation.cpp
+        test/cclatticetestcoordinates.cpp
+        test/cclatticetestinitialization.cpp
+        test/cclatticetestneighbors.cpp
+        test/dataredistributiontest.cpp
+        test/downsampletest.cpp
+        test/fcclatticetestareaapproximation.cpp
+        test/fcclatticetestcoordinates.cpp
+        test/fcclatticetestinitialization.cpp
+        test/fcclatticetestneighbors.cpp
+        test/filehandling.cpp
+        test/filetest.cpp
+        test/filtercoefficienttest.cpp
+        test/imagearithmetictest.cpp
+        test/imagetestbands.cpp
+        test/imagetestcoordinates.cpp
+        test/imagetestinitialization.cpp
+        test/imagetestneighbors.cpp
+        test/imagetestmanipulation.cpp
+        test/intensityworksettest.cpp
+        test/linearinterpolationtest.cpp
+        test/modalitymergetest.cpp
+        test/neighbortest.cpp
+        test/normtest.cpp
+        test/priorityqueuetest.cpp
+        test/seededdistancetransformtest.cpp
+        test/segmentationtest.cpp
+        test/sequencefiltertest.cpp
+        test/spatialtemplatetest.cpp
+        test/structuringelementtest.cpp
+        test/uniformweighttest.cpp
+        test/latticelibtest.cpp
     )
 
 include_directories(
@@ -110,9 +67,6 @@ include_directories(
 
 add_executable(release ${MAIN_SOURCE_FILES})
 add_executable(testing ${TEST_SOURCE_FILES})
-add_executable(segment ${SEGMENT_SOURCE_FILES})
-add_executable(segmenthighres ${SEGMENT_HIGHRES_SOURCE_FILES})
-add_executable(downsamplevolume ${DOWNSAMPLED_VOLUME_SOURCE_FILES})
 
 target_link_libraries(
     testing
