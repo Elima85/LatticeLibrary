@@ -1,13 +1,13 @@
 #include "gtest/gtest.h"
-#include "../defs.h"
-#include "../filtercoefficient.h"
+#include "../src/defs.h"
+#include "../src/filtercoefficient.h"
 #include <cmath>
-#include "../sequencefilter.h"
-#include "../maximumvaluefinder.h"
-#include "../minimumvaluefinder.h"
-#include "../medianvaluefinder.h"
+#include "../src/sequencefilter.h"
+#include "../src/maximumvaluefinder.h"
+#include "../src/minimumvaluefinder.h"
+#include "../src/medianvaluefinder.h"
 #include <vector>
-#include "../cclattice.h"
+#include "../src/cclattice.h"
 #include <typeinfo> // for typeid
 
 using namespace LatticeLib;

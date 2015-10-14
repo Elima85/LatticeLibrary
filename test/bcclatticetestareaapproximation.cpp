@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
-#include "../defs.h"
-#include "../bcclattice.h"
+#include "../src/defs.h"
+#include "../src/bcclattice.h"
 #include <cmath>
 
 using namespace LatticeLib;

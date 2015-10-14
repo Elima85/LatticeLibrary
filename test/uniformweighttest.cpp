@@ -1,8 +1,8 @@
 #include "gtest/gtest.h"
-#include "../defs.h"
-#include "../uniformweight.h"
-#include "../exception.h"
-#include "../cclattice.h"
+#include "../src/defs.h"
+#include "../src/uniformweight.h"
+#include "../src/exception.h"
+#include "../src/cclattice.h"
 
 using namespace LatticeLib;
 

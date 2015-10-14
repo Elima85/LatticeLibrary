@@ -1,8 +1,8 @@
 #include "gtest/gtest.h"
-#include "../defs.h"
-#include "../image.h"
-#include "../cclattice.h"
-#include "../modalitymerge.h"
+#include "../src/defs.h"
+#include "../src/image.h"
+#include "../src/cclattice.h"
+#include "../src/modalitymerge.h"
 
 using namespace LatticeLib;
 

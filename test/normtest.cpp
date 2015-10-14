@@ -2,11 +2,11 @@
 #define NORMTEST
 
 #include "gtest/gtest.h"
-#include "../norm.h"
-#include "../defs.h"
-#include "../pnorm.h"
-#include "../productnorm.h"
-#include "../maximumnorm.h"
+#include "../src/norm.h"
+#include "../src/defs.h"
+#include "../src/pnorm.h"
+#include "../src/productnorm.h"
+#include "../src/maximumnorm.h"
 
 using namespace LatticeLib;
 

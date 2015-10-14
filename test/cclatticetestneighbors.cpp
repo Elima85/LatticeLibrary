@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
-#include "../cclattice.h"
-#include "../exception.h"
+#include "../src/cclattice.h"
+#include "../src/exception.h"
 
 using namespace LatticeLib;
 

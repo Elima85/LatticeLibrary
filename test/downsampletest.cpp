@@ -1,10 +1,10 @@
 #include "gtest/gtest.h"
-#include "../defs.h"
-#include "../image.h"
-#include "../cclattice.h"
-#include "../fcclattice.h"
-#include "../imageresampler.h"
-#include "../uniformweight.h"
+#include "../src/defs.h"
+#include "../src/image.h"
+#include "../src/cclattice.h"
+#include "../src/fcclattice.h"
+#include "../src/imageresampler.h"
+#include "../src/uniformweight.h"
 #include <cmath>
 
 using namespace LatticeLib;

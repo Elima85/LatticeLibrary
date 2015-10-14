@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 #include "filehandling.h"
-#include "../defs.h"
+#include "../src/defs.h"
 
 using namespace LatticeLib;
 using std::string;

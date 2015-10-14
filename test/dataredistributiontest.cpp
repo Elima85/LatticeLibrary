@@ -1,8 +1,8 @@
 #include "gtest/gtest.h"
-#include "../defs.h"
-#include "../cropintensityrange.h"
-#include "../renormalizeintensityrange.h"
-#include "../exception.h"
+#include "../src/defs.h"
+#include "../src/cropintensityrange.h"
+#include "../src/renormalizeintensityrange.h"
+#include "../src/exception.h"
 #include <cmath>
 
 using namespace LatticeLib;

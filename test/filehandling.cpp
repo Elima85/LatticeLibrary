@@ -1,7 +1,7 @@
 #include <cstdio>
-#include "../exception.h"
+#include "../src/exception.h"
 #include "filehandling.h"
-#include "../defs.h"
+#include "../src/defs.h"
 #include <stdio.h>
 
 namespace LatticeLib {

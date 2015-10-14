@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
-#include "../priorityqueue.h"
-#include "../pnorm.h"
-#include "../defs.h"
+#include "../src/priorityqueue.h"
+#include "../src/pnorm.h"
+#include "../src/defs.h"
 
 using namespace LatticeLib;
 

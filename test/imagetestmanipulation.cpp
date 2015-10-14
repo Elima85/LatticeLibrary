@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
-#include "../defs.h"
-#include "../image.h"
-#include "../cclattice.h"
+#include "../src/defs.h"
+#include "../src/image.h"
+#include "../src/cclattice.h"
 #include <float.h>
 
 using namespace LatticeLib;

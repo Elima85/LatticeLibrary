@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
-#include "../linearinterpolation.h"
-#include "../defs.h"
-#include "../exception.h"
+#include "../src/linearinterpolation.h"
+#include "../src/defs.h"
+#include "../src/exception.h"
 #include <vector>
 
 using namespace LatticeLib;

@@ -1,8 +1,8 @@
 #include "gtest/gtest.h"
-#include "../defs.h"
-#include "../image.h"
-#include "../cclattice.h"
-#include "../imagearithmetic.h"
+#include "../src/defs.h"
+#include "../src/image.h"
+#include "../src/cclattice.h"
+#include "../src/imagearithmetic.h"
 #include <cmath>
 
 using namespace LatticeLib;

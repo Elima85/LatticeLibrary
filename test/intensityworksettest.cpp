@@ -1,9 +1,9 @@
 #include "gtest/gtest.h"
-#include "../intensityworkset.h"
-#include "../defs.h"
-#include "../cclattice.h"
-#include "../cropintensityrange.h"
-#include "../renormalizeintensityrange.h"
+#include "../src/intensityworkset.h"
+#include "../src/defs.h"
+#include "../src/cclattice.h"
+#include "../src/cropintensityrange.h"
+#include "../src/renormalizeintensityrange.h"
 
 using namespace LatticeLib;
 

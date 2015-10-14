@@ -1,8 +1,8 @@
 #include "gtest/gtest.h"
-#include "../defs.h"
-#include "../structuringelement.h"
-#include "../cclattice.h"
-#include "../image.h"
+#include "../src/defs.h"
+#include "../src/structuringelement.h"
+#include "../src/cclattice.h"
+#include "../src/image.h"
 
 using namespace LatticeLib;
 

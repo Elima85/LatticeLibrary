@@ -2,8 +2,8 @@
 #define NEIGHBORTEST
 
 #include "gtest/gtest.h"
-#include "../neighbor.h"
-#include "../defs.h"
+#include "../src/neighbor.h"
+#include "../src/defs.h"
 
 using namespace LatticeLib;
 

@@ -1,9 +1,9 @@
 #include "gtest/gtest.h"
-#include "../cclattice.h"
-#include "../bcclattice.h"
-#include "../fcclattice.h"
-#include "../image.h"
-#include "../exception.h"
+#include "../src/cclattice.h"
+#include "../src/bcclattice.h"
+#include "../src/fcclattice.h"
+#include "../src/image.h"
+#include "../src/exception.h"
 
 using namespace LatticeLib;
 

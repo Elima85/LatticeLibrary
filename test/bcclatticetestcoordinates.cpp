@@ -1,11 +1,11 @@
 #include "gtest/gtest.h"
-#include "../defs.h"
-#include "../bcclattice.h"
+#include "../src/defs.h"
+#include "../src/bcclattice.h"
 #include <cmath>
 #include <vector>
-#include "../pnorm.h"
-#include "../vectoroperators.h"
-#include "../neighbor.h"
+#include "../src/pnorm.h"
+#include "../src/vectoroperators.h"
+#include "../src/neighbor.h"
 
 using namespace LatticeLib;
 

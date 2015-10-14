@@ -1,11 +1,11 @@
 #include "gtest/gtest.h"
-#include "../defs.h"
-#include "../segmentation.h"
-#include "../image.h"
-#include "../intensityworkset.h"
-#include "../cclattice.h"
+#include "../src/defs.h"
+#include "../src/segmentation.h"
+#include "../src/image.h"
+#include "../src/intensityworkset.h"
+#include "../src/cclattice.h"
 #include "filehandling.h"
-#include "../vectoroperators.h"
+#include "../src/vectoroperators.h"
 
 using namespace LatticeLib;
 

@@ -1,10 +1,10 @@
 #include "gtest/gtest.h"
-#include "../defs.h"
-#include "../filtercoefficient.h"
-#include "../spatialtemplate.h"
+#include "../src/defs.h"
+#include "../src/filtercoefficient.h"
+#include "../src/spatialtemplate.h"
 #include <cmath>
 #include <vector>
-#include "../cclattice.h"
+#include "../src/cclattice.h"
 #include <stdio.h>
 
 using namespace LatticeLib;
