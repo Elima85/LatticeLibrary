@@ -33,11 +33,20 @@ Create and enter build directory.
 mkdir build
 cd build
 ```
+Download GoogleTest.
+```bash
+git submodule update --init --recursive
+```
 Call CMake and make
 ```bash
 cmake ..
-make
+make release
 ```
 
 ### Running tests
-Coming soon.
+Run tests.
+```bash
+make testing
+cd ..
+build/src/testing
+```
