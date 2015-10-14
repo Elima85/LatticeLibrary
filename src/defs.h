@@ -25,12 +25,21 @@
  * \subsection Licence
  * LatticeLibrary is available under the [GNU Lesser General Public License v2.1] (http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html).
  *
- * \section install_sec Installation
+ * \section install_sec Building
  * \subsection req Requirements
  * - CMake 2.8.4 or later.
  * - GCC or Clang with C++11 support.
- * \subsection comp Compilation
- * CMakeLists.txt provides instructions for building a test environment.
+ *
+ * \subsection comp Build instructions
+ * Create and enter build directory:
+ *   mkdir build
+ *   cd build
+ * Call CMake and make:
+ *   cmake ..
+ *   make
+ *
+ * \subsection test Running tests
+ * Coming soon.
  */
 
 namespace LatticeLib {
