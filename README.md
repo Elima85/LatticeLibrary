@@ -19,6 +19,9 @@ As LatticeLibrary is originally developed to study the behavior of various image
  * Anti-aliased Euclidean distance transform [Gustavson and Strand, 2011](http://www.sciencedirect.com/science/article/pii/S0167865510002953), [Linnér and Strand, 2014a](http://ieeexplore.ieee.org/xpl/articleDetails.jsp?arnumber=6976896), [Linnér and Strand, 2014b](http://link.springer.com/chapter/10.1007%2F978-3-319-09955-2_8#page-1). Applicable to, for example, fuzzy segmented images.
  * Binary erosion and dilation.
 
+### Documentation
+The Doxygen documentation can be browsed at http://elima85.github.io/LatticeLibrary-doxygen/.
+
 ### Licence
 LatticeLibrary is available under the [GNU Lesser General Public License v2.1] (http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html).
 
