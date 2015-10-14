@@ -3,7 +3,7 @@ project(latticelibrary)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-set(GTEST_ROOT "../googletest")
+set(GTEST_ROOT "../googletest/googletest")
 
 set(SOURCE_FILES
     bcclattice.cpp

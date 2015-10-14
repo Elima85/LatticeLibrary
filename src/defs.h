@@ -34,12 +34,17 @@
  * Create and enter build directory:
  *   mkdir build
  *   cd build
+ * Download GoogleTest:
+ *   git submodule update --init
  * Call CMake and make:
  *   cmake ..
  *   make
  *
  * \subsection test Running tests
- * Coming soon.
+ * Run tests:
+ *   make testing
+ *   cd ..
+ *   build/src/testing
  */
 
 namespace LatticeLib {
