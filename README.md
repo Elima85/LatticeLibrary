@@ -20,7 +20,7 @@ As LatticeLibrary is originally developed to study the behavior of various image
  * Binary erosion and dilation.
 
 ### Documentation
-The Doxygen documentation can be browsed at http://elima85.github.io/LatticeLibrary-doxygen/.
+The Doxygen documentation can be browsed [here](http://elima85.github.io/LatticeLibrary-doxygen/).
 
 ### Licence
 LatticeLibrary is available under the [GNU Lesser General Public License v2.1] (http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html).
